@@ -29,7 +29,9 @@
     "format:check": "prettier --check 'src/**/*.ts' '*.json' '*.md'",
     "lint": "eslint src",
     "lint:check": "eslint src --max-warnings 0",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix",
+    "publish": "bun publish",
+    "publish:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
     "@duskmoon-dev/el-core": "workspace:*",
