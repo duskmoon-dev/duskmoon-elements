@@ -128,9 +128,141 @@ fn main() {
     </el-dm-markdown>
   </section>
 
+  <section>
+    <h2>Streaming Mode (LLM Output)</h2>
+    <p style="margin-bottom: 1rem; color: var(--dm-gray-600);">
+      Click the button below to simulate streaming LLM output. Notice how incomplete markdown syntax
+      (like unclosed code blocks) is automatically fixed during streaming.
+    </p>
+    <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+      <button id="stream-start" class="demo-button">Start Streaming</button>
+      <button id="stream-stop" class="demo-button" disabled>Stop</button>
+      <button id="stream-reset" class="demo-button">Reset</button>
+    </div>
+    <div style="border: 1px solid var(--dm-gray-200); border-radius: var(--dm-radius-md); padding: 1rem; background: var(--dm-gray-50);">
+      <el-dm-markdown id="streaming-demo"></el-dm-markdown>
+    </div>
+  </section>
+
+  <style>
+    .demo-button {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--dm-gray-300);
+      border-radius: var(--dm-radius-md);
+      background: white;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.15s ease;
+    }
+    .demo-button:hover:not(:disabled) {
+      background: var(--dm-gray-100);
+      border-color: var(--dm-gray-400);
+    }
+    .demo-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+
   <script type="module">
     import { register as registerMarkdown } from '../elements/markdown/src/index.ts';
     registerMarkdown();
+
+    // Streaming demo
+    const streamingDemo = document.getElementById('streaming-demo');
+    const startBtn = document.getElementById('stream-start');
+    const stopBtn = document.getElementById('stream-stop');
+    const resetBtn = document.getElementById('stream-reset');
+
+    // Simulated LLM response content
+    const llmContent = `# Streaming Markdown Demo
+
+This demonstrates **streaming mode** for rendering LLM output in real-time.
+
+## Features
+
+- Automatic syntax error recovery
+- Blinking cursor indicator
+- Performance optimized with RAF debouncing
+
+### Code Example
+
+\`\`\`typescript
+interface StreamingOptions {
+  chunkSize: number;
+  delay: number;
+}
+
+async function* streamContent(text: string, options: StreamingOptions) {
+  const { chunkSize, delay } = options;
+  for (let i = 0; i < text.length; i += chunkSize) {
+    yield text.slice(i, i + chunkSize);
+    await new Promise(r => setTimeout(r, delay));
+  }
+}
+\`\`\`
+
+### Benefits
+
+1. **Real-time rendering** - See content as it arrives
+2. **Error recovery** - Handles incomplete markdown gracefully
+3. **Visual feedback** - Cursor shows streaming is active
+
+> This is a blockquote demonstrating that all markdown features work during streaming.
+
+| Feature | Status |
+|---------|--------|
+| Streaming | ✅ Active |
+| Syntax Fix | ✅ Enabled |
+| Cursor | ✅ Visible |
+
+---
+
+*Streaming complete!*`;
+
+    let streamInterval = null;
+    let charIndex = 0;
+
+    function startStreaming() {
+      charIndex = 0;
+      streamingDemo.startStreaming();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      // Stream character by character with variable chunk sizes
+      streamInterval = setInterval(() => {
+        if (charIndex >= llmContent.length) {
+          stopStreaming();
+          return;
+        }
+
+        // Random chunk size between 1-5 characters for realistic effect
+        const chunkSize = Math.floor(Math.random() * 5) + 1;
+        const chunk = llmContent.slice(charIndex, charIndex + chunkSize);
+        streamingDemo.appendContent(chunk);
+        charIndex += chunkSize;
+      }, 20);
+    }
+
+    function stopStreaming() {
+      if (streamInterval) {
+        clearInterval(streamInterval);
+        streamInterval = null;
+      }
+      streamingDemo.endStreaming();
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+
+    function resetDemo() {
+      stopStreaming();
+      streamingDemo.setContent('');
+      charIndex = 0;
+    }
+
+    startBtn.addEventListener('click', startStreaming);
+    stopBtn.addEventListener('click', stopStreaming);
+    resetBtn.addEventListener('click', resetDemo);
   </script>
 </body>
 </html>

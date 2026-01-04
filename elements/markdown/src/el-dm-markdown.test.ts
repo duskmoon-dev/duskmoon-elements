@@ -103,3 +103,207 @@ describe('Theme exports', () => {
     expect(atomOneLight).toContain('.hljs');
   });
 });
+
+describe('Streaming API', () => {
+  let container: HTMLDivElement;
+  let el: ElDmMarkdown;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+  });
+
+  afterEach(() => {
+    container.remove();
+  });
+
+  test('startStreaming sets streaming state', () => {
+    el.startStreaming();
+
+    expect(el.streaming).toBe(true);
+    expect(el.hasAttribute('streaming')).toBe(true);
+  });
+
+  test('endStreaming clears streaming state', () => {
+    el.startStreaming();
+    el.endStreaming();
+
+    expect(el.streaming).toBe(false);
+    expect(el.hasAttribute('streaming')).toBe(false);
+  });
+
+  test('appendContent accumulates content', () => {
+    el.startStreaming();
+    el.appendContent('Hello ');
+    el.appendContent('World');
+
+    expect(el.content).toBe('Hello World');
+  });
+
+  test('setContent replaces content', () => {
+    el.startStreaming();
+    el.appendContent('Hello');
+    el.setContent('Goodbye');
+
+    expect(el.content).toBe('Goodbye');
+  });
+
+  test('content property works in non-streaming mode', () => {
+    el.content = '# Test';
+
+    expect(el.content).toBe('# Test');
+  });
+
+  test('shows cursor during streaming', async () => {
+    el.startStreaming();
+    el.appendContent('Test');
+
+    // Wait for RAF to complete
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    const cursor = el.shadowRoot?.querySelector('.streaming-cursor');
+    expect(cursor).toBeDefined();
+  });
+
+  test('hides cursor after streaming ends', async () => {
+    el.startStreaming();
+    el.appendContent('Test');
+    el.endStreaming();
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    const cursor = el.shadowRoot?.querySelector('.streaming-cursor');
+    expect(cursor).toBeNull();
+  });
+
+  test('emits dm-stream-chunk event', () => {
+    let eventFired = false;
+    let eventDetail: { content: string; chunk: string } | null = null;
+
+    el.addEventListener('dm-stream-chunk', ((e: CustomEvent) => {
+      eventFired = true;
+      eventDetail = e.detail;
+    }) as EventListener);
+
+    el.startStreaming();
+    el.appendContent('chunk1');
+
+    expect(eventFired).toBe(true);
+    expect(eventDetail?.chunk).toBe('chunk1');
+    expect(eventDetail?.content).toBe('chunk1');
+  });
+
+  test('emits dm-stream-end event', () => {
+    let eventFired = false;
+    let eventDetail: { content: string } | null = null;
+
+    el.addEventListener('dm-stream-end', ((e: CustomEvent) => {
+      eventFired = true;
+      eventDetail = e.detail;
+    }) as EventListener);
+
+    el.startStreaming();
+    el.appendContent('content');
+    el.endStreaming();
+
+    expect(eventFired).toBe(true);
+    expect(eventDetail?.content).toBe('content');
+  });
+});
+
+describe('Syntax Auto-Fixer', () => {
+  let container: HTMLDivElement;
+  let el: ElDmMarkdown;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+  });
+
+  afterEach(() => {
+    container.remove();
+  });
+
+  test('handles incomplete fenced code block', async () => {
+    el.startStreaming();
+    el.appendContent('```javascript\nconst x = 1;');
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Should render without error (code block auto-closed)
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content?.innerHTML).toContain('const');
+  });
+
+  test('handles incomplete inline code', async () => {
+    el.startStreaming();
+    el.appendContent('This is `incomplete code');
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Should render without throwing
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content).toBeDefined();
+  });
+
+  test('handles incomplete bold', async () => {
+    el.startStreaming();
+    el.appendContent('This is **bold text');
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content).toBeDefined();
+  });
+
+  test('handles incomplete link', async () => {
+    el.startStreaming();
+    el.appendContent('Check [this link](http://example.com');
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content).toBeDefined();
+  });
+
+  test('handles incomplete strikethrough', async () => {
+    el.startStreaming();
+    el.appendContent('This is ~~strikethrough');
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content).toBeDefined();
+  });
+
+  test('final render after endStreaming is clean', async () => {
+    el.startStreaming();
+    el.appendContent('# Hello World\n\nThis is a test.');
+    el.endStreaming();
+
+    // Wait for render
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const content = el.shadowRoot?.querySelector('.content');
+    expect(content?.innerHTML).toContain('<h1>');
+    expect(content?.innerHTML).toContain('Hello World');
+  });
+});

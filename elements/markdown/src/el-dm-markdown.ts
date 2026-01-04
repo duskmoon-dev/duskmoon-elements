@@ -2,7 +2,8 @@
  * DuskMoon Markdown Element
  *
  * A markdown renderer component using remark/rehype with syntax highlighting
- * and optional mermaid diagram support.
+ * and optional mermaid diagram support. Includes streaming mode for LLM output
+ * with automatic syntax error recovery.
  *
  * @element el-dm-markdown
  *
@@ -10,6 +11,9 @@
  * @attr {string} theme - Code theme: github, atom-one-dark, atom-one-light (default: auto)
  * @attr {boolean} debug - Enable debug logging
  * @attr {boolean} no-mermaid - Disable mermaid diagram rendering
+ * @attr {boolean} streaming - Read-only attribute reflecting streaming state
+ *
+ * @prop {string} content - Get/set markdown content directly
  *
  * @slot - Default slot for inline markdown content
  *
@@ -18,10 +22,21 @@
  *
  * @fires dm-rendered - Fired when markdown is rendered
  * @fires dm-error - Fired when an error occurs
+ * @fires dm-stream-chunk - Fired when a chunk is appended during streaming
+ * @fires dm-stream-end - Fired when streaming ends
  *
  * @cssprop --dm-markdown-font-family - Font family for content
  * @cssprop --dm-markdown-code-font-family - Font family for code blocks
  * @cssprop --dm-markdown-line-height - Line height
+ *
+ * @example
+ * // Streaming usage
+ * const md = document.querySelector('el-dm-markdown');
+ * md.startStreaming();
+ * for await (const chunk of llmStream) {
+ *   md.appendContent(chunk);
+ * }
+ * md.endStreaming();
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-core';
@@ -290,6 +305,27 @@ const baseStyles = css`
     border: 1px solid #fecaca;
     border-radius: var(--dm-radius-md, 0.5rem);
   }
+
+  /* Streaming cursor */
+  .streaming-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: var(--dm-primary, #3b82f6);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: cursor-blink 1s step-end infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
 `;
 
 // Create theme stylesheets
@@ -319,6 +355,7 @@ export class ElDmMarkdown extends BaseElement {
     theme: { type: String, reflect: true, default: 'auto' },
     debug: { type: Boolean, reflect: true },
     noMermaid: { type: Boolean, reflect: true, attribute: 'no-mermaid' },
+    streaming: { type: Boolean, reflect: true },
   };
 
   /** URL to fetch markdown content from */
@@ -332,6 +369,9 @@ export class ElDmMarkdown extends BaseElement {
 
   /** Disable mermaid rendering */
   declare noMermaid: boolean;
+
+  /** Streaming state (reflected as attribute) */
+  declare streaming: boolean;
 
   /** Unique ID for mermaid diagrams */
   private _mid: string = '';
@@ -354,6 +394,15 @@ export class ElDmMarkdown extends BaseElement {
   /** Mermaid module (loaded dynamically) */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _mermaid?: any;
+
+  /** Stream buffer for accumulating content */
+  private _streamBuffer: string = '';
+
+  /** Internal streaming state */
+  private _isStreaming: boolean = false;
+
+  /** Pending render frame ID */
+  private _pendingRender: number | null = null;
 
   constructor() {
     super();
@@ -529,6 +578,265 @@ export class ElDmMarkdown extends BaseElement {
     }
   }
 
+  // ==========================================
+  // Streaming API
+  // ==========================================
+
+  /**
+   * Get the current content
+   */
+  get content(): string {
+    return this._streamBuffer || this._content;
+  }
+
+  /**
+   * Set content directly (works in both streaming and non-streaming modes)
+   */
+  set content(value: string) {
+    this._streamBuffer = value;
+
+    if (this._isStreaming) {
+      this._scheduleStreamRender();
+    } else {
+      this._content = value;
+      this._renderMarkdown();
+    }
+  }
+
+  /**
+   * Start streaming mode - clears buffer and shows cursor
+   */
+  startStreaming(): void {
+    this._isStreaming = true;
+    this._streamBuffer = '';
+    this._fragment = '';
+    this._error = '';
+    this.streaming = true;
+    this.update();
+
+    if (this.debug) {
+      console.log('[el-dm-markdown] Streaming started');
+    }
+  }
+
+  /**
+   * Append content chunk during streaming
+   */
+  appendContent(chunk: string): void {
+    this._streamBuffer += chunk;
+    this._scheduleStreamRender();
+
+    this.emit('dm-stream-chunk', { content: this._streamBuffer, chunk });
+  }
+
+  /**
+   * Set complete content (replaces buffer)
+   */
+  setContent(content: string): void {
+    this._streamBuffer = content;
+
+    if (this._isStreaming) {
+      this._scheduleStreamRender();
+    } else {
+      this._content = content;
+      this._renderMarkdown();
+    }
+  }
+
+  /**
+   * End streaming mode - final render without syntax fixes
+   */
+  endStreaming(): void {
+    // Cancel any pending render
+    if (this._pendingRender) {
+      cancelAnimationFrame(this._pendingRender);
+      this._pendingRender = null;
+    }
+
+    this._isStreaming = false;
+    this.streaming = false;
+    this._content = this._streamBuffer;
+
+    // Final clean render without syntax fixes
+    this._renderMarkdown();
+
+    this.emit('dm-stream-end', { content: this._streamBuffer });
+
+    if (this.debug) {
+      console.log('[el-dm-markdown] Streaming ended');
+    }
+  }
+
+  /**
+   * Schedule a stream render using requestAnimationFrame for performance
+   */
+  private _scheduleStreamRender(): void {
+    if (this._pendingRender) return;
+
+    this._pendingRender = requestAnimationFrame(() => {
+      this._pendingRender = null;
+      this._renderStreamContent();
+    });
+  }
+
+  /**
+   * Render content during streaming with syntax fixes
+   */
+  private async _renderStreamContent(): Promise<void> {
+    if (!this._streamBuffer) {
+      this._fragment = '';
+      this.update();
+      return;
+    }
+
+    try {
+      const fixedContent = this._fixIncompleteSyntax(this._streamBuffer);
+
+      if (this.debug) {
+        console.log(
+          '[el-dm-markdown] Stream render, original:',
+          this._streamBuffer.length,
+          'fixed:',
+          fixedContent.length,
+        );
+      }
+
+      const result = await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkRehype)
+        .use(rehypeHighlight, { detect: true, ignoreMissing: true })
+        .use(rehypeStringify)
+        .process(fixedContent);
+
+      this._fragment = String(result);
+      this.update();
+
+      // Process mermaid diagrams after render (but skip during heavy streaming)
+      if (!this._pendingRender) {
+        requestAnimationFrame(() => {
+          this._processMermaidDiagrams();
+        });
+      }
+    } catch (error) {
+      // During streaming, don't show errors for parse failures
+      // Just render what we have as-is
+      if (this.debug) {
+        console.warn('[el-dm-markdown] Stream parse error:', error);
+      }
+    }
+  }
+
+  /**
+   * Fix incomplete markdown syntax for streaming display
+   * Automatically closes unclosed blocks to prevent render errors
+   */
+  private _fixIncompleteSyntax(md: string): string {
+    if (!md) return md;
+
+    let fixed = md;
+
+    // Fix unclosed fenced code blocks (```)
+    const fenceMatches = fixed.match(/^```/gm) || [];
+    if (fenceMatches.length % 2 !== 0) {
+      fixed += '\n```';
+    }
+
+    // Get the last line for inline element fixes
+    const lines = fixed.split('\n');
+    const lastLine = lines[lines.length - 1];
+    let suffix = '';
+
+    // Fix unclosed inline code (`) - count backticks not in code blocks
+    // Only check the last line since inline code doesn't span lines
+    const backtickCount = (lastLine.match(/`/g) || []).length;
+    if (backtickCount % 2 !== 0) {
+      suffix += '`';
+    }
+
+    // Fix unclosed bold (**) - check for unmatched pairs
+    const boldMatches = lastLine.match(/\*\*/g) || [];
+    if (boldMatches.length % 2 !== 0) {
+      suffix += '**';
+    }
+
+    // Fix unclosed italic (*) - more complex due to overlap with bold
+    // Count single asterisks (not part of **)
+    const singleAsteriskMatches = lastLine.match(/(?<!\*)\*(?!\*)/g) || [];
+    if (singleAsteriskMatches.length % 2 !== 0) {
+      suffix += '*';
+    }
+
+    // Fix unclosed bold with underscore (__)
+    const underscoreBoldMatches = lastLine.match(/__/g) || [];
+    if (underscoreBoldMatches.length % 2 !== 0) {
+      suffix += '__';
+    }
+
+    // Fix unclosed italic with underscore (_) - not part of __
+    const singleUnderscoreMatches = lastLine.match(/(?<!_)_(?!_)/g) || [];
+    if (singleUnderscoreMatches.length % 2 !== 0) {
+      suffix += '_';
+    }
+
+    // Fix unclosed strikethrough (~~)
+    const strikeMatches = lastLine.match(/~~/g) || [];
+    if (strikeMatches.length % 2 !== 0) {
+      suffix += '~~';
+    }
+
+    // Fix unclosed links - [text](url
+    // Check for [ without matching ]
+    const openBracket = lastLine.lastIndexOf('[');
+    const closeBracket = lastLine.lastIndexOf(']');
+    if (openBracket > closeBracket) {
+      // We have an unclosed [
+      const afterBracket = lastLine.substring(openBracket);
+      if (afterBracket.includes('](')) {
+        // Pattern: [text](url - just need closing )
+        suffix += ')';
+      } else if (afterBracket.includes(']')) {
+        // Pattern: [text] - might need ()
+        if (!afterBracket.match(/\]\s*\(/)) {
+          suffix += '()';
+        }
+      } else {
+        // Pattern: [text - need ]()
+        suffix += ']()';
+      }
+    } else {
+      // Check for ]( without closing )
+      const linkStart = lastLine.lastIndexOf('](');
+      if (linkStart !== -1) {
+        const afterLink = lastLine.substring(linkStart + 2);
+        const closeParen = afterLink.indexOf(')');
+        if (closeParen === -1) {
+          suffix += ')';
+        }
+      }
+    }
+
+    // Fix unclosed images - ![alt](url
+    const imgOpenBracket = lastLine.lastIndexOf('![');
+    if (imgOpenBracket !== -1) {
+      const afterImg = lastLine.substring(imgOpenBracket);
+      if (!afterImg.match(/!\[.*?\]\(.*?\)/)) {
+        // Incomplete image syntax
+        if (!afterImg.includes(']')) {
+          suffix += '](placeholder)';
+        } else if (!afterImg.includes(')')) {
+          suffix += ')';
+        }
+      }
+    }
+
+    if (suffix) {
+      fixed += suffix;
+    }
+
+    return fixed;
+  }
+
   /**
    * Process mermaid code blocks into diagrams
    */
@@ -612,9 +920,13 @@ export class ElDmMarkdown extends BaseElement {
       `;
     }
 
+    const cursorHtml = this._isStreaming
+      ? '<span class="streaming-cursor" aria-hidden="true"></span>'
+      : '';
+
     return `
       <div class="container" part="container">
-        <div class="content" part="content">${this._fragment}</div>
+        <div class="content" part="content">${this._fragment}${cursorHtml}</div>
       </div>
     `;
   }
