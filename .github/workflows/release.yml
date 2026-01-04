@@ -90,7 +90,32 @@ jobs:
 
       - name: Publish packages
         if: ${{ !inputs.dry-run }}
-        run: bun run release
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.new }}"
+
+          # Publish core first
+          echo "Publishing @duskmoon-dev/el-core..."
+          cd packages/core
+          if npm view @duskmoon-dev/el-core@$NEW_VERSION version >/dev/null 2>&1; then
+            echo "  @duskmoon-dev/el-core@$NEW_VERSION already published, skipping"
+          else
+            bun publish --access public
+          fi
+          cd ../..
+
+          # Publish elements
+          for pkg in button card input markdown; do
+            echo "Publishing @duskmoon-dev/el-$pkg..."
+            cd elements/$pkg
+            if npm view @duskmoon-dev/el-$pkg@$NEW_VERSION version >/dev/null 2>&1; then
+              echo "  @duskmoon-dev/el-$pkg@$NEW_VERSION already published, skipping"
+            else
+              bun publish --access public
+            fi
+            cd ../..
+          done
+
+          echo "All packages published!"
 
       - name: Commit version bump
         if: ${{ !inputs.dry-run }}
