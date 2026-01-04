@@ -10,6 +10,28 @@ bun add @duskmoon-dev/el-button
 
 ## Usage
 
+### Auto-Register (Recommended)
+
+The simplest way to use the component - just import and it's ready:
+
+```html
+<!-- Via CDN -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/el-button/register"></script>
+
+<!-- Now use the element -->
+<el-dm-button>Click me</el-dm-button>
+<el-dm-button variant="secondary">Secondary</el-dm-button>
+<el-dm-button variant="outline" size="lg">Large Outline</el-dm-button>
+```
+
+Or with a bundler:
+
+```ts
+import '@duskmoon-dev/el-button/register';
+```
+
+### Manual Registration
+
 ```html
 <script type="module">
   import { register } from '@duskmoon-dev/el-button';
@@ -17,8 +39,6 @@ bun add @duskmoon-dev/el-button
 </script>
 
 <el-dm-button>Click me</el-dm-button>
-<el-dm-button variant="secondary">Secondary</el-dm-button>
-<el-dm-button variant="outline" size="lg">Large Outline</el-dm-button>
 ```
 
 ## Variants

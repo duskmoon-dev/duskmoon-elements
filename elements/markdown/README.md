@@ -16,21 +16,33 @@ bun add mermaid
 
 ## Usage
 
-### Inline Content
+### Auto-Register (Recommended)
 
-````html
+The simplest way to use the component - just import and it's ready:
+
+```html
+<!-- Via CDN -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/el-markdown/register"></script>
+
+<!-- Now use the element -->
+<el-dm-markdown> # Hello World This is **markdown** content. </el-dm-markdown>
+```
+
+Or with a bundler:
+
+```ts
+import '@duskmoon-dev/el-markdown/register';
+```
+
+### Manual Registration
+
+```html
 <script type="module">
   import { register } from '@duskmoon-dev/el-markdown';
   register();
 </script>
 
-<el-dm-markdown>
-  # Hello World This is **markdown** content with: - Lists - Code blocks - And more! ```javascript
-  console.log('Syntax highlighting!');</el-dm-markdown
->
-````
-
-</el-dm-markdown>
+<el-dm-markdown> # Hello World </el-dm-markdown>
 ```
 
 ### From URL

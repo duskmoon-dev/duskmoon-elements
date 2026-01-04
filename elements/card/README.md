@@ -10,6 +10,32 @@ bun add @duskmoon-dev/el-card
 
 ## Usage
 
+### Auto-Register (Recommended)
+
+The simplest way to use the component - just import and it's ready:
+
+```html
+<!-- Via CDN -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/el-card/register"></script>
+
+<!-- Now use the element -->
+<el-dm-card>
+  <h3 slot="header">Card Title</h3>
+  <p>Card body content goes here.</p>
+  <div slot="footer">
+    <button>Action</button>
+  </div>
+</el-dm-card>
+```
+
+Or with a bundler:
+
+```ts
+import '@duskmoon-dev/el-card/register';
+```
+
+### Manual Registration
+
 ```html
 <script type="module">
   import { register } from '@duskmoon-dev/el-card';
@@ -19,9 +45,6 @@ bun add @duskmoon-dev/el-card
 <el-dm-card>
   <h3 slot="header">Card Title</h3>
   <p>Card body content goes here.</p>
-  <div slot="footer">
-    <button>Action</button>
-  </div>
 </el-dm-card>
 ```
 

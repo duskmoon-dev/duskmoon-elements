@@ -10,12 +10,15 @@ bun add @duskmoon-dev/el-input
 
 ## Usage
 
-```html
-<script type="module">
-  import { register } from '@duskmoon-dev/el-input';
-  register();
-</script>
+### Auto-Register (Recommended)
 
+The simplest way to use the component - just import and it's ready:
+
+```html
+<!-- Via CDN -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/el-input/register"></script>
+
+<!-- Now use the element -->
 <el-dm-input label="Username" placeholder="Enter username"></el-dm-input>
 <el-dm-input label="Email" type="email" required></el-dm-input>
 <el-dm-input
@@ -24,6 +27,23 @@ bun add @duskmoon-dev/el-input
   validation-state="invalid"
   error-message="Password is required"
 ></el-dm-input>
+```
+
+Or with a bundler:
+
+```ts
+import '@duskmoon-dev/el-input/register';
+```
+
+### Manual Registration
+
+```html
+<script type="module">
+  import { register } from '@duskmoon-dev/el-input';
+  register();
+</script>
+
+<el-dm-input label="Username" placeholder="Enter username"></el-dm-input>
 ```
 
 ## Input Types

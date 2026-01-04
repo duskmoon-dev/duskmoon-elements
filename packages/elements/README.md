@@ -10,16 +10,14 @@ bun add @duskmoon-dev/elements
 
 ## Usage
 
-### Auto-register All Elements
+### Auto-Register via CDN (Recommended)
 
-The easiest way to use all elements is to import the register path:
-
-```ts
-// Just import to register all elements
-import '@duskmoon-dev/elements/register';
-```
+The simplest way to use all elements - just add a script tag:
 
 ```html
+<!-- Via CDN - registers all elements automatically -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/elements/register"></script>
+
 <!-- Now all elements are available -->
 <el-dm-button variant="primary">Click me</el-dm-button>
 <el-dm-card>
@@ -28,6 +26,13 @@ import '@duskmoon-dev/elements/register';
 </el-dm-card>
 <el-dm-input label="Name" placeholder="Enter your name"></el-dm-input>
 <el-dm-markdown>## Hello **Markdown**</el-dm-markdown>
+```
+
+### Auto-Register with Bundler
+
+```ts
+// Just import to register all elements
+import '@duskmoon-dev/elements/register';
 ```
 
 ### Manual Registration
@@ -84,14 +89,25 @@ import {
 
 ## Individual Packages
 
-If you only need specific elements, install them individually:
+If you only need specific elements, install them individually for smaller bundle size:
 
-- `@duskmoon-dev/el-button`
-- `@duskmoon-dev/el-card`
-- `@duskmoon-dev/el-input`
-- `@duskmoon-dev/el-markdown`
+| Package                     | CDN URL                                             |
+| --------------------------- | --------------------------------------------------- |
+| `@duskmoon-dev/el-button`   | `https://esm.sh/@duskmoon-dev/el-button/register`   |
+| `@duskmoon-dev/el-card`     | `https://esm.sh/@duskmoon-dev/el-card/register`     |
+| `@duskmoon-dev/el-input`    | `https://esm.sh/@duskmoon-dev/el-input/register`    |
+| `@duskmoon-dev/el-markdown` | `https://esm.sh/@duskmoon-dev/el-markdown/register` |
 
-Each package also supports auto-registration:
+Example using individual packages:
+
+```html
+<!-- Only load the button element -->
+<script type="module" src="https://esm.sh/@duskmoon-dev/el-button/register"></script>
+
+<el-dm-button>Click me</el-dm-button>
+```
+
+Or with a bundler:
 
 ```ts
 import '@duskmoon-dev/el-button/register';
