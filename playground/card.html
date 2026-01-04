@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Variants</h2>
+    <div class="cards-grid">
+      <el-dm-card>
+        <h3 slot="header">Elevated Card</h3>
+        <p>Default elevated style with a subtle shadow for depth.</p>
+        <div slot="footer">
+          <el-dm-button size="sm" variant="ghost">Action</el-dm-button>
+        </div>
+      </el-dm-card>
+
+      <el-dm-card variant="outlined">
+        <h3 slot="header">Outlined Card</h3>
+        <p>Border-based style without shadow elevation.</p>
+        <div slot="footer">
+          <el-dm-button size="sm" variant="ghost">Action</el-dm-button>
+        </div>
+      </el-dm-card>
+
+      <el-dm-card variant="filled">
+        <h3 slot="header">Filled Card</h3>
+        <p>Subtle background color for grouped content.</p>
+        <div slot="footer">
+          <el-dm-button size="sm" variant="ghost">Action</el-dm-button>
+        </div>
+      </el-dm-card>
+    </div>
+  </section>
+
+  <section>
+    <h2>Interactive Cards</h2>
+    <div class="cards-grid">
+      <el-dm-card interactive onclick="alert('Elevated card clicked!')">
+        <h3 slot="header">Click Me</h3>
+        <p>Interactive card with hover and click feedback.</p>
+      </el-dm-card>
+
+      <el-dm-card interactive variant="outlined" onclick="alert('Outlined card clicked!')">
+        <h3 slot="header">Outlined Interactive</h3>
+        <p>Hover to see the border color change.</p>
+      </el-dm-card>
+
+      <el-dm-card interactive variant="filled" onclick="alert('Filled card clicked!')">
+        <h3 slot="header">Filled Interactive</h3>
+        <p>Background changes on hover interaction.</p>
+      </el-dm-card>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cards with Media</h2>
+    <div class="cards-grid">
+      <el-dm-card>
+        <img slot="media" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop" alt="Mountain landscape" style="height: 150px;">
+        <h3 slot="header">Mountain View</h3>
+        <p>A beautiful mountain landscape captured at sunset.</p>
+        <div slot="footer">
+          <el-dm-button size="sm">View More</el-dm-button>
+        </div>
+      </el-dm-card>
+
+      <el-dm-card>
+        <img slot="media" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=200&fit=crop" alt="Night sky" style="height: 150px;">
+        <h3 slot="header">Night Sky</h3>
+        <p>Stars illuminate the mountain peaks at night.</p>
+        <div slot="footer">
+          <el-dm-button size="sm" variant="secondary">Explore</el-dm-button>
+        </div>
+      </el-dm-card>
+    </div>
+  </section>
+
+  <section>
+    <h2>Padding Options</h2>
+    <div class="cards-grid">
+      <el-dm-card padding="none">
+        <h3 slot="header">No Padding</h3>
+        <p>Content extends to card edges.</p>
+      </el-dm-card>
+
+      <el-dm-card padding="sm">
+        <h3 slot="header">Small Padding</h3>
+        <p>Compact padding for dense layouts.</p>
+      </el-dm-card>
+
+      <el-dm-card padding="lg">
+        <h3 slot="header">Large Padding</h3>
+        <p>Spacious padding for emphasis.</p>
+      </el-dm-card>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerCard } from '../elements/card/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerCard();
+    registerButton();
+  </script>
+</body>
+</html>

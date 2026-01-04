@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Variants</h2>
+    <div class="demo-row">
+      <span class="demo-label">Primary:</span>
+      <el-dm-button variant="primary">Primary</el-dm-button>
+      <el-dm-button variant="primary" disabled>Disabled</el-dm-button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-label">Secondary:</span>
+      <el-dm-button variant="secondary">Secondary</el-dm-button>
+      <el-dm-button variant="secondary" disabled>Disabled</el-dm-button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-label">Tertiary:</span>
+      <el-dm-button variant="tertiary">Tertiary</el-dm-button>
+      <el-dm-button variant="tertiary" disabled>Disabled</el-dm-button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-label">Ghost:</span>
+      <el-dm-button variant="ghost">Ghost</el-dm-button>
+      <el-dm-button variant="ghost" disabled>Disabled</el-dm-button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-label">Outline:</span>
+      <el-dm-button variant="outline">Outline</el-dm-button>
+      <el-dm-button variant="outline" disabled>Disabled</el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-button size="xs">Extra Small</el-dm-button>
+      <el-dm-button size="sm">Small</el-dm-button>
+      <el-dm-button size="md">Medium</el-dm-button>
+      <el-dm-button size="lg">Large</el-dm-button>
+      <el-dm-button size="xl">Extra Large</el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Icons</h2>
+    <div class="demo-row">
+      <el-dm-button>
+        <span slot="prefix">&#9733;</span>
+        Star
+      </el-dm-button>
+      <el-dm-button variant="secondary">
+        Next
+        <span slot="suffix">&#8594;</span>
+      </el-dm-button>
+      <el-dm-button variant="outline">
+        <span slot="prefix">&#128269;</span>
+        Search
+      </el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Loading States</h2>
+    <div class="demo-row">
+      <el-dm-button loading>Loading...</el-dm-button>
+      <el-dm-button variant="secondary" loading>Processing</el-dm-button>
+      <el-dm-button variant="outline" loading>Submitting</el-dm-button>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerButton();
+  </script>
+</body>
+</html>

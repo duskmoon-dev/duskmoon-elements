@@ -118,3 +118,10 @@ Element packages reference the core package via TypeScript project references. T
 ### Workspace Dependencies
 
 Elements use `"@duskmoon-dev/el-core": "workspace:*"` which gets resolved to actual versions during `bun publish`.
+
+## Active Technologies
+- TypeScript (ES2022+ target) + Vite (build tool), existing element packages (@duskmoon-dev/el-*) (001-vite-playground)
+- N/A (static site, no persistent storage) (001-vite-playground)
+
+## Recent Changes
+- 001-vite-playground: Added TypeScript (ES2022+ target) + Vite (build tool), existing element packages (@duskmoon-dev/el-*)

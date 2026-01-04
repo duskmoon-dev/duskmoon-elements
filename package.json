@@ -5,7 +5,8 @@
   "type": "module",
   "workspaces": [
     "elements/*",
-    "packages/*"
+    "packages/*",
+    "playground"
   ],
   "scripts": {
     "build": "bun run --filter '*' build",
@@ -26,7 +27,10 @@
     "release": "bun run release:core && bun run release:elements",
     "release:core:dry-run": "bun run --filter @duskmoon-dev/el-core release:dry-run",
     "release:elements:dry-run": "bun run --filter '@duskmoon-dev/el-button' --filter '@duskmoon-dev/el-card' --filter '@duskmoon-dev/el-input' --filter '@duskmoon-dev/el-markdown' release:dry-run",
-    "release:dry-run": "bun run release:core:dry-run && bun run release:elements:dry-run"
+    "release:dry-run": "bun run release:core:dry-run && bun run release:elements:dry-run",
+    "playground": "bun run --filter @duskmoon-dev/playground dev",
+    "playground:build": "bun run --filter @duskmoon-dev/playground build",
+    "playground:preview": "bun run --filter @duskmoon-dev/playground preview"
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",

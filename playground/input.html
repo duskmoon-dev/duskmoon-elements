@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Inputs</h2>
+    <div class="form-demo">
+      <el-dm-input label="Username" placeholder="Enter your username"></el-dm-input>
+      <el-dm-input label="Email" type="email" placeholder="you@example.com" required></el-dm-input>
+      <el-dm-input label="Password" type="password" placeholder="Enter password" helper-text="Must be at least 8 characters"></el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Input Types</h2>
+    <div class="form-row">
+      <el-dm-input label="Text" type="text" placeholder="Plain text"></el-dm-input>
+      <el-dm-input label="Email" type="email" placeholder="email@example.com"></el-dm-input>
+      <el-dm-input label="Password" type="password" placeholder="Secret"></el-dm-input>
+      <el-dm-input label="Number" type="number" placeholder="42"></el-dm-input>
+      <el-dm-input label="Search" type="search" placeholder="Search..."></el-dm-input>
+      <el-dm-input label="URL" type="url" placeholder="https://example.com"></el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="form-demo">
+      <el-dm-input label="Small" size="sm" placeholder="Small input"></el-dm-input>
+      <el-dm-input label="Medium" size="md" placeholder="Medium input (default)"></el-dm-input>
+      <el-dm-input label="Large" size="lg" placeholder="Large input"></el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Validation States</h2>
+    <div class="form-demo">
+      <el-dm-input label="Valid Input" value="john@example.com" validation-state="valid" helper-text="Email address verified"></el-dm-input>
+      <el-dm-input label="Invalid Input" value="invalid-email" validation-state="invalid" error-message="Please enter a valid email address"></el-dm-input>
+      <el-dm-input label="Pending Validation" value="checking..." validation-state="pending" helper-text="Verifying availability..."></el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled &amp; Readonly</h2>
+    <div class="form-demo">
+      <el-dm-input label="Disabled" value="Cannot edit this" disabled></el-dm-input>
+      <el-dm-input label="Readonly" value="Read only value" readonly></el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Prefix &amp; Suffix</h2>
+    <div class="form-demo">
+      <el-dm-input label="Search" type="search" placeholder="Search...">
+        <span slot="prefix">&#128269;</span>
+      </el-dm-input>
+      <el-dm-input label="Website" type="url" placeholder="example.com">
+        <span slot="prefix">https://</span>
+      </el-dm-input>
+      <el-dm-input label="Price" type="number" placeholder="0.00">
+        <span slot="prefix">$</span>
+        <span slot="suffix">USD</span>
+      </el-dm-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Form Example</h2>
+    <form id="demo-form" onsubmit="handleSubmit(event)">
+      <div class="form-demo">
+        <el-dm-input label="Full Name" name="name" placeholder="John Doe" required></el-dm-input>
+        <el-dm-input label="Email" name="email" type="email" placeholder="john@example.com" required></el-dm-input>
+        <el-dm-input label="Message" name="message" placeholder="Your message here..." helper-text="Optional message"></el-dm-input>
+        <div class="demo-row">
+          <el-dm-button type="submit">Submit</el-dm-button>
+          <el-dm-button type="reset" variant="secondary">Reset</el-dm-button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <script type="module">
+    import { register as registerInput } from '../elements/input/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerInput();
+    registerButton();
+
+    window.handleSubmit = (event) => {
+      event.preventDefault();
+      const form = event.target;
+      const inputs = form.querySelectorAll('el-dm-input');
+      const data = {};
+      inputs.forEach(input => {
+        if (input.name) data[input.name] = input.value;
+      });
+      console.log('Form submitted:', data);
+      alert('Form submitted! Check console for data.');
+    };
+  </script>
+</body>
+</html>

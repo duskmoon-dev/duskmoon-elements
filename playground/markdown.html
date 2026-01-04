@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Markdown</h2>
+    <el-dm-markdown>
+# Hello Markdown!
+
+This is a **bold** and *italic* text with ~~strikethrough~~.
+
+## Features
+
+- GitHub Flavored Markdown
+- Syntax highlighting
+- Tables support
+
+> This is a blockquote with some wisdom.
+
+| Feature | Status |
+|---------|--------|
+| Tables | Supported |
+| Lists | Supported |
+| Code | Supported |
+    </el-dm-markdown>
+  </section>
+
+  <section>
+    <h2>Code Highlighting - JavaScript</h2>
+    <el-dm-markdown>
+```javascript
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+  return { greeting: 'Hello', name };
+}
+
+const result = greet('World');
+console.log(result);
+```
+    </el-dm-markdown>
+  </section>
+
+  <section>
+    <h2>Code Highlighting - TypeScript</h2>
+    <el-dm-markdown>
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+function createUser(name: string, email: string): User {
+  return { id: Math.random(), name, email };
+}
+
+const user: User = createUser('Alice', 'alice@example.com');
+```
+    </el-dm-markdown>
+  </section>
+
+  <section>
+    <h2>Theme: Atom One Dark</h2>
+    <el-dm-markdown theme="atom-one-dark">
+```python
+def fibonacci(n):
+    if n &lt;= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+def main():
+    for i in range(10):
+        print(f"fib({i}) = {fibonacci(i)}")
+
+if __name__ == "__main__":
+    main()
+```
+    </el-dm-markdown>
+  </section>
+
+  <section>
+    <h2>Theme Comparison</h2>
+    <div class="theme-grid">
+      <div>
+        <h3 class="theme-label">Default (GitHub)</h3>
+        <el-dm-markdown>
+```rust
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("Sum: {}", sum);
+}
+```
+        </el-dm-markdown>
+      </div>
+      <div>
+        <h3 class="theme-label">Atom One Dark</h3>
+        <el-dm-markdown theme="atom-one-dark">
+```rust
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("Sum: {}", sum);
+}
+```
+        </el-dm-markdown>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Task Lists</h2>
+    <el-dm-markdown>
+## Project Checklist
+
+- [x] Create base element class
+- [x] Implement button component
+- [x] Implement card component
+- [x] Implement input component
+- [x] Add markdown component
+- [ ] Add more components
+- [ ] Write comprehensive tests
+    </el-dm-markdown>
+  </section>
+
+  <script type="module">
+    import { register as registerMarkdown } from '../elements/markdown/src/index.ts';
+    registerMarkdown();
+  </script>
+</body>
+</html>
