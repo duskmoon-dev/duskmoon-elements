@@ -60,11 +60,11 @@ button.variant = 'primary';
 
 ## Included Elements
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Button | `<el-dm-button>` | Customizable button with variants, sizes, loading state |
-| Card | `<el-dm-card>` | Flexible card container with header, body, footer sections |
-| Input | `<el-dm-input>` | Form input with validation, labels, helper text |
+| Element  | Tag                | Description                                                |
+| -------- | ------------------ | ---------------------------------------------------------- |
+| Button   | `<el-dm-button>`   | Customizable button with variants, sizes, loading state    |
+| Card     | `<el-dm-card>`     | Flexible card container with header, body, footer sections |
+| Input    | `<el-dm-input>`    | Form input with validation, labels, helper text            |
 | Markdown | `<el-dm-markdown>` | Markdown renderer with syntax highlighting, streaming mode |
 
 ## Re-exported Utilities
