@@ -38,5 +38,14 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "duskmoon-dev",
+    "duskmoon",
+    "custom-elements",
+    "customelements",
+    "web-components",
+    "webcomponents",
+    "html"
+  ]
 }

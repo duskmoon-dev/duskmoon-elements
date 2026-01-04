@@ -42,5 +42,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "customElements": "custom-elements.json"
+  "customElements": "custom-elements.json",
+  "keywords": [
+    "duskmoon-dev",
+    "duskmoon",
+    "custom-elements",
+    "customelements",
+    "web-components",
+    "webcomponents",
+    "html"
+  ]
 }
