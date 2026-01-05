@@ -33,7 +33,11 @@
     "release:dry-run": "bun run release:core:dry-run && bun run release:elements:dry-run && bun run release:bundle:dry-run",
     "playground": "bun run --filter @duskmoon-dev/playground dev",
     "playground:build": "bun run --filter @duskmoon-dev/playground build",
-    "playground:preview": "bun run --filter @duskmoon-dev/playground preview"
+    "playground:preview": "bun run --filter @duskmoon-dev/playground preview",
+    "docs": "bun run --filter @duskmoon-dev/docs dev",
+    "docs:dev": "bun run --filter @duskmoon-dev/docs dev",
+    "docs:build": "bun run --filter @duskmoon-dev/docs build",
+    "docs:preview": "bun run --filter @duskmoon-dev/docs preview"
   },
   "devDependencies": {
     "@duskmoon-dev/core": "1.1.1",
