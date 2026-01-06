@@ -16,7 +16,14 @@
     "@duskmoon-dev/el-button": "workspace:*",
     "@duskmoon-dev/el-card": "workspace:*",
     "@duskmoon-dev/el-input": "workspace:*",
-    "@duskmoon-dev/el-markdown": "workspace:*"
+    "@duskmoon-dev/el-markdown": "workspace:*",
+    "@duskmoon-dev/el-switch": "workspace:*",
+    "@duskmoon-dev/el-alert": "workspace:*",
+    "@duskmoon-dev/el-dialog": "workspace:*",
+    "@duskmoon-dev/el-badge": "workspace:*",
+    "@duskmoon-dev/el-chip": "workspace:*",
+    "@duskmoon-dev/el-tooltip": "workspace:*",
+    "@duskmoon-dev/el-progress": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
