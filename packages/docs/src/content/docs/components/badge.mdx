@@ -1,0 +1,121 @@
+---
+title: Badge
+description: Badge component for status indicators and labels
+order: 8
+section: components
+component: "@duskmoon-dev/el-badge"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Badge
+
+The Badge component displays status indicators, counts, or labels in a compact format.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-badge
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-badge/register';
+```
+
+```html
+<el-dm-badge color="primary">New</el-dm-badge>
+```
+
+## Live Demo
+
+<ComponentDemo title="Badge Colors">
+  <el-dm-badge color="primary">Primary</el-dm-badge>
+  <el-dm-badge color="secondary">Secondary</el-dm-badge>
+  <el-dm-badge color="success">Success</el-dm-badge>
+  <el-dm-badge color="warning">Warning</el-dm-badge>
+  <el-dm-badge color="error">Error</el-dm-badge>
+  <el-dm-badge color="info">Info</el-dm-badge>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-badge/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `variant` | `'filled' \| 'outlined' \| 'soft'` | `'filled'` | Visual style |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Badge color |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Badge size |
+| `pill` | `boolean` | `false` | Use pill (rounded) shape |
+| `dot` | `boolean` | `false` | Show as dot indicator only |
+
+## Variants
+
+<ComponentDemo title="Badge Variants">
+  <el-dm-badge variant="filled" color="primary">Filled</el-dm-badge>
+  <el-dm-badge variant="outlined" color="primary">Outlined</el-dm-badge>
+  <el-dm-badge variant="soft" color="primary">Soft</el-dm-badge>
+</ComponentDemo>
+
+```html
+<el-dm-badge variant="filled" color="primary">Filled</el-dm-badge>
+<el-dm-badge variant="outlined" color="primary">Outlined</el-dm-badge>
+<el-dm-badge variant="soft" color="primary">Soft</el-dm-badge>
+```
+
+## Sizes
+
+<ComponentDemo title="Badge Sizes">
+  <el-dm-badge size="sm" color="primary">Small</el-dm-badge>
+  <el-dm-badge size="md" color="primary">Medium</el-dm-badge>
+  <el-dm-badge size="lg" color="primary">Large</el-dm-badge>
+</ComponentDemo>
+
+```html
+<el-dm-badge size="sm">Small</el-dm-badge>
+<el-dm-badge size="md">Medium</el-dm-badge>
+<el-dm-badge size="lg">Large</el-dm-badge>
+```
+
+## Pill Shape
+
+<ComponentDemo title="Pill Badges">
+  <el-dm-badge pill color="primary">99+</el-dm-badge>
+  <el-dm-badge pill color="success">Active</el-dm-badge>
+  <el-dm-badge pill color="error">Offline</el-dm-badge>
+</ComponentDemo>
+
+```html
+<el-dm-badge pill color="primary">99+</el-dm-badge>
+<el-dm-badge pill color="success">Active</el-dm-badge>
+```
+
+## Dot Indicator
+
+<ComponentDemo title="Dot Badges">
+  <span style="margin-right: 1rem;">Status: <el-dm-badge dot color="success"></el-dm-badge></span>
+  <span style="margin-right: 1rem;">Status: <el-dm-badge dot color="warning"></el-dm-badge></span>
+  <span>Status: <el-dm-badge dot color="error"></el-dm-badge></span>
+</ComponentDemo>
+
+```html
+<el-dm-badge dot color="success"></el-dm-badge>
+<el-dm-badge dot color="warning"></el-dm-badge>
+<el-dm-badge dot color="error"></el-dm-badge>
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `badge` | The badge container |
+
+## Accessibility
+
+- Badges are purely visual indicators
+- Ensure important information is also conveyed through text
+- Color alone should not be the only means of conveying information

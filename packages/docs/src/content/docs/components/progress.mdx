@@ -1,0 +1,135 @@
+---
+title: Progress
+description: Progress bar component for displaying completion status
+order: 11
+section: components
+component: "@duskmoon-dev/el-progress"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Progress
+
+The Progress component displays a progress bar to show completion status of a task.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-progress
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-progress/register';
+```
+
+```html
+<el-dm-progress value="50"></el-dm-progress>
+```
+
+## Live Demo
+
+<ComponentDemo title="Progress Values">
+  <el-dm-progress value="25" show-value></el-dm-progress>
+  <el-dm-progress value="50" show-value></el-dm-progress>
+  <el-dm-progress value="75" show-value></el-dm-progress>
+  <el-dm-progress value="100" show-value></el-dm-progress>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-progress/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `number` | `0` | Current progress (0-100) |
+| `max` | `number` | `100` | Maximum value |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Progress bar color |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Progress bar height |
+| `indeterminate` | `boolean` | `false` | Show indeterminate animation |
+| `striped` | `boolean` | `false` | Show striped pattern |
+| `animated` | `boolean` | `false` | Animate the stripes |
+| `show-value` | `boolean` | `false` | Display the percentage |
+
+## Colors
+
+<ComponentDemo title="Progress Colors">
+  <el-dm-progress value="60" color="primary"></el-dm-progress>
+  <el-dm-progress value="60" color="secondary"></el-dm-progress>
+  <el-dm-progress value="60" color="success"></el-dm-progress>
+  <el-dm-progress value="60" color="warning"></el-dm-progress>
+  <el-dm-progress value="60" color="error"></el-dm-progress>
+  <el-dm-progress value="60" color="info"></el-dm-progress>
+</ComponentDemo>
+
+```html
+<el-dm-progress value="60" color="primary"></el-dm-progress>
+<el-dm-progress value="60" color="success"></el-dm-progress>
+<el-dm-progress value="60" color="warning"></el-dm-progress>
+<el-dm-progress value="60" color="error"></el-dm-progress>
+```
+
+## Sizes
+
+<ComponentDemo title="Progress Sizes">
+  <el-dm-progress value="50" size="sm"></el-dm-progress>
+  <el-dm-progress value="50" size="md"></el-dm-progress>
+  <el-dm-progress value="50" size="lg" show-value></el-dm-progress>
+</ComponentDemo>
+
+```html
+<el-dm-progress value="50" size="sm"></el-dm-progress>
+<el-dm-progress value="50" size="md"></el-dm-progress>
+<el-dm-progress value="50" size="lg"></el-dm-progress>
+```
+
+## Indeterminate
+
+<ComponentDemo title="Indeterminate Progress">
+  <el-dm-progress indeterminate></el-dm-progress>
+  <el-dm-progress indeterminate color="success"></el-dm-progress>
+</ComponentDemo>
+
+```html
+<el-dm-progress indeterminate></el-dm-progress>
+```
+
+## Striped
+
+<ComponentDemo title="Striped Progress">
+  <el-dm-progress value="70" striped></el-dm-progress>
+  <el-dm-progress value="70" striped animated></el-dm-progress>
+</ComponentDemo>
+
+```html
+<el-dm-progress value="70" striped></el-dm-progress>
+<el-dm-progress value="70" striped animated></el-dm-progress>
+```
+
+## With Value Label
+
+<ComponentDemo title="With Value Label">
+  <el-dm-progress value="35" size="lg" show-value></el-dm-progress>
+  <el-dm-progress value="65" size="lg" show-value color="success"></el-dm-progress>
+</ComponentDemo>
+
+```html
+<el-dm-progress value="35" size="lg" show-value></el-dm-progress>
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `progress` | The progress container |
+| `bar` | The progress bar |
+| `value` | The value label |
+
+## Accessibility
+
+- Uses `role="progressbar"` with proper ARIA attributes
+- `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` are set
+- Indeterminate state is properly announced

@@ -1,0 +1,161 @@
+---
+title: Tooltip
+description: Tooltip component for displaying additional information on hover
+order: 10
+section: components
+component: "@duskmoon-dev/el-tooltip"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Tooltip
+
+The Tooltip component displays additional information when users hover over or focus on an element.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-tooltip
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-tooltip/register';
+```
+
+```html
+<el-dm-tooltip content="This is a tooltip">
+  <button>Hover me</button>
+</el-dm-tooltip>
+```
+
+## Live Demo
+
+<ComponentDemo title="Tooltip Positions">
+  <el-dm-tooltip content="Top tooltip" position="top">
+    <el-dm-button>Top</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Bottom tooltip" position="bottom">
+    <el-dm-button>Bottom</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Left tooltip" position="left">
+    <el-dm-button>Left</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Right tooltip" position="right">
+    <el-dm-button>Right</el-dm-button>
+  </el-dm-tooltip>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-tooltip/register');
+  import('@duskmoon-dev/el-button/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `content` | `string` | - | Tooltip text content |
+| `position` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Tooltip position |
+| `trigger` | `'hover' \| 'click' \| 'focus'` | `'hover'` | How to trigger the tooltip |
+| `delay` | `number` | `0` | Show delay in milliseconds |
+| `arrow` | `boolean` | `true` | Show tooltip arrow |
+| `disabled` | `boolean` | `false` | Disable the tooltip |
+
+## Positions
+
+<ComponentDemo title="Tooltip Positions">
+  <el-dm-tooltip content="Top" position="top">
+    <el-dm-button variant="outline">Top</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Bottom" position="bottom">
+    <el-dm-button variant="outline">Bottom</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Left" position="left">
+    <el-dm-button variant="outline">Left</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Right" position="right">
+    <el-dm-button variant="outline">Right</el-dm-button>
+  </el-dm-tooltip>
+</ComponentDemo>
+
+```html
+<el-dm-tooltip content="Top" position="top">
+  <button>Top</button>
+</el-dm-tooltip>
+<el-dm-tooltip content="Bottom" position="bottom">
+  <button>Bottom</button>
+</el-dm-tooltip>
+```
+
+## Trigger Modes
+
+<ComponentDemo title="Trigger Modes">
+  <el-dm-tooltip content="Hover to show" trigger="hover">
+    <el-dm-button>Hover</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Click to show" trigger="click">
+    <el-dm-button>Click</el-dm-button>
+  </el-dm-tooltip>
+  <el-dm-tooltip content="Focus to show" trigger="focus">
+    <el-dm-button>Focus</el-dm-button>
+  </el-dm-tooltip>
+</ComponentDemo>
+
+```html
+<el-dm-tooltip content="Hover to show" trigger="hover">
+  <button>Hover</button>
+</el-dm-tooltip>
+<el-dm-tooltip content="Click to show" trigger="click">
+  <button>Click</button>
+</el-dm-tooltip>
+```
+
+## With Delay
+
+<ComponentDemo title="Delayed Tooltip">
+  <el-dm-tooltip content="Appears after 500ms" delay="500">
+    <el-dm-button>Delayed tooltip</el-dm-button>
+  </el-dm-tooltip>
+</ComponentDemo>
+
+```html
+<el-dm-tooltip content="Appears after 500ms" delay="500">
+  <button>Delayed tooltip</button>
+</el-dm-tooltip>
+```
+
+## Without Arrow
+
+<ComponentDemo title="No Arrow">
+  <el-dm-tooltip content="No arrow" arrow="false">
+    <el-dm-button>No arrow</el-dm-button>
+  </el-dm-tooltip>
+</ComponentDemo>
+
+```html
+<el-dm-tooltip content="No arrow" arrow="false">
+  <button>No arrow</button>
+</el-dm-tooltip>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | The trigger element |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `tooltip` | The tooltip wrapper |
+| `content` | The tooltip content |
+| `arrow` | The tooltip arrow |
+
+## Accessibility
+
+- Uses `role="tooltip"` for proper semantics
+- Triggered by focus as well as hover
+- Content is accessible to screen readers

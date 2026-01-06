@@ -1,0 +1,128 @@
+---
+title: Dialog
+description: Modal dialog component for displaying content requiring user attention
+order: 7
+section: components
+component: "@duskmoon-dev/el-dialog"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Dialog
+
+The Dialog component provides a modal overlay for displaying content that requires user attention.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-dialog
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-dialog/register';
+```
+
+```html
+<el-dm-dialog id="my-dialog">
+  <span slot="header">Dialog Title</span>
+  <p>Dialog content goes here.</p>
+  <div slot="footer">
+    <el-dm-button variant="ghost" onclick="document.querySelector('#my-dialog').close()">Cancel</el-dm-button>
+    <el-dm-button variant="primary">Confirm</el-dm-button>
+  </div>
+</el-dm-dialog>
+
+<el-dm-button onclick="document.querySelector('#my-dialog').show()">Open Dialog</el-dm-button>
+```
+
+## Live Demo
+
+<ComponentDemo title="Dialog Demo">
+  <el-dm-button onclick="this.nextElementSibling.show()" variant="primary">Open Dialog</el-dm-button>
+  <el-dm-dialog id="demo-dialog" dismissible>
+    <span slot="header">Example Dialog</span>
+    <p>This is an example dialog. You can put any content here.</p>
+    <div slot="footer">
+      <el-dm-button onclick="this.closest('el-dm-dialog').close()" variant="ghost">Close</el-dm-button>
+    </div>
+  </el-dm-dialog>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-dialog/register');
+  import('@duskmoon-dev/el-button/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the dialog is visible |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Dialog size |
+| `dismissible` | `boolean` | `true` | Allow closing via backdrop click or Escape |
+| `no-backdrop` | `boolean` | `false` | Hide the backdrop overlay |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Opens the dialog |
+| `close()` | Closes the dialog |
+| `toggle()` | Toggles the dialog state |
+
+## Sizes
+
+```html
+<el-dm-dialog size="sm">Small dialog</el-dm-dialog>
+<el-dm-dialog size="md">Medium dialog</el-dm-dialog>
+<el-dm-dialog size="lg">Large dialog</el-dm-dialog>
+<el-dm-dialog size="xl">Extra large dialog</el-dm-dialog>
+<el-dm-dialog size="full">Fullscreen dialog</el-dm-dialog>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Main dialog content |
+| `header` | Dialog header/title |
+| `footer` | Dialog footer/actions |
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `open` | Fired when dialog opens |
+| `close` | Fired when dialog closes |
+
+### Event Handling
+
+```javascript
+const dialog = document.querySelector('el-dm-dialog');
+dialog.addEventListener('open', () => {
+  console.log('Dialog opened');
+});
+dialog.addEventListener('close', () => {
+  console.log('Dialog closed');
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `dialog` | The dialog container |
+| `backdrop` | The backdrop overlay |
+| `header` | The header section |
+| `body` | The body section |
+| `footer` | The footer section |
+| `close` | The close button |
+
+## Accessibility
+
+- Uses `role="dialog"` and `aria-modal="true"`
+- Escape key closes dismissible dialogs
+- Focus is trapped within the dialog when open
+- Body scroll is disabled when dialog is open

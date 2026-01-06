@@ -1,0 +1,125 @@
+---
+title: Alert
+description: Alert component for displaying important messages
+order: 6
+section: components
+component: "@duskmoon-dev/el-alert"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Alert
+
+The Alert component displays important messages to users with different severity levels.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-alert
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-alert/register';
+```
+
+```html
+<el-dm-alert type="info" title="Information">
+  This is an informational message.
+</el-dm-alert>
+```
+
+## Live Demo
+
+<ComponentDemo title="Alert Types">
+  <el-dm-alert type="info" title="Info">This is an info message.</el-dm-alert>
+  <el-dm-alert type="success" title="Success">Operation completed successfully.</el-dm-alert>
+  <el-dm-alert type="warning" title="Warning">Please review before proceeding.</el-dm-alert>
+  <el-dm-alert type="error" title="Error">An error occurred.</el-dm-alert>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-alert/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `type` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Alert severity |
+| `variant` | `'filled' \| 'outlined'` | - | Visual style variant |
+| `dismissible` | `boolean` | `false` | Shows close button |
+| `compact` | `boolean` | `false` | Uses compact styling |
+| `title` | `string` | - | Alert title |
+
+## Types
+
+<ComponentDemo title="Alert Types">
+  <el-dm-alert type="info">Info alert</el-dm-alert>
+  <el-dm-alert type="success">Success alert</el-dm-alert>
+  <el-dm-alert type="warning">Warning alert</el-dm-alert>
+  <el-dm-alert type="error">Error alert</el-dm-alert>
+</ComponentDemo>
+
+```html
+<el-dm-alert type="info">Info alert</el-dm-alert>
+<el-dm-alert type="success">Success alert</el-dm-alert>
+<el-dm-alert type="warning">Warning alert</el-dm-alert>
+<el-dm-alert type="error">Error alert</el-dm-alert>
+```
+
+## Variants
+
+<ComponentDemo title="Alert Variants">
+  <el-dm-alert type="info" variant="filled">Filled info</el-dm-alert>
+  <el-dm-alert type="info" variant="outlined">Outlined info</el-dm-alert>
+</ComponentDemo>
+
+```html
+<el-dm-alert type="info" variant="filled">Filled info</el-dm-alert>
+<el-dm-alert type="info" variant="outlined">Outlined info</el-dm-alert>
+```
+
+## Dismissible
+
+<ComponentDemo title="Dismissible Alert">
+  <el-dm-alert type="info" dismissible title="Dismissible">
+    Click the X to dismiss this alert.
+  </el-dm-alert>
+</ComponentDemo>
+
+```html
+<el-dm-alert type="info" dismissible title="Dismissible">
+  Click the X to dismiss this alert.
+</el-dm-alert>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `dismiss` | Fired when alert is dismissed |
+
+### Event Handling
+
+```javascript
+const alert = document.querySelector('el-dm-alert');
+alert.addEventListener('dismiss', () => {
+  console.log('Alert dismissed');
+});
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Alert content |
+| `icon` | Custom icon |
+| `actions` | Action buttons |
+
+## Accessibility
+
+- Uses `role="alert"` for screen reader announcements
+- Dismissible alerts have accessible close buttons
+- Color is not the only indicator of severity

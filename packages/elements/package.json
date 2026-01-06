@@ -24,8 +24,8 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
     "clean": "del-cli dist",
     "typecheck": "tsc --noEmit",
@@ -42,7 +42,14 @@
     "@duskmoon-dev/el-button": "workspace:*",
     "@duskmoon-dev/el-card": "workspace:*",
     "@duskmoon-dev/el-input": "workspace:*",
-    "@duskmoon-dev/el-markdown": "workspace:*"
+    "@duskmoon-dev/el-markdown": "workspace:*",
+    "@duskmoon-dev/el-switch": "workspace:*",
+    "@duskmoon-dev/el-alert": "workspace:*",
+    "@duskmoon-dev/el-dialog": "workspace:*",
+    "@duskmoon-dev/el-badge": "workspace:*",
+    "@duskmoon-dev/el-chip": "workspace:*",
+    "@duskmoon-dev/el-tooltip": "workspace:*",
+    "@duskmoon-dev/el-progress": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

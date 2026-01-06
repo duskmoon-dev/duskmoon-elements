@@ -1,0 +1,158 @@
+---
+title: Chip
+description: Chip component for tags, filters, and selections
+order: 9
+section: components
+component: "@duskmoon-dev/el-chip"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Chip
+
+The Chip component displays compact elements representing tags, filters, or selections.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-chip
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-chip/register';
+```
+
+```html
+<el-dm-chip>Tag</el-dm-chip>
+```
+
+## Live Demo
+
+<ComponentDemo title="Chip Variants">
+  <el-dm-chip>Default</el-dm-chip>
+  <el-dm-chip color="primary">Primary</el-dm-chip>
+  <el-dm-chip color="secondary">Secondary</el-dm-chip>
+  <el-dm-chip color="success">Success</el-dm-chip>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-chip/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `variant` | `'filled' \| 'outlined' \| 'soft'` | `'filled'` | Visual style |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | - | Chip color |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Chip size |
+| `deletable` | `boolean` | `false` | Shows delete button |
+| `selected` | `boolean` | `false` | Selected state |
+| `disabled` | `boolean` | `false` | Disabled state |
+
+## Colors
+
+<ComponentDemo title="Chip Colors">
+  <el-dm-chip color="primary">Primary</el-dm-chip>
+  <el-dm-chip color="secondary">Secondary</el-dm-chip>
+  <el-dm-chip color="success">Success</el-dm-chip>
+  <el-dm-chip color="warning">Warning</el-dm-chip>
+  <el-dm-chip color="error">Error</el-dm-chip>
+  <el-dm-chip color="info">Info</el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip color="primary">Primary</el-dm-chip>
+<el-dm-chip color="secondary">Secondary</el-dm-chip>
+<el-dm-chip color="success">Success</el-dm-chip>
+```
+
+## Variants
+
+<ComponentDemo title="Chip Variants">
+  <el-dm-chip variant="filled" color="primary">Filled</el-dm-chip>
+  <el-dm-chip variant="outlined" color="primary">Outlined</el-dm-chip>
+  <el-dm-chip variant="soft" color="primary">Soft</el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip variant="filled">Filled</el-dm-chip>
+<el-dm-chip variant="outlined">Outlined</el-dm-chip>
+<el-dm-chip variant="soft">Soft</el-dm-chip>
+```
+
+## Sizes
+
+<ComponentDemo title="Chip Sizes">
+  <el-dm-chip size="sm">Small</el-dm-chip>
+  <el-dm-chip size="md">Medium</el-dm-chip>
+  <el-dm-chip size="lg">Large</el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip size="sm">Small</el-dm-chip>
+<el-dm-chip size="md">Medium</el-dm-chip>
+<el-dm-chip size="lg">Large</el-dm-chip>
+```
+
+## Deletable
+
+<ComponentDemo title="Deletable Chips">
+  <el-dm-chip deletable color="primary">Deletable</el-dm-chip>
+  <el-dm-chip deletable color="secondary">Remove me</el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip deletable>Deletable</el-dm-chip>
+```
+
+## Selected State
+
+<ComponentDemo title="Selected Chips">
+  <el-dm-chip>Unselected</el-dm-chip>
+  <el-dm-chip selected>Selected</el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip>Unselected</el-dm-chip>
+<el-dm-chip selected>Selected</el-dm-chip>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `click` | Fired when chip is clicked |
+| `delete` | Fired when delete button is clicked |
+
+### Event Handling
+
+```javascript
+const chip = document.querySelector('el-dm-chip');
+chip.addEventListener('delete', () => {
+  chip.remove();
+});
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Chip content |
+| `icon` | Leading icon |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `chip` | The chip container |
+| `icon` | The icon container |
+| `delete` | The delete button |
+
+## Accessibility
+
+- Uses `role="button"` for interactive chips
+- Keyboard accessible with focus states
+- Deletable chips have accessible delete buttons
