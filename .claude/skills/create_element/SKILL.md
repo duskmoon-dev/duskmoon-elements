@@ -1,3 +1,8 @@
+---
+name: create-element
+description: Create a new custom element package in the DuskMoon Elements monorepo
+---
+
 # Create Element Skill
 
 Create a new custom element package in the DuskMoon Elements monorepo.
