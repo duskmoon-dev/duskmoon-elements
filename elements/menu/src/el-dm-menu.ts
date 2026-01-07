@@ -544,7 +544,13 @@ export class ElDmMenuItem extends BaseElement {
     // Dispatch select event on parent menu
     const menu = this.closest('el-dm-menu') as ElDmMenu;
     if (menu) {
-      menu.emit('select', { value: this.value || this.textContent?.trim() });
+      menu.dispatchEvent(
+        new CustomEvent('select', {
+          bubbles: true,
+          composed: true,
+          detail: { value: this.value || this.textContent?.trim() },
+        }),
+      );
       menu.hide();
     }
   }

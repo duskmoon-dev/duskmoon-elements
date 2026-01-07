@@ -135,13 +135,14 @@ export class ElDmBreadcrumbs extends BaseElement {
   private _handleClick(event: Event, item: BreadcrumbItem, index: number): void {
     event.preventDefault();
 
-    const navigateEvent = this.emit<NavigateEventDetail>('navigate', {
+    // emit returns true if event was not cancelled
+    const notCancelled = this.emit<NavigateEventDetail>('navigate', {
       item,
       index,
     });
 
     // If event was not prevented, navigate to the href
-    if (!navigateEvent.defaultPrevented && item.href) {
+    if (notCancelled && item.href) {
       window.location.href = item.href;
     }
   }
