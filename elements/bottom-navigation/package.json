@@ -1,0 +1,63 @@
+{
+  "name": "@duskmoon-dev/el-bottom-navigation",
+  "version": "0.3.0",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./register": {
+      "types": "./dist/types/register.d.ts",
+      "import": "./dist/esm/register.js",
+      "require": "./dist/cjs/register.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "bun run clean",
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
+    "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --watch",
+    "clean": "del-cli dist",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.ts' '*.json'",
+    "format:check": "prettier --check 'src/**/*.ts' '*.json'",
+    "lint": "eslint src",
+    "lint:check": "eslint src --max-warnings 0",
+    "lint:fix": "eslint src --fix",
+    "release": "bun publish",
+    "release:dry-run": "bun publish --dry-run"
+  },
+  "dependencies": {
+    "@duskmoon-dev/el-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "customElements": "custom-elements.json",
+  "keywords": [
+    "duskmoon-dev",
+    "duskmoon",
+    "custom-elements",
+    "customelements",
+    "web-components",
+    "webcomponents",
+    "html",
+    "bottom-navigation",
+    "navigation",
+    "mobile"
+  ]
+}
