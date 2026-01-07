@@ -6,6 +6,9 @@ export default defineConfig({
   site: 'https://duskmoon-dev.github.io',
   base: '/duskmoon-elements',
   output: 'static',
+  server: {
+    port: 4331,
+  },
   markdown: {
     shikiConfig: {
       themes: {
