@@ -1,11 +1,15 @@
 ---
 name: create-element
-description: Create a new custom element package in the DuskMoon Elements monorepo
+description: Create, modify, or remove element packages in elements/* - includes updating docs and playground
 ---
 
-# Create Element Skill
+# Element Package Management Skill
 
-Create a new custom element package in the DuskMoon Elements monorepo.
+Manage custom element packages in the DuskMoon Elements monorepo (`elements/*`). This includes:
+- Creating new element packages
+- Modifying existing element packages
+- Removing element packages
+- Keeping `packages/docs` and `playground` in sync with element changes
 
 ## Naming Conventions
 
@@ -96,13 +100,19 @@ elements/{name}/
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist/types",
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
     "composite": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
   "references": [{ "path": "../../packages/core" }]
 }
 ```
+
+**Important:** The `declaration`, `declarationMap`, `noEmit: false`, and `emitDeclarationOnly` options are required for the bundle package to use this as a project reference.
 
 ### 3. Create src/duskmoon-core.d.ts
 
@@ -335,12 +345,116 @@ Add to both `build:esm` and `build:cjs` scripts:
 --external @duskmoon-dev/el-{name}
 ```
 
-### 3. Update root package.json
+### 3. Update packages/elements/tsconfig.json
+
+Add project reference:
+
+```json
+"references": [
+  // ... existing references
+  { "path": "../../elements/{name}" }
+]
+```
+
+### 4. Update root package.json
 
 Add `--filter '@duskmoon-dev/el-{name}'` to these scripts:
 - `build:elements`
 - `release:elements`
 - `release:elements:dry-run`
+
+## Update Docs Package
+
+When adding or removing elements, update `packages/docs/`:
+
+### 1. Update packages/docs/package.json
+
+Add or remove dependency:
+
+```json
+"dependencies": {
+  "@duskmoon-dev/el-{name}": "workspace:*"
+}
+```
+
+### 2. Update packages/docs/src/scripts/register-elements.ts
+
+Add or remove import and register call:
+
+```typescript
+import { register as register{Name} } from '@duskmoon-dev/el-{name}';
+
+// ... in the registration section:
+register{Name}();
+```
+
+## Update Playground
+
+When adding or removing elements, update `playground/`:
+
+### 1. Create/Remove playground/{name}.html
+
+Create a test page for the element:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{Name} - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+
+    <main class="container">
+      <h1>{Name}</h1>
+      <p>Test page for el-dm-{name} component.</p>
+
+      <section class="demo-section">
+        <h2>Basic Usage</h2>
+        <div class="demo-box">
+          <el-dm-{name}>Example</el-dm-{name}>
+        </div>
+      </section>
+
+      <section class="demo-section">
+        <h2>Variants</h2>
+        <div class="demo-box">
+          <el-dm-{name} variant="filled">Filled</el-dm-{name}>
+          <el-dm-{name} variant="outlined">Outlined</el-dm-{name}>
+        </div>
+      </section>
+
+      <section class="demo-section">
+        <h2>Sizes</h2>
+        <div class="demo-box">
+          <el-dm-{name} size="sm">Small</el-dm-{name}>
+          <el-dm-{name} size="md">Medium</el-dm-{name}>
+          <el-dm-{name} size="lg">Large</el-dm-{name}>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import '@duskmoon-dev/el-{name}/register';
+    </script>
+  </body>
+</html>
+```
+
+### 2. Update playground/index.html
+
+Add or remove link to the element's test page:
+
+```html
+<li><a href="{name}.html">{Name}</a></li>
+```
+
+### 3. Update playground/partials/header.html (if exists)
+
+Add or remove navigation link for the element.
 
 ## Create Documentation
 
@@ -565,14 +679,33 @@ const labelClass =
 
 Before committing:
 
+### Element Package
 - [ ] All 6 source files created in `elements/{name}/src/`
 - [ ] `package.json` has correct name and no `*.md` in format scripts
 - [ ] `tsconfig.json` references `../../packages/core`
 - [ ] Types exported from `index.ts`
-- [ ] Bundle package updated (`packages/elements/`)
-- [ ] Root `package.json` scripts updated (3 scripts)
-- [ ] Documentation MDX created
+
+### Bundle Package (`packages/elements/`)
+- [ ] `src/index.ts` - imports, exports, and registerAll() updated
+- [ ] `package.json` - dependency and --external flags added
+- [ ] `tsconfig.json` - project reference added
+
+### Root Package
+- [ ] Root `package.json` scripts updated (build:elements, release:elements, release:elements:dry-run)
+
+### Docs Package (`packages/docs/`)
+- [ ] `package.json` - workspace dependency added/removed
+- [ ] `src/scripts/register-elements.ts` - import and register call added/removed
+- [ ] Documentation MDX created/updated/removed
+
+### Playground
+- [ ] `playground/{name}.html` - test page created/removed
+- [ ] `playground/index.html` - link added/removed
+
+### Verification
+- [ ] `bun install` - workspace packages linked
 - [ ] `bun run build:all` passes
 - [ ] `bun run typecheck` passes
 - [ ] `bun run format:check` passes
+- [ ] `bun run lint:check` passes
 - [ ] `bun run docs:build` passes
