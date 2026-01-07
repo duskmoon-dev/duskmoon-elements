@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Chip Colors</h2>
+    <div class="demo-row">
+      <el-dm-chip color="primary">Primary</el-dm-chip>
+      <el-dm-chip color="secondary">Secondary</el-dm-chip>
+      <el-dm-chip color="tertiary">Tertiary</el-dm-chip>
+      <el-dm-chip color="success">Success</el-dm-chip>
+      <el-dm-chip color="warning">Warning</el-dm-chip>
+      <el-dm-chip color="error">Error</el-dm-chip>
+      <el-dm-chip color="info">Info</el-dm-chip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Chip Variants</h2>
+    <div class="demo-row">
+      <el-dm-chip variant="filled">Filled</el-dm-chip>
+      <el-dm-chip variant="outlined">Outlined</el-dm-chip>
+      <el-dm-chip variant="soft">Soft</el-dm-chip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Chip Sizes</h2>
+    <div class="demo-row">
+      <el-dm-chip size="sm">Small</el-dm-chip>
+      <el-dm-chip size="md">Medium</el-dm-chip>
+      <el-dm-chip size="lg">Large</el-dm-chip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dismissible Chips</h2>
+    <div class="demo-row">
+      <el-dm-chip dismissible>Click X to remove</el-dm-chip>
+      <el-dm-chip dismissible color="success">Success</el-dm-chip>
+      <el-dm-chip dismissible color="error">Error</el-dm-chip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Clickable Chips</h2>
+    <div class="demo-row">
+      <el-dm-chip clickable>Clickable</el-dm-chip>
+      <el-dm-chip clickable color="primary">Primary</el-dm-chip>
+      <el-dm-chip clickable selected>Selected</el-dm-chip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Use Cases</h2>
+    <div class="demo-row">
+      <el-dm-chip size="sm">JavaScript</el-dm-chip>
+      <el-dm-chip size="sm">TypeScript</el-dm-chip>
+      <el-dm-chip size="sm">React</el-dm-chip>
+      <el-dm-chip size="sm">Vue</el-dm-chip>
+      <el-dm-chip size="sm" dismissible>Web Components</el-dm-chip>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerChip } from '../elements/chip/src/index.ts';
+    registerChip();
+  </script>
+</body>
+</html>

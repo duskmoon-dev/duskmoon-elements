@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Progress</h2>
+    <div class="demo-column">
+      <el-dm-progress value="0"></el-dm-progress>
+      <el-dm-progress value="25"></el-dm-progress>
+      <el-dm-progress value="50"></el-dm-progress>
+      <el-dm-progress value="75"></el-dm-progress>
+      <el-dm-progress value="100"></el-dm-progress>
+    </div>
+  </section>
+
+  <section>
+    <h2>Progress Colors</h2>
+    <div class="demo-column">
+      <el-dm-progress value="60" color="primary"></el-dm-progress>
+      <el-dm-progress value="60" color="secondary"></el-dm-progress>
+      <el-dm-progress value="60" color="tertiary"></el-dm-progress>
+      <el-dm-progress value="60" color="success"></el-dm-progress>
+      <el-dm-progress value="60" color="warning"></el-dm-progress>
+      <el-dm-progress value="60" color="error"></el-dm-progress>
+    </div>
+  </section>
+
+  <section>
+    <h2>Progress Sizes</h2>
+    <div class="demo-column">
+      <el-dm-progress value="60" size="sm"></el-dm-progress>
+      <el-dm-progress value="60" size="md"></el-dm-progress>
+      <el-dm-progress value="60" size="lg"></el-dm-progress>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Label</h2>
+    <div class="demo-column">
+      <el-dm-progress value="45" show-label></el-dm-progress>
+      <el-dm-progress value="80" show-label color="success"></el-dm-progress>
+    </div>
+  </section>
+
+  <section>
+    <h2>Indeterminate</h2>
+    <div class="demo-column">
+      <el-dm-progress indeterminate></el-dm-progress>
+      <el-dm-progress indeterminate color="success"></el-dm-progress>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerProgress } from '../elements/progress/src/index.ts';
+    registerProgress();
+  </script>
+</body>
+</html>

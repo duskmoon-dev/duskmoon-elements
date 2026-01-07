@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Alert Types</h2>
+    <div class="demo-column">
+      <el-dm-alert type="info">This is an informational alert message.</el-dm-alert>
+      <el-dm-alert type="success">Operation completed successfully!</el-dm-alert>
+      <el-dm-alert type="warning">Please review before proceeding.</el-dm-alert>
+      <el-dm-alert type="error">An error occurred. Please try again.</el-dm-alert>
+    </div>
+  </section>
+
+  <section>
+    <h2>Variants</h2>
+    <div class="demo-column">
+      <el-dm-alert type="info" variant="filled">Filled variant</el-dm-alert>
+      <el-dm-alert type="info" variant="outlined">Outlined variant</el-dm-alert>
+      <el-dm-alert type="info" variant="soft">Soft variant</el-dm-alert>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Title</h2>
+    <div class="demo-column">
+      <el-dm-alert type="info" title="Information">This alert has a title and description.</el-dm-alert>
+      <el-dm-alert type="success" title="Success!">Your changes have been saved.</el-dm-alert>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dismissible</h2>
+    <div class="demo-column">
+      <el-dm-alert type="info" dismissible>Click the X to dismiss this alert.</el-dm-alert>
+      <el-dm-alert type="warning" dismissible title="Warning">This dismissible alert has a title.</el-dm-alert>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerAlert } from '../elements/alert/src/index.ts';
+    registerAlert();
+  </script>
+</body>
+</html>

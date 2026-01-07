@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Switch</h2>
+    <div class="demo-row">
+      <el-dm-switch></el-dm-switch>
+      <el-dm-switch checked></el-dm-switch>
+      <el-dm-switch disabled></el-dm-switch>
+      <el-dm-switch checked disabled></el-dm-switch>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-switch size="sm"></el-dm-switch>
+      <el-dm-switch size="md"></el-dm-switch>
+      <el-dm-switch size="lg"></el-dm-switch>
+    </div>
+  </section>
+
+  <section>
+    <h2>Colors</h2>
+    <div class="demo-row">
+      <el-dm-switch color="primary" checked></el-dm-switch>
+      <el-dm-switch color="secondary" checked></el-dm-switch>
+      <el-dm-switch color="tertiary" checked></el-dm-switch>
+      <el-dm-switch color="success" checked></el-dm-switch>
+      <el-dm-switch color="warning" checked></el-dm-switch>
+      <el-dm-switch color="error" checked></el-dm-switch>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Labels</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <el-dm-switch label="Enable notifications"></el-dm-switch>
+      <el-dm-switch label="Dark mode" label-position="left"></el-dm-switch>
+      <el-dm-switch label="Auto-save" checked></el-dm-switch>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerSwitch } from '../elements/switch/src/index.ts';
+    registerSwitch();
+  </script>
+</body>
+</html>

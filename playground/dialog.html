@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Dialog</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('basic-dialog').show()">Open Dialog</el-dm-button>
+      <el-dm-dialog id="basic-dialog">
+        <span slot="title">Dialog Title</span>
+        <p>This is the dialog content. You can put any content here.</p>
+        <div slot="footer">
+          <el-dm-button variant="ghost" onclick="document.getElementById('basic-dialog').hide()">Cancel</el-dm-button>
+          <el-dm-button onclick="document.getElementById('basic-dialog').hide()">Confirm</el-dm-button>
+        </div>
+      </el-dm-dialog>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dialog Sizes</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('sm-dialog').show()">Small</el-dm-button>
+      <el-dm-button onclick="document.getElementById('md-dialog').show()">Medium</el-dm-button>
+      <el-dm-button onclick="document.getElementById('lg-dialog').show()">Large</el-dm-button>
+      <el-dm-button onclick="document.getElementById('xl-dialog').show()">Extra Large</el-dm-button>
+
+      <el-dm-dialog id="sm-dialog" size="sm">
+        <span slot="title">Small Dialog</span>
+        <p>This is a small dialog.</p>
+      </el-dm-dialog>
+      <el-dm-dialog id="md-dialog" size="md">
+        <span slot="title">Medium Dialog</span>
+        <p>This is a medium dialog (default).</p>
+      </el-dm-dialog>
+      <el-dm-dialog id="lg-dialog" size="lg">
+        <span slot="title">Large Dialog</span>
+        <p>This is a large dialog with more space for content.</p>
+      </el-dm-dialog>
+      <el-dm-dialog id="xl-dialog" size="xl">
+        <span slot="title">Extra Large Dialog</span>
+        <p>This is an extra large dialog for complex content.</p>
+      </el-dm-dialog>
+    </div>
+  </section>
+
+  <section>
+    <h2>Non-dismissible Dialog</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('nodismiss-dialog').show()">Open (Click button to close)</el-dm-button>
+      <el-dm-dialog id="nodismiss-dialog" no-backdrop-dismiss no-escape-dismiss>
+        <span slot="title">Important Action</span>
+        <p>You must click the button below to close this dialog.</p>
+        <div slot="footer">
+          <el-dm-button onclick="document.getElementById('nodismiss-dialog').hide()">I Understand</el-dm-button>
+        </div>
+      </el-dm-dialog>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerDialog } from '../elements/dialog/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerDialog();
+    registerButton();
+  </script>
+</body>
+</html>

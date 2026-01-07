@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Tooltip Positions</h2>
+    <div class="demo-row" style="gap: 2rem; padding: 2rem;">
+      <el-dm-tooltip content="Tooltip on top" position="top">
+        <el-dm-button>Top</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="Tooltip on bottom" position="bottom">
+        <el-dm-button>Bottom</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="Tooltip on left" position="left">
+        <el-dm-button>Left</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="Tooltip on right" position="right">
+        <el-dm-button>Right</el-dm-button>
+      </el-dm-tooltip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Trigger Types</h2>
+    <div class="demo-row" style="gap: 2rem; padding: 2rem;">
+      <el-dm-tooltip content="Hover to see this" trigger="hover">
+        <el-dm-button>Hover</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="Click to see this" trigger="click">
+        <el-dm-button>Click</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="Focus to see this" trigger="focus">
+        <el-dm-button>Focus</el-dm-button>
+      </el-dm-tooltip>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Delay</h2>
+    <div class="demo-row" style="gap: 2rem; padding: 2rem;">
+      <el-dm-tooltip content="No delay" delay="0">
+        <el-dm-button>No Delay</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="500ms delay" delay="500">
+        <el-dm-button>500ms Delay</el-dm-button>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="1000ms delay" delay="1000">
+        <el-dm-button>1s Delay</el-dm-button>
+      </el-dm-tooltip>
+    </div>
+  </section>
+
+  <section>
+    <h2>On Different Elements</h2>
+    <div class="demo-row" style="gap: 2rem; padding: 2rem;">
+      <el-dm-tooltip content="This is a badge">
+        <el-dm-badge>Hover me</el-dm-badge>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="This is an icon">
+        <span style="cursor: help; font-size: 1.5rem;">&#9432;</span>
+      </el-dm-tooltip>
+      <el-dm-tooltip content="This is plain text">
+        <span style="text-decoration: underline dotted; cursor: help;">Help text</span>
+      </el-dm-tooltip>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerTooltip } from '../elements/tooltip/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    import { register as registerBadge } from '../elements/badge/src/index.ts';
+    registerTooltip();
+    registerButton();
+    registerBadge();
+  </script>
+</body>
+</html>

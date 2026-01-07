@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Badge Colors</h2>
+    <div class="demo-row">
+      <el-dm-badge color="primary">Primary</el-dm-badge>
+      <el-dm-badge color="secondary">Secondary</el-dm-badge>
+      <el-dm-badge color="tertiary">Tertiary</el-dm-badge>
+      <el-dm-badge color="success">Success</el-dm-badge>
+      <el-dm-badge color="warning">Warning</el-dm-badge>
+      <el-dm-badge color="error">Error</el-dm-badge>
+      <el-dm-badge color="info">Info</el-dm-badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Badge Variants</h2>
+    <div class="demo-row">
+      <el-dm-badge variant="filled">Filled</el-dm-badge>
+      <el-dm-badge variant="outlined">Outlined</el-dm-badge>
+      <el-dm-badge variant="soft">Soft</el-dm-badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Badge Sizes</h2>
+    <div class="demo-row">
+      <el-dm-badge size="sm">Small</el-dm-badge>
+      <el-dm-badge size="md">Medium</el-dm-badge>
+      <el-dm-badge size="lg">Large</el-dm-badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pill Badges</h2>
+    <div class="demo-row">
+      <el-dm-badge pill>Pill</el-dm-badge>
+      <el-dm-badge pill color="success">Success Pill</el-dm-badge>
+      <el-dm-badge pill variant="outlined">Outlined Pill</el-dm-badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Use Cases</h2>
+    <div class="demo-row">
+      <el-dm-badge color="success">Active</el-dm-badge>
+      <el-dm-badge color="error">Offline</el-dm-badge>
+      <el-dm-badge color="warning">Pending</el-dm-badge>
+      <el-dm-badge color="info">New</el-dm-badge>
+      <el-dm-badge>12</el-dm-badge>
+      <el-dm-badge color="error">99+</el-dm-badge>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerBadge } from '../elements/badge/src/index.ts';
+    registerBadge();
+  </script>
+</body>
+</html>
