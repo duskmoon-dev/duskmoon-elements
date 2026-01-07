@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic File Upload</h2>
+    <div class="demo-column">
+      <el-dm-file-upload></el-dm-file-upload>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple Files</h2>
+    <div class="demo-column">
+      <el-dm-file-upload multiple></el-dm-file-upload>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Image Preview</h2>
+    <div class="demo-column">
+      <el-dm-file-upload multiple show-preview accept="image/*"></el-dm-file-upload>
+    </div>
+  </section>
+
+  <section>
+    <h2>Accept Specific Types</h2>
+    <div class="demo-column">
+      <el-dm-file-upload accept=".pdf,.doc,.docx" multiple></el-dm-file-upload>
+    </div>
+  </section>
+
+  <section>
+    <h2>File Size Limit</h2>
+    <div class="demo-column">
+      <el-dm-file-upload max-size="1048576" multiple></el-dm-file-upload>
+      <p style="margin-top: 0.5rem; color: var(--color-on-surface-variant);">Max 1MB per file</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-column" style="gap: 2rem;">
+      <el-dm-file-upload size="sm"></el-dm-file-upload>
+      <el-dm-file-upload size="md"></el-dm-file-upload>
+      <el-dm-file-upload size="lg"></el-dm-file-upload>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-file-upload disabled></el-dm-file-upload>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerFileUpload } from '../elements/file-upload/src/index.ts';
+    registerFileUpload();
+  </script>
+</body>
+</html>

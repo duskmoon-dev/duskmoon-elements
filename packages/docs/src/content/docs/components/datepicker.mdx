@@ -1,0 +1,168 @@
+---
+title: Datepicker
+description: Calendar picker component with date/time and range selection
+order: 16
+section: components
+component: "@duskmoon-dev/el-datepicker"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Datepicker
+
+The Datepicker component provides a calendar picker with date selection, time picker, and date range support.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-datepicker
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-datepicker/register';
+```
+
+```html
+<el-dm-datepicker placeholder="Select a date..."></el-dm-datepicker>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Datepicker">
+  <el-dm-datepicker placeholder="Select a date..."></el-dm-datepicker>
+</ComponentDemo>
+
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | ISO date string |
+| `disabled` | `boolean` | `false` | Disables the datepicker |
+| `placeholder` | `string` | `'Select date'` | Placeholder text |
+| `format` | `string` | `'YYYY-MM-DD'` | Display format |
+| `min-date` | `string` | - | Minimum selectable date |
+| `max-date` | `string` | - | Maximum selectable date |
+| `range` | `boolean` | `false` | Enable date range selection |
+| `show-time` | `boolean` | `false` | Include time picker |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+
+## With Time Picker
+
+<ComponentDemo title="Date and Time">
+  <el-dm-datepicker placeholder="Select date and time..." show-time></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker placeholder="Select date and time..." show-time></el-dm-datepicker>
+```
+
+## Date Range
+
+<ComponentDemo title="Date Range">
+  <el-dm-datepicker placeholder="Select date range..." range></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker placeholder="Select date range..." range></el-dm-datepicker>
+```
+
+## Min/Max Dates
+
+<ComponentDemo title="Min/Max Dates">
+  <el-dm-datepicker
+    placeholder="Select a date in 2024..."
+    min-date="2024-01-01"
+    max-date="2024-12-31"
+  ></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker
+  placeholder="Select a date in 2024..."
+  min-date="2024-01-01"
+  max-date="2024-12-31"
+></el-dm-datepicker>
+```
+
+## Custom Format
+
+<ComponentDemo title="Custom Format">
+  <el-dm-datepicker placeholder="MM/DD/YYYY" format="MM/DD/YYYY"></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker placeholder="MM/DD/YYYY" format="MM/DD/YYYY"></el-dm-datepicker>
+```
+
+## Sizes
+
+<ComponentDemo title="Datepicker Sizes">
+  <el-dm-datepicker size="sm" placeholder="Small"></el-dm-datepicker>
+  <el-dm-datepicker size="md" placeholder="Medium"></el-dm-datepicker>
+  <el-dm-datepicker size="lg" placeholder="Large"></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker size="sm" placeholder="Small"></el-dm-datepicker>
+<el-dm-datepicker size="md" placeholder="Medium"></el-dm-datepicker>
+<el-dm-datepicker size="lg" placeholder="Large"></el-dm-datepicker>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled">
+  <el-dm-datepicker disabled placeholder="Disabled"></el-dm-datepicker>
+</ComponentDemo>
+
+```html
+<el-dm-datepicker disabled placeholder="Disabled"></el-dm-datepicker>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when date is selected |
+| `open` | Fired when picker opens |
+| `close` | Fired when picker closes |
+
+### Event Handling
+
+```javascript
+const datepicker = document.querySelector('el-dm-datepicker');
+
+datepicker.addEventListener('change', (event) => {
+  console.log('Selected value:', event.detail.value);
+  console.log('Date object:', event.detail.date);
+
+  // For range selection
+  console.log('Range start:', event.detail.rangeStart);
+  console.log('Range end:', event.detail.rangeEnd);
+});
+
+datepicker.addEventListener('open', () => {
+  console.log('Datepicker opened');
+});
+
+datepicker.addEventListener('close', () => {
+  console.log('Datepicker closed');
+});
+```
+
+## Calendar Navigation
+
+The datepicker supports three view modes:
+- **Days**: Select a specific day
+- **Months**: Select a month (click header to switch)
+- **Years**: Select a year (click header again)
+
+## Accessibility
+
+- Calendar navigation with arrow keys
+- Proper date semantics and labels
+- Focus management when opening/closing
+- Screen reader announcements for date selection

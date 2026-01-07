@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Autocomplete</h2>
+    <div class="demo-column">
+      <el-dm-autocomplete
+        placeholder="Select a fruit..."
+        options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"},{"value":"cherry","label":"Cherry"},{"value":"date","label":"Date"},{"value":"elderberry","label":"Elderberry"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Descriptions</h2>
+    <div class="demo-column">
+      <el-dm-autocomplete
+        placeholder="Select a framework..."
+        options='[{"value":"react","label":"React","description":"A JavaScript library for building UIs"},{"value":"vue","label":"Vue","description":"The Progressive JavaScript Framework"},{"value":"angular","label":"Angular","description":"Platform for building web apps"},{"value":"svelte","label":"Svelte","description":"Cybernetically enhanced web apps"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple Selection</h2>
+    <div class="demo-column">
+      <el-dm-autocomplete
+        multiple
+        placeholder="Select languages..."
+        options='[{"value":"js","label":"JavaScript"},{"value":"ts","label":"TypeScript"},{"value":"py","label":"Python"},{"value":"go","label":"Go"},{"value":"rs","label":"Rust"},{"value":"java","label":"Java"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <section>
+    <h2>Clearable</h2>
+    <div class="demo-column">
+      <el-dm-autocomplete
+        clearable
+        placeholder="Select and clear..."
+        options='[{"value":"opt1","label":"Option 1"},{"value":"opt2","label":"Option 2"},{"value":"opt3","label":"Option 3"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-column" style="gap: 1rem;">
+      <el-dm-autocomplete
+        size="sm"
+        placeholder="Small..."
+        options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+      ></el-dm-autocomplete>
+      <el-dm-autocomplete
+        size="md"
+        placeholder="Medium..."
+        options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+      ></el-dm-autocomplete>
+      <el-dm-autocomplete
+        size="lg"
+        placeholder="Large..."
+        options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-autocomplete
+        disabled
+        placeholder="Disabled..."
+        options='[{"value":"1","label":"Option 1"}]'
+      ></el-dm-autocomplete>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerAutocomplete } from '../elements/autocomplete/src/index.ts';
+    registerAutocomplete();
+  </script>
+</body>
+</html>

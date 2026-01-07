@@ -1,0 +1,168 @@
+---
+title: File Upload
+description: Drag-and-drop file upload component with previews
+order: 14
+section: components
+component: "@duskmoon-dev/el-file-upload"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# File Upload
+
+The File Upload component provides a drag-and-drop file upload area with file list and image preview support.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-file-upload
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-file-upload/register';
+```
+
+```html
+<el-dm-file-upload></el-dm-file-upload>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic File Upload">
+  <el-dm-file-upload></el-dm-file-upload>
+</ComponentDemo>
+
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `accept` | `string` | - | File type filter (e.g., "image/*,.pdf") |
+| `multiple` | `boolean` | `false` | Allow multiple files |
+| `disabled` | `boolean` | `false` | Disables the upload |
+| `max-size` | `number` | - | Maximum file size in bytes |
+| `max-files` | `number` | - | Maximum number of files |
+| `show-preview` | `boolean` | `false` | Show image previews |
+| `compact` | `boolean` | `false` | Use compact layout |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the dropzone |
+
+## Multiple Files
+
+<ComponentDemo title="Multiple Files">
+  <el-dm-file-upload multiple></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload multiple></el-dm-file-upload>
+```
+
+## With Image Preview
+
+<ComponentDemo title="Image Preview">
+  <el-dm-file-upload multiple show-preview accept="image/*"></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload multiple show-preview accept="image/*"></el-dm-file-upload>
+```
+
+## Accept Specific Types
+
+<ComponentDemo title="Accept Specific Types">
+  <el-dm-file-upload accept=".pdf,.doc,.docx" multiple></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload accept=".pdf,.doc,.docx" multiple></el-dm-file-upload>
+<el-dm-file-upload accept="image/*" multiple></el-dm-file-upload>
+```
+
+## File Size Limit
+
+<ComponentDemo title="File Size Limit (1MB)">
+  <el-dm-file-upload max-size="1048576" multiple></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload max-size="1048576" multiple></el-dm-file-upload>
+```
+
+## Sizes
+
+<ComponentDemo title="Upload Sizes">
+  <el-dm-file-upload size="sm"></el-dm-file-upload>
+  <el-dm-file-upload size="md"></el-dm-file-upload>
+  <el-dm-file-upload size="lg"></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload size="sm"></el-dm-file-upload>
+<el-dm-file-upload size="md"></el-dm-file-upload>
+<el-dm-file-upload size="lg"></el-dm-file-upload>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled Upload">
+  <el-dm-file-upload disabled></el-dm-file-upload>
+</ComponentDemo>
+
+```html
+<el-dm-file-upload disabled></el-dm-file-upload>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when files are selected |
+| `remove` | Fired when a file is removed |
+
+### Event Handling
+
+```javascript
+const upload = document.querySelector('el-dm-file-upload');
+upload.addEventListener('change', (event) => {
+  console.log('Files:', event.detail.files);
+});
+
+upload.addEventListener('remove', (event) => {
+  console.log('File removed, remaining:', event.detail.files);
+});
+```
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `clear()` | Clear all files |
+
+### Programmatic Access
+
+```javascript
+const upload = document.querySelector('el-dm-file-upload');
+
+// Get current files
+console.log(upload.files);
+
+// Clear all files
+upload.clear();
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `file-upload` | The main container |
+| `dropzone` | The dropzone area |
+| `file-list` | The file list container |
+| `preview` | The preview grid |
+
+## Accessibility
+
+- Keyboard accessible dropzone
+- Proper button semantics for file removal
+- Screen reader announcements for file operations

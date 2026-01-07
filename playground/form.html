@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Form</h2>
+    <div class="demo-column">
+      <el-dm-form>
+        <el-dm-input label="Username" placeholder="Enter username"></el-dm-input>
+        <el-dm-input label="Email" type="email" placeholder="Enter email"></el-dm-input>
+        <el-dm-input label="Password" type="password" placeholder="Enter password"></el-dm-input>
+        <el-dm-button type="submit">Submit</el-dm-button>
+      </el-dm-form>
+    </div>
+  </section>
+
+  <section>
+    <h2>Validation States</h2>
+    <div class="demo-column" style="gap: 2rem;">
+      <el-dm-form validation-state="default">
+        <el-dm-input label="Default State" placeholder="No validation"></el-dm-input>
+      </el-dm-form>
+      <el-dm-form validation-state="error">
+        <el-dm-input label="Error State" placeholder="Has error" helper-text="This field is required"></el-dm-input>
+      </el-dm-form>
+      <el-dm-form validation-state="success">
+        <el-dm-input label="Success State" placeholder="Valid input" value="Valid value"></el-dm-input>
+      </el-dm-form>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled Form</h2>
+    <div class="demo-column">
+      <el-dm-form disabled>
+        <el-dm-input label="Disabled Input" placeholder="Cannot edit"></el-dm-input>
+        <el-dm-button type="submit" disabled>Submit</el-dm-button>
+      </el-dm-form>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerForm } from '../elements/form/src/index.ts';
+    import { register as registerInput } from '../elements/input/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerForm();
+    registerInput();
+    registerButton();
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "name": "@duskmoon-dev/el-datepicker",
+  "version": "0.0.1",
+  "description": "DuskMoon Datepicker custom element",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./register": {
+      "import": "./dist/esm/register.js",
+      "require": "./dist/cjs/register.js",
+      "types": "./dist/types/register.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:types": "tsc --emitDeclarationOnly",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@duskmoon-dev/core": "^1.1.1",
+    "@duskmoon-dev/el-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "@duskmoon-dev/core": "^0.1.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AkaraChen/duskmoon-elements.git",
+    "directory": "elements/datepicker"
+  },
+  "keywords": ["web-components", "custom-elements", "datepicker", "calendar", "duskmoon"],
+  "author": "AkaraChen",
+  "license": "MIT"
+}

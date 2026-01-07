@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Datepicker</h2>
+    <div class="demo-column">
+      <el-dm-datepicker placeholder="Select a date..."></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Time</h2>
+    <div class="demo-column">
+      <el-dm-datepicker placeholder="Select date and time..." show-time></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>Date Range</h2>
+    <div class="demo-column">
+      <el-dm-datepicker placeholder="Select date range..." range></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>Min/Max Dates</h2>
+    <div class="demo-column">
+      <el-dm-datepicker
+        placeholder="Select a date in 2024..."
+        min-date="2024-01-01"
+        max-date="2024-12-31"
+      ></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Format</h2>
+    <div class="demo-column">
+      <el-dm-datepicker placeholder="MM/DD/YYYY" format="MM/DD/YYYY"></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-column" style="gap: 1rem;">
+      <el-dm-datepicker size="sm" placeholder="Small"></el-dm-datepicker>
+      <el-dm-datepicker size="md" placeholder="Medium"></el-dm-datepicker>
+      <el-dm-datepicker size="lg" placeholder="Large"></el-dm-datepicker>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-datepicker disabled placeholder="Disabled"></el-dm-datepicker>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerDatepicker } from '../elements/datepicker/src/index.ts';
+    registerDatepicker();
+  </script>
+</body>
+</html>

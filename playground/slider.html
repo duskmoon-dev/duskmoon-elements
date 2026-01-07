@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Slider</h2>
+    <div class="demo-column">
+      <el-dm-slider value="50"></el-dm-slider>
+      <el-dm-slider value="25"></el-dm-slider>
+      <el-dm-slider value="75"></el-dm-slider>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Value Display</h2>
+    <div class="demo-column">
+      <el-dm-slider value="50" show-value></el-dm-slider>
+      <el-dm-slider value="30" show-value></el-dm-slider>
+    </div>
+  </section>
+
+  <section>
+    <h2>Slider Sizes</h2>
+    <div class="demo-column">
+      <el-dm-slider value="50" size="sm"></el-dm-slider>
+      <el-dm-slider value="50" size="md"></el-dm-slider>
+      <el-dm-slider value="50" size="lg"></el-dm-slider>
+    </div>
+  </section>
+
+  <section>
+    <h2>Slider Colors</h2>
+    <div class="demo-column">
+      <el-dm-slider value="50" color="primary"></el-dm-slider>
+      <el-dm-slider value="50" color="secondary"></el-dm-slider>
+      <el-dm-slider value="50" color="tertiary"></el-dm-slider>
+      <el-dm-slider value="50" color="success"></el-dm-slider>
+      <el-dm-slider value="50" color="warning"></el-dm-slider>
+      <el-dm-slider value="50" color="error"></el-dm-slider>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Range</h2>
+    <div class="demo-column">
+      <el-dm-slider value="5" min="0" max="10" step="1" show-value></el-dm-slider>
+      <el-dm-slider value="500" min="0" max="1000" step="50" show-value></el-dm-slider>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-slider value="50" disabled></el-dm-slider>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerSlider } from '../elements/slider/src/index.ts';
+    registerSlider();
+  </script>
+</body>
+</html>

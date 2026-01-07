@@ -1,0 +1,151 @@
+---
+title: Slider
+description: Range slider component for selecting numeric values
+order: 13
+section: components
+component: "@duskmoon-dev/el-slider"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Slider
+
+The Slider component provides a range slider for selecting numeric values within a defined range.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-slider
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-slider/register';
+```
+
+```html
+<el-dm-slider value="50"></el-dm-slider>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Slider">
+  <el-dm-slider value="25"></el-dm-slider>
+  <el-dm-slider value="50"></el-dm-slider>
+  <el-dm-slider value="75"></el-dm-slider>
+</ComponentDemo>
+
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `number` | `0` | Current slider value |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `disabled` | `boolean` | `false` | Disables the slider |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the slider |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+| `show-value` | `boolean` | `false` | Show current value label |
+
+## With Value Display
+
+<ComponentDemo title="Show Value">
+  <el-dm-slider value="50" show-value></el-dm-slider>
+  <el-dm-slider value="30" show-value></el-dm-slider>
+</ComponentDemo>
+
+```html
+<el-dm-slider value="50" show-value></el-dm-slider>
+```
+
+## Sizes
+
+<ComponentDemo title="Slider Sizes">
+  <el-dm-slider value="50" size="sm"></el-dm-slider>
+  <el-dm-slider value="50" size="md"></el-dm-slider>
+  <el-dm-slider value="50" size="lg"></el-dm-slider>
+</ComponentDemo>
+
+```html
+<el-dm-slider value="50" size="sm"></el-dm-slider>
+<el-dm-slider value="50" size="md"></el-dm-slider>
+<el-dm-slider value="50" size="lg"></el-dm-slider>
+```
+
+## Colors
+
+<ComponentDemo title="Slider Colors">
+  <el-dm-slider value="50" color="primary"></el-dm-slider>
+  <el-dm-slider value="50" color="secondary"></el-dm-slider>
+  <el-dm-slider value="50" color="tertiary"></el-dm-slider>
+  <el-dm-slider value="50" color="success"></el-dm-slider>
+  <el-dm-slider value="50" color="warning"></el-dm-slider>
+  <el-dm-slider value="50" color="error"></el-dm-slider>
+</ComponentDemo>
+
+```html
+<el-dm-slider value="50" color="primary"></el-dm-slider>
+<el-dm-slider value="50" color="secondary"></el-dm-slider>
+<el-dm-slider value="50" color="success"></el-dm-slider>
+<el-dm-slider value="50" color="error"></el-dm-slider>
+```
+
+## Custom Range
+
+<ComponentDemo title="Custom Range">
+  <el-dm-slider value="5" min="0" max="10" step="1" show-value></el-dm-slider>
+  <el-dm-slider value="500" min="0" max="1000" step="50" show-value></el-dm-slider>
+</ComponentDemo>
+
+```html
+<el-dm-slider value="5" min="0" max="10" step="1" show-value></el-dm-slider>
+<el-dm-slider value="500" min="0" max="1000" step="50" show-value></el-dm-slider>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled Slider">
+  <el-dm-slider value="50" disabled></el-dm-slider>
+</ComponentDemo>
+
+```html
+<el-dm-slider value="50" disabled></el-dm-slider>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when value changes (on release) |
+| `input` | Fired continuously during drag |
+
+### Event Handling
+
+```javascript
+const slider = document.querySelector('el-dm-slider');
+slider.addEventListener('change', (event) => {
+  console.log('Slider value:', event.detail.value);
+});
+
+slider.addEventListener('input', (event) => {
+  console.log('Dragging:', event.detail.value);
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `slider` | The slider container |
+| `track` | The slider track |
+| `thumb` | The slider thumb |
+
+## Accessibility
+
+- Uses `role="slider"` with proper ARIA attributes
+- `aria-valuemin`, `aria-valuemax`, and `aria-valuenow` are set
+- Keyboard navigation with Arrow keys, Page Up/Down, Home/End

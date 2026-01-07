@@ -1,0 +1,196 @@
+---
+title: Autocomplete
+description: Searchable dropdown component with filtering and multi-select
+order: 15
+section: components
+component: "@duskmoon-dev/el-autocomplete"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Autocomplete
+
+The Autocomplete component provides a searchable dropdown with filtering, option descriptions, and multi-select support.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-autocomplete
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-autocomplete/register';
+```
+
+```html
+<el-dm-autocomplete
+  placeholder="Select a fruit..."
+  options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"}]'
+></el-dm-autocomplete>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Autocomplete">
+  <el-dm-autocomplete
+    placeholder="Select a fruit..."
+    options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"},{"value":"cherry","label":"Cherry"},{"value":"date","label":"Date"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | Selected value(s) |
+| `options` | `string` | `'[]'` | JSON array of options |
+| `multiple` | `boolean` | `false` | Enable multi-select |
+| `disabled` | `boolean` | `false` | Disables the autocomplete |
+| `clearable` | `boolean` | `false` | Show clear button |
+| `placeholder` | `string` | `''` | Placeholder text |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+| `loading` | `boolean` | `false` | Show loading state |
+| `no-results-text` | `string` | `'No results found'` | Text for empty results |
+
+## Option Format
+
+Options should be a JSON array with the following structure:
+
+```typescript
+interface AutocompleteOption {
+  value: string;      // Unique value
+  label: string;      // Display text
+  description?: string; // Optional description
+  disabled?: boolean;  // Disable this option
+  group?: string;      // Group name for grouping
+}
+```
+
+## With Descriptions
+
+<ComponentDemo title="Options with Descriptions">
+  <el-dm-autocomplete
+    placeholder="Select a framework..."
+    options='[{"value":"react","label":"React","description":"A JavaScript library for building UIs"},{"value":"vue","label":"Vue","description":"The Progressive JavaScript Framework"},{"value":"angular","label":"Angular","description":"Platform for building web apps"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+```html
+<el-dm-autocomplete
+  placeholder="Select a framework..."
+  options='[{"value":"react","label":"React","description":"A JavaScript library..."}]'
+></el-dm-autocomplete>
+```
+
+## Multiple Selection
+
+<ComponentDemo title="Multiple Selection">
+  <el-dm-autocomplete
+    multiple
+    placeholder="Select languages..."
+    options='[{"value":"js","label":"JavaScript"},{"value":"ts","label":"TypeScript"},{"value":"py","label":"Python"},{"value":"go","label":"Go"},{"value":"rs","label":"Rust"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+```html
+<el-dm-autocomplete
+  multiple
+  placeholder="Select languages..."
+  options='[...]'
+></el-dm-autocomplete>
+```
+
+## Clearable
+
+<ComponentDemo title="Clearable">
+  <el-dm-autocomplete
+    clearable
+    placeholder="Select and clear..."
+    options='[{"value":"opt1","label":"Option 1"},{"value":"opt2","label":"Option 2"},{"value":"opt3","label":"Option 3"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+```html
+<el-dm-autocomplete clearable placeholder="Select and clear..." options='[...]'></el-dm-autocomplete>
+```
+
+## Sizes
+
+<ComponentDemo title="Autocomplete Sizes">
+  <el-dm-autocomplete
+    size="sm"
+    placeholder="Small..."
+    options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+  ></el-dm-autocomplete>
+  <el-dm-autocomplete
+    size="md"
+    placeholder="Medium..."
+    options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+  ></el-dm-autocomplete>
+  <el-dm-autocomplete
+    size="lg"
+    placeholder="Large..."
+    options='[{"value":"1","label":"Option 1"},{"value":"2","label":"Option 2"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+```html
+<el-dm-autocomplete size="sm" placeholder="Small..." options='[...]'></el-dm-autocomplete>
+<el-dm-autocomplete size="md" placeholder="Medium..." options='[...]'></el-dm-autocomplete>
+<el-dm-autocomplete size="lg" placeholder="Large..." options='[...]'></el-dm-autocomplete>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled">
+  <el-dm-autocomplete
+    disabled
+    placeholder="Disabled..."
+    options='[{"value":"1","label":"Option 1"}]'
+  ></el-dm-autocomplete>
+</ComponentDemo>
+
+```html
+<el-dm-autocomplete disabled placeholder="Disabled..." options='[...]'></el-dm-autocomplete>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when selection changes |
+| `input` | Fired when search text changes |
+| `clear` | Fired when cleared |
+
+### Event Handling
+
+```javascript
+const autocomplete = document.querySelector('el-dm-autocomplete');
+
+autocomplete.addEventListener('change', (event) => {
+  console.log('Selected:', event.detail.value);
+  console.log('Selected values:', event.detail.selectedValues);
+});
+
+autocomplete.addEventListener('input', (event) => {
+  console.log('Search:', event.detail.searchValue);
+});
+```
+
+## Keyboard Navigation
+
+- **Arrow Down/Up**: Navigate options
+- **Enter**: Select highlighted option
+- **Escape**: Close dropdown
+- **Backspace**: Remove last tag (in multiple mode)
+
+## Accessibility
+
+- Uses `role="combobox"` with proper ARIA attributes
+- `aria-expanded` indicates dropdown state
+- Options have `role="option"` with `aria-selected`
+- Full keyboard navigation support

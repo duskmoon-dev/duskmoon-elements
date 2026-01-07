@@ -23,7 +23,23 @@
     "@duskmoon-dev/el-badge": "workspace:*",
     "@duskmoon-dev/el-chip": "workspace:*",
     "@duskmoon-dev/el-tooltip": "workspace:*",
-    "@duskmoon-dev/el-progress": "workspace:*"
+    "@duskmoon-dev/el-progress": "workspace:*",
+    "@duskmoon-dev/el-form": "workspace:*",
+    "@duskmoon-dev/el-slider": "workspace:*",
+    "@duskmoon-dev/el-file-upload": "workspace:*",
+    "@duskmoon-dev/el-autocomplete": "workspace:*",
+    "@duskmoon-dev/el-datepicker": "workspace:*",
+    "@duskmoon-dev/el-bottom-navigation": "workspace:*",
+    "@duskmoon-dev/el-breadcrumbs": "workspace:*",
+    "@duskmoon-dev/el-drawer": "workspace:*",
+    "@duskmoon-dev/el-menu": "workspace:*",
+    "@duskmoon-dev/el-navbar": "workspace:*",
+    "@duskmoon-dev/el-pagination": "workspace:*",
+    "@duskmoon-dev/el-stepper": "workspace:*",
+    "@duskmoon-dev/el-tabs": "workspace:*",
+    "@duskmoon-dev/el-accordion": "workspace:*",
+    "@duskmoon-dev/el-bottom-sheet": "workspace:*",
+    "@duskmoon-dev/el-popover": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

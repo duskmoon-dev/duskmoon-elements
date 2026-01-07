@@ -61,6 +61,38 @@ import { ElDmBadge, register as registerBadge } from '@duskmoon-dev/el-badge';
 import { ElDmChip, register as registerChip } from '@duskmoon-dev/el-chip';
 import { ElDmTooltip, register as registerTooltip } from '@duskmoon-dev/el-tooltip';
 import { ElDmProgress, register as registerProgress } from '@duskmoon-dev/el-progress';
+import { ElDmForm, register as registerForm } from '@duskmoon-dev/el-form';
+import { ElDmSlider, register as registerSlider } from '@duskmoon-dev/el-slider';
+import { ElDmFileUpload, register as registerFileUpload } from '@duskmoon-dev/el-file-upload';
+import { ElDmAutocomplete, register as registerAutocomplete } from '@duskmoon-dev/el-autocomplete';
+import { ElDmDatepicker, register as registerDatepicker } from '@duskmoon-dev/el-datepicker';
+
+// Navigation elements
+import {
+  ElDmBottomNavigation,
+  register as registerBottomNavigation,
+} from '@duskmoon-dev/el-bottom-navigation';
+import { ElDmBreadcrumbs, register as registerBreadcrumbs } from '@duskmoon-dev/el-breadcrumbs';
+import { ElDmDrawer, register as registerDrawer } from '@duskmoon-dev/el-drawer';
+import { ElDmMenu, ElDmMenuItem, register as registerMenu } from '@duskmoon-dev/el-menu';
+import { ElDmNavbar, register as registerNavbar } from '@duskmoon-dev/el-navbar';
+import { ElDmPagination, register as registerPagination } from '@duskmoon-dev/el-pagination';
+import { ElDmStepper, ElDmStep, register as registerStepper } from '@duskmoon-dev/el-stepper';
+import {
+  ElDmTabs,
+  ElDmTab,
+  ElDmTabPanel,
+  register as registerTabs,
+} from '@duskmoon-dev/el-tabs';
+
+// Surface elements
+import {
+  ElDmAccordion,
+  ElDmAccordionItem,
+  register as registerAccordion,
+} from '@duskmoon-dev/el-accordion';
+import { ElDmBottomSheet, register as registerBottomSheet } from '@duskmoon-dev/el-bottom-sheet';
+import { ElDmPopover, register as registerPopover } from '@duskmoon-dev/el-popover';
 
 // Re-export all elements
 export { ElDmButton, registerButton };
@@ -83,6 +115,38 @@ export { ElDmTooltip, registerTooltip };
 export type { TooltipPosition, TooltipTrigger } from '@duskmoon-dev/el-tooltip';
 export { ElDmProgress, registerProgress };
 export type { ProgressColor, ProgressSize } from '@duskmoon-dev/el-progress';
+export { ElDmForm, registerForm };
+export type { FormValidationState } from '@duskmoon-dev/el-form';
+export { ElDmSlider, registerSlider };
+export type { SliderSize, SliderColor } from '@duskmoon-dev/el-slider';
+export { ElDmFileUpload, registerFileUpload };
+export type { FileUploadSize, UploadedFile } from '@duskmoon-dev/el-file-upload';
+export { ElDmAutocomplete, registerAutocomplete };
+export type { AutocompleteSize, AutocompleteOption } from '@duskmoon-dev/el-autocomplete';
+export { ElDmDatepicker, registerDatepicker };
+export type { DatepickerSize } from '@duskmoon-dev/el-datepicker';
+
+// Navigation elements
+export { ElDmBottomNavigation, registerBottomNavigation };
+export type { BottomNavigationItem } from '@duskmoon-dev/el-bottom-navigation';
+export { ElDmBreadcrumbs, registerBreadcrumbs };
+export type { BreadcrumbItem, NavigateEventDetail } from '@duskmoon-dev/el-breadcrumbs';
+export { ElDmDrawer, registerDrawer };
+export type { DrawerPosition } from '@duskmoon-dev/el-drawer';
+export { ElDmMenu, ElDmMenuItem, registerMenu };
+export { ElDmNavbar, registerNavbar };
+export type { NavbarColor } from '@duskmoon-dev/el-navbar';
+export { ElDmPagination, registerPagination };
+export { ElDmStepper, ElDmStep, registerStepper };
+export type { StepData, StepperOrientation, StepperColor } from '@duskmoon-dev/el-stepper';
+export { ElDmTabs, ElDmTab, ElDmTabPanel, registerTabs };
+export type { TabsVariant, TabsOrientation } from '@duskmoon-dev/el-tabs';
+
+// Surface elements
+export { ElDmAccordion, ElDmAccordionItem, registerAccordion };
+export { ElDmBottomSheet, registerBottomSheet };
+export { ElDmPopover, registerPopover };
+export type { PopoverPlacement, PopoverTrigger } from '@duskmoon-dev/el-popover';
 
 /**
  * Register all DuskMoon custom elements
@@ -105,4 +169,22 @@ export function registerAll(): void {
   registerChip();
   registerTooltip();
   registerProgress();
+  registerForm();
+  registerSlider();
+  registerFileUpload();
+  registerAutocomplete();
+  registerDatepicker();
+  // Navigation elements
+  registerBottomNavigation();
+  registerBreadcrumbs();
+  registerDrawer();
+  registerMenu();
+  registerNavbar();
+  registerPagination();
+  registerStepper();
+  registerTabs();
+  // Surface elements
+  registerAccordion();
+  registerBottomSheet();
+  registerPopover();
 }
