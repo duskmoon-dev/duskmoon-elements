@@ -1,0 +1,157 @@
+---
+title: Accordion
+description: Expandable/collapsible panels component for organizing content
+order: 25
+section: components
+component: "@duskmoon-dev/el-accordion"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Accordion
+
+The Accordion component provides expandable/collapsible panels for organizing content into logical sections. Users can expand sections to reveal content while keeping other sections collapsed.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-accordion
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-accordion/register';
+```
+
+```html
+<el-dm-accordion>
+  <el-dm-accordion-item value="item-1">
+    <span slot="header">Section 1</span>
+    <p>Content for section 1.</p>
+  </el-dm-accordion-item>
+  <el-dm-accordion-item value="item-2">
+    <span slot="header">Section 2</span>
+    <p>Content for section 2.</p>
+  </el-dm-accordion-item>
+</el-dm-accordion>
+```
+
+## Live Demo
+
+<ComponentDemo title="Accordion Demo">
+  <el-dm-accordion id="demo-accordion">
+    <el-dm-accordion-item value="features">
+      <span slot="header">Features</span>
+      <p>This accordion supports smooth animations, keyboard navigation, and multiple expansion modes.</p>
+    </el-dm-accordion-item>
+    <el-dm-accordion-item value="usage">
+      <span slot="header">Usage</span>
+      <p>Simply wrap your content in accordion items and provide a unique value for each item.</p>
+    </el-dm-accordion-item>
+    <el-dm-accordion-item value="styling">
+      <span slot="header">Styling</span>
+      <p>Use CSS parts to customize the appearance of headers, content, and icons.</p>
+    </el-dm-accordion-item>
+  </el-dm-accordion>
+</ComponentDemo>
+
+## Multiple Expansion
+
+Allow multiple panels to be open simultaneously:
+
+<ComponentDemo title="Multiple Expansion">
+  <el-dm-accordion multiple>
+    <el-dm-accordion-item value="first">
+      <span slot="header">First Section</span>
+      <p>You can open multiple sections at once.</p>
+    </el-dm-accordion-item>
+    <el-dm-accordion-item value="second">
+      <span slot="header">Second Section</span>
+      <p>This section can be open along with others.</p>
+    </el-dm-accordion-item>
+  </el-dm-accordion>
+</ComponentDemo>
+
+## Properties
+
+### el-dm-accordion
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `multiple` | `boolean` | `false` | Allow multiple panels to be open simultaneously |
+| `value` | `string` | `''` | Comma-separated list of open item IDs |
+
+### el-dm-accordion-item
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | Unique identifier for this item |
+| `disabled` | `boolean` | `false` | Whether the item is disabled |
+| `open` | `boolean` | `false` | Whether the item is expanded |
+
+## Methods
+
+### el-dm-accordion
+
+| Method | Description |
+|--------|-------------|
+| `getOpenItems()` | Returns array of open item IDs |
+| `setOpenItems(ids: string[])` | Set open items by ID array |
+| `open(itemId: string)` | Open a specific item by ID |
+| `close(itemId: string)` | Close a specific item by ID |
+| `toggle(itemId: string)` | Toggle a specific item by ID |
+
+### el-dm-accordion-item
+
+| Method | Description |
+|--------|-------------|
+| `toggle()` | Toggle the item open/closed |
+
+## Slots
+
+### el-dm-accordion
+
+| Slot | Description |
+|------|-------------|
+| default | Accordion items (el-dm-accordion-item elements) |
+
+### el-dm-accordion-item
+
+| Slot | Description |
+|------|-------------|
+| `header` | Content for the header/trigger area |
+| default | The expandable content |
+
+## Events
+
+### el-dm-accordion
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `change` | `{ value: string, openItems: string[] }` | Fired when expansion state changes |
+
+## CSS Parts
+
+### el-dm-accordion
+
+| Part | Description |
+|------|-------------|
+| `container` | The accordion container |
+
+### el-dm-accordion-item
+
+| Part | Description |
+|------|-------------|
+| `header` | The header button |
+| `icon` | The chevron icon |
+| `content` | The content container |
+
+## Accessibility
+
+- Uses `aria-expanded` to indicate panel state
+- Uses `aria-controls` to associate headers with content
+- Uses `aria-hidden` on collapsed content
+- Keyboard navigation: Enter/Space to toggle panels
+- Headers are focusable buttons

@@ -1,0 +1,183 @@
+---
+title: Drawer
+description: Side navigation drawer/sidebar component with modal support
+order: 19
+section: components
+component: "@duskmoon-dev/el-drawer"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Drawer
+
+The Drawer component provides a side navigation panel that slides in from the left or right. It supports modal mode with backdrop and focus trapping for accessibility.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-drawer
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-drawer/register';
+```
+
+```html
+<el-dm-drawer id="my-drawer" modal>
+  <span slot="header">Menu</span>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</el-dm-drawer>
+
+<el-dm-button onclick="document.querySelector('#my-drawer').show()">
+  Open Drawer
+</el-dm-button>
+```
+
+## Live Demo
+
+<ComponentDemo title="Drawer Demo">
+  <div style="display: flex; gap: 1rem;">
+    <el-dm-button onclick="document.querySelector('#demo-drawer-left').show()">
+      Open Left Drawer
+    </el-dm-button>
+    <el-dm-button onclick="document.querySelector('#demo-drawer-right').show()">
+      Open Right Drawer
+    </el-dm-button>
+  </div>
+  <el-dm-drawer id="demo-drawer-left" modal position="left">
+    <span slot="header">Navigation</span>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <a href="#" style="padding: 0.5rem; color: inherit; text-decoration: none;">Home</a>
+      <a href="#" style="padding: 0.5rem; color: inherit; text-decoration: none;">Products</a>
+      <a href="#" style="padding: 0.5rem; color: inherit; text-decoration: none;">About</a>
+      <a href="#" style="padding: 0.5rem; color: inherit; text-decoration: none;">Contact</a>
+    </div>
+  </el-dm-drawer>
+  <el-dm-drawer id="demo-drawer-right" modal position="right">
+    <span slot="header">Settings</span>
+    <p>Drawer content on the right side.</p>
+    <div slot="footer">
+      <el-dm-button variant="ghost" onclick="this.closest('el-dm-drawer').hide()">Close</el-dm-button>
+    </div>
+  </el-dm-drawer>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the drawer is open |
+| `position` | `'left' \| 'right'` | `'left'` | Which side the drawer appears from |
+| `modal` | `boolean` | `false` | Shows backdrop and traps focus when true |
+| `width` | `string` | `'280px'` | Custom width for the drawer (CSS value) |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Opens the drawer |
+| `hide()` | Closes the drawer |
+| `toggle()` | Toggles the drawer open/closed |
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `open` | Fired when drawer opens |
+| `close` | Fired when drawer closes |
+
+### Event Handling
+
+```javascript
+const drawer = document.querySelector('el-dm-drawer');
+drawer.addEventListener('open', () => {
+  console.log('Drawer opened');
+});
+drawer.addEventListener('close', () => {
+  console.log('Drawer closed');
+});
+```
+
+## Position Variants
+
+```html
+<!-- Left drawer (default) -->
+<el-dm-drawer position="left">...</el-dm-drawer>
+
+<!-- Right drawer -->
+<el-dm-drawer position="right">...</el-dm-drawer>
+```
+
+## Modal vs Non-Modal
+
+```html
+<!-- Modal drawer with backdrop -->
+<el-dm-drawer modal>
+  Content that requires focus
+</el-dm-drawer>
+
+<!-- Non-modal drawer (no backdrop) -->
+<el-dm-drawer>
+  Side navigation that doesn't block interaction
+</el-dm-drawer>
+```
+
+## Custom Width
+
+```html
+<el-dm-drawer width="400px">...</el-dm-drawer>
+<el-dm-drawer width="50vw">...</el-dm-drawer>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Main drawer content (body) |
+| `header` | Drawer header section |
+| `footer` | Drawer footer section |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `wrapper` | The outer wrapper |
+| `drawer` | The drawer container |
+| `backdrop` | The backdrop overlay (modal mode) |
+| `header` | The header section |
+| `body` | The body section |
+| `footer` | The footer section |
+| `close` | The close button |
+
+## Styling Example
+
+```css
+el-dm-drawer::part(drawer) {
+  --drawer-width: 320px;
+  background: linear-gradient(to bottom, #f8fafc, #ffffff);
+}
+
+el-dm-drawer::part(header) {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+el-dm-drawer::part(close) {
+  color: white;
+}
+```
+
+## Accessibility
+
+- Uses `role="dialog"` and `aria-modal="true"` for modal drawers
+- Escape key closes modal drawers
+- Focus is trapped within modal drawers when open
+- Body scroll is disabled when modal drawer is open
+- Focus returns to the previously focused element when closed
+- Close button has `aria-label="Close drawer"`

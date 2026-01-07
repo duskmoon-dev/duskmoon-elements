@@ -1,0 +1,205 @@
+---
+title: Popover
+description: Contextual overlay component that appears relative to a trigger element
+order: 27
+section: components
+component: "@duskmoon-dev/el-popover"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Popover
+
+The Popover component provides a contextual overlay that appears relative to a trigger element. It supports multiple trigger modes (click, hover, focus), flexible placement options, and auto-flipping when near viewport edges.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-popover
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-popover/register';
+```
+
+```html
+<el-dm-popover>
+  <el-dm-button slot="trigger">Click me</el-dm-button>
+  <p>Popover content goes here.</p>
+</el-dm-popover>
+```
+
+## Live Demo
+
+<ComponentDemo title="Popover Demo">
+  <el-dm-popover>
+    <el-dm-button slot="trigger" variant="primary">Click for Popover</el-dm-button>
+    <p>This is a popover with default settings. Click outside to close.</p>
+  </el-dm-popover>
+</ComponentDemo>
+
+## Trigger Modes
+
+<ComponentDemo title="Click Trigger (Default)">
+  <el-dm-popover trigger="click">
+    <el-dm-button slot="trigger">Click Trigger</el-dm-button>
+    <p>Click the button to toggle this popover.</p>
+  </el-dm-popover>
+</ComponentDemo>
+
+<ComponentDemo title="Hover Trigger">
+  <el-dm-popover trigger="hover">
+    <el-dm-button slot="trigger">Hover Trigger</el-dm-button>
+    <p>Hover over the button to show this popover.</p>
+  </el-dm-popover>
+</ComponentDemo>
+
+<ComponentDemo title="Focus Trigger">
+  <el-dm-popover trigger="focus">
+    <el-dm-button slot="trigger">Focus Trigger</el-dm-button>
+    <p>Focus the button (tab or click) to show this popover.</p>
+  </el-dm-popover>
+</ComponentDemo>
+
+## Placement Options
+
+<ComponentDemo title="Placement Variants">
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <el-dm-popover placement="top">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Top</el-dm-button>
+      <span>Placement: top</span>
+    </el-dm-popover>
+    <el-dm-popover placement="bottom">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Bottom</el-dm-button>
+      <span>Placement: bottom</span>
+    </el-dm-popover>
+    <el-dm-popover placement="left">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Left</el-dm-button>
+      <span>Placement: left</span>
+    </el-dm-popover>
+    <el-dm-popover placement="right">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Right</el-dm-button>
+      <span>Placement: right</span>
+    </el-dm-popover>
+  </div>
+</ComponentDemo>
+
+<ComponentDemo title="Aligned Placements">
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <el-dm-popover placement="top-start">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Top Start</el-dm-button>
+      <span>Aligned to start</span>
+    </el-dm-popover>
+    <el-dm-popover placement="top-end">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Top End</el-dm-button>
+      <span>Aligned to end</span>
+    </el-dm-popover>
+    <el-dm-popover placement="bottom-start">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Bottom Start</el-dm-button>
+      <span>Aligned to start</span>
+    </el-dm-popover>
+    <el-dm-popover placement="bottom-end">
+      <el-dm-button slot="trigger" variant="outline" size="sm">Bottom End</el-dm-button>
+      <span>Aligned to end</span>
+    </el-dm-popover>
+  </div>
+</ComponentDemo>
+
+## Arrow Option
+
+<ComponentDemo title="With and Without Arrow">
+  <div style="display: flex; gap: 1rem;">
+    <el-dm-popover arrow>
+      <el-dm-button slot="trigger">With Arrow</el-dm-button>
+      <p>This popover has an arrow pointing to the trigger.</p>
+    </el-dm-popover>
+    <el-dm-popover arrow="false">
+      <el-dm-button slot="trigger" variant="outline">No Arrow</el-dm-button>
+      <p>This popover has no arrow.</p>
+    </el-dm-popover>
+  </div>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the popover is visible |
+| `trigger` | `'click' \| 'hover' \| 'focus' \| 'manual'` | `'click'` | Trigger mode |
+| `placement` | `string` | `'bottom'` | Popover position relative to trigger |
+| `offset` | `number` | `8` | Distance from trigger element in pixels |
+| `arrow` | `boolean` | `true` | Whether to show arrow pointing to trigger |
+
+### Placement Values
+
+- `top`, `top-start`, `top-end`
+- `bottom`, `bottom-start`, `bottom-end`
+- `left`, `left-start`, `left-end`
+- `right`, `right-start`, `right-end`
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Shows the popover |
+| `hide()` | Hides the popover |
+| `toggle()` | Toggles the popover visibility |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `trigger` | The element that triggers the popover |
+| default | Popover content |
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `open` | Fired when popover opens |
+| `close` | Fired when popover closes |
+
+### Event Handling
+
+```javascript
+const popover = document.querySelector('el-dm-popover');
+popover.addEventListener('open', () => {
+  console.log('Popover opened');
+});
+popover.addEventListener('close', () => {
+  console.log('Popover closed');
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `popover` | The popover container |
+| `content` | The popover content area |
+| `arrow` | The popover arrow |
+
+## Programmatic Control
+
+```javascript
+const popover = document.querySelector('el-dm-popover');
+
+// Manual trigger mode
+popover.trigger = 'manual';
+
+// Show/hide programmatically
+popover.show();
+popover.hide();
+popover.toggle();
+```
+
+## Accessibility
+
+- Uses `role="dialog"` for the popover content
+- Escape key closes the popover
+- Focus management for focus trigger mode
+- Click outside closes click-triggered popovers
+- Auto-flip prevents popover from going off-screen

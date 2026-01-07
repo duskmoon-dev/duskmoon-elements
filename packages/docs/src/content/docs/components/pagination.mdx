@@ -1,0 +1,141 @@
+---
+title: Pagination
+description: A customizable pagination component for page navigation
+order: 22
+section: components
+component: "@duskmoon-dev/el-pagination"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Pagination
+
+The Pagination component provides a customizable navigation interface for paginated content. It supports first/last, previous/next buttons, and page number display with ellipsis for large page ranges.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-pagination
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-pagination/register';
+```
+
+```html
+<el-dm-pagination total="10" current="1"></el-dm-pagination>
+```
+
+## Live Demo
+
+<ComponentDemo title="Pagination Demo">
+  <el-dm-pagination id="demo-pagination" total="20" current="1"></el-dm-pagination>
+  <p id="pagination-status" style="margin-top: 1rem; color: var(--color-on-surface-variant);">Current page: 1</p>
+  <script>
+    {`
+      document.getElementById('demo-pagination')?.addEventListener('change', (e) => {
+        document.getElementById('pagination-status').textContent = 'Current page: ' + e.detail.page;
+      });
+    `}
+  </script>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `total` | `number` | `1` | Total number of pages |
+| `current` | `number` | `1` | Current active page (1-indexed) |
+| `siblings` | `number` | `1` | Number of pages shown around the current page |
+| `boundaries` | `number` | `1` | Number of pages shown at start and end |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'` | Button size |
+| `color` | `'primary' \| 'secondary' \| 'neutral'` | `'primary'` | Color variant |
+
+## Sizes
+
+```html
+<el-dm-pagination total="10" size="xs"></el-dm-pagination>
+<el-dm-pagination total="10" size="sm"></el-dm-pagination>
+<el-dm-pagination total="10" size="md"></el-dm-pagination>
+<el-dm-pagination total="10" size="lg"></el-dm-pagination>
+```
+
+## Colors
+
+```html
+<el-dm-pagination total="10" color="primary"></el-dm-pagination>
+<el-dm-pagination total="10" color="secondary"></el-dm-pagination>
+<el-dm-pagination total="10" color="neutral"></el-dm-pagination>
+```
+
+## Siblings and Boundaries
+
+Control how many page numbers are displayed:
+
+```html
+<!-- Show 2 pages around current page, 1 at boundaries -->
+<el-dm-pagination total="100" current="50" siblings="2" boundaries="1"></el-dm-pagination>
+
+<!-- Show 3 pages around current page, 2 at boundaries -->
+<el-dm-pagination total="100" current="50" siblings="3" boundaries="2"></el-dm-pagination>
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `change` | `{ page: number }` | Fired when the current page changes |
+
+### Event Handling
+
+```javascript
+const pagination = document.querySelector('el-dm-pagination');
+pagination.addEventListener('change', (e) => {
+  console.log('Page changed to:', e.detail.page);
+  // Fetch data for the new page
+  fetchPageData(e.detail.page);
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `container` | The pagination container |
+| `button` | Navigation buttons (first, prev, next, last) |
+| `page` | Page number buttons |
+| `ellipsis` | Ellipsis indicators |
+
+### Styling with CSS Parts
+
+```css
+el-dm-pagination::part(button) {
+  border-radius: 50%;
+}
+
+el-dm-pagination::part(page) {
+  font-weight: bold;
+}
+
+el-dm-pagination::part(ellipsis) {
+  color: #999;
+}
+```
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` | Go to previous page |
+| `ArrowRight` | Go to next page |
+| `Home` | Go to first page |
+| `End` | Go to last page |
+
+## Accessibility
+
+- Uses `role="navigation"` with `aria-label="Pagination"`
+- Page buttons include `aria-label` for screen readers
+- Current page is indicated with `aria-current="page"`
+- Disabled navigation buttons have proper disabled state

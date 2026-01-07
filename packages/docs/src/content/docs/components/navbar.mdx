@@ -1,0 +1,180 @@
+---
+title: Navbar
+description: Primary navigation bar/header component with responsive design
+order: 21
+section: components
+component: "@duskmoon-dev/el-navbar"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Navbar
+
+The Navbar component provides a primary navigation bar/header with responsive design. It includes slots for branding, navigation items, and actions, plus a mobile-friendly hamburger menu.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-navbar
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-navbar/register';
+```
+
+```html
+<el-dm-navbar>
+  <a slot="start" href="/">My App</a>
+  <a href="/features">Features</a>
+  <a href="/pricing">Pricing</a>
+  <a href="/about">About</a>
+  <el-dm-button slot="end" variant="primary">Sign Up</el-dm-button>
+</el-dm-navbar>
+```
+
+## Live Demo
+
+<ComponentDemo title="Navbar Demo">
+  <el-dm-navbar elevated style="border-radius: 8px; overflow: hidden;">
+    <a slot="start" href="#" style="font-weight: 600; font-size: 1.25rem; text-decoration: none; color: inherit;">Brand</a>
+    <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Home</a>
+    <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Products</a>
+    <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">About</a>
+    <el-dm-button slot="end" size="sm">Contact</el-dm-button>
+  </el-dm-navbar>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `fixed` | `boolean` | `false` | Fixes the navbar to the top of the viewport |
+| `elevated` | `boolean` | `false` | Adds shadow elevation |
+| `color` | `'surface' \| 'primary' \| 'secondary' \| 'tertiary'` | `'surface'` | Navbar color variant |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `openMobileMenu()` | Opens the mobile menu |
+| `closeMobileMenu()` | Closes the mobile menu |
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `menu-toggle` | `{ open: boolean }` | Fired when mobile menu is toggled |
+
+### Event Handling
+
+```javascript
+const navbar = document.querySelector('el-dm-navbar');
+navbar.addEventListener('menu-toggle', (e) => {
+  console.log('Mobile menu open:', e.detail.open);
+});
+```
+
+## Color Variants
+
+```html
+<el-dm-navbar color="surface">Default surface color</el-dm-navbar>
+<el-dm-navbar color="primary">Primary color</el-dm-navbar>
+<el-dm-navbar color="secondary">Secondary color</el-dm-navbar>
+<el-dm-navbar color="tertiary">Tertiary color</el-dm-navbar>
+```
+
+<ComponentDemo title="Color Variants">
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <el-dm-navbar color="primary" elevated style="border-radius: 8px; overflow: hidden;">
+      <span slot="start" style="font-weight: 600;">Primary</span>
+      <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+    </el-dm-navbar>
+    <el-dm-navbar color="secondary" elevated style="border-radius: 8px; overflow: hidden;">
+      <span slot="start" style="font-weight: 600;">Secondary</span>
+      <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+    </el-dm-navbar>
+  </div>
+</ComponentDemo>
+
+## Fixed Navbar
+
+When `fixed` is set, the navbar sticks to the top of the viewport and automatically adds elevation on scroll:
+
+```html
+<el-dm-navbar fixed>
+  <a slot="start" href="/">Brand</a>
+  <!-- Navigation items -->
+</el-dm-navbar>
+```
+
+## Mobile Menu
+
+The navbar includes a hamburger button that appears on smaller screens. Use the `mobile` slot to provide content for the mobile menu:
+
+```html
+<el-dm-navbar>
+  <a slot="start" href="/">Brand</a>
+  <a href="/features">Features</a>
+  <a href="/pricing">Pricing</a>
+
+  <!-- Mobile menu content -->
+  <div slot="mobile">
+    <a href="/features">Features</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/about">About</a>
+  </div>
+</el-dm-navbar>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `start` | Logo or brand content (left side) |
+| default | Navigation items (center) |
+| `end` | Actions or icons (right side) |
+| `mobile` | Content for the mobile dropdown menu |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `navbar` | The navbar container |
+| `content` | The content wrapper |
+| `start` | The start slot wrapper |
+| `center` | The center/default slot wrapper |
+| `end` | The end slot wrapper |
+| `hamburger` | The mobile hamburger button |
+| `mobile-menu` | The mobile menu container |
+
+## Styling Example
+
+```css
+el-dm-navbar::part(navbar) {
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+}
+
+el-dm-navbar::part(hamburger) {
+  color: white;
+}
+
+el-dm-navbar::part(mobile-menu) {
+  background: #667eea;
+}
+```
+
+## Responsive Behavior
+
+- **Desktop (above 768px)**: Shows center navigation items, hamburger is hidden
+- **Mobile (768px and below)**: Hides center navigation items, shows hamburger button
+
+## Accessibility
+
+- Uses `<nav>` element with `role="navigation"`
+- Hamburger button has `aria-label` and `aria-expanded` attributes
+- Mobile menu has `aria-hidden` when closed
+- Animated hamburger icon provides visual feedback
+- All interactive elements are keyboard accessible

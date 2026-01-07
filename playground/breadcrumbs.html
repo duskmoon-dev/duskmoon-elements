@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Breadcrumbs</h2>
+    <div class="demo-row">
+      <el-dm-breadcrumbs id="basic-breadcrumbs"></el-dm-breadcrumbs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Separator</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-breadcrumbs id="arrow-breadcrumbs" separator=">"></el-dm-breadcrumbs>
+      <el-dm-breadcrumbs id="dash-breadcrumbs" separator="-"></el-dm-breadcrumbs>
+      <el-dm-breadcrumbs id="pipe-breadcrumbs" separator="|"></el-dm-breadcrumbs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Long Path</h2>
+    <div class="demo-row">
+      <el-dm-breadcrumbs id="long-breadcrumbs"></el-dm-breadcrumbs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Single Item</h2>
+    <div class="demo-row">
+      <el-dm-breadcrumbs id="single-breadcrumbs"></el-dm-breadcrumbs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Event Handling</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-breadcrumbs id="event-breadcrumbs"></el-dm-breadcrumbs>
+      <p>Last clicked: <strong id="clicked-item">None</strong></p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerBreadcrumbs } from '../elements/breadcrumbs/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerBreadcrumbs();
+    registerButton();
+
+    document.getElementById('basic-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Products', href: '#' },
+      { label: 'Electronics', href: '#' },
+      { label: 'Laptops' }
+    ];
+
+    document.getElementById('arrow-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Category', href: '#' },
+      { label: 'Item' }
+    ];
+
+    document.getElementById('dash-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Category', href: '#' },
+      { label: 'Item' }
+    ];
+
+    document.getElementById('pipe-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Category', href: '#' },
+      { label: 'Item' }
+    ];
+
+    document.getElementById('long-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Documents', href: '#' },
+      { label: 'Projects', href: '#' },
+      { label: '2024', href: '#' },
+      { label: 'Q1', href: '#' },
+      { label: 'Reports', href: '#' },
+      { label: 'Final Report' }
+    ];
+
+    document.getElementById('single-breadcrumbs').items = [
+      { label: 'Home' }
+    ];
+
+    document.getElementById('event-breadcrumbs').items = [
+      { label: 'Home', href: '#home' },
+      { label: 'Products', href: '#products' },
+      { label: 'Electronics', href: '#electronics' },
+      { label: 'Smartphones' }
+    ];
+
+    document.getElementById('event-breadcrumbs').addEventListener('navigate', (e) => {
+      e.preventDefault();
+      document.getElementById('clicked-item').textContent = `${e.detail.item.label} (index: ${e.detail.index})`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Navbar</h2>
+    <div class="demo-row" style="flex-direction: column;">
+      <el-dm-navbar elevated style="border-radius: 8px; overflow: hidden;">
+        <a slot="start" href="#" style="font-weight: 600; font-size: 1.25rem; text-decoration: none; color: inherit;">Brand</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Home</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Products</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">About</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Contact</a>
+        <el-dm-button slot="end" size="sm">Sign In</el-dm-button>
+      </el-dm-navbar>
+    </div>
+  </section>
+
+  <section>
+    <h2>Color Variants</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-navbar color="surface" elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">Surface (Default)</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+
+      <el-dm-navbar color="primary" elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">Primary</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+
+      <el-dm-navbar color="secondary" elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">Secondary</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+
+      <el-dm-navbar color="tertiary" elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">Tertiary</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Elevation</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-navbar style="border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <span slot="start" style="font-weight: 600;">No Elevation</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+
+      <el-dm-navbar elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">With Elevation</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+      </el-dm-navbar>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Mobile Menu</h2>
+    <p style="margin-bottom: 1rem;">Resize your browser to see the mobile menu. The hamburger button appears at smaller screen widths.</p>
+    <div class="demo-row" style="flex-direction: column;">
+      <el-dm-navbar id="mobile-navbar" elevated style="border-radius: 8px; overflow: hidden;">
+        <a slot="start" href="#" style="font-weight: 600; font-size: 1.25rem; text-decoration: none; color: inherit;">MyApp</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Features</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Pricing</a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem 1rem;">Docs</a>
+        <el-dm-button slot="end" size="sm" variant="primary">Get Started</el-dm-button>
+        <div slot="mobile" style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Features</a>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Pricing</a>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Docs</a>
+          <el-dm-button variant="primary" style="margin-top: 0.5rem;">Get Started</el-dm-button>
+        </div>
+      </el-dm-navbar>
+    </div>
+  </section>
+
+  <section>
+    <h2>Event Handling</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-navbar id="event-navbar" elevated style="border-radius: 8px; overflow: hidden;">
+        <span slot="start" style="font-weight: 600;">Event Demo</span>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Link</a>
+        <div slot="mobile">
+          <a href="#" style="text-decoration: none; color: inherit; padding: 0.5rem;">Mobile Link</a>
+        </div>
+      </el-dm-navbar>
+      <p>Mobile menu state: <strong id="menu-state">closed</strong></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Programmatic Control</h2>
+    <div class="demo-row" style="gap: 1rem;">
+      <el-dm-button onclick="document.getElementById('programmatic-navbar').openMobileMenu()">
+        Open Mobile Menu
+      </el-dm-button>
+      <el-dm-button onclick="document.getElementById('programmatic-navbar').closeMobileMenu()">
+        Close Mobile Menu
+      </el-dm-button>
+    </div>
+    <div class="demo-row" style="margin-top: 1rem;">
+      <el-dm-navbar id="programmatic-navbar" elevated style="border-radius: 8px; overflow: hidden; width: 100%;">
+        <span slot="start" style="font-weight: 600;">Programmatic</span>
+        <div slot="mobile">
+          <p style="padding: 1rem;">Mobile menu content</p>
+        </div>
+      </el-dm-navbar>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerNavbar } from '../elements/navbar/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerNavbar();
+    registerButton();
+
+    document.getElementById('event-navbar').addEventListener('menu-toggle', (e) => {
+      document.getElementById('menu-state').textContent = e.detail.open ? 'open' : 'closed';
+    });
+  </script>
+</body>
+</html>

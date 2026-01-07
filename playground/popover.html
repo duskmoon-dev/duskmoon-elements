@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Popover</h2>
+    <div class="demo-row">
+      <el-dm-popover>
+        <el-dm-button slot="trigger">Click me</el-dm-button>
+        <p>This is a basic popover. Click outside to dismiss.</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Trigger Modes</h2>
+    <div class="demo-row">
+      <el-dm-popover trigger="click">
+        <el-dm-button slot="trigger">Click Trigger</el-dm-button>
+        <p>Click the button to toggle this popover.</p>
+      </el-dm-popover>
+
+      <el-dm-popover trigger="hover">
+        <el-dm-button slot="trigger">Hover Trigger</el-dm-button>
+        <p>Hover over the button to show this popover.</p>
+      </el-dm-popover>
+
+      <el-dm-popover trigger="focus">
+        <el-dm-button slot="trigger">Focus Trigger</el-dm-button>
+        <p>Focus the button (tab or click) to show this popover.</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Placement Options</h2>
+    <div class="demo-row" style="flex-wrap: wrap;">
+      <el-dm-popover placement="top">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Top</el-dm-button>
+        <span>Placement: top</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="top-start">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Top Start</el-dm-button>
+        <span>Placement: top-start</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="top-end">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Top End</el-dm-button>
+        <span>Placement: top-end</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="bottom">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Bottom</el-dm-button>
+        <span>Placement: bottom</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="bottom-start">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Bottom Start</el-dm-button>
+        <span>Placement: bottom-start</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="bottom-end">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Bottom End</el-dm-button>
+        <span>Placement: bottom-end</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="left">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Left</el-dm-button>
+        <span>Placement: left</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="left-start">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Left Start</el-dm-button>
+        <span>Placement: left-start</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="left-end">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Left End</el-dm-button>
+        <span>Placement: left-end</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="right">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Right</el-dm-button>
+        <span>Placement: right</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="right-start">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Right Start</el-dm-button>
+        <span>Placement: right-start</span>
+      </el-dm-popover>
+
+      <el-dm-popover placement="right-end">
+        <el-dm-button slot="trigger" variant="outline" size="sm">Right End</el-dm-button>
+        <span>Placement: right-end</span>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arrow Option</h2>
+    <div class="demo-row">
+      <el-dm-popover arrow>
+        <el-dm-button slot="trigger">With Arrow</el-dm-button>
+        <p>This popover has an arrow pointing to the trigger.</p>
+      </el-dm-popover>
+
+      <el-dm-popover arrow="false">
+        <el-dm-button slot="trigger" variant="outline">Without Arrow</el-dm-button>
+        <p>This popover has no arrow.</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Offset</h2>
+    <div class="demo-row">
+      <el-dm-popover offset="4">
+        <el-dm-button slot="trigger" variant="outline">Offset: 4px</el-dm-button>
+        <p>Close to the trigger</p>
+      </el-dm-popover>
+
+      <el-dm-popover offset="16">
+        <el-dm-button slot="trigger" variant="outline">Offset: 16px</el-dm-button>
+        <p>Far from the trigger</p>
+      </el-dm-popover>
+
+      <el-dm-popover offset="32">
+        <el-dm-button slot="trigger" variant="outline">Offset: 32px</el-dm-button>
+        <p>Very far from the trigger</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Rich Content</h2>
+    <div class="demo-row">
+      <el-dm-popover>
+        <el-dm-button slot="trigger">User Menu</el-dm-button>
+        <div style="min-width: 150px;">
+          <div style="padding: 0.5rem; border-bottom: 1px solid var(--color-outline, #e0e0e0);">
+            <strong>John Doe</strong>
+            <div style="font-size: 0.75rem; color: var(--color-on-surface-variant, #666);">john@example.com</div>
+          </div>
+          <div style="display: flex; flex-direction: column; padding: 0.25rem 0;">
+            <button style="padding: 0.5rem; border: none; background: none; text-align: left; cursor: pointer;" onmouseover="this.style.background='var(--color-surface-variant, #f5f5f5)'" onmouseout="this.style.background='none'">Profile</button>
+            <button style="padding: 0.5rem; border: none; background: none; text-align: left; cursor: pointer;" onmouseover="this.style.background='var(--color-surface-variant, #f5f5f5)'" onmouseout="this.style.background='none'">Settings</button>
+            <button style="padding: 0.5rem; border: none; background: none; text-align: left; cursor: pointer; color: var(--color-error, #dc2626);" onmouseover="this.style.background='var(--color-surface-variant, #f5f5f5)'" onmouseout="this.style.background='none'">Sign Out</button>
+          </div>
+        </div>
+      </el-dm-popover>
+
+      <el-dm-popover trigger="hover" placement="right">
+        <el-dm-button slot="trigger">Hover for Info</el-dm-button>
+        <div style="max-width: 250px;">
+          <strong style="display: block; margin-bottom: 0.5rem;">Information</strong>
+          <p style="margin: 0; font-size: 0.875rem;">This popover appears on hover and is positioned to the right. It auto-flips if there isn't enough space.</p>
+        </div>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Programmatic Control</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div style="display: flex; gap: 0.5rem;">
+        <el-dm-button onclick="document.getElementById('controlled-popover').show()">Show</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled-popover').hide()" variant="outline">Hide</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled-popover').toggle()" variant="ghost">Toggle</el-dm-button>
+      </div>
+      <el-dm-popover id="controlled-popover" trigger="manual">
+        <el-dm-button slot="trigger">Controlled Popover</el-dm-button>
+        <p>This popover is controlled programmatically using the buttons above.</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <section>
+    <h2>Auto-Flip Demo</h2>
+    <div class="demo-row" style="justify-content: flex-end;">
+      <el-dm-popover placement="right">
+        <el-dm-button slot="trigger">Right (may flip to left)</el-dm-button>
+        <p>This popover will flip to the opposite side if there isn't enough space.</p>
+      </el-dm-popover>
+    </div>
+    <div class="demo-row" style="justify-content: flex-start;">
+      <el-dm-popover placement="left">
+        <el-dm-button slot="trigger">Left (may flip to right)</el-dm-button>
+        <p>Try positioning this near the edge of the viewport.</p>
+      </el-dm-popover>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerPopover } from '../elements/popover/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerPopover();
+    registerButton();
+  </script>
+</body>
+</html>

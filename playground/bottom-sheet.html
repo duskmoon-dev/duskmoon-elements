@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Bottom Sheet</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('basic-sheet').show()">Open Bottom Sheet</el-dm-button>
+      <el-dm-bottom-sheet id="basic-sheet">
+        <span slot="header">Basic Sheet</span>
+        <p>This is a basic bottom sheet. Drag the handle down to dismiss or swipe down.</p>
+        <p>Bottom sheets are great for mobile interfaces and touch interactions.</p>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <section>
+    <h2>Modal Bottom Sheet</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('modal-sheet').show()">Open Modal Sheet</el-dm-button>
+      <el-dm-bottom-sheet id="modal-sheet" modal>
+        <span slot="header">Modal Sheet</span>
+        <p>This sheet has a backdrop and traps focus. Click outside or press Escape to dismiss.</p>
+        <div style="margin-top: 1rem;">
+          <el-dm-button onclick="document.getElementById('modal-sheet').hide()">Close</el-dm-button>
+        </div>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <section>
+    <h2>Snap Points</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('snap-sheet').show()">Open with Snap Points</el-dm-button>
+      <el-dm-bottom-sheet id="snap-sheet" modal snap-points="25%,50%,100%">
+        <span slot="header">Snap Points Demo</span>
+        <p>This sheet has multiple snap points at 25%, 50%, and 100% of the viewport height.</p>
+        <p>Drag the sheet to see it snap to different positions.</p>
+        <p style="margin-top: 1rem; padding: 1rem; background: var(--color-surface-variant, #f5f5f5); border-radius: 0.5rem;">
+          Try swiping up and down to snap between different heights. The sheet will animate smoothly to the nearest snap point.
+        </p>
+        <div style="margin-top: 1rem;">
+          <el-dm-button onclick="document.getElementById('snap-sheet').hide()" variant="ghost">Close</el-dm-button>
+        </div>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <section>
+    <h2>Persistent Sheet</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('persistent-sheet').show()">Open Persistent Sheet</el-dm-button>
+      <el-dm-bottom-sheet id="persistent-sheet" modal persistent>
+        <span slot="header">Important Action Required</span>
+        <p>This sheet cannot be dismissed by clicking outside or swiping down.</p>
+        <p>You must use the close button to dismiss this sheet.</p>
+        <div style="margin-top: 1rem;">
+          <el-dm-button onclick="document.getElementById('persistent-sheet').hide()">I Understand</el-dm-button>
+        </div>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <section>
+    <h2>Rich Content</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('content-sheet').show()">Open Rich Content Sheet</el-dm-button>
+      <el-dm-bottom-sheet id="content-sheet" modal>
+        <span slot="header">Select an Option</span>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="padding: 1rem; border: 1px solid var(--color-outline, #e0e0e0); border-radius: 0.5rem; cursor: pointer;" onclick="alert('Option 1 selected'); document.getElementById('content-sheet').hide();">
+            <strong>Option 1</strong>
+            <p style="margin: 0.25rem 0 0; color: var(--color-on-surface-variant, #666);">Description for option 1</p>
+          </div>
+          <div style="padding: 1rem; border: 1px solid var(--color-outline, #e0e0e0); border-radius: 0.5rem; cursor: pointer;" onclick="alert('Option 2 selected'); document.getElementById('content-sheet').hide();">
+            <strong>Option 2</strong>
+            <p style="margin: 0.25rem 0 0; color: var(--color-on-surface-variant, #666);">Description for option 2</p>
+          </div>
+          <div style="padding: 1rem; border: 1px solid var(--color-outline, #e0e0e0); border-radius: 0.5rem; cursor: pointer;" onclick="alert('Option 3 selected'); document.getElementById('content-sheet').hide();">
+            <strong>Option 3</strong>
+            <p style="margin: 0.25rem 0 0; color: var(--color-on-surface-variant, #666);">Description for option 3</p>
+          </div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <el-dm-button onclick="document.getElementById('content-sheet').hide()" variant="ghost" style="width: 100%;">Cancel</el-dm-button>
+        </div>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <section>
+    <h2>Event Handling</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <el-dm-button onclick="document.getElementById('event-sheet').show()">Open Event Sheet</el-dm-button>
+      <div id="event-log" style="padding: 1rem; background: var(--color-surface-variant, #f5f5f5); border-radius: 0.5rem; min-height: 60px; width: 100%;">
+        <em>Events will appear here...</em>
+      </div>
+      <el-dm-bottom-sheet id="event-sheet" modal snap-points="30%,60%,100%">
+        <span slot="header">Event Demo</span>
+        <p>Open, close, and snap events are logged to the console and displayed above.</p>
+        <div style="margin-top: 1rem;">
+          <el-dm-button onclick="document.getElementById('event-sheet').hide()" variant="ghost">Close</el-dm-button>
+        </div>
+      </el-dm-bottom-sheet>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerBottomSheet } from '../elements/bottom-sheet/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerBottomSheet();
+    registerButton();
+
+    // Event handling demo
+    const eventSheet = document.getElementById('event-sheet');
+    const eventLog = document.getElementById('event-log');
+
+    function logEvent(message) {
+      const time = new Date().toLocaleTimeString();
+      eventLog.innerHTML = `<strong>[${time}]</strong> ${message}<br>${eventLog.innerHTML}`;
+    }
+
+    eventSheet.addEventListener('open', () => {
+      logEvent('Sheet opened');
+    });
+
+    eventSheet.addEventListener('close', () => {
+      logEvent('Sheet closed');
+    });
+
+    eventSheet.addEventListener('snap', (e) => {
+      logEvent(`Snapped to ${e.detail.height} (index: ${e.detail.index})`);
+    });
+  </script>
+</body>
+</html>

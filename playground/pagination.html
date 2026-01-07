@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Pagination</h2>
+    <div class="demo-row">
+      <el-dm-pagination id="basic-pagination" total="10" current="1"></el-dm-pagination>
+    </div>
+    <p id="basic-status">Current page: 1</p>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div>
+        <span style="display: inline-block; width: 80px;">Extra Small:</span>
+        <el-dm-pagination total="10" current="5" size="xs"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 80px;">Small:</span>
+        <el-dm-pagination total="10" current="5" size="sm"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 80px;">Medium:</span>
+        <el-dm-pagination total="10" current="5"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 80px;">Large:</span>
+        <el-dm-pagination total="10" current="5" size="lg"></el-dm-pagination>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Colors</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div>
+        <span style="display: inline-block; width: 100px;">Primary:</span>
+        <el-dm-pagination total="10" current="5" color="primary"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 100px;">Secondary:</span>
+        <el-dm-pagination total="10" current="5" color="secondary"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 100px;">Neutral:</span>
+        <el-dm-pagination total="10" current="5" color="neutral"></el-dm-pagination>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Many Pages with Ellipsis</h2>
+    <div class="demo-row">
+      <el-dm-pagination id="many-pages" total="100" current="50"></el-dm-pagination>
+    </div>
+    <p id="many-status">Current page: 50 / 100</p>
+  </section>
+
+  <section>
+    <h2>Siblings and Boundaries</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div>
+        <p style="margin-bottom: 0.5rem;">siblings=1, boundaries=1 (default):</p>
+        <el-dm-pagination total="50" current="25" siblings="1" boundaries="1"></el-dm-pagination>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">siblings=2, boundaries=1:</p>
+        <el-dm-pagination total="50" current="25" siblings="2" boundaries="1"></el-dm-pagination>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">siblings=1, boundaries=2:</p>
+        <el-dm-pagination total="50" current="25" siblings="1" boundaries="2"></el-dm-pagination>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">siblings=3, boundaries=2:</p>
+        <el-dm-pagination total="50" current="25" siblings="3" boundaries="2"></el-dm-pagination>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Few Pages (No Ellipsis)</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div>
+        <span style="display: inline-block; width: 100px;">3 pages:</span>
+        <el-dm-pagination total="3" current="2"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 100px;">5 pages:</span>
+        <el-dm-pagination total="5" current="3"></el-dm-pagination>
+      </div>
+      <div>
+        <span style="display: inline-block; width: 100px;">7 pages:</span>
+        <el-dm-pagination total="7" current="4"></el-dm-pagination>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Interactive Example</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <el-dm-pagination id="interactive-pagination" total="20" current="1" size="lg" color="primary"></el-dm-pagination>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <el-dm-button onclick="document.getElementById('interactive-pagination').current = 1">Go to First</el-dm-button>
+        <el-dm-button onclick="document.getElementById('interactive-pagination').current = 10">Go to Middle</el-dm-button>
+        <el-dm-button onclick="document.getElementById('interactive-pagination').current = 20">Go to Last</el-dm-button>
+      </div>
+      <p id="interactive-status">Page: 1 / 20</p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerPagination } from '../elements/pagination/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerPagination();
+    registerButton();
+
+    // Basic pagination event
+    document.getElementById('basic-pagination').addEventListener('change', (e) => {
+      document.getElementById('basic-status').textContent = 'Current page: ' + e.detail.page;
+    });
+
+    // Many pages event
+    document.getElementById('many-pages').addEventListener('change', (e) => {
+      document.getElementById('many-status').textContent = 'Current page: ' + e.detail.page + ' / 100';
+    });
+
+    // Interactive pagination event
+    document.getElementById('interactive-pagination').addEventListener('change', (e) => {
+      document.getElementById('interactive-status').textContent = 'Page: ' + e.detail.page + ' / 20';
+    });
+  </script>
+</body>
+</html>

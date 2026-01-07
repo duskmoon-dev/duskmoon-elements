@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Drawer (Left)</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('left-drawer').show()">Open Left Drawer</el-dm-button>
+      <el-dm-drawer id="left-drawer" modal position="left">
+        <span slot="header">Navigation</span>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="#" style="padding: 0.75rem; text-decoration: none; color: inherit; border-radius: 4px;">Home</a>
+          <a href="#" style="padding: 0.75rem; text-decoration: none; color: inherit; border-radius: 4px;">Products</a>
+          <a href="#" style="padding: 0.75rem; text-decoration: none; color: inherit; border-radius: 4px;">Services</a>
+          <a href="#" style="padding: 0.75rem; text-decoration: none; color: inherit; border-radius: 4px;">About</a>
+          <a href="#" style="padding: 0.75rem; text-decoration: none; color: inherit; border-radius: 4px;">Contact</a>
+        </nav>
+      </el-dm-drawer>
+    </div>
+  </section>
+
+  <section>
+    <h2>Right Drawer</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('right-drawer').show()">Open Right Drawer</el-dm-button>
+      <el-dm-drawer id="right-drawer" modal position="right">
+        <span slot="header">Settings</span>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <p>Configure your preferences here.</p>
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" checked> Enable notifications
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox"> Dark mode
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" checked> Auto-save
+          </label>
+        </div>
+        <div slot="footer">
+          <el-dm-button variant="ghost" onclick="this.closest('el-dm-drawer').hide()">Cancel</el-dm-button>
+          <el-dm-button onclick="this.closest('el-dm-drawer').hide()">Save</el-dm-button>
+        </div>
+      </el-dm-drawer>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Width</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('wide-drawer').show()">Open Wide Drawer (400px)</el-dm-button>
+      <el-dm-button onclick="document.getElementById('narrow-drawer').show()">Open Narrow Drawer (200px)</el-dm-button>
+      <el-dm-drawer id="wide-drawer" modal width="400px">
+        <span slot="header">Wide Drawer</span>
+        <p>This drawer is 400px wide.</p>
+      </el-dm-drawer>
+      <el-dm-drawer id="narrow-drawer" modal width="200px">
+        <span slot="header">Narrow</span>
+        <p>This drawer is 200px wide.</p>
+      </el-dm-drawer>
+    </div>
+  </section>
+
+  <section>
+    <h2>Non-Modal Drawer</h2>
+    <div class="demo-row">
+      <el-dm-button onclick="document.getElementById('nonmodal-drawer').toggle()">Toggle Non-Modal Drawer</el-dm-button>
+      <el-dm-drawer id="nonmodal-drawer" position="left">
+        <span slot="header">Side Panel</span>
+        <p>This drawer has no backdrop. You can still interact with the page behind it.</p>
+      </el-dm-drawer>
+    </div>
+  </section>
+
+  <section>
+    <h2>Event Handling</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-button onclick="document.getElementById('event-drawer').show()">Open Event Demo Drawer</el-dm-button>
+      <p>Drawer state: <strong id="drawer-state">closed</strong></p>
+      <el-dm-drawer id="event-drawer" modal>
+        <span slot="header">Event Demo</span>
+        <p>Open and close this drawer to see the events.</p>
+        <div slot="footer">
+          <el-dm-button onclick="this.closest('el-dm-drawer').hide()">Close</el-dm-button>
+        </div>
+      </el-dm-drawer>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerDrawer } from '../elements/drawer/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerDrawer();
+    registerButton();
+
+    const eventDrawer = document.getElementById('event-drawer');
+    const stateDisplay = document.getElementById('drawer-state');
+
+    eventDrawer.addEventListener('open', () => {
+      stateDisplay.textContent = 'open';
+    });
+
+    eventDrawer.addEventListener('close', () => {
+      stateDisplay.textContent = 'closed';
+    });
+  </script>
+</body>
+</html>

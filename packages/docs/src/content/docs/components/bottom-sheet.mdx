@@ -1,0 +1,140 @@
+---
+title: Bottom Sheet
+description: Mobile bottom panel component that slides up from the bottom of the screen
+order: 26
+section: components
+component: "@duskmoon-dev/el-bottom-sheet"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Bottom Sheet
+
+The Bottom Sheet component provides a mobile-friendly panel that slides up from the bottom of the screen. It supports snap points, swipe gestures, and modal mode with backdrop.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-bottom-sheet
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-bottom-sheet/register';
+```
+
+```html
+<el-dm-bottom-sheet id="my-sheet" modal>
+  <span slot="header">Sheet Title</span>
+  <p>Sheet content goes here.</p>
+</el-dm-bottom-sheet>
+
+<el-dm-button onclick="document.querySelector('#my-sheet').show()">Open Sheet</el-dm-button>
+```
+
+## Live Demo
+
+<ComponentDemo title="Bottom Sheet Demo">
+  <el-dm-button onclick="document.getElementById('demo-sheet').show()" variant="primary">Open Bottom Sheet</el-dm-button>
+  <el-dm-bottom-sheet id="demo-sheet" modal>
+    <span slot="header">Example Bottom Sheet</span>
+    <p>This is a bottom sheet component. You can drag the handle to dismiss it or click outside.</p>
+    <p>It works great on mobile devices with touch gestures!</p>
+    <el-dm-button onclick="document.getElementById('demo-sheet').hide()" variant="ghost" style="margin-top: 1rem;">Close</el-dm-button>
+  </el-dm-bottom-sheet>
+</ComponentDemo>
+
+## Snap Points
+
+Configure multiple height snap points:
+
+<ComponentDemo title="Snap Points">
+  <el-dm-button onclick="document.getElementById('snap-sheet').show()">Open with Snap Points</el-dm-button>
+  <el-dm-bottom-sheet id="snap-sheet" modal snap-points="25%,50%,100%">
+    <span slot="header">Snap Points Demo</span>
+    <p>Drag this sheet to snap to 25%, 50%, or 100% of the viewport height.</p>
+    <p>Try swiping up and down to see the snap behavior.</p>
+  </el-dm-bottom-sheet>
+</ComponentDemo>
+
+## Persistent Sheet
+
+Prevent dismissal via swipe or backdrop click:
+
+<ComponentDemo title="Persistent Sheet">
+  <el-dm-button onclick="document.getElementById('persistent-sheet').show()">Open Persistent Sheet</el-dm-button>
+  <el-dm-bottom-sheet id="persistent-sheet" modal persistent>
+    <span slot="header">Persistent Sheet</span>
+    <p>This sheet cannot be dismissed by clicking outside or swiping down.</p>
+    <el-dm-button onclick="document.getElementById('persistent-sheet').hide()" style="margin-top: 1rem;">Close Button Required</el-dm-button>
+  </el-dm-bottom-sheet>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the bottom sheet is open |
+| `modal` | `boolean` | `false` | Whether to show backdrop and trap focus |
+| `persistent` | `boolean` | `false` | Prevent dismiss by outside click or swipe down |
+| `snap-points` | `string` | `'100%'` | Comma-separated list of snap point heights (e.g., "25%,50%,100%") |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Opens the bottom sheet |
+| `hide()` | Closes the bottom sheet |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Main sheet content |
+| `header` | Header content above the drag handle |
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `open` | - | Fired when sheet opens |
+| `close` | - | Fired when sheet closes |
+| `snap` | `{ height: string, index: number }` | Fired when sheet snaps to a point |
+
+### Event Handling
+
+```javascript
+const sheet = document.querySelector('el-dm-bottom-sheet');
+sheet.addEventListener('open', () => {
+  console.log('Sheet opened');
+});
+sheet.addEventListener('close', () => {
+  console.log('Sheet closed');
+});
+sheet.addEventListener('snap', (e) => {
+  console.log('Snapped to:', e.detail.height);
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `wrapper` | The outer wrapper element |
+| `sheet` | The sheet container |
+| `backdrop` | The backdrop overlay (modal mode) |
+| `handle-area` | The drag handle area |
+| `handle` | The drag handle bar |
+| `header` | The header section |
+| `content` | The content wrapper |
+
+## Accessibility
+
+- Uses `role="dialog"` for the sheet
+- Uses `aria-modal` when in modal mode
+- Escape key closes non-persistent sheets
+- Focus is trapped within the sheet when modal
+- Body scroll is disabled when sheet is open
+- Safe area padding for notched devices

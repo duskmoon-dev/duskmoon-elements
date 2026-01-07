@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Accordion</h2>
+    <div class="demo-row">
+      <el-dm-accordion id="basic-accordion">
+        <el-dm-accordion-item value="section-1">
+          <span slot="header">Section 1</span>
+          <p>This is the content for section 1. Click the header to expand or collapse this panel.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="section-2">
+          <span slot="header">Section 2</span>
+          <p>This is the content for section 2. Only one panel can be open at a time by default.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="section-3">
+          <span slot="header">Section 3</span>
+          <p>This is the content for section 3. The accordion features smooth animations.</p>
+        </el-dm-accordion-item>
+      </el-dm-accordion>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple Expansion</h2>
+    <div class="demo-row">
+      <el-dm-accordion multiple>
+        <el-dm-accordion-item value="features">
+          <span slot="header">Features</span>
+          <p>Multiple panels can be open simultaneously when the <code>multiple</code> attribute is set.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="usage">
+          <span slot="header">Usage</span>
+          <p>Add the <code>multiple</code> attribute to the accordion to enable this behavior.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="example">
+          <span slot="header">Example</span>
+          <pre><code>&lt;el-dm-accordion multiple&gt;...&lt;/el-dm-accordion&gt;</code></pre>
+        </el-dm-accordion-item>
+      </el-dm-accordion>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pre-expanded Items</h2>
+    <div class="demo-row">
+      <el-dm-accordion value="item-2">
+        <el-dm-accordion-item value="item-1">
+          <span slot="header">Item 1 (Collapsed)</span>
+          <p>This item starts collapsed.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="item-2">
+          <span slot="header">Item 2 (Pre-expanded)</span>
+          <p>This item starts expanded because its value is set in the accordion's value attribute.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="item-3">
+          <span slot="header">Item 3 (Collapsed)</span>
+          <p>This item also starts collapsed.</p>
+        </el-dm-accordion-item>
+      </el-dm-accordion>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled Items</h2>
+    <div class="demo-row">
+      <el-dm-accordion>
+        <el-dm-accordion-item value="enabled-1">
+          <span slot="header">Enabled Item</span>
+          <p>This item can be expanded and collapsed normally.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="disabled-item" disabled>
+          <span slot="header">Disabled Item</span>
+          <p>This content won't be visible because the item is disabled.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="enabled-2">
+          <span slot="header">Another Enabled Item</span>
+          <p>This item also works normally.</p>
+        </el-dm-accordion-item>
+      </el-dm-accordion>
+    </div>
+  </section>
+
+  <section>
+    <h2>Programmatic Control</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <el-dm-button onclick="document.getElementById('controlled-accordion').open('panel-1')">Open Panel 1</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled-accordion').open('panel-2')">Open Panel 2</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled-accordion').toggle('panel-3')">Toggle Panel 3</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled-accordion').setOpenItems([])" variant="ghost">Close All</el-dm-button>
+      </div>
+      <el-dm-accordion id="controlled-accordion">
+        <el-dm-accordion-item value="panel-1">
+          <span slot="header">Panel 1</span>
+          <p>Control this panel programmatically using the buttons above.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="panel-2">
+          <span slot="header">Panel 2</span>
+          <p>Use the <code>open()</code>, <code>close()</code>, and <code>toggle()</code> methods.</p>
+        </el-dm-accordion-item>
+        <el-dm-accordion-item value="panel-3">
+          <span slot="header">Panel 3</span>
+          <p>The <code>setOpenItems()</code> method accepts an array of item IDs.</p>
+        </el-dm-accordion-item>
+      </el-dm-accordion>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerAccordion } from '../elements/accordion/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerAccordion();
+    registerButton();
+  </script>
+</body>
+</html>

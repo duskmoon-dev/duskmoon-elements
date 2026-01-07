@@ -1,0 +1,247 @@
+---
+title: Tabs
+description: Tab navigation component for organizing content into panels
+order: 24
+section: components
+component: "@duskmoon-dev/el-tabs"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Tabs
+
+The Tabs component provides a tab navigation interface for organizing content into separate panels. It implements the WAI-ARIA tabs pattern for full accessibility support.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-tabs
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-tabs/register';
+```
+
+```html
+<el-dm-tabs value="tab1">
+  <el-dm-tab tab-id="tab1">Tab 1</el-dm-tab>
+  <el-dm-tab tab-id="tab2">Tab 2</el-dm-tab>
+  <el-dm-tab tab-id="tab3">Tab 3</el-dm-tab>
+
+  <el-dm-tab-panel panel-for="tab1">Content for Tab 1</el-dm-tab-panel>
+  <el-dm-tab-panel panel-for="tab2">Content for Tab 2</el-dm-tab-panel>
+  <el-dm-tab-panel panel-for="tab3">Content for Tab 3</el-dm-tab-panel>
+</el-dm-tabs>
+```
+
+## Live Demo
+
+<ComponentDemo title="Tabs Demo">
+  <el-dm-tabs value="overview">
+    <el-dm-tab tab-id="overview">Overview</el-dm-tab>
+    <el-dm-tab tab-id="features">Features</el-dm-tab>
+    <el-dm-tab tab-id="specs">Specifications</el-dm-tab>
+
+    <el-dm-tab-panel panel-for="overview">
+      <h4>Product Overview</h4>
+      <p>This is the overview content for the product. It provides a general introduction and summary.</p>
+    </el-dm-tab-panel>
+    <el-dm-tab-panel panel-for="features">
+      <h4>Key Features</h4>
+      <ul>
+        <li>Feature one with description</li>
+        <li>Feature two with description</li>
+        <li>Feature three with description</li>
+      </ul>
+    </el-dm-tab-panel>
+    <el-dm-tab-panel panel-for="specs">
+      <h4>Technical Specifications</h4>
+      <p>Detailed technical specifications and requirements go here.</p>
+    </el-dm-tab-panel>
+  </el-dm-tabs>
+</ComponentDemo>
+
+## Properties
+
+### Tabs Container (el-dm-tabs)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | - | Currently selected tab id |
+| `variant` | `'underline' \| 'pills' \| 'enclosed'` | `'underline'` | Tab style variant |
+| `color` | `string` | - | Color theme for tabs |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Tab orientation |
+
+### Tab (el-dm-tab)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `tab-id` | `string` | - | Unique identifier for this tab |
+| `disabled` | `boolean` | `false` | Whether the tab is disabled |
+
+### Tab Panel (el-dm-tab-panel)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `panel-for` | `string` | - | ID of the tab this panel belongs to |
+
+## Variants
+
+### Underline (default)
+
+```html
+<el-dm-tabs variant="underline">
+  <!-- tabs and panels -->
+</el-dm-tabs>
+```
+
+### Pills
+
+```html
+<el-dm-tabs variant="pills">
+  <!-- tabs and panels -->
+</el-dm-tabs>
+```
+
+### Enclosed
+
+```html
+<el-dm-tabs variant="enclosed">
+  <!-- tabs and panels -->
+</el-dm-tabs>
+```
+
+## Orientations
+
+### Horizontal (default)
+
+```html
+<el-dm-tabs orientation="horizontal">
+  <!-- tabs and panels -->
+</el-dm-tabs>
+```
+
+### Vertical
+
+```html
+<el-dm-tabs orientation="vertical">
+  <!-- tabs and panels -->
+</el-dm-tabs>
+```
+
+## Disabled Tabs
+
+Individual tabs can be disabled:
+
+```html
+<el-dm-tabs value="tab1">
+  <el-dm-tab tab-id="tab1">Active Tab</el-dm-tab>
+  <el-dm-tab tab-id="tab2" disabled>Disabled Tab</el-dm-tab>
+  <el-dm-tab tab-id="tab3">Another Tab</el-dm-tab>
+
+  <el-dm-tab-panel panel-for="tab1">Content 1</el-dm-tab-panel>
+  <el-dm-tab-panel panel-for="tab2">Content 2</el-dm-tab-panel>
+  <el-dm-tab-panel panel-for="tab3">Content 3</el-dm-tab-panel>
+</el-dm-tabs>
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `change` | `{ value: string, oldValue: string }` | Fired when tab selection changes |
+
+### Event Handling
+
+```javascript
+const tabs = document.querySelector('el-dm-tabs');
+tabs.addEventListener('change', (e) => {
+  console.log('Tab changed from', e.detail.oldValue, 'to', e.detail.value);
+});
+```
+
+## Slots
+
+### Tabs Container
+
+| Slot | Description |
+|------|-------------|
+| `tab` | Slot for tab elements (auto-assigned) |
+| default | Default slot for tab panels |
+
+### Tab
+
+| Slot | Description |
+|------|-------------|
+| default | Tab label content |
+
+### Tab Panel
+
+| Slot | Description |
+|------|-------------|
+| default | Panel content |
+
+## CSS Parts
+
+### Tabs Container
+
+| Part | Description |
+|------|-------------|
+| `tablist` | The tab list container |
+| `indicator` | The animated indicator (underline variant) |
+
+### Tab
+
+| Part | Description |
+|------|-------------|
+| `tab` | The tab button |
+
+### Tab Panel
+
+| Part | Description |
+|------|-------------|
+| `panel` | The panel container |
+
+### Styling with CSS Parts
+
+```css
+el-dm-tabs::part(tablist) {
+  background: #f5f5f5;
+  padding: 0.5rem;
+}
+
+el-dm-tabs::part(indicator) {
+  height: 3px;
+  border-radius: 3px;
+}
+
+el-dm-tab::part(tab) {
+  padding: 1rem 1.5rem;
+}
+
+el-dm-tab-panel::part(panel) {
+  padding: 1.5rem;
+}
+```
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` | Move to previous tab (horizontal) |
+| `ArrowRight` | Move to next tab (horizontal) |
+| `ArrowUp` | Move to previous tab (vertical) |
+| `ArrowDown` | Move to next tab (vertical) |
+| `Home` | Move to first tab |
+| `End` | Move to last tab |
+
+## Accessibility
+
+- Implements WAI-ARIA tabs pattern
+- Uses `role="tablist"`, `role="tab"`, and `role="tabpanel"`
+- `aria-selected` indicates the current tab
+- `aria-orientation` reflects the tab orientation
+- Proper focus management with `tabindex`
+- Keyboard navigation support for all orientations

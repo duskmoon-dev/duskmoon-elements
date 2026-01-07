@@ -1,0 +1,160 @@
+---
+title: Breadcrumbs
+description: Hierarchical navigation breadcrumbs for displaying the current location
+order: 18
+section: components
+component: "@duskmoon-dev/el-breadcrumbs"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Breadcrumbs
+
+The Breadcrumbs component provides hierarchical navigation to help users understand their current location within a site structure and navigate back to previous levels.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-breadcrumbs
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-breadcrumbs/register';
+```
+
+```html
+<el-dm-breadcrumbs id="breadcrumbs"></el-dm-breadcrumbs>
+
+<script>
+  document.querySelector('#breadcrumbs').items = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Electronics', href: '/products/electronics' },
+    { label: 'Laptops' }
+  ];
+</script>
+```
+
+## Live Demo
+
+<ComponentDemo title="Breadcrumbs Demo">
+  <el-dm-breadcrumbs id="demo-breadcrumbs"></el-dm-breadcrumbs>
+  <script>{`
+    document.querySelector('#demo-breadcrumbs').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Components', href: '#' },
+      { label: 'Navigation', href: '#' },
+      { label: 'Breadcrumbs' }
+    ];
+  `}</script>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `items` | `BreadcrumbItem[]` | `[]` | Array of breadcrumb items |
+| `separator` | `string` | `'/'` | Separator character between items |
+
+### BreadcrumbItem Interface
+
+```typescript
+interface BreadcrumbItem {
+  label: string;  // Display label for the breadcrumb
+  href?: string;  // URL for the breadcrumb link (optional for last item)
+}
+```
+
+## Custom Separator
+
+```html
+<!-- Text separator -->
+<el-dm-breadcrumbs separator=">"></el-dm-breadcrumbs>
+
+<!-- Custom separator via slot -->
+<el-dm-breadcrumbs>
+  <span slot="separator">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </span>
+</el-dm-breadcrumbs>
+```
+
+<ComponentDemo title="Custom Separator">
+  <el-dm-breadcrumbs id="demo-breadcrumbs-arrow" separator=">"></el-dm-breadcrumbs>
+  <script>{`
+    document.querySelector('#demo-breadcrumbs-arrow').items = [
+      { label: 'Home', href: '#' },
+      { label: 'Category', href: '#' },
+      { label: 'Item' }
+    ];
+  `}</script>
+</ComponentDemo>
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `navigate` | `{ item: BreadcrumbItem, index: number }` | Fired when a breadcrumb link is clicked |
+
+### Event Handling
+
+```javascript
+const breadcrumbs = document.querySelector('el-dm-breadcrumbs');
+breadcrumbs.addEventListener('navigate', (e) => {
+  e.preventDefault(); // Prevent default navigation
+  console.log('Navigating to:', e.detail.item.href);
+  console.log('Item:', e.detail.item);
+  console.log('Index:', e.detail.index);
+});
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `separator` | Custom separator element between items |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `nav` | The navigation container |
+| `list` | The ordered list element |
+| `item` | Individual breadcrumb item container |
+| `link` | Breadcrumb link element |
+| `current` | Current page text (last item) |
+| `separator` | Separator element between items |
+
+## Styling Example
+
+```css
+el-dm-breadcrumbs::part(link) {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+el-dm-breadcrumbs::part(link):hover {
+  text-decoration: underline;
+}
+
+el-dm-breadcrumbs::part(current) {
+  color: #6b7280;
+}
+
+el-dm-breadcrumbs::part(separator) {
+  color: #9ca3af;
+  margin: 0 0.25rem;
+}
+```
+
+## Accessibility
+
+- Uses `<nav>` element with `aria-label="Breadcrumb"`
+- Uses `<ol>` for semantic list structure
+- Last item has `aria-current="page"` to indicate current page
+- All links are keyboard accessible
+- Focus indicator for keyboard navigation

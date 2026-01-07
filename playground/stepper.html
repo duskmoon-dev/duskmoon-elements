@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Stepper</h2>
+    <div class="demo-row">
+      <el-dm-stepper id="basic-stepper" current="1"></el-dm-stepper>
+    </div>
+    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+      <el-dm-button onclick="moveStep('basic-stepper', -1)">Previous</el-dm-button>
+      <el-dm-button onclick="moveStep('basic-stepper', 1)">Next</el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Vertical Orientation</h2>
+    <div class="demo-row">
+      <el-dm-stepper id="vertical-stepper" orientation="vertical" current="1"></el-dm-stepper>
+    </div>
+    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+      <el-dm-button onclick="moveStep('vertical-stepper', -1)">Previous</el-dm-button>
+      <el-dm-button onclick="moveStep('vertical-stepper', 1)">Next</el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Clickable Steps</h2>
+    <div class="demo-row">
+      <el-dm-stepper id="clickable-stepper" clickable current="0"></el-dm-stepper>
+    </div>
+    <p id="clickable-status" style="margin-top: 1rem;">Click on any step to navigate. Current step: 1</p>
+  </section>
+
+  <section>
+    <h2>Colors</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 2rem;">
+      <div>
+        <p style="margin-bottom: 0.5rem;">Primary:</p>
+        <el-dm-stepper id="primary-stepper" color="primary" current="1"></el-dm-stepper>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">Secondary:</p>
+        <el-dm-stepper id="secondary-stepper" color="secondary" current="1"></el-dm-stepper>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">Success:</p>
+        <el-dm-stepper id="success-stepper" color="success" current="1"></el-dm-stepper>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">Warning:</p>
+        <el-dm-stepper id="warning-stepper" color="warning" current="1"></el-dm-stepper>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">Error:</p>
+        <el-dm-stepper id="error-stepper" color="error" current="1"></el-dm-stepper>
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem;">Info:</p>
+        <el-dm-stepper id="info-stepper" color="info" current="1"></el-dm-stepper>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Icons</h2>
+    <div class="demo-row">
+      <el-dm-stepper id="icon-stepper" current="1"></el-dm-stepper>
+    </div>
+    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+      <el-dm-button onclick="moveStep('icon-stepper', -1)">Previous</el-dm-button>
+      <el-dm-button onclick="moveStep('icon-stepper', 1)">Next</el-dm-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checkout Wizard Example</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-stepper id="checkout-stepper" clickable current="0"></el-dm-stepper>
+      <div id="checkout-content" style="padding: 1rem; border: 1px solid var(--color-outline); border-radius: 0.5rem;">
+        <h3>Step 1: Cart Review</h3>
+        <p>Review your items before proceeding to checkout.</p>
+      </div>
+      <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+        <el-dm-button id="checkout-prev" variant="ghost" onclick="moveStep('checkout-stepper', -1)" disabled>Previous</el-dm-button>
+        <el-dm-button id="checkout-next" onclick="moveStep('checkout-stepper', 1)">Next Step</el-dm-button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerStepper } from '../elements/stepper/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerStepper();
+    registerButton();
+
+    // Basic stepper steps
+    const basicSteps = [
+      { label: 'Account', description: 'Create your account' },
+      { label: 'Profile', description: 'Add your details' },
+      { label: 'Preferences', description: 'Set your preferences' },
+      { label: 'Complete', description: 'All done!' }
+    ];
+
+    document.getElementById('basic-stepper').steps = basicSteps;
+    document.getElementById('vertical-stepper').steps = basicSteps;
+    document.getElementById('clickable-stepper').steps = basicSteps;
+    document.getElementById('primary-stepper').steps = basicSteps;
+    document.getElementById('secondary-stepper').steps = basicSteps;
+    document.getElementById('success-stepper').steps = basicSteps;
+    document.getElementById('warning-stepper').steps = basicSteps;
+    document.getElementById('error-stepper').steps = basicSteps;
+    document.getElementById('info-stepper').steps = basicSteps;
+
+    // Custom icons stepper
+    document.getElementById('icon-stepper').steps = [
+      { label: 'Cart', description: 'Review items', icon: '🛒' },
+      { label: 'Shipping', description: 'Enter address', icon: '📦' },
+      { label: 'Payment', description: 'Add payment', icon: '💳' },
+      { label: 'Complete', description: 'Order placed', icon: '✅' }
+    ];
+
+    // Checkout wizard
+    const checkoutSteps = [
+      { label: 'Cart', description: 'Review items' },
+      { label: 'Shipping', description: 'Delivery address' },
+      { label: 'Payment', description: 'Payment method' },
+      { label: 'Confirm', description: 'Place order' }
+    ];
+    document.getElementById('checkout-stepper').steps = checkoutSteps;
+
+    const checkoutContent = [
+      { title: 'Cart Review', desc: 'Review your items before proceeding to checkout.' },
+      { title: 'Shipping Address', desc: 'Enter your delivery address and shipping preferences.' },
+      { title: 'Payment Method', desc: 'Select your payment method and enter payment details.' },
+      { title: 'Order Confirmation', desc: 'Review your order and click "Place Order" to complete.' }
+    ];
+
+    // Clickable stepper event
+    document.getElementById('clickable-stepper').addEventListener('change', (e) => {
+      document.getElementById('clickable-status').textContent =
+        'Click on any step to navigate. Current step: ' + (e.detail.current + 1);
+    });
+
+    // Checkout wizard event
+    document.getElementById('checkout-stepper').addEventListener('change', (e) => {
+      updateCheckoutContent(e.detail.current);
+    });
+
+    function updateCheckoutContent(step) {
+      const content = checkoutContent[step];
+      document.getElementById('checkout-content').innerHTML = `
+        <h3>Step ${step + 1}: ${content.title}</h3>
+        <p>${content.desc}</p>
+      `;
+
+      const prevBtn = document.getElementById('checkout-prev');
+      const nextBtn = document.getElementById('checkout-next');
+
+      prevBtn.disabled = step === 0;
+      if (step === checkoutSteps.length - 1) {
+        nextBtn.textContent = 'Place Order';
+      } else {
+        nextBtn.textContent = 'Next Step';
+      }
+    }
+
+    // Global helper function
+    window.moveStep = function(stepperId, delta) {
+      const stepper = document.getElementById(stepperId);
+      const maxStep = stepper.steps.length - 1;
+      const newStep = Math.max(0, Math.min(maxStep, stepper.current + delta));
+      stepper.current = newStep;
+
+      if (stepperId === 'checkout-stepper') {
+        updateCheckoutContent(newStep);
+      }
+    };
+  </script>
+</body>
+</html>

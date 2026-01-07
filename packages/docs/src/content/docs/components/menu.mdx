@@ -1,0 +1,213 @@
+---
+title: Menu
+description: Dropdown menu component with keyboard navigation support
+order: 20
+section: components
+component: "@duskmoon-dev/el-menu"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Menu
+
+The Menu component provides a dropdown menu with items that support keyboard navigation. It consists of two elements: `el-dm-menu` for the container and `el-dm-menu-item` for individual items.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-menu
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-menu/register';
+```
+
+```html
+<el-dm-menu id="my-menu">
+  <el-dm-button slot="trigger" onclick="this.parentElement.toggle()">
+    Open Menu
+  </el-dm-button>
+  <el-dm-menu-item value="edit">Edit</el-dm-menu-item>
+  <el-dm-menu-item value="duplicate">Duplicate</el-dm-menu-item>
+  <el-dm-menu-item value="delete">Delete</el-dm-menu-item>
+</el-dm-menu>
+```
+
+## Live Demo
+
+<ComponentDemo title="Menu Demo">
+  <el-dm-menu id="demo-menu">
+    <el-dm-button slot="trigger" onclick="this.parentElement.toggle()">
+      Actions
+    </el-dm-button>
+    <el-dm-menu-item value="view">View Details</el-dm-menu-item>
+    <el-dm-menu-item value="edit">Edit</el-dm-menu-item>
+    <el-dm-menu-item value="duplicate">Duplicate</el-dm-menu-item>
+    <div role="separator"></div>
+    <el-dm-menu-item value="archive">Archive</el-dm-menu-item>
+    <el-dm-menu-item value="delete" disabled>Delete</el-dm-menu-item>
+  </el-dm-menu>
+  <script>{`
+    document.querySelector('#demo-menu').addEventListener('select', (e) => {
+      console.log('Selected:', e.detail.value);
+    });
+  `}</script>
+</ComponentDemo>
+
+## Menu Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the menu is open |
+| `anchor` | `string` | - | Element ref or CSS selector for anchor element |
+| `placement` | `MenuPlacement` | `'bottom-start'` | Menu placement relative to trigger |
+
+### Placement Options
+
+```typescript
+type MenuPlacement =
+  | 'top' | 'top-start' | 'top-end'
+  | 'bottom' | 'bottom-start' | 'bottom-end'
+  | 'left' | 'right';
+```
+
+## Menu Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Opens the menu |
+| `hide()` | Closes the menu |
+| `toggle()` | Toggles the menu open/closed |
+
+## Menu Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `open` | - | Fired when menu opens |
+| `close` | - | Fired when menu closes |
+| `select` | `{ value: string }` | Fired when an item is selected |
+
+### Event Handling
+
+```javascript
+const menu = document.querySelector('el-dm-menu');
+
+menu.addEventListener('select', (e) => {
+  console.log('Selected:', e.detail.value);
+});
+
+menu.addEventListener('open', () => {
+  console.log('Menu opened');
+});
+
+menu.addEventListener('close', () => {
+  console.log('Menu closed');
+});
+```
+
+## Menu Item Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | - | Value associated with the item |
+| `disabled` | `boolean` | `false` | Whether the item is disabled |
+
+## Placement Examples
+
+```html
+<el-dm-menu placement="bottom-start">...</el-dm-menu>
+<el-dm-menu placement="bottom-end">...</el-dm-menu>
+<el-dm-menu placement="top">...</el-dm-menu>
+<el-dm-menu placement="right">...</el-dm-menu>
+```
+
+<ComponentDemo title="Menu Placements">
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <el-dm-menu placement="bottom-start">
+      <el-dm-button slot="trigger" onclick="this.parentElement.toggle()">
+        Bottom Start
+      </el-dm-button>
+      <el-dm-menu-item>Option 1</el-dm-menu-item>
+      <el-dm-menu-item>Option 2</el-dm-menu-item>
+    </el-dm-menu>
+    <el-dm-menu placement="bottom-end">
+      <el-dm-button slot="trigger" onclick="this.parentElement.toggle()">
+        Bottom End
+      </el-dm-button>
+      <el-dm-menu-item>Option 1</el-dm-menu-item>
+      <el-dm-menu-item>Option 2</el-dm-menu-item>
+    </el-dm-menu>
+  </div>
+</ComponentDemo>
+
+## Menu with Icons
+
+```html
+<el-dm-menu>
+  <el-dm-button slot="trigger" onclick="this.parentElement.toggle()">
+    File
+  </el-dm-button>
+  <el-dm-menu-item value="new">
+    <svg slot="icon">...</svg>
+    New File
+  </el-dm-menu-item>
+  <el-dm-menu-item value="open">
+    <svg slot="icon">...</svg>
+    Open
+  </el-dm-menu-item>
+</el-dm-menu>
+```
+
+## Menu Separator
+
+Use a `<div role="separator">` to create visual separation between menu item groups:
+
+```html
+<el-dm-menu>
+  <el-dm-menu-item>Cut</el-dm-menu-item>
+  <el-dm-menu-item>Copy</el-dm-menu-item>
+  <el-dm-menu-item>Paste</el-dm-menu-item>
+  <div role="separator"></div>
+  <el-dm-menu-item>Delete</el-dm-menu-item>
+</el-dm-menu>
+```
+
+## Menu Slots
+
+| Slot | Description |
+|------|-------------|
+| `trigger` | Trigger element to open the menu |
+| default | Menu items |
+
+## Menu Item Slots
+
+| Slot | Description |
+|------|-------------|
+| `icon` | Icon before the content |
+| default | Item content |
+
+## CSS Parts (Menu)
+
+| Part | Description |
+|------|-------------|
+| `menu` | The menu container |
+| `items` | The menu items wrapper |
+
+## CSS Parts (Menu Item)
+
+| Part | Description |
+|------|-------------|
+| `item` | The menu item container |
+| `icon` | The icon wrapper |
+| `content` | The content wrapper |
+
+## Accessibility
+
+- Uses `role="menu"` for the container and `role="menuitem"` for items
+- Full keyboard navigation: Arrow keys, Home, End, Enter, Space, Escape
+- Disabled items have `aria-disabled="true"`
+- Menu has `aria-hidden` when closed
+- Focus is automatically moved to the first item when opened
+- Tab key closes the menu

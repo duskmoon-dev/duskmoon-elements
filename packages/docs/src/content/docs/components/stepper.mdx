@@ -1,0 +1,203 @@
+---
+title: Stepper
+description: A multi-step progress indicator and wizard component
+order: 23
+section: components
+component: "@duskmoon-dev/el-stepper"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Stepper
+
+The Stepper component provides a multi-step progress indicator for wizard-like workflows. It shows the current step, completed steps, and upcoming steps with visual connectors.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-stepper
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-stepper/register';
+```
+
+```html
+<el-dm-stepper id="my-stepper" current="1"></el-dm-stepper>
+
+<script>
+  const stepper = document.getElementById('my-stepper');
+  stepper.steps = [
+    { label: 'Account', description: 'Create your account' },
+    { label: 'Profile', description: 'Add profile details' },
+    { label: 'Review', description: 'Review and submit' }
+  ];
+</script>
+```
+
+## Live Demo
+
+<ComponentDemo title="Stepper Demo">
+  <el-dm-stepper id="demo-stepper" current="1" clickable></el-dm-stepper>
+  <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+    <el-dm-button onclick="document.getElementById('demo-stepper').current = Math.max(0, document.getElementById('demo-stepper').current - 1)">Previous</el-dm-button>
+    <el-dm-button onclick="document.getElementById('demo-stepper').current = Math.min(2, document.getElementById('demo-stepper').current + 1)">Next</el-dm-button>
+  </div>
+  <script>
+    {`
+      document.getElementById('demo-stepper').steps = [
+        { label: 'Account', description: 'Create your account' },
+        { label: 'Profile', description: 'Add profile details' },
+        { label: 'Review', description: 'Review and submit' }
+      ];
+    `}
+  </script>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `steps` | `StepData[]` | `[]` | Array of step objects with label, description, and optional icon |
+| `current` | `number` | `0` | Current step index (0-based) |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Stepper color theme |
+| `clickable` | `boolean` | `false` | Whether steps are clickable for navigation |
+
+### StepData Interface
+
+```typescript
+interface StepData {
+  label: string;       // Required: Step label text
+  description?: string; // Optional: Step description
+  icon?: string;       // Optional: Icon (text, emoji, or HTML)
+}
+```
+
+## Orientations
+
+### Horizontal (default)
+
+```html
+<el-dm-stepper orientation="horizontal"></el-dm-stepper>
+```
+
+### Vertical
+
+```html
+<el-dm-stepper orientation="vertical"></el-dm-stepper>
+```
+
+## Colors
+
+```html
+<el-dm-stepper color="primary"></el-dm-stepper>
+<el-dm-stepper color="secondary"></el-dm-stepper>
+<el-dm-stepper color="success"></el-dm-stepper>
+<el-dm-stepper color="warning"></el-dm-stepper>
+<el-dm-stepper color="error"></el-dm-stepper>
+<el-dm-stepper color="info"></el-dm-stepper>
+```
+
+## Clickable Steps
+
+Enable step navigation by clicking:
+
+```html
+<el-dm-stepper clickable></el-dm-stepper>
+```
+
+## Custom Icons
+
+Steps can include custom icons:
+
+```javascript
+stepper.steps = [
+  { label: 'Cart', icon: '🛒' },
+  { label: 'Shipping', icon: '📦' },
+  { label: 'Payment', icon: '💳' },
+  { label: 'Complete', icon: '✅' }
+];
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `change` | `{ current: number, previous: number }` | Fired when step changes via click (when clickable is true) |
+
+### Event Handling
+
+```javascript
+const stepper = document.querySelector('el-dm-stepper');
+stepper.addEventListener('change', (e) => {
+  console.log('Step changed from', e.detail.previous, 'to', e.detail.current);
+});
+```
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `stepper` | The stepper container |
+| `step` | Individual step wrapper |
+| `indicator` | The step number/icon circle |
+| `content` | The step label and description wrapper |
+| `label` | The step label text |
+| `description` | The step description text |
+| `connector` | The connector line between steps |
+
+### Styling with CSS Parts
+
+```css
+el-dm-stepper::part(indicator) {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+el-dm-stepper::part(label) {
+  font-size: 1rem;
+}
+
+el-dm-stepper::part(connector) {
+  height: 3px;
+}
+```
+
+## Individual Step Element
+
+For more control, use `el-dm-step` elements:
+
+```html
+<el-dm-step label="Step 1" description="First step" status="completed" step-number="1"></el-dm-step>
+<el-dm-step label="Step 2" description="Current step" status="current" step-number="2"></el-dm-step>
+<el-dm-step label="Step 3" description="Upcoming step" status="upcoming" step-number="3"></el-dm-step>
+```
+
+### Step Element Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `string` | - | Step label text |
+| `description` | `string` | - | Optional description text |
+| `icon` | `string` | - | Optional icon (text/emoji/html) |
+| `status` | `'completed' \| 'current' \| 'upcoming'` | `'upcoming'` | Step status |
+| `step-number` | `number` | `1` | Step number to display |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `color` | `string` | `'primary'` | Step color |
+
+### Step Element Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Custom step content |
+| `icon` | Custom icon content |
+
+## Accessibility
+
+- Uses `role="navigation"` with `aria-label="Progress steps"`
+- Step states are visually distinct for completed, current, and upcoming
+- Clickable steps can be focused and activated with keyboard

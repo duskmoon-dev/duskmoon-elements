@@ -1,0 +1,137 @@
+---
+title: Bottom Navigation
+description: Mobile-first bottom navigation bar component with icons and labels
+order: 17
+section: components
+component: "@duskmoon-dev/el-bottom-navigation"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Bottom Navigation
+
+The Bottom Navigation component provides a mobile-first navigation bar fixed at the bottom of the viewport for easy thumb access. It supports icons, labels, and multiple color themes.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-bottom-navigation
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-bottom-navigation/register';
+```
+
+```html
+<el-dm-bottom-navigation id="nav" value="home">
+</el-dm-bottom-navigation>
+
+<script>
+  const nav = document.querySelector('#nav');
+  nav.items = [
+    { value: 'home', label: 'Home', icon: '<svg>...</svg>' },
+    { value: 'search', label: 'Search', icon: '<svg>...</svg>' },
+    { value: 'profile', label: 'Profile', icon: '<svg>...</svg>' }
+  ];
+</script>
+```
+
+## Live Demo
+
+<ComponentDemo title="Bottom Navigation Demo">
+  <div style="position: relative; height: 120px; border: 1px solid var(--color-outline); border-radius: 8px; overflow: hidden;">
+    <el-dm-bottom-navigation id="demo-nav" value="home" position="static">
+    </el-dm-bottom-navigation>
+  </div>
+  <script>{`
+    document.querySelector('#demo-nav').items = [
+      { value: 'home', label: 'Home', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
+      { value: 'search', label: 'Search', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>' },
+      { value: 'favorites', label: 'Favorites', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' },
+      { value: 'profile', label: 'Profile', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' }
+    ];
+  `}</script>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `items` | `BottomNavigationItem[]` | `[]` | Array of navigation items |
+| `value` | `string` | - | Currently selected item value |
+| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme for active item |
+| `position` | `'fixed' \| 'static' \| 'sticky'` | `'fixed'` | Position of the navigation bar |
+
+### BottomNavigationItem Interface
+
+```typescript
+interface BottomNavigationItem {
+  value: string;      // Unique identifier
+  label: string;      // Display label
+  icon?: string;      // Icon HTML or SVG string
+  disabled?: boolean; // Whether the item is disabled
+  href?: string;      // Optional href for link behavior
+}
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `change` | `{ value: string, item: BottomNavigationItem }` | Fired when selection changes |
+
+### Event Handling
+
+```javascript
+const nav = document.querySelector('el-dm-bottom-navigation');
+nav.addEventListener('change', (e) => {
+  console.log('Selected:', e.detail.value);
+  console.log('Item:', e.detail.item);
+});
+```
+
+## Color Variants
+
+```html
+<el-dm-bottom-navigation color="primary">...</el-dm-bottom-navigation>
+<el-dm-bottom-navigation color="secondary">...</el-dm-bottom-navigation>
+<el-dm-bottom-navigation color="success">...</el-dm-bottom-navigation>
+<el-dm-bottom-navigation color="warning">...</el-dm-bottom-navigation>
+<el-dm-bottom-navigation color="error">...</el-dm-bottom-navigation>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| default | Custom nav items (el-dm-bottom-navigation-item) |
+
+## CSS Parts
+
+| Part | Description |
+|------|-------------|
+| `container` | The navigation container |
+| `item` | Individual navigation item |
+| `icon` | Item icon container |
+| `label` | Item label |
+
+## CSS Custom Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--bottom-nav-height` | `56px` | Height of the navigation bar |
+| `--bottom-nav-bg` | `var(--color-surface)` | Background color |
+| `--bottom-nav-text` | `var(--color-text-secondary)` | Inactive text color |
+| `--bottom-nav-text-active` | `var(--color-primary)` | Active text color |
+| `--bottom-nav-icon-size` | `24px` | Icon size |
+| `--bottom-nav-label-size` | `0.75rem` | Label font size |
+
+## Accessibility
+
+- Uses `role="tablist"` for the container and `role="tab"` for items
+- Keyboard navigation with Arrow keys, Home, End
+- `aria-selected` indicates the current selection
+- Disabled items have `tabindex="-1"` and are not focusable
+- Supports safe area insets for iOS devices

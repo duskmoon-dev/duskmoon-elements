@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Tabs</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="tab1" style="width: 100%;">
+        <el-dm-tab tab-id="tab1">Tab One</el-dm-tab>
+        <el-dm-tab tab-id="tab2">Tab Two</el-dm-tab>
+        <el-dm-tab tab-id="tab3">Tab Three</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="tab1">
+          <h4>First Tab Content</h4>
+          <p>This is the content of the first tab. You can place any content here.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="tab2">
+          <h4>Second Tab Content</h4>
+          <p>This is the content of the second tab. Each panel is independent.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="tab3">
+          <h4>Third Tab Content</h4>
+          <p>This is the content of the third tab. Switch between tabs to see different content.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Underline Variant (Default)</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="underline1" variant="underline" style="width: 100%;">
+        <el-dm-tab tab-id="underline1">Overview</el-dm-tab>
+        <el-dm-tab tab-id="underline2">Features</el-dm-tab>
+        <el-dm-tab tab-id="underline3">Pricing</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="underline1">
+          <p>The underline variant shows an animated indicator below the active tab.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="underline2">
+          <p>Features content with underline style tabs.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="underline3">
+          <p>Pricing content with underline style tabs.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pills Variant</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="pill1" variant="pills" style="width: 100%;">
+        <el-dm-tab tab-id="pill1">All</el-dm-tab>
+        <el-dm-tab tab-id="pill2">Active</el-dm-tab>
+        <el-dm-tab tab-id="pill3">Completed</el-dm-tab>
+        <el-dm-tab tab-id="pill4">Archived</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="pill1">
+          <p>Showing all items. The pills variant gives tabs a rounded, button-like appearance.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="pill2">
+          <p>Showing active items only.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="pill3">
+          <p>Showing completed items only.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="pill4">
+          <p>Showing archived items only.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Enclosed Variant</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="enclosed1" variant="enclosed" style="width: 100%;">
+        <el-dm-tab tab-id="enclosed1">General</el-dm-tab>
+        <el-dm-tab tab-id="enclosed2">Security</el-dm-tab>
+        <el-dm-tab tab-id="enclosed3">Notifications</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="enclosed1">
+          <p>General settings panel. The enclosed variant creates a card-like tab appearance.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="enclosed2">
+          <p>Security settings panel with enclosed tabs.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="enclosed3">
+          <p>Notification settings panel with enclosed tabs.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Vertical Orientation</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="vertical1" orientation="vertical" style="width: 100%; min-height: 200px;">
+        <el-dm-tab tab-id="vertical1">Dashboard</el-dm-tab>
+        <el-dm-tab tab-id="vertical2">Profile</el-dm-tab>
+        <el-dm-tab tab-id="vertical3">Settings</el-dm-tab>
+        <el-dm-tab tab-id="vertical4">Help</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="vertical1">
+          <h4>Dashboard</h4>
+          <p>Vertical tabs are great for sidebar-style navigation. Use arrow up/down keys to navigate.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="vertical2">
+          <h4>Profile</h4>
+          <p>Your profile information and settings.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="vertical3">
+          <h4>Settings</h4>
+          <p>Application settings and preferences.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="vertical4">
+          <h4>Help</h4>
+          <p>Documentation and support resources.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Vertical Pills</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="vpill1" orientation="vertical" variant="pills" style="width: 100%; min-height: 200px;">
+        <el-dm-tab tab-id="vpill1">Account</el-dm-tab>
+        <el-dm-tab tab-id="vpill2">Billing</el-dm-tab>
+        <el-dm-tab tab-id="vpill3">Integrations</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="vpill1">
+          <h4>Account Settings</h4>
+          <p>Manage your account details, email, and password.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="vpill2">
+          <h4>Billing & Payments</h4>
+          <p>View invoices, update payment methods, and manage subscriptions.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="vpill3">
+          <h4>Integrations</h4>
+          <p>Connect third-party services and manage API access.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled Tabs</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="dis1" style="width: 100%;">
+        <el-dm-tab tab-id="dis1">Available</el-dm-tab>
+        <el-dm-tab tab-id="dis2" disabled>Locked</el-dm-tab>
+        <el-dm-tab tab-id="dis3">Available</el-dm-tab>
+        <el-dm-tab tab-id="dis4" disabled>Coming Soon</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="dis1">
+          <p>This tab is available. The "Locked" and "Coming Soon" tabs are disabled.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="dis2">
+          <p>This content won't be visible because the tab is disabled.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="dis3">
+          <p>Another available tab content.</p>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="dis4">
+          <p>This content won't be visible because the tab is disabled.</p>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <section>
+    <h2>Event Handling</h2>
+    <div class="demo-row" style="flex-direction: column; gap: 1rem;">
+      <el-dm-tabs id="event-tabs" value="event1" style="width: 100%;">
+        <el-dm-tab tab-id="event1">First</el-dm-tab>
+        <el-dm-tab tab-id="event2">Second</el-dm-tab>
+        <el-dm-tab tab-id="event3">Third</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="event1">First tab content</el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="event2">Second tab content</el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="event3">Third tab content</el-dm-tab-panel>
+      </el-dm-tabs>
+      <p id="event-status">Tab changed: -</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Rich Content</h2>
+    <div class="demo-row">
+      <el-dm-tabs value="rich1" style="width: 100%;">
+        <el-dm-tab tab-id="rich1">Products</el-dm-tab>
+        <el-dm-tab tab-id="rich2">Reviews</el-dm-tab>
+        <el-dm-tab tab-id="rich3">Specifications</el-dm-tab>
+
+        <el-dm-tab-panel panel-for="rich1">
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+            <div style="padding: 1rem; border: 1px solid var(--color-outline); border-radius: 0.5rem;">
+              <h5>Product A</h5>
+              <p>$99.00</p>
+            </div>
+            <div style="padding: 1rem; border: 1px solid var(--color-outline); border-radius: 0.5rem;">
+              <h5>Product B</h5>
+              <p>$149.00</p>
+            </div>
+            <div style="padding: 1rem; border: 1px solid var(--color-outline); border-radius: 0.5rem;">
+              <h5>Product C</h5>
+              <p>$199.00</p>
+            </div>
+          </div>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="rich2">
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="padding: 1rem; background: var(--color-surface-variant); border-radius: 0.5rem;">
+              <strong>John D.</strong> - "Great product!"
+            </div>
+            <div style="padding: 1rem; background: var(--color-surface-variant); border-radius: 0.5rem;">
+              <strong>Jane S.</strong> - "Exceeded my expectations."
+            </div>
+          </div>
+        </el-dm-tab-panel>
+        <el-dm-tab-panel panel-for="rich3">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--color-outline);"><strong>Dimensions</strong></td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--color-outline);">10 x 5 x 3 inches</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--color-outline);"><strong>Weight</strong></td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--color-outline);">2.5 lbs</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem;"><strong>Material</strong></td>
+              <td style="padding: 0.5rem;">Aluminum</td>
+            </tr>
+          </table>
+        </el-dm-tab-panel>
+      </el-dm-tabs>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerTabs } from '../elements/tabs/src/index.ts';
+    import { register as registerButton } from '../elements/button/src/index.ts';
+    registerTabs();
+    registerButton();
+
+    // Event handling demo
+    document.getElementById('event-tabs').addEventListener('change', (e) => {
+      document.getElementById('event-status').textContent =
+        `Tab changed: ${e.detail.oldValue || 'none'} -> ${e.detail.value}`;
+    });
+  </script>
+</body>
+</html>
