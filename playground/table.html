@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+  <style>
+    .demo-table {
+      max-width: 100%;
+    }
+    .event-log {
+      background: var(--dm-color-surface-variant, #f5f5f5);
+      border: 1px solid var(--dm-color-outline, #e0e0e0);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.875rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .event-log:empty::before {
+      content: 'Events will appear here...';
+      color: var(--dm-color-on-surface-variant, #666);
+    }
+  </style>
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Table with Data API</h2>
+    <div class="demo-table">
+      <el-dm-table id="basic-table" hoverable></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sortable Table</h2>
+    <div class="demo-table">
+      <el-dm-table id="sortable-table" hoverable></el-dm-table>
+      <div id="sort-log" class="event-log"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Paginated Table</h2>
+    <div class="demo-table">
+      <el-dm-table id="paginated-table" paginated page-size="5" hoverable striped></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selectable Table (Multiple)</h2>
+    <div class="demo-table">
+      <el-dm-table id="selectable-table" selection-mode="multiple" hoverable></el-dm-table>
+      <div id="select-log" class="event-log"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Single Selection Table</h2>
+    <div class="demo-table">
+      <el-dm-table id="single-select-table" selection-mode="single" hoverable></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Full Featured Table</h2>
+    <div class="demo-table">
+      <el-dm-table
+        id="full-table"
+        paginated
+        page-size="5"
+        selection-mode="multiple"
+        striped
+        hoverable
+        bordered
+      ></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Compact Table</h2>
+    <div class="demo-table">
+      <el-dm-table id="compact-table" compact bordered hoverable></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sticky Header Table</h2>
+    <div class="demo-table" style="--table-max-height: 300px;">
+      <el-dm-table id="sticky-table" sticky-header hoverable striped></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Loading State</h2>
+    <div class="demo-table">
+      <el-dm-table id="loading-table" loading></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Empty State</h2>
+    <div class="demo-table">
+      <el-dm-table id="empty-table" empty-message="No records found"></el-dm-table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Declarative Columns</h2>
+    <div class="demo-table">
+      <el-dm-table id="declarative-table" hoverable>
+        <el-dm-table-column key="name" label="Name" sortable></el-dm-table-column>
+        <el-dm-table-column key="email" label="Email" sortable></el-dm-table-column>
+        <el-dm-table-column key="department" label="Department" width="150px"></el-dm-table-column>
+        <el-dm-table-column key="status" label="Status" align="center" width="100px"></el-dm-table-column>
+      </el-dm-table>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../elements/table/src/index.ts';
+    register();
+
+    // Sample data
+    const sampleData = [
+      { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', status: 'Active', salary: 85000 },
+      { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', status: 'Active', salary: 72000 },
+      { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', status: 'Inactive', salary: 92000 },
+      { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', status: 'Active', salary: 68000 },
+      { id: 5, name: 'Eve Davis', email: 'eve@example.com', department: 'Engineering', status: 'Active', salary: 95000 },
+      { id: 6, name: 'Frank Miller', email: 'frank@example.com', department: 'HR', status: 'Active', salary: 62000 },
+      { id: 7, name: 'Grace Wilson', email: 'grace@example.com', department: 'Engineering', status: 'Inactive', salary: 88000 },
+      { id: 8, name: 'Henry Taylor', email: 'henry@example.com', department: 'Marketing', status: 'Active', salary: 75000 },
+      { id: 9, name: 'Ivy Anderson', email: 'ivy@example.com', department: 'Sales', status: 'Active', salary: 71000 },
+      { id: 10, name: 'Jack Thomas', email: 'jack@example.com', department: 'Engineering', status: 'Active', salary: 98000 },
+      { id: 11, name: 'Karen Jackson', email: 'karen@example.com', department: 'HR', status: 'Active', salary: 65000 },
+      { id: 12, name: 'Leo White', email: 'leo@example.com', department: 'Sales', status: 'Inactive', salary: 73000 },
+    ];
+
+    const basicColumns = [
+      { key: 'name', label: 'Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'department', label: 'Department' },
+      { key: 'status', label: 'Status' },
+    ];
+
+    const sortableColumns = [
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'email', label: 'Email', sortable: true },
+      { key: 'department', label: 'Department', sortable: true },
+      { key: 'salary', label: 'Salary', sortable: true, align: 'right' },
+    ];
+
+    // Basic table
+    const basicTable = document.getElementById('basic-table');
+    basicTable.columns = basicColumns;
+    basicTable.data = sampleData.slice(0, 5);
+
+    // Sortable table
+    const sortableTable = document.getElementById('sortable-table');
+    sortableTable.columns = sortableColumns;
+    sortableTable.data = sampleData.slice(0, 6);
+    const sortLog = document.getElementById('sort-log');
+    sortableTable.addEventListener('sort', (e) => {
+      sortLog.textContent = `Sorted by: ${e.detail.column} (${e.detail.direction})`;
+    });
+
+    // Paginated table
+    const paginatedTable = document.getElementById('paginated-table');
+    paginatedTable.columns = basicColumns;
+    paginatedTable.data = sampleData;
+
+    // Selectable table (multiple)
+    const selectableTable = document.getElementById('selectable-table');
+    selectableTable.columns = basicColumns;
+    selectableTable.data = sampleData.slice(0, 6);
+    const selectLog = document.getElementById('select-log');
+    selectableTable.addEventListener('select', (e) => {
+      selectLog.textContent = `Selected IDs: [${e.detail.selectedIds.join(', ')}]`;
+    });
+
+    // Single selection table
+    const singleSelectTable = document.getElementById('single-select-table');
+    singleSelectTable.columns = basicColumns;
+    singleSelectTable.data = sampleData.slice(0, 5);
+
+    // Full featured table
+    const fullTable = document.getElementById('full-table');
+    fullTable.columns = sortableColumns;
+    fullTable.data = sampleData;
+
+    // Compact table
+    const compactTable = document.getElementById('compact-table');
+    compactTable.columns = basicColumns;
+    compactTable.data = sampleData.slice(0, 5);
+
+    // Sticky header table
+    const stickyTable = document.getElementById('sticky-table');
+    stickyTable.columns = basicColumns;
+    stickyTable.data = sampleData;
+
+    // Loading table
+    const loadingTable = document.getElementById('loading-table');
+    loadingTable.columns = basicColumns;
+
+    // Empty table
+    const emptyTable = document.getElementById('empty-table');
+    emptyTable.columns = basicColumns;
+    emptyTable.data = [];
+
+    // Declarative table
+    const declarativeTable = document.getElementById('declarative-table');
+    declarativeTable.data = sampleData.slice(0, 6);
+  </script>
+</body>
+</html>

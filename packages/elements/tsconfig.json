@@ -37,6 +37,7 @@
     { "path": "../../elements/tabs" },
     { "path": "../../elements/accordion" },
     { "path": "../../elements/bottom-sheet" },
-    { "path": "../../elements/popover" }
+    { "path": "../../elements/popover" },
+    { "path": "../../elements/table" }
   ]
 }

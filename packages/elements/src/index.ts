@@ -94,6 +94,13 @@ import {
 import { ElDmBottomSheet, register as registerBottomSheet } from '@duskmoon-dev/el-bottom-sheet';
 import { ElDmPopover, register as registerPopover } from '@duskmoon-dev/el-popover';
 
+// Data display elements
+import {
+  ElDmTable,
+  ElDmTableColumn,
+  register as registerTable,
+} from '@duskmoon-dev/el-table';
+
 // Re-export all elements
 export { ElDmButton, registerButton };
 export { ElDmCard, registerCard };
@@ -148,6 +155,19 @@ export { ElDmBottomSheet, registerBottomSheet };
 export { ElDmPopover, registerPopover };
 export type { PopoverPlacement, PopoverTrigger } from '@duskmoon-dev/el-popover';
 
+// Data display elements
+export { ElDmTable, ElDmTableColumn, registerTable };
+export type {
+  TableColumn,
+  TableRow,
+  SortDirection,
+  SelectionMode,
+  TableSortEventDetail,
+  TableSelectEventDetail,
+  TablePageEventDetail,
+  TableRowClickEventDetail,
+} from '@duskmoon-dev/el-table';
+
 /**
  * Register all DuskMoon custom elements
  *
@@ -187,4 +207,6 @@ export function registerAll(): void {
   registerAccordion();
   registerBottomSheet();
   registerPopover();
+  // Data display elements
+  registerTable();
 }
