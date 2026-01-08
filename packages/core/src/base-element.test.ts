@@ -14,7 +14,7 @@ class TestElement extends BaseElement {
   declare count: number;
   declare active: boolean;
 
-  private _styles = css`
+  private testStyles = css`
     :host {
       display: block;
     }
@@ -22,7 +22,7 @@ class TestElement extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(this._styles);
+    this.attachStyles(this.testStyles);
   }
 
   render(): string {

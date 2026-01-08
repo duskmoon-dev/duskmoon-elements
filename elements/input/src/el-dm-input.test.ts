@@ -73,7 +73,7 @@ describe('ElDmInput', () => {
     expect(input?.hasAttribute('required')).toBe(true);
 
     const label = el.shadowRoot?.querySelector('.label');
-    expect(label?.classList.contains('required')).toBe(false); // No label set
+    expect(label).toBeNull(); // No label set
   });
 
   test('shows error message when validation-state is invalid', () => {

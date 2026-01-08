@@ -97,7 +97,7 @@ export abstract class BaseElement extends HTMLElement {
 
     // Apply default styles
     this._styles = [resetStyles, defaultTheme];
-    this.shadowRoot.adoptedStyleSheets = this._styles;
+    this.shadowRoot.adoptedStyleSheets = [...this._styles];
 
     // Initialize properties
     this._initializeProperties();
@@ -221,7 +221,7 @@ export abstract class BaseElement extends HTMLElement {
   protected attachStyles(styles: CSSStyleSheet | CSSStyleSheet[]): void {
     const sheets = Array.isArray(styles) ? styles : [styles];
     this._styles = [...this._styles, ...sheets];
-    this.shadowRoot.adoptedStyleSheets = this._styles;
+    this.shadowRoot.adoptedStyleSheets = [...this._styles];
   }
 
   /**
