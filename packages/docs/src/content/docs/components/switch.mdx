@@ -2,7 +2,7 @@
 title: Switch
 description: Toggle switch component for binary choices
 order: 5
-section: components
+section: input
 component: "@duskmoon-dev/el-switch"
 ---
 
@@ -33,7 +33,7 @@ import '@duskmoon-dev/el-switch/register';
 
 <ComponentDemo title="Switch Variants">
   <el-dm-switch label="Default"></el-dm-switch>
-  <el-dm-switch checked label="Checked"></el-dm-switch>
+  <el-dm-switch value label="On"></el-dm-switch>
   <el-dm-switch disabled label="Disabled"></el-dm-switch>
 </ComponentDemo>
 
@@ -42,14 +42,13 @@ import '@duskmoon-dev/el-switch/register';
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `checked` | `boolean` | `false` | Whether the switch is on |
+| `value` | `boolean` | `false` | Whether the switch is on (true/false) |
 | `disabled` | `boolean` | `false` | Disables the switch |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the switch |
 | `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'error'` | `'primary'` | Color theme |
 | `label` | `string` | - | Label text |
 | `label-position` | `'left' \| 'right'` | `'right'` | Label position |
 | `name` | `string` | - | Form input name |
-| `value` | `string` | `'on'` | Form value when checked |
 
 ## Sizes
 
@@ -68,17 +67,17 @@ import '@duskmoon-dev/el-switch/register';
 ## Colors
 
 <ComponentDemo title="Switch Colors">
-  <el-dm-switch color="primary" checked label="Primary"></el-dm-switch>
-  <el-dm-switch color="secondary" checked label="Secondary"></el-dm-switch>
-  <el-dm-switch color="success" checked label="Success"></el-dm-switch>
-  <el-dm-switch color="error" checked label="Error"></el-dm-switch>
+  <el-dm-switch color="primary" value label="Primary"></el-dm-switch>
+  <el-dm-switch color="secondary" value label="Secondary"></el-dm-switch>
+  <el-dm-switch color="success" value label="Success"></el-dm-switch>
+  <el-dm-switch color="error" value label="Error"></el-dm-switch>
 </ComponentDemo>
 
 ```html
-<el-dm-switch color="primary" checked label="Primary"></el-dm-switch>
-<el-dm-switch color="secondary" checked label="Secondary"></el-dm-switch>
-<el-dm-switch color="success" checked label="Success"></el-dm-switch>
-<el-dm-switch color="error" checked label="Error"></el-dm-switch>
+<el-dm-switch color="primary" value label="Primary"></el-dm-switch>
+<el-dm-switch color="secondary" value label="Secondary"></el-dm-switch>
+<el-dm-switch color="success" value label="Success"></el-dm-switch>
+<el-dm-switch color="error" value label="Error"></el-dm-switch>
 ```
 
 ## Events
@@ -93,8 +92,21 @@ import '@duskmoon-dev/el-switch/register';
 ```javascript
 const switchEl = document.querySelector('el-dm-switch');
 switchEl.addEventListener('change', (event) => {
-  console.log('Switch state:', event.detail.checked);
+  console.log('Switch state:', event.detail.value); // true or false
 });
+```
+
+### Getting and Setting Value
+
+```javascript
+const switchEl = document.querySelector('el-dm-switch');
+
+// Get the current value (returns true or false)
+console.log(switchEl.value); // false
+
+// Set the value
+switchEl.value = true;
+console.log(switchEl.value); // true
 ```
 
 ## Accessibility

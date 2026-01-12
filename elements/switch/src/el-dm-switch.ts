@@ -6,14 +6,13 @@
  *
  * @element el-dm-switch
  *
- * @attr {boolean} checked - Whether the switch is checked/on
+ * @attr {boolean} value - Whether the switch is on (true/false)
  * @attr {boolean} disabled - Whether the switch is disabled
  * @attr {string} size - Switch size: sm, md, lg
  * @attr {string} color - Switch color: primary, secondary, tertiary, success, error
  * @attr {string} label - Label text for the switch
  * @attr {string} label-position - Label position: left, right
  * @attr {string} name - Form input name
- * @attr {string} value - Form input value when checked
  *
  * @csspart switch - The switch container
  * @csspart track - The switch track
@@ -79,18 +78,17 @@ const styles = css`
 
 export class ElDmSwitch extends BaseElement {
   static properties = {
-    checked: { type: Boolean, reflect: true },
+    value: { type: Boolean, reflect: true },
     disabled: { type: Boolean, reflect: true },
     size: { type: String, reflect: true },
     color: { type: String, reflect: true },
     label: { type: String, reflect: true },
     labelPosition: { type: String, reflect: true, attribute: 'label-position' },
     name: { type: String, reflect: true },
-    value: { type: String, reflect: true, default: 'on' },
   };
 
-  /** Whether the switch is checked */
-  declare checked: boolean;
+  /** Whether the switch is on (true/false) */
+  declare value: boolean;
 
   /** Whether the switch is disabled */
   declare disabled: boolean;
@@ -110,9 +108,6 @@ export class ElDmSwitch extends BaseElement {
   /** Form input name */
   declare name: string;
 
-  /** Form input value */
-  declare value: string;
-
   constructor() {
     super();
     this.attachStyles(styles);
@@ -128,10 +123,10 @@ export class ElDmSwitch extends BaseElement {
     }
 
     const input = event.target as HTMLInputElement;
-    this.checked = input.checked;
+    this.value = input.checked;
 
-    this.emit('change', { checked: this.checked });
-    this.emit('input', { checked: this.checked });
+    this.emit('change', { value: this.value });
+    this.emit('input', { value: this.value });
   }
 
   /**
@@ -142,9 +137,9 @@ export class ElDmSwitch extends BaseElement {
 
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault();
-      this.checked = !this.checked;
-      this.emit('change', { checked: this.checked });
-      this.emit('input', { checked: this.checked });
+      this.value = !this.value;
+      this.emit('change', { value: this.value });
+      this.emit('input', { value: this.value });
     }
   }
 
@@ -182,12 +177,12 @@ export class ElDmSwitch extends BaseElement {
         <input
           type="checkbox"
           class="switch-input"
-          ${this.checked ? 'checked' : ''}
+          ${this.value ? 'checked' : ''}
           ${this.disabled ? 'disabled' : ''}
           ${this.name ? `name="${this.name}"` : ''}
-          value="${this.value || 'on'}"
+          value="${this.value ? 'true' : 'false'}"
           role="switch"
-          aria-checked="${this.checked ? 'true' : 'false'}"
+          aria-checked="${this.value ? 'true' : 'false'}"
         />
         <span class="switch-track" part="track">
           <span class="switch-thumb" part="thumb"></span>

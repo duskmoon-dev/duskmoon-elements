@@ -11,9 +11,9 @@
     <h2>Basic Switch</h2>
     <div class="demo-row">
       <el-dm-switch></el-dm-switch>
-      <el-dm-switch checked></el-dm-switch>
+      <el-dm-switch value></el-dm-switch>
       <el-dm-switch disabled></el-dm-switch>
-      <el-dm-switch checked disabled></el-dm-switch>
+      <el-dm-switch value disabled></el-dm-switch>
     </div>
   </section>
 
@@ -29,12 +29,12 @@
   <section>
     <h2>Colors</h2>
     <div class="demo-row">
-      <el-dm-switch color="primary" checked></el-dm-switch>
-      <el-dm-switch color="secondary" checked></el-dm-switch>
-      <el-dm-switch color="tertiary" checked></el-dm-switch>
-      <el-dm-switch color="success" checked></el-dm-switch>
-      <el-dm-switch color="warning" checked></el-dm-switch>
-      <el-dm-switch color="error" checked></el-dm-switch>
+      <el-dm-switch color="primary" value></el-dm-switch>
+      <el-dm-switch color="secondary" value></el-dm-switch>
+      <el-dm-switch color="tertiary" value></el-dm-switch>
+      <el-dm-switch color="success" value></el-dm-switch>
+      <el-dm-switch color="warning" value></el-dm-switch>
+      <el-dm-switch color="error" value></el-dm-switch>
     </div>
   </section>
 
@@ -43,13 +43,44 @@
     <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
       <el-dm-switch label="Enable notifications"></el-dm-switch>
       <el-dm-switch label="Dark mode" label-position="left"></el-dm-switch>
-      <el-dm-switch label="Auto-save" checked></el-dm-switch>
+      <el-dm-switch label="Auto-save" value></el-dm-switch>
+    </div>
+  </section>
+
+  <section>
+    <h2>Value Property (Boolean)</h2>
+    <div class="demo-row" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+      <el-dm-switch id="value-demo" label="Toggle me"></el-dm-switch>
+      <div>
+        <span>Current value: </span>
+        <code id="value-display">false</code>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button id="set-true">Set value = true</button>
+        <button id="set-false">Set value = false</button>
+      </div>
     </div>
   </section>
 
   <script type="module">
     import { register as registerSwitch } from '../elements/switch/src/index.ts';
     registerSwitch();
+
+    // Value demo
+    const valueDemo = document.getElementById('value-demo');
+    const valueDisplay = document.getElementById('value-display');
+    const updateDisplay = () => valueDisplay.textContent = valueDemo.value;
+
+    valueDemo.addEventListener('change', updateDisplay);
+
+    document.getElementById('set-true').addEventListener('click', () => {
+      valueDemo.value = true;
+      updateDisplay();
+    });
+    document.getElementById('set-false').addEventListener('click', () => {
+      valueDemo.value = false;
+      updateDisplay();
+    });
   </script>
 </body>
 </html>
