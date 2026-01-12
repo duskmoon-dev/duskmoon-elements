@@ -28,8 +28,13 @@ Object.keys(sections).forEach((section) => {
 const sectionConfig: Record<string, { order: number; label: string }> = {
   'getting-started': { order: 1, label: 'Getting Started' },
   'theming': { order: 2, label: 'Theming' },
-  'components': { order: 3, label: 'Components' },
-  'api': { order: 4, label: 'API' },
+  'input': { order: 10, label: 'Input' },
+  'feedback': { order: 20, label: 'Feedback' },
+  'navigation': { order: 30, label: 'Navigation' },
+  'surfaces': { order: 40, label: 'Surfaces' },
+  'data-display': { order: 50, label: 'Data Display' },
+  'components': { order: 60, label: 'Components' },
+  'api': { order: 70, label: 'API' },
 };
 
 const sortedSections = Object.keys(sections).sort((a, b) => {

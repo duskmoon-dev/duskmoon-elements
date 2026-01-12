@@ -39,7 +39,8 @@
     "@duskmoon-dev/el-tabs": "workspace:*",
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-bottom-sheet": "workspace:*",
-    "@duskmoon-dev/el-popover": "workspace:*"
+    "@duskmoon-dev/el-popover": "workspace:*",
+    "@duskmoon-dev/el-table": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

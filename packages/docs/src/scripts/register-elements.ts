@@ -30,6 +30,8 @@ import { register as registerTabs } from '@duskmoon-dev/el-tabs';
 import { register as registerAccordion } from '@duskmoon-dev/el-accordion';
 import { register as registerBottomSheet } from '@duskmoon-dev/el-bottom-sheet';
 import { register as registerPopover } from '@duskmoon-dev/el-popover';
+// Data display elements
+import { register as registerTable } from '@duskmoon-dev/el-table';
 
 registerButton();
 registerCard();
@@ -60,3 +62,5 @@ registerTabs();
 registerAccordion();
 registerBottomSheet();
 registerPopover();
+// Data display elements
+registerTable();

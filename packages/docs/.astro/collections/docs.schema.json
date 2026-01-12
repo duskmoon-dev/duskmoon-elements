@@ -18,8 +18,12 @@
           "type": "string",
           "enum": [
             "getting-started",
-            "components",
             "theming",
+            "input",
+            "feedback",
+            "navigation",
+            "surfaces",
+            "data-display",
             "api"
           ]
         },

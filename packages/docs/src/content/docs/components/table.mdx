@@ -1,0 +1,332 @@
+---
+title: Table
+description: Full-featured data table with sorting, pagination, and row selection
+order: 1
+section: data-display
+component: "@duskmoon-dev/el-table"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Table
+
+The Table component provides a full-featured data table with sorting, pagination, row selection, and customizable styling.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-table
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-table/register';
+```
+
+```html
+<el-dm-table id="my-table"></el-dm-table>
+
+<script>
+  const table = document.getElementById('my-table');
+  table.columns = [
+    { key: 'name', label: 'Name', sortable: true },
+    { key: 'email', label: 'Email' }
+  ];
+  table.data = [
+    { id: 1, name: 'Alice', email: 'alice@example.com' },
+    { id: 2, name: 'Bob', email: 'bob@example.com' }
+  ];
+</script>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Table">
+  <el-dm-table id="demo-basic" hoverable></el-dm-table>
+</ComponentDemo>
+
+<script>
+  {`
+    const basicTable = document.getElementById('demo-basic');
+    if (basicTable) {
+      basicTable.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' },
+        { key: 'role', label: 'Role' }
+      ];
+      basicTable.data = [
+        { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
+        { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
+        { id: 3, name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' }
+      ];
+    }
+  `}
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `columns` | `TableColumn[]` | `[]` | Column definitions |
+| `data` | `TableRow[]` | `[]` | Row data array |
+| `sort-column` | `string` | - | Current sort column key |
+| `sort-direction` | `'asc' \| 'desc'` | `'asc'` | Sort direction |
+| `paginated` | `boolean` | `false` | Enable pagination |
+| `page` | `number` | `1` | Current page number |
+| `page-size` | `number` | `10` | Rows per page |
+| `selection-mode` | `'none' \| 'single' \| 'multiple'` | `'none'` | Row selection mode |
+| `striped` | `boolean` | `false` | Alternating row colors |
+| `bordered` | `boolean` | `false` | Show cell borders |
+| `hoverable` | `boolean` | `true` | Highlight rows on hover |
+| `compact` | `boolean` | `false` | Reduced padding |
+| `sticky-header` | `boolean` | `false` | Fixed header on scroll |
+| `loading` | `boolean` | `false` | Show loading state |
+| `empty-message` | `string` | `'No data available'` | Empty state text |
+
+### TableColumn Interface
+
+```typescript
+interface TableColumn {
+  key: string;        // Data key for this column
+  label: string;      // Display label in header
+  sortable?: boolean; // Enable sorting
+  width?: string;     // CSS width (e.g., '100px', '20%')
+  align?: 'left' | 'center' | 'right';
+  hidden?: boolean;   // Hide column
+}
+```
+
+### TableRow Interface
+
+```typescript
+interface TableRow {
+  id: string | number;  // Required unique identifier
+  [key: string]: unknown; // Data fields matching column keys
+}
+```
+
+## Sorting
+
+Click on sortable column headers to sort. Clicking the same header toggles between ascending and descending order.
+
+<ComponentDemo title="Sortable Table">
+  <el-dm-table id="demo-sortable" hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<el-dm-table id="table"></el-dm-table>
+
+<script>
+  table.columns = [
+    { key: 'name', label: 'Name', sortable: true },
+    { key: 'salary', label: 'Salary', sortable: true, align: 'right' }
+  ];
+</script>
+```
+
+## Pagination
+
+Enable pagination to split large datasets across multiple pages.
+
+<ComponentDemo title="Paginated Table">
+  <el-dm-table id="demo-paginated" paginated page-size="3" striped hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<el-dm-table paginated page-size="10"></el-dm-table>
+```
+
+## Row Selection
+
+Enable single or multiple row selection with checkboxes/radio buttons.
+
+<ComponentDemo title="Multiple Selection">
+  <el-dm-table id="demo-select" selection-mode="multiple" hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<!-- Multiple selection with checkboxes -->
+<el-dm-table selection-mode="multiple"></el-dm-table>
+
+<!-- Single selection with radio buttons -->
+<el-dm-table selection-mode="single"></el-dm-table>
+```
+
+## Styling Variants
+
+### Striped
+
+<ComponentDemo title="Striped Rows">
+  <el-dm-table id="demo-striped" striped hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<el-dm-table striped></el-dm-table>
+```
+
+### Bordered
+
+<ComponentDemo title="Bordered Cells">
+  <el-dm-table id="demo-bordered" bordered hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<el-dm-table bordered></el-dm-table>
+```
+
+### Compact
+
+<ComponentDemo title="Compact Table">
+  <el-dm-table id="demo-compact" compact bordered hoverable></el-dm-table>
+</ComponentDemo>
+
+```html
+<el-dm-table compact></el-dm-table>
+```
+
+## Declarative Columns
+
+Use `<el-dm-table-column>` elements for declarative column definition:
+
+```html
+<el-dm-table id="table">
+  <el-dm-table-column key="name" label="Name" sortable></el-dm-table-column>
+  <el-dm-table-column key="email" label="Email"></el-dm-table-column>
+  <el-dm-table-column key="role" label="Role" width="120px"></el-dm-table-column>
+</el-dm-table>
+
+<script>
+  // Only need to set data, columns come from children
+  table.data = [
+    { id: 1, name: 'Alice', email: 'alice@example.com', role: 'Admin' }
+  ];
+</script>
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `sort` | `{ column, direction }` | Fired when sort changes |
+| `select` | `{ selectedIds, selectedRows }` | Fired when selection changes |
+| `page-change` | `{ page, pageSize }` | Fired when page changes |
+| `row-click` | `{ row, rowIndex }` | Fired when a row is clicked |
+
+### Event Handling
+
+```javascript
+const table = document.querySelector('el-dm-table');
+
+table.addEventListener('sort', (e) => {
+  console.log('Sorted by:', e.detail.column, e.detail.direction);
+});
+
+table.addEventListener('select', (e) => {
+  console.log('Selected rows:', e.detail.selectedRows);
+});
+
+table.addEventListener('page-change', (e) => {
+  console.log('Page changed to:', e.detail.page);
+});
+```
+
+## Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `sort(column, direction?)` | `column: string`, `direction?: 'asc' \| 'desc'` | Sort by column |
+| `goToPage(page)` | `page: number` | Navigate to page |
+| `selectRow(id)` | `id: string \| number` | Select a row |
+| `deselectRow(id)` | `id: string \| number` | Deselect a row |
+| `selectAll()` | - | Select all visible rows |
+| `deselectAll()` | - | Deselect all rows |
+| `getSelectedRows()` | - | Get selected row data |
+
+## CSS Custom Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--table-max-height` | `400px` | Max height for sticky header |
+| `--dm-color-surface` | - | Table background |
+| `--dm-color-surface-variant` | - | Header/stripe background |
+| `--dm-color-outline` | - | Border color |
+| `--dm-color-primary` | - | Sort indicator color |
+| `--dm-color-primary-container` | - | Selected row background |
+
+## Accessibility
+
+- Uses native `<table>` semantics with proper ARIA roles
+- Sortable headers have `aria-sort` attribute
+- Selected rows have `aria-selected` attribute
+- Loading state uses `aria-busy` attribute
+- Keyboard navigation for interactive elements
+- Focus indicators on all interactive elements
+
+<script>
+  {`
+    // Initialize demo tables
+    const demoData = [
+      { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', salary: 85000 },
+      { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User', salary: 72000 },
+      { id: 3, name: 'Carol Williams', email: 'carol@example.com', role: 'Editor', salary: 68000 },
+      { id: 4, name: 'David Brown', email: 'david@example.com', role: 'User', salary: 75000 },
+      { id: 5, name: 'Eve Davis', email: 'eve@example.com', role: 'Admin', salary: 92000 },
+      { id: 6, name: 'Frank Miller', email: 'frank@example.com', role: 'User', salary: 65000 }
+    ];
+
+    const basicCols = [
+      { key: 'name', label: 'Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'role', label: 'Role' }
+    ];
+
+    const sortableCols = [
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'email', label: 'Email', sortable: true },
+      { key: 'salary', label: 'Salary', sortable: true, align: 'right' }
+    ];
+
+    // Sortable demo
+    const sortable = document.getElementById('demo-sortable');
+    if (sortable) {
+      sortable.columns = sortableCols;
+      sortable.data = demoData.slice(0, 4);
+    }
+
+    // Paginated demo
+    const paginated = document.getElementById('demo-paginated');
+    if (paginated) {
+      paginated.columns = basicCols;
+      paginated.data = demoData;
+    }
+
+    // Selection demo
+    const select = document.getElementById('demo-select');
+    if (select) {
+      select.columns = basicCols;
+      select.data = demoData.slice(0, 4);
+    }
+
+    // Striped demo
+    const striped = document.getElementById('demo-striped');
+    if (striped) {
+      striped.columns = basicCols;
+      striped.data = demoData.slice(0, 4);
+    }
+
+    // Bordered demo
+    const bordered = document.getElementById('demo-bordered');
+    if (bordered) {
+      bordered.columns = basicCols;
+      bordered.data = demoData.slice(0, 3);
+    }
+
+    // Compact demo
+    const compact = document.getElementById('demo-compact');
+    if (compact) {
+      compact.columns = basicCols;
+      compact.data = demoData.slice(0, 4);
+    }
+  `}
+</script>
