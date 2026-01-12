@@ -20,6 +20,7 @@
       "@duskmoon-dev/el-card": ["./elements/card/src/index.ts"],
       "@duskmoon-dev/el-input": ["./elements/input/src/index.ts"],
       "@duskmoon-dev/el-markdown": ["./elements/markdown/src/index.ts"],
+      "@duskmoon-dev/el-table": ["./elements/table/src/index.ts"],
       "@duskmoon-dev/elements": ["./packages/elements/src/index.ts"]
     }
   },
