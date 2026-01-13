@@ -291,7 +291,7 @@ export class ElDmAccordionItem extends BaseElement {
           itemId: this.value,
           open: !this.open,
         },
-      })
+      }),
     );
   }
 

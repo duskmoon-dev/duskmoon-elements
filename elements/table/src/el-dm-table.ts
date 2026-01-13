@@ -716,8 +716,7 @@ export class ElDmTable extends BaseElement {
   private _isSomeSelected(): boolean {
     const visibleData = this._getProcessedData();
     return (
-      visibleData.some((row) => this._internalSelectedIds.has(row.id)) &&
-      !this._isAllSelected()
+      visibleData.some((row) => this._internalSelectedIds.has(row.id)) && !this._isAllSelected()
     );
   }
 
@@ -836,11 +835,7 @@ export class ElDmTable extends BaseElement {
     `;
   }
 
-  private _renderDataRow(
-    row: TableRow,
-    index: number,
-    columns: TableColumn[],
-  ): string {
+  private _renderDataRow(row: TableRow, index: number, columns: TableColumn[]): string {
     const isSelected = this._isRowSelected(row);
     const showSelectionColumn = this.selectionMode !== 'none';
 
@@ -895,8 +890,7 @@ export class ElDmTable extends BaseElement {
 
   private _renderPagination(): string {
     const totalPages = this._getTotalPages();
-    const showPageSizeSelect =
-      this.pageSizeOptions && this.pageSizeOptions.length > 0;
+    const showPageSizeSelect = this.pageSizeOptions && this.pageSizeOptions.length > 0;
 
     return `
       <div class="table-pagination" part="pagination">

@@ -270,7 +270,11 @@ export class ElDmMenu extends BaseElement {
       .filter((el) => el.tagName === 'EL-DM-MENU-ITEM' && !el.hasAttribute('hidden'));
   }
 
-  private _getNextFocusableIndex(currentIndex: number, direction: number, items: Element[]): number {
+  private _getNextFocusableIndex(
+    currentIndex: number,
+    direction: number,
+    items: Element[],
+  ): number {
     let nextIndex = currentIndex + direction;
 
     while (nextIndex >= 0 && nextIndex < items.length) {

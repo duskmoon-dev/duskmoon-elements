@@ -45,32 +45,32 @@ npm install @duskmoon-dev/el-table
 
 ## Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `columns` | `TableColumn[]` | `[]` | Column definitions |
-| `data` | `TableRow[]` | `[]` | Row data |
-| `sort-column` | `string` | - | Current sort column key |
-| `sort-direction` | `'asc' \| 'desc'` | `'asc'` | Sort direction |
-| `paginated` | `boolean` | `false` | Enable pagination |
-| `page` | `number` | `1` | Current page |
-| `page-size` | `number` | `10` | Rows per page |
-| `selection-mode` | `'none' \| 'single' \| 'multiple'` | `'none'` | Selection mode |
-| `striped` | `boolean` | `false` | Alternating row colors |
-| `bordered` | `boolean` | `false` | Cell borders |
-| `hoverable` | `boolean` | `true` | Row hover effect |
-| `compact` | `boolean` | `false` | Reduced padding |
-| `sticky-header` | `boolean` | `false` | Fixed header on scroll |
-| `loading` | `boolean` | `false` | Loading state |
-| `empty-message` | `string` | `'No data available'` | Empty state text |
+| Property         | Type                               | Default               | Description             |
+| ---------------- | ---------------------------------- | --------------------- | ----------------------- |
+| `columns`        | `TableColumn[]`                    | `[]`                  | Column definitions      |
+| `data`           | `TableRow[]`                       | `[]`                  | Row data                |
+| `sort-column`    | `string`                           | -                     | Current sort column key |
+| `sort-direction` | `'asc' \| 'desc'`                  | `'asc'`               | Sort direction          |
+| `paginated`      | `boolean`                          | `false`               | Enable pagination       |
+| `page`           | `number`                           | `1`                   | Current page            |
+| `page-size`      | `number`                           | `10`                  | Rows per page           |
+| `selection-mode` | `'none' \| 'single' \| 'multiple'` | `'none'`              | Selection mode          |
+| `striped`        | `boolean`                          | `false`               | Alternating row colors  |
+| `bordered`       | `boolean`                          | `false`               | Cell borders            |
+| `hoverable`      | `boolean`                          | `true`                | Row hover effect        |
+| `compact`        | `boolean`                          | `false`               | Reduced padding         |
+| `sticky-header`  | `boolean`                          | `false`               | Fixed header on scroll  |
+| `loading`        | `boolean`                          | `false`               | Loading state           |
+| `empty-message`  | `string`                           | `'No data available'` | Empty state text        |
 
 ## Events
 
-| Event | Detail | Description |
-|-------|--------|-------------|
-| `sort` | `{ column, direction }` | Fired when sort changes |
-| `select` | `{ selectedIds, selectedRows }` | Fired when selection changes |
-| `page-change` | `{ page, pageSize }` | Fired when page changes |
-| `row-click` | `{ row, rowIndex }` | Fired when row is clicked |
+| Event         | Detail                          | Description                  |
+| ------------- | ------------------------------- | ---------------------------- |
+| `sort`        | `{ column, direction }`         | Fired when sort changes      |
+| `select`      | `{ selectedIds, selectedRows }` | Fired when selection changes |
+| `page-change` | `{ page, pageSize }`            | Fired when page changes      |
+| `row-click`   | `{ row, rowIndex }`             | Fired when row is clicked    |
 
 ## CSS Custom Properties
 

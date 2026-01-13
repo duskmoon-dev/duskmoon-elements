@@ -7,11 +7,7 @@
 import { ElDmStepper, ElDmStep } from './el-dm-stepper.js';
 
 export { ElDmStepper, ElDmStep };
-export type {
-  StepData,
-  StepperOrientation,
-  StepperColor,
-} from './el-dm-stepper.js';
+export type { StepData, StepperOrientation, StepperColor } from './el-dm-stepper.js';
 
 /**
  * Register the el-dm-stepper and el-dm-step custom elements

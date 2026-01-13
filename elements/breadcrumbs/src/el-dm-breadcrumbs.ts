@@ -106,7 +106,7 @@ const styles = css`
   }
 
   /* Hide slotted separator template */
-  ::slotted([slot="separator"]) {
+  ::slotted([slot='separator']) {
     display: none;
   }
 `;

@@ -302,7 +302,9 @@ export class ElDmTabs extends BaseElement {
   }
 
   render(): string {
-    const colorStyle = this.color ? `--color-primary: var(--color-${this.color}, ${this.color});` : '';
+    const colorStyle = this.color
+      ? `--color-primary: var(--color-${this.color}, ${this.color});`
+      : '';
 
     return `
       <div

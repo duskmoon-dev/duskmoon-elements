@@ -249,7 +249,7 @@ export class ElDmPopover extends BaseElement {
 
   private _setupTriggerListeners(): void {
     const triggerSlot = this.shadowRoot?.querySelector(
-      'slot[name="trigger"]'
+      'slot[name="trigger"]',
     ) as HTMLSlotElement | null;
 
     if (!triggerSlot) return;
@@ -302,7 +302,7 @@ export class ElDmPopover extends BaseElement {
 
   private _getTriggerElement(): Element | null {
     const triggerSlot = this.shadowRoot?.querySelector(
-      'slot[name="trigger"]'
+      'slot[name="trigger"]',
     ) as HTMLSlotElement | null;
     if (!triggerSlot) return null;
     const assigned = triggerSlot.assignedElements();
@@ -393,9 +393,7 @@ export class ElDmPopover extends BaseElement {
 
   private _updatePosition(): void {
     const triggerEl = this._getTriggerElement();
-    const panel = this.shadowRoot?.querySelector(
-      '.popover-panel'
-    ) as HTMLElement | null;
+    const panel = this.shadowRoot?.querySelector('.popover-panel') as HTMLElement | null;
 
     if (!triggerEl || !panel) return;
 
@@ -409,17 +407,13 @@ export class ElDmPopover extends BaseElement {
       triggerRect,
       panelRect,
       viewportWidth,
-      viewportHeight
+      viewportHeight,
     );
 
     this._currentPlacement = effectivePlacement;
 
     // Calculate position based on placement
-    const position = this._calculatePosition(
-      triggerRect,
-      panelRect,
-      effectivePlacement
-    );
+    const position = this._calculatePosition(triggerRect, panelRect, effectivePlacement);
 
     // Apply position
     panel.style.left = `${position.x}px`;
@@ -431,7 +425,7 @@ export class ElDmPopover extends BaseElement {
     triggerRect: DOMRect,
     panelRect: DOMRect,
     viewportWidth: number,
-    viewportHeight: number
+    viewportHeight: number,
   ): PopoverPlacement {
     const [mainAxis, alignment] = this.placement.split('-') as [
       'top' | 'bottom' | 'left' | 'right',
@@ -451,24 +445,15 @@ export class ElDmPopover extends BaseElement {
       if (spaceBottom >= panelRect.height + this.offset) {
         effectiveMainAxis = 'bottom';
       }
-    } else if (
-      mainAxis === 'bottom' &&
-      spaceBottom < panelRect.height + this.offset
-    ) {
+    } else if (mainAxis === 'bottom' && spaceBottom < panelRect.height + this.offset) {
       if (spaceTop >= panelRect.height + this.offset) {
         effectiveMainAxis = 'top';
       }
-    } else if (
-      mainAxis === 'left' &&
-      spaceLeft < panelRect.width + this.offset
-    ) {
+    } else if (mainAxis === 'left' && spaceLeft < panelRect.width + this.offset) {
       if (spaceRight >= panelRect.width + this.offset) {
         effectiveMainAxis = 'right';
       }
-    } else if (
-      mainAxis === 'right' &&
-      spaceRight < panelRect.width + this.offset
-    ) {
+    } else if (mainAxis === 'right' && spaceRight < panelRect.width + this.offset) {
       if (spaceLeft >= panelRect.width + this.offset) {
         effectiveMainAxis = 'left';
       }
@@ -482,7 +467,7 @@ export class ElDmPopover extends BaseElement {
   private _calculatePosition(
     triggerRect: DOMRect,
     panelRect: DOMRect,
-    placement: PopoverPlacement
+    placement: PopoverPlacement,
   ): { x: number; y: number } {
     const [mainAxis, alignment] = placement.split('-') as [
       'top' | 'bottom' | 'left' | 'right',
@@ -539,10 +524,7 @@ export class ElDmPopover extends BaseElement {
     const padding = 8;
 
     x = Math.max(padding, Math.min(x, viewportWidth - panelRect.width - padding));
-    y = Math.max(
-      padding,
-      Math.min(y, viewportHeight - panelRect.height - padding)
-    );
+    y = Math.max(padding, Math.min(y, viewportHeight - panelRect.height - padding));
 
     return { x, y };
   }

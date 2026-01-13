@@ -233,7 +233,7 @@ export class ElDmDrawer extends BaseElement {
 
     // Get focusable elements from shadow DOM
     const shadowFocusable = Array.from(
-      drawer.querySelectorAll(focusableSelectors)
+      drawer.querySelectorAll(focusableSelectors),
     ) as HTMLElement[];
 
     // Get focusable elements from slotted content
@@ -248,9 +248,7 @@ export class ElDmDrawer extends BaseElement {
             slottedFocusable.push(el);
           }
           slottedFocusable.push(
-            ...(Array.from(
-              el.querySelectorAll(focusableSelectors)
-            ) as HTMLElement[])
+            ...(Array.from(el.querySelectorAll(focusableSelectors)) as HTMLElement[]),
           );
         }
       });

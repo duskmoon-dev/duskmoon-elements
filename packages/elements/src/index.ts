@@ -78,12 +78,7 @@ import { ElDmMenu, ElDmMenuItem, register as registerMenu } from '@duskmoon-dev/
 import { ElDmNavbar, register as registerNavbar } from '@duskmoon-dev/el-navbar';
 import { ElDmPagination, register as registerPagination } from '@duskmoon-dev/el-pagination';
 import { ElDmStepper, ElDmStep, register as registerStepper } from '@duskmoon-dev/el-stepper';
-import {
-  ElDmTabs,
-  ElDmTab,
-  ElDmTabPanel,
-  register as registerTabs,
-} from '@duskmoon-dev/el-tabs';
+import { ElDmTabs, ElDmTab, ElDmTabPanel, register as registerTabs } from '@duskmoon-dev/el-tabs';
 
 // Surface elements
 import {
@@ -95,11 +90,7 @@ import { ElDmBottomSheet, register as registerBottomSheet } from '@duskmoon-dev/
 import { ElDmPopover, register as registerPopover } from '@duskmoon-dev/el-popover';
 
 // Data display elements
-import {
-  ElDmTable,
-  ElDmTableColumn,
-  register as registerTable,
-} from '@duskmoon-dev/el-table';
+import { ElDmTable, ElDmTableColumn, register as registerTable } from '@duskmoon-dev/el-table';
 
 // Re-export all elements
 export { ElDmButton, registerButton };

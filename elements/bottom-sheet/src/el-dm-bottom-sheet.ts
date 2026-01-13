@@ -227,12 +227,12 @@ export class ElDmBottomSheet extends BaseElement {
 
     this._focusableElements = Array.from(
       sheet.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
     );
 
     const slotContent = this.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     this._focusableElements.push(...Array.from(slotContent));
 

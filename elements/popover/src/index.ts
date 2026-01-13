@@ -7,10 +7,7 @@
 import { ElDmPopover } from './el-dm-popover.js';
 
 export { ElDmPopover };
-export type {
-  PopoverPlacement,
-  PopoverTrigger,
-} from './el-dm-popover.js';
+export type { PopoverPlacement, PopoverTrigger } from './el-dm-popover.js';
 
 /**
  * Register the el-dm-popover custom element
