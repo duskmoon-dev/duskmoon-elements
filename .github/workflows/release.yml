@@ -72,10 +72,18 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
-          # Update all package.json files
-          for pkg in packages/core packages/elements elements/button elements/card elements/input elements/markdown; do
+          # Update core and bundle packages
+          for pkg in packages/core packages/elements; do
             jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
             echo "Updated $pkg/package.json to $NEW_VERSION"
+          done
+
+          # Update all element packages
+          for pkg in elements/*; do
+            if [ -f "$pkg/package.json" ]; then
+              jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
+              echo "Updated $pkg/package.json to $NEW_VERSION"
+            fi
           done
 
       - name: Build all packages
@@ -93,7 +101,7 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
-          # Publish core first
+          # Publish core first (other packages depend on it)
           echo "Publishing @duskmoon-dev/el-core..."
           cd packages/core
           if npm view @duskmoon-dev/el-core@$NEW_VERSION version >/dev/null 2>&1; then
@@ -103,19 +111,22 @@ jobs:
           fi
           cd ../..
 
-          # Publish elements
-          for pkg in button card input markdown; do
-            echo "Publishing @duskmoon-dev/el-$pkg..."
-            cd elements/$pkg
-            if npm view @duskmoon-dev/el-$pkg@$NEW_VERSION version >/dev/null 2>&1; then
-              echo "  @duskmoon-dev/el-$pkg@$NEW_VERSION already published, skipping"
-            else
-              bun publish --access public
+          # Publish all element packages
+          for pkg in elements/*; do
+            if [ -f "$pkg/package.json" ]; then
+              PKG_NAME=$(basename "$pkg")
+              echo "Publishing @duskmoon-dev/el-$PKG_NAME..."
+              cd "$pkg"
+              if npm view @duskmoon-dev/el-$PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
+                echo "  @duskmoon-dev/el-$PKG_NAME@$NEW_VERSION already published, skipping"
+              else
+                bun publish --access public
+              fi
+              cd ../..
             fi
-            cd ../..
           done
 
-          # Publish bundle package
+          # Publish bundle package last (depends on all elements)
           echo "Publishing @duskmoon-dev/elements..."
           cd packages/elements
           if npm view @duskmoon-dev/elements@$NEW_VERSION version >/dev/null 2>&1; then
