@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-datepicker",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "description": "DuskMoon Datepicker custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -18,7 +18,10 @@
       "types": "./dist/types/register.d.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
     "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
@@ -45,7 +48,13 @@
     "url": "https://github.com/AkaraChen/duskmoon-elements.git",
     "directory": "elements/datepicker"
   },
-  "keywords": ["web-components", "custom-elements", "datepicker", "calendar", "duskmoon"],
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "datepicker",
+    "calendar",
+    "duskmoon"
+  ],
   "author": "AkaraChen",
   "license": "MIT"
 }

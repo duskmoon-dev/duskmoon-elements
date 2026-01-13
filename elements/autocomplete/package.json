@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-autocomplete",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "description": "DuskMoon Autocomplete custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -18,7 +18,10 @@
       "types": "./dist/types/register.d.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
     "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
@@ -45,7 +48,12 @@
     "url": "https://github.com/AkaraChen/duskmoon-elements.git",
     "directory": "elements/autocomplete"
   },
-  "keywords": ["web-components", "custom-elements", "autocomplete", "duskmoon"],
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "autocomplete",
+    "duskmoon"
+  ],
   "author": "AkaraChen",
   "license": "MIT"
 }
