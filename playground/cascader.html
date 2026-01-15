@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Cascader</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="basic-cascader" placeholder="Select location..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Clearable</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="clearable-cascader" clearable placeholder="Select and clear..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Searchable</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="searchable-cascader" searchable clearable placeholder="Search locations..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Change on Select (Non-leaf Selection)</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="change-on-select-cascader" change-on-select clearable placeholder="Select any level..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hover to Expand</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="hover-cascader" expand-trigger="hover" placeholder="Hover to expand..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple Selection</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="multi-cascader" multiple clearable placeholder="Select multiple paths..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Show Only Leaf Label</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="leaf-only-cascader" show-all-levels="false" placeholder="Shows only last level..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Separator</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="custom-separator-cascader" separator=" > " placeholder="Custom separator..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Async Loading</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="async-cascader" placeholder="Click to load children..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-column" style="gap: 1rem;">
+      <el-dm-cascader id="cascader-sm" size="sm" placeholder="Small..."></el-dm-cascader>
+      <el-dm-cascader id="cascader-md" size="md" placeholder="Medium..."></el-dm-cascader>
+      <el-dm-cascader id="cascader-lg" size="lg" placeholder="Large..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-cascader id="disabled-cascader" disabled placeholder="Disabled..."></el-dm-cascader>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerCascader } from '../elements/cascader/src/index.ts';
+    registerCascader();
+
+    // Location options (common cascader use case)
+    const locationOptions = [
+      {
+        value: 'usa',
+        label: 'United States',
+        children: [
+          {
+            value: 'california',
+            label: 'California',
+            children: [
+              { value: 'sf', label: 'San Francisco' },
+              { value: 'la', label: 'Los Angeles' },
+              { value: 'sd', label: 'San Diego' },
+            ],
+          },
+          {
+            value: 'texas',
+            label: 'Texas',
+            children: [
+              { value: 'houston', label: 'Houston' },
+              { value: 'austin', label: 'Austin' },
+              { value: 'dallas', label: 'Dallas' },
+            ],
+          },
+          {
+            value: 'new-york',
+            label: 'New York',
+            children: [
+              { value: 'nyc', label: 'New York City' },
+              { value: 'buffalo', label: 'Buffalo' },
+              { value: 'albany', label: 'Albany' },
+            ],
+          },
+        ],
+      },
+      {
+        value: 'canada',
+        label: 'Canada',
+        children: [
+          {
+            value: 'ontario',
+            label: 'Ontario',
+            children: [
+              { value: 'toronto', label: 'Toronto' },
+              { value: 'ottawa', label: 'Ottawa' },
+            ],
+          },
+          {
+            value: 'bc',
+            label: 'British Columbia',
+            children: [
+              { value: 'vancouver', label: 'Vancouver' },
+              { value: 'victoria', label: 'Victoria' },
+            ],
+          },
+        ],
+      },
+      {
+        value: 'uk',
+        label: 'United Kingdom',
+        children: [
+          {
+            value: 'england',
+            label: 'England',
+            children: [
+              { value: 'london', label: 'London' },
+              { value: 'manchester', label: 'Manchester' },
+              { value: 'birmingham', label: 'Birmingham' },
+            ],
+          },
+          {
+            value: 'scotland',
+            label: 'Scotland',
+            children: [
+              { value: 'edinburgh', label: 'Edinburgh' },
+              { value: 'glasgow', label: 'Glasgow' },
+            ],
+          },
+        ],
+      },
+    ];
+
+    // Async loading options (simulated)
+    const asyncOptions = [
+      { value: 'category1', label: 'Category 1', leaf: false },
+      { value: 'category2', label: 'Category 2', leaf: false },
+      { value: 'category3', label: 'Category 3', leaf: false },
+    ];
+
+    // Initialize cascaders
+    document.getElementById('basic-cascader').setOptions(locationOptions);
+    document.getElementById('clearable-cascader').setOptions(locationOptions);
+    document.getElementById('searchable-cascader').setOptions(locationOptions);
+    document.getElementById('change-on-select-cascader').setOptions(locationOptions);
+    document.getElementById('hover-cascader').setOptions(locationOptions);
+    document.getElementById('multi-cascader').setOptions(locationOptions);
+    document.getElementById('leaf-only-cascader').setOptions(locationOptions);
+    document.getElementById('custom-separator-cascader').setOptions(locationOptions);
+    document.getElementById('cascader-sm').setOptions(locationOptions);
+    document.getElementById('cascader-md').setOptions(locationOptions);
+    document.getElementById('cascader-lg').setOptions(locationOptions);
+    document.getElementById('disabled-cascader').setOptions(locationOptions);
+
+    // Async cascader setup
+    const asyncCascader = document.getElementById('async-cascader');
+    asyncCascader.setOptions(asyncOptions);
+    asyncCascader.setLoadData(async (option) => {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Return children based on parent
+      return [
+        { value: `${option.value}-sub1`, label: `${option.label} - Sub 1` },
+        { value: `${option.value}-sub2`, label: `${option.label} - Sub 2` },
+        { value: `${option.value}-sub3`, label: `${option.label} - Sub 3`, leaf: false },
+      ];
+    });
+  </script>
+</body>
+</html>

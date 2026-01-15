@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Select</h2>
+    <div class="demo-column">
+      <el-dm-select id="basic-select" placeholder="Select a fruit..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Clearable</h2>
+    <div class="demo-column">
+      <el-dm-select id="clearable-select" clearable placeholder="Select and clear..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Searchable</h2>
+    <div class="demo-column">
+      <el-dm-select id="searchable-select" searchable placeholder="Search options..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple Selection</h2>
+    <div class="demo-column">
+      <el-dm-select id="multi-select" multiple searchable clearable placeholder="Select multiple..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Multiple with Max Tag Count</h2>
+    <div class="demo-column">
+      <el-dm-select id="max-tag-select" multiple max-tag-count="3" placeholder="Max 3 visible tags..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tree Select</h2>
+    <div class="demo-column">
+      <el-dm-select id="tree-select" tree-data searchable clearable placeholder="Select from tree..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tree Select with Multiple</h2>
+    <div class="demo-column">
+      <el-dm-select id="tree-multi-select" tree-data multiple default-expand-all placeholder="Select multiple from tree..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-column" style="gap: 1rem;">
+      <el-dm-select id="select-sm" size="sm" placeholder="Small..."></el-dm-select>
+      <el-dm-select id="select-md" size="md" placeholder="Medium..."></el-dm-select>
+      <el-dm-select id="select-lg" size="lg" placeholder="Large..."></el-dm-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Disabled</h2>
+    <div class="demo-column">
+      <el-dm-select id="disabled-select" disabled placeholder="Disabled..."></el-dm-select>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register as registerSelect } from '../elements/select/src/index.ts';
+    registerSelect();
+
+    // Basic options
+    const fruitOptions = [
+      { value: 'apple', label: 'Apple' },
+      { value: 'banana', label: 'Banana' },
+      { value: 'cherry', label: 'Cherry' },
+      { value: 'date', label: 'Date' },
+      { value: 'elderberry', label: 'Elderberry' },
+      { value: 'fig', label: 'Fig' },
+      { value: 'grape', label: 'Grape' },
+    ];
+
+    // Grouped options
+    const languageOptions = [
+      { value: 'js', label: 'JavaScript', group: 'Frontend' },
+      { value: 'ts', label: 'TypeScript', group: 'Frontend' },
+      { value: 'html', label: 'HTML', group: 'Frontend' },
+      { value: 'css', label: 'CSS', group: 'Frontend' },
+      { value: 'py', label: 'Python', group: 'Backend' },
+      { value: 'go', label: 'Go', group: 'Backend' },
+      { value: 'rust', label: 'Rust', group: 'Backend' },
+      { value: 'java', label: 'Java', group: 'Backend' },
+    ];
+
+    // Tree options
+    const treeOptions = [
+      {
+        value: 'frontend',
+        label: 'Frontend',
+        children: [
+          { value: 'react', label: 'React' },
+          { value: 'vue', label: 'Vue' },
+          {
+            value: 'angular',
+            label: 'Angular',
+            children: [
+              { value: 'angular-material', label: 'Angular Material' },
+              { value: 'angular-cdk', label: 'Angular CDK' },
+            ],
+          },
+        ],
+      },
+      {
+        value: 'backend',
+        label: 'Backend',
+        children: [
+          { value: 'node', label: 'Node.js' },
+          { value: 'django', label: 'Django' },
+          { value: 'rails', label: 'Ruby on Rails' },
+        ],
+      },
+      {
+        value: 'database',
+        label: 'Database',
+        children: [
+          { value: 'postgres', label: 'PostgreSQL' },
+          { value: 'mysql', label: 'MySQL' },
+          { value: 'mongodb', label: 'MongoDB' },
+        ],
+      },
+    ];
+
+    // Initialize selects
+    document.getElementById('basic-select').setOptions(fruitOptions);
+    document.getElementById('clearable-select').setOptions(fruitOptions);
+    document.getElementById('searchable-select').setOptions(languageOptions);
+    document.getElementById('multi-select').setOptions(languageOptions);
+    document.getElementById('max-tag-select').setOptions(languageOptions);
+    document.getElementById('tree-select').setTreeOptions(treeOptions);
+    document.getElementById('tree-multi-select').setTreeOptions(treeOptions);
+    document.getElementById('select-sm').setOptions(fruitOptions);
+    document.getElementById('select-md').setOptions(fruitOptions);
+    document.getElementById('select-lg').setOptions(fruitOptions);
+    document.getElementById('disabled-select').setOptions(fruitOptions);
+  </script>
+</body>
+</html>

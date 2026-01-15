@@ -1,0 +1,277 @@
+---
+title: Select
+description: Unified select component with single, multi-select, and tree-select modes
+order: 16
+section: input
+component: "@duskmoon-dev/el-select"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Select
+
+The Select component provides a unified dropdown selection experience with support for single selection, multiple selection, and hierarchical tree selection modes.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-select
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-select/register';
+```
+
+```html
+<el-dm-select
+  placeholder="Select a fruit..."
+></el-dm-select>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Select">
+  <el-dm-select
+    placeholder="Select a fruit..."
+    options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"},{"value":"cherry","label":"Cherry"},{"value":"date","label":"Date"}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+<ComponentDemo title="Empty Select (No Options)">
+  <el-dm-select
+    placeholder="No options provided..."
+  ></el-dm-select>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | Selected value(s) - JSON string for multiple |
+| `placeholder` | `string` | `''` | Placeholder text |
+| `disabled` | `boolean` | `false` | Disables the select |
+| `multiple` | `boolean` | `false` | Enable multi-select mode |
+| `tree-data` | `boolean` | `false` | Enable tree-select mode |
+| `searchable` | `boolean` | `false` | Enable search filtering |
+| `clearable` | `boolean` | `false` | Show clear button |
+| `cascade` | `boolean` | `false` | Auto-select children when parent selected (tree mode) |
+| `check-strictly` | `boolean` | `false` | Independent parent/child selection (tree mode) |
+| `default-expand-all` | `boolean` | `false` | Expand all tree nodes initially |
+| `max-tag-count` | `number` | `-1` | Max visible tags (-1 = unlimited) |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+| `options` | `string` | `''` | JSON string of flat options |
+| `tree-options` | `string` | `''` | JSON string of tree options |
+
+## Option Format
+
+Options can be set via HTML attribute or JavaScript:
+
+### Via Attribute (JSON string)
+
+```html
+<el-dm-select
+  options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"}]'
+></el-dm-select>
+```
+
+### Via JavaScript
+
+```typescript
+interface SelectOption {
+  value: string;      // Unique value
+  label: string;      // Display text
+  disabled?: boolean; // Disable this option
+  group?: string;     // Group name for grouping
+}
+```
+
+```javascript
+const select = document.querySelector('el-dm-select');
+select.setOptions([
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' }
+]);
+```
+
+## Multiple Selection
+
+<ComponentDemo title="Multiple Selection">
+  <el-dm-select
+    multiple
+    searchable
+    clearable
+    placeholder="Select languages..."
+    options='[{"value":"javascript","label":"JavaScript"},{"value":"typescript","label":"TypeScript"},{"value":"python","label":"Python"},{"value":"rust","label":"Rust"},{"value":"go","label":"Go"}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+```html
+<el-dm-select
+  multiple
+  searchable
+  clearable
+  placeholder="Select languages..."
+></el-dm-select>
+```
+
+## Tree Select
+
+For hierarchical data, use tree mode with `setTreeOptions()`:
+
+```typescript
+interface TreeSelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  children?: TreeSelectOption[];
+}
+```
+
+<ComponentDemo title="Tree Select">
+  <el-dm-select
+    tree-data
+    searchable
+    clearable
+    default-expand-all
+    placeholder="Select from tree..."
+    tree-options='[{"value":"frontend","label":"Frontend","children":[{"value":"react","label":"React"},{"value":"vue","label":"Vue"},{"value":"angular","label":"Angular"}]},{"value":"backend","label":"Backend","children":[{"value":"node","label":"Node.js"},{"value":"python","label":"Python"},{"value":"go","label":"Go"}]}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+```html
+<el-dm-select
+  tree-data
+  searchable
+  clearable
+  placeholder="Select from tree..."
+></el-dm-select>
+```
+
+```javascript
+select.setTreeOptions([
+  {
+    value: 'frontend',
+    label: 'Frontend',
+    children: [
+      { value: 'react', label: 'React' },
+      { value: 'vue', label: 'Vue' }
+    ]
+  },
+  {
+    value: 'backend',
+    label: 'Backend',
+    children: [
+      { value: 'node', label: 'Node.js' },
+      { value: 'python', label: 'Python' }
+    ]
+  }
+]);
+```
+
+## Tree Select with Cascade
+
+When `cascade` is enabled, selecting a parent automatically selects all children:
+
+<ComponentDemo title="Tree Select with Cascade">
+  <el-dm-select
+    tree-data
+    multiple
+    cascade
+    default-expand-all
+    placeholder="Select with cascade..."
+    tree-options='[{"value":"documents","label":"Documents","children":[{"value":"work","label":"Work"},{"value":"personal","label":"Personal"}]},{"value":"photos","label":"Photos","children":[{"value":"vacation","label":"Vacation"},{"value":"family","label":"Family"}]}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+```html
+<el-dm-select
+  tree-data
+  multiple
+  cascade
+  default-expand-all
+  placeholder="Select with cascade..."
+></el-dm-select>
+```
+
+## Sizes
+
+<ComponentDemo title="Select Sizes">
+  <el-dm-select
+    size="sm"
+    placeholder="Small..."
+    options='[{"value":"a","label":"Option A"},{"value":"b","label":"Option B"}]'
+  ></el-dm-select>
+  <el-dm-select
+    size="md"
+    placeholder="Medium..."
+    options='[{"value":"a","label":"Option A"},{"value":"b","label":"Option B"}]'
+  ></el-dm-select>
+  <el-dm-select
+    size="lg"
+    placeholder="Large..."
+    options='[{"value":"a","label":"Option A"},{"value":"b","label":"Option B"}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+```html
+<el-dm-select size="sm" placeholder="Small..."></el-dm-select>
+<el-dm-select size="md" placeholder="Medium..."></el-dm-select>
+<el-dm-select size="lg" placeholder="Large..."></el-dm-select>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled">
+  <el-dm-select
+    disabled
+    placeholder="Disabled..."
+  ></el-dm-select>
+</ComponentDemo>
+
+```html
+<el-dm-select disabled placeholder="Disabled..."></el-dm-select>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when selection changes |
+| `search` | Fired when search text changes |
+| `clear` | Fired when cleared |
+| `expand` | Fired when tree node expanded/collapsed |
+
+### Event Handling
+
+```javascript
+const select = document.querySelector('el-dm-select');
+
+select.addEventListener('change', (event) => {
+  console.log('Selected:', event.detail.value);
+  console.log('Selected options:', event.detail.selectedOptions);
+});
+
+select.addEventListener('search', (event) => {
+  console.log('Search:', event.detail.searchValue);
+});
+```
+
+## Keyboard Navigation
+
+- **Arrow Down/Up**: Navigate options
+- **Enter**: Select highlighted option
+- **Escape**: Close dropdown
+- **Backspace**: Remove last tag (in multiple mode)
+- **Arrow Right**: Expand tree node
+- **Arrow Left**: Collapse tree node
+
+## Accessibility
+
+- Uses `role="combobox"` with proper ARIA attributes
+- `aria-expanded` indicates dropdown state
+- Options have `role="option"` with `aria-selected`
+- Tree nodes use `role="treeitem"` with `aria-expanded`
+- Full keyboard navigation support

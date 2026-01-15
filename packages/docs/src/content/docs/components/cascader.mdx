@@ -1,0 +1,302 @@
+---
+title: Cascader
+description: Multi-panel cascading selection for hierarchical data
+order: 17
+section: input
+component: "@duskmoon-dev/el-cascader"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Cascader
+
+The Cascader component provides a multi-panel cascading selection interface for hierarchical data like locations, categories, and organizational structures.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-cascader
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-cascader/register';
+```
+
+```html
+<el-dm-cascader
+  placeholder="Select location..."
+></el-dm-cascader>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Cascader">
+  <el-dm-cascader
+    id="demo-basic-cascader"
+    placeholder="Select location..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | Selected path as JSON array |
+| `placeholder` | `string` | `''` | Placeholder text |
+| `disabled` | `boolean` | `false` | Disables the cascader |
+| `multiple` | `boolean` | `false` | Enable multi-path selection |
+| `searchable` | `boolean` | `false` | Enable search filtering |
+| `clearable` | `boolean` | `false` | Show clear button |
+| `change-on-select` | `boolean` | `false` | Emit change on each level selection |
+| `expand-trigger` | `'click' \| 'hover'` | `'click'` | How to expand panels |
+| `separator` | `string` | `' / '` | Display path separator |
+| `show-all-levels` | `boolean` | `true` | Show full path or only leaf label |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+
+## Option Format
+
+Options should be set via JavaScript using `setOptions()`:
+
+```typescript
+interface CascaderOption {
+  value: string;              // Unique value
+  label: string;              // Display text
+  disabled?: boolean;         // Disable this option
+  children?: CascaderOption[]; // Child options
+  leaf?: boolean;             // Force as leaf (no async loading)
+}
+```
+
+```javascript
+const cascader = document.querySelector('el-dm-cascader');
+cascader.setOptions([
+  {
+    value: 'usa',
+    label: 'United States',
+    children: [
+      {
+        value: 'california',
+        label: 'California',
+        children: [
+          { value: 'sf', label: 'San Francisco' },
+          { value: 'la', label: 'Los Angeles' }
+        ]
+      }
+    ]
+  }
+]);
+```
+
+## With Clearable
+
+<ComponentDemo title="Clearable Cascader">
+  <el-dm-cascader
+    id="demo-clearable"
+    clearable
+    placeholder="Select and clear..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader clearable placeholder="Select and clear..."></el-dm-cascader>
+```
+
+## Searchable
+
+<ComponentDemo title="Searchable Cascader">
+  <el-dm-cascader
+    id="demo-searchable"
+    searchable
+    clearable
+    placeholder="Search locations..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader searchable clearable placeholder="Search locations..."></el-dm-cascader>
+```
+
+## Change on Select
+
+Allow selecting non-leaf nodes:
+
+<ComponentDemo title="Change on Select">
+  <el-dm-cascader
+    id="demo-change-on-select"
+    change-on-select
+    clearable
+    placeholder="Select any level..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader change-on-select clearable placeholder="Select any level..."></el-dm-cascader>
+```
+
+## Hover to Expand
+
+<ComponentDemo title="Hover to Expand">
+  <el-dm-cascader
+    id="demo-hover"
+    expand-trigger="hover"
+    placeholder="Hover to expand..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader expand-trigger="hover" placeholder="Hover to expand..."></el-dm-cascader>
+```
+
+## Multiple Selection
+
+<ComponentDemo title="Multiple Selection">
+  <el-dm-cascader
+    id="demo-multiple"
+    multiple
+    clearable
+    placeholder="Select multiple paths..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader multiple clearable placeholder="Select multiple paths..."></el-dm-cascader>
+```
+
+## Async Loading
+
+For large datasets, load children dynamically:
+
+```javascript
+const cascader = document.querySelector('el-dm-cascader');
+
+// Set initial options
+cascader.setOptions([
+  { value: 'category1', label: 'Category 1', leaf: false },
+  { value: 'category2', label: 'Category 2', leaf: false }
+]);
+
+// Set async loader
+cascader.setLoadData(async (option) => {
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  return [
+    { value: `${option.value}-sub1`, label: `${option.label} - Sub 1` },
+    { value: `${option.value}-sub2`, label: `${option.label} - Sub 2` }
+  ];
+});
+```
+
+**Note:** `searchable` cannot be used with async loading since the full tree is not available for searching.
+
+## Custom Separator
+
+<ComponentDemo title="Custom Separator">
+  <el-dm-cascader
+    id="demo-separator"
+    separator=" > "
+    placeholder="Custom separator..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader separator=" > " placeholder="Custom separator..."></el-dm-cascader>
+```
+
+## Show Only Leaf Label
+
+<ComponentDemo title="Show Only Leaf Label">
+  <el-dm-cascader
+    id="demo-leaf-only"
+    show-all-levels="false"
+    placeholder="Shows only last level..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader show-all-levels="false" placeholder="Shows only last level..."></el-dm-cascader>
+```
+
+## Sizes
+
+<ComponentDemo title="Cascader Sizes">
+  <el-dm-cascader
+    id="demo-sm"
+    size="sm"
+    placeholder="Small..."
+  ></el-dm-cascader>
+  <el-dm-cascader
+    id="demo-md"
+    size="md"
+    placeholder="Medium..."
+  ></el-dm-cascader>
+  <el-dm-cascader
+    id="demo-lg"
+    size="lg"
+    placeholder="Large..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader size="sm" placeholder="Small..."></el-dm-cascader>
+<el-dm-cascader size="md" placeholder="Medium..."></el-dm-cascader>
+<el-dm-cascader size="lg" placeholder="Large..."></el-dm-cascader>
+```
+
+## Disabled
+
+<ComponentDemo title="Disabled">
+  <el-dm-cascader
+    disabled
+    placeholder="Disabled..."
+  ></el-dm-cascader>
+</ComponentDemo>
+
+```html
+<el-dm-cascader disabled placeholder="Disabled..."></el-dm-cascader>
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when selection changes |
+| `expand` | Fired when a panel expands |
+| `search` | Fired when search text changes |
+
+### Event Handling
+
+```javascript
+const cascader = document.querySelector('el-dm-cascader');
+
+cascader.addEventListener('change', (event) => {
+  console.log('Selected path:', event.detail.value);
+  console.log('Selected options:', event.detail.selectedOptions);
+  console.log('Path array:', event.detail.path);
+});
+
+cascader.addEventListener('expand', (event) => {
+  console.log('Expanded option:', event.detail.option);
+  console.log('Level:', event.detail.level);
+});
+```
+
+## Keyboard Navigation
+
+- **Arrow Down/Up**: Navigate within panel
+- **Arrow Right**: Expand to next panel
+- **Arrow Left**: Go back to previous panel
+- **Enter**: Select current option
+- **Escape**: Close dropdown
+- **Backspace**: Remove last tag (in multiple mode)
+
+## Accessibility
+
+- Uses `role="combobox"` with proper ARIA attributes
+- `aria-expanded` indicates dropdown state
+- Panel options have `role="option"` with `aria-selected`
+- Loading states announced via `aria-busy`
+- Full keyboard navigation support
