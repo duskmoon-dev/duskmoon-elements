@@ -578,6 +578,9 @@ export class ElDmCascader extends BaseElement {
     this._parseOptionsFromAttribute();
 
     this._parseValue();
+
+    // Set up event delegation once
+    this._setupEventDelegation();
   }
 
   /**
@@ -928,7 +931,9 @@ export class ElDmCascader extends BaseElement {
     this._activePath.push(value);
 
     const option = this._findOptionByPath(this._activePath);
-    if (!option) return;
+    if (!option) {
+      return;
+    }
 
     // Check if we need to load children
     if (this._loadDataFn && !option.children && !option.leaf) {
@@ -1229,75 +1234,125 @@ export class ElDmCascader extends BaseElement {
   }
 
   protected update(): void {
+    // Preserve search input focus state before DOM replacement
+    const searchInput = this.shadowRoot?.querySelector('.cascader-search-input') as HTMLInputElement;
+    const hadFocus = searchInput && this.shadowRoot?.activeElement === searchInput;
+    const cursorPosition = hadFocus ? searchInput.selectionStart : null;
+
     super.update();
-    this._attachEventListeners();
+    // Event delegation is set up once in connectedCallback
+
+    // If dropdown is open, re-show the popover after DOM update
+    // (since update() replaces the DOM, the new dropdown element needs showPopover())
+    if (this._isOpen) {
+      const dropdown = this.shadowRoot?.querySelector('.cascader-dropdown') as HTMLElement;
+      const trigger = this.shadowRoot?.querySelector('.cascader-trigger') as HTMLElement;
+      if (dropdown && trigger) {
+        try {
+          dropdown.showPopover();
+          this._positionDropdown(dropdown, trigger);
+        } catch {
+          // Ignore if already shown or other errors
+        }
+      }
+
+      // Restore search input focus if it had focus before update
+      if (hadFocus) {
+        const newSearchInput = this.shadowRoot?.querySelector('.cascader-search-input') as HTMLInputElement;
+        if (newSearchInput) {
+          newSearchInput.focus();
+          // Restore cursor position
+          if (cursorPosition !== null) {
+            newSearchInput.setSelectionRange(cursorPosition, cursorPosition);
+          }
+        }
+      }
+    }
   }
 
-  private _attachEventListeners(): void {
-    // Toggle trigger
-    const trigger = this.shadowRoot?.querySelector('[data-action="toggle"]');
-    trigger?.addEventListener('click', (e) => {
+  /**
+   * Set up event delegation once (called in connectedCallback)
+   */
+  private _setupEventDelegation(): void {
+    // Use event delegation on shadow root for all interactive elements
+    this.shadowRoot?.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('[data-action="clear"]') && !target.closest('[data-action="remove-tag"]')) {
+
+      // Toggle trigger
+      const trigger = target.closest('[data-action="toggle"]');
+      if (trigger && !target.closest('[data-action="clear"]') && !target.closest('[data-action="remove-tag"]')) {
         this._toggle();
+        return;
       }
-    });
 
-    // Clear button
-    const clearBtn = this.shadowRoot?.querySelector('[data-action="clear"]');
-    clearBtn?.addEventListener('click', (e) => this._handleClear(e));
-
-    // Search input
-    const searchInput = this.shadowRoot?.querySelector('[data-action="search"]');
-    searchInput?.addEventListener('input', (e) => this._handleSearch(e));
-
-    // Panel options
-    const options = this.shadowRoot?.querySelectorAll('[data-action="option"]');
-    options?.forEach((opt) => {
-      const value = opt.getAttribute('data-value');
-      const level = parseInt(opt.getAttribute('data-level') || '0', 10);
-
-      opt.addEventListener('click', () => {
-        if (value) this._handleOptionClick(value, level);
-      });
-
-      if (this.expandTrigger === 'hover') {
-        opt.addEventListener('mouseenter', () => {
-          if (value) this._handleOptionHover(value, level);
-        });
+      // Clear button
+      if (target.closest('[data-action="clear"]')) {
+        this._handleClear(e);
+        return;
       }
-    });
 
-    // Search results
-    const searchResults = this.shadowRoot?.querySelectorAll('[data-action="search-result"]');
-    searchResults?.forEach((result) => {
-      result.addEventListener('click', () => {
-        const pathStr = result.getAttribute('data-path');
+      // Tag remove button
+      const removeTag = target.closest('[data-action="remove-tag"]');
+      if (removeTag) {
+        e.stopPropagation();
+        const index = parseInt(removeTag.getAttribute('data-index') || '0', 10);
+        this._removeTag(index);
+        return;
+      }
+
+      // Panel option
+      const option = target.closest('[data-action="option"]');
+      if (option) {
+        const value = option.getAttribute('data-value');
+        const level = parseInt(option.getAttribute('data-level') || '0', 10);
+        if (value) {
+          this._handleOptionClick(value, level);
+        }
+        return;
+      }
+
+      // Search result
+      const searchResult = target.closest('[data-action="search-result"]');
+      if (searchResult) {
+        const pathStr = searchResult.getAttribute('data-path');
         if (pathStr) {
           try {
             const pathValues = JSON.parse(pathStr) as string[];
-            const searchResult: SearchResult = {
+            const result: SearchResult = {
               pathValues,
               path: [],
               pathLabels: this._getPathLabels(pathValues),
             };
-            this._selectSearchResult(searchResult);
+            this._selectSearchResult(result);
           } catch {
             // Invalid path
           }
         }
-      });
+        return;
+      }
     });
 
-    // Tag remove buttons
-    const tagRemoves = this.shadowRoot?.querySelectorAll('[data-action="remove-tag"]');
-    tagRemoves?.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const index = parseInt(btn.getAttribute('data-index') || '0', 10);
-        this._removeTag(index);
-      });
+    // Input event for search
+    this.shadowRoot?.addEventListener('input', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.matches('[data-action="search"]')) {
+        this._handleSearch(e);
+      }
     });
+
+    // Mouseenter for hover expand
+    this.shadowRoot?.addEventListener('mouseenter', (e) => {
+      if (this.expandTrigger !== 'hover') return;
+      const target = e.target as HTMLElement;
+      const option = target.closest('[data-action="option"]');
+      if (option) {
+        const value = option.getAttribute('data-value');
+        const level = parseInt(option.getAttribute('data-level') || '0', 10);
+        if (value) {
+          this._handleOptionHover(value, level);
+        }
+      }
+    }, true); // Use capture for mouseenter
   }
 }
 

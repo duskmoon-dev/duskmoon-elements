@@ -594,6 +594,9 @@ export class ElDmSelect extends BaseElement {
     if (this.defaultExpandAll && this.treeData) {
       this._expandAllNodes();
     }
+
+    // Set up event delegation once
+    this._setupEventDelegation();
   }
 
   /**
@@ -1298,65 +1301,103 @@ export class ElDmSelect extends BaseElement {
   }
 
   protected update(): void {
+    // Preserve search input focus state before DOM replacement
+    const searchInput = this.shadowRoot?.querySelector('.select-search-input') as HTMLInputElement;
+    const hadFocus = searchInput && this.shadowRoot?.activeElement === searchInput;
+    const cursorPosition = hadFocus ? searchInput.selectionStart : null;
+
     super.update();
-    this._attachEventListeners();
+    // Event delegation is set up once in connectedCallback
+
+    // If dropdown is open, re-show the popover after DOM update
+    // (since update() replaces the DOM, the new dropdown element needs showPopover())
+    if (this._isOpen) {
+      const dropdown = this.shadowRoot?.querySelector('.select-dropdown') as HTMLElement;
+      const trigger = this.shadowRoot?.querySelector('.select-trigger') as HTMLElement;
+      if (dropdown && trigger) {
+        try {
+          dropdown.showPopover();
+          this._positionDropdown(dropdown, trigger);
+        } catch {
+          // Ignore if already shown or other errors
+        }
+      }
+
+      // Restore search input focus if it had focus before update
+      if (hadFocus) {
+        const newSearchInput = this.shadowRoot?.querySelector('.select-search-input') as HTMLInputElement;
+        if (newSearchInput) {
+          newSearchInput.focus();
+          // Restore cursor position
+          if (cursorPosition !== null) {
+            newSearchInput.setSelectionRange(cursorPosition, cursorPosition);
+          }
+        }
+      }
+    }
   }
 
-  private _attachEventListeners(): void {
-    // Toggle trigger
-    const trigger = this.shadowRoot?.querySelector('[data-action="toggle"]');
-    trigger?.addEventListener('click', (e) => {
+  /**
+   * Set up event delegation once (called in connectedCallback)
+   */
+  private _setupEventDelegation(): void {
+    // Use event delegation on shadow root for all interactive elements
+    this.shadowRoot?.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('[data-action="clear"]') && !target.closest('[data-action="remove-tag"]')) {
+
+      // Toggle trigger
+      const trigger = target.closest('[data-action="toggle"]');
+      if (trigger && !target.closest('[data-action="clear"]') && !target.closest('[data-action="remove-tag"]')) {
         this._toggle();
+        return;
+      }
+
+      // Clear button
+      if (target.closest('[data-action="clear"]')) {
+        this._handleClear(e);
+        return;
+      }
+
+      // Tag remove button
+      const removeTag = target.closest('[data-action="remove-tag"]');
+      if (removeTag) {
+        e.stopPropagation();
+        const value = removeTag.getAttribute('data-value');
+        if (value) this._removeTag(value);
+        return;
+      }
+
+      // Flat option
+      const option = target.closest('[data-action="select"]');
+      if (option) {
+        const value = option.getAttribute('data-value');
+        if (value) this._selectOption(value);
+        return;
+      }
+
+      // Tree expand toggle (check before tree node)
+      const toggle = target.closest('[data-action="toggle-expand"]');
+      if (toggle) {
+        const value = toggle.getAttribute('data-value');
+        if (value) this._toggleExpand(value, e);
+        return;
+      }
+
+      // Tree node
+      const treeNode = target.closest('[data-action="select-tree"]');
+      if (treeNode) {
+        const value = treeNode.getAttribute('data-value');
+        if (value) this._selectOption(value);
+        return;
       }
     });
 
-    // Clear button
-    const clearBtn = this.shadowRoot?.querySelector('[data-action="clear"]');
-    clearBtn?.addEventListener('click', (e) => this._handleClear(e));
-
-    // Search input
-    const searchInput = this.shadowRoot?.querySelector('[data-action="search"]');
-    searchInput?.addEventListener('input', (e) => this._handleSearch(e));
-
-    // Flat options
-    const options = this.shadowRoot?.querySelectorAll('[data-action="select"]');
-    options?.forEach((opt) => {
-      opt.addEventListener('click', () => {
-        const value = opt.getAttribute('data-value');
-        if (value) this._selectOption(value);
-      });
-    });
-
-    // Tree options
-    const treeNodes = this.shadowRoot?.querySelectorAll('[data-action="select-tree"]');
-    treeNodes?.forEach((node) => {
-      node.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('[data-action="toggle-expand"]')) return;
-        const value = node.getAttribute('data-value');
-        if (value) this._selectOption(value);
-      });
-    });
-
-    // Tree expand toggles
-    const toggles = this.shadowRoot?.querySelectorAll('[data-action="toggle-expand"]');
-    toggles?.forEach((toggle) => {
-      toggle.addEventListener('click', (e) => {
-        const value = toggle.getAttribute('data-value');
-        if (value) this._toggleExpand(value, e);
-      });
-    });
-
-    // Tag remove buttons
-    const tagRemoves = this.shadowRoot?.querySelectorAll('[data-action="remove-tag"]');
-    tagRemoves?.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const value = btn.getAttribute('data-value');
-        if (value) this._removeTag(value);
-      });
+    // Input event for search
+    this.shadowRoot?.addEventListener('input', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.matches('[data-action="search"]')) {
+        this._handleSearch(e);
+      }
     });
   }
 }
