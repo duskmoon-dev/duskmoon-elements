@@ -20,6 +20,65 @@ const styles = cssTag`
   .datepicker {
     width: 100%;
   }
+
+  /* Popover API styles for dropdown - fixed width for 7-column calendar */
+  .datepicker-dropdown {
+    position: fixed;
+    margin: 0;
+    border: none;
+    padding: 0;
+    inset: unset;
+    overflow: hidden;
+    background: var(--color-surface, white);
+    border-radius: var(--radius-lg, 0.75rem);
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+    /* 7 days × 2.5rem = 17.5rem + 1rem padding = 18.5rem ≈ 296px */
+    width: 296px;
+  }
+
+  .datepicker-dropdown:popover-open {
+    display: block;
+  }
+
+  /* Calendar container - stack weekdays and days vertically */
+  .datepicker-dropdown .datepicker-calendar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  /* Override grid to use fixed sizes instead of 1fr */
+  .datepicker-dropdown .datepicker-weekdays,
+  .datepicker-dropdown .datepicker-days {
+    display: grid !important;
+    grid-template-columns: repeat(7, 2.5rem) !important;
+    gap: 0 !important;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .datepicker-dropdown .datepicker-day {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    padding: 0;
+  }
+
+  .datepicker-dropdown .datepicker-weekday {
+    width: 2.5rem;
+    height: 2rem;
+  }
+
+  .datepicker-dropdown .datepicker-months,
+  .datepicker-dropdown .datepicker-years {
+    display: grid !important;
+    grid-template-columns: repeat(3, 5.5rem) !important;
+    gap: 0.5rem !important;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0.5rem;
+  }
 `;
 
 export type DatepickerSize = 'sm' | 'md' | 'lg';
@@ -54,15 +113,15 @@ export class ElDmDatepicker extends BaseElement {
     size: { type: String, reflect: true, default: 'md' },
   };
 
-  value!: string;
-  disabled!: boolean;
-  placeholder!: string;
-  format!: string;
-  minDate!: string;
-  maxDate!: string;
-  range!: boolean;
-  showTime!: boolean;
-  size!: DatepickerSize;
+  declare value: string;
+  declare disabled: boolean;
+  declare placeholder: string;
+  declare format: string;
+  declare minDate: string;
+  declare maxDate: string;
+  declare range: boolean;
+  declare showTime: boolean;
+  declare size: DatepickerSize;
 
   private _isOpen = false;
   private _viewMode: ViewMode = 'days';
@@ -79,15 +138,124 @@ export class ElDmDatepicker extends BaseElement {
     this.attachStyles(styles);
   }
 
+  private _delegatedClickHandler: ((e: Event) => void) | null = null;
+  private _delegatedChangeHandler: ((e: Event) => void) | null = null;
+  private _scrollHandler: (() => void) | null = null;
+
   connectedCallback() {
     super.connectedCallback();
     this._parseValue();
     document.addEventListener('click', this._handleOutsideClick);
+    this._setupEventDelegation();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('click', this._handleOutsideClick);
+    this._removeEventDelegation();
+    // Clean up scroll/resize handlers
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler, true);
+      window.removeEventListener('resize', this._scrollHandler);
+      this._scrollHandler = null;
+    }
+  }
+
+  private _setupEventDelegation() {
+    // Click handler for all interactive elements
+    this._delegatedClickHandler = (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      // Input click - toggle dropdown
+      if (target.closest('.datepicker-input')) {
+        e.stopPropagation();
+        this._toggle();
+        return;
+      }
+
+      // Navigation buttons
+      if (target.closest('[data-nav="prev"]')) {
+        e.stopPropagation();
+        this._handlePrev();
+        return;
+      }
+      if (target.closest('[data-nav="next"]')) {
+        e.stopPropagation();
+        this._handleNext();
+        return;
+      }
+
+      // Title toggle view
+      if (target.closest('[data-action="toggle-view"]')) {
+        e.stopPropagation();
+        this._handleToggleView();
+        return;
+      }
+
+      // Day selection
+      const dayBtn = target.closest('.datepicker-day') as HTMLElement;
+      if (dayBtn && dayBtn.dataset.date) {
+        e.stopPropagation();
+        this._selectDate(new Date(dayBtn.dataset.date));
+        return;
+      }
+
+      // Month selection
+      const monthBtn = target.closest('.datepicker-month') as HTMLElement;
+      if (monthBtn && monthBtn.dataset.month !== undefined) {
+        e.stopPropagation();
+        this._selectMonth(parseInt(monthBtn.dataset.month, 10));
+        return;
+      }
+
+      // Year selection
+      const yearBtn = target.closest('.datepicker-year') as HTMLElement;
+      if (yearBtn && yearBtn.dataset.year !== undefined) {
+        e.stopPropagation();
+        this._selectYear(parseInt(yearBtn.dataset.year, 10));
+        return;
+      }
+
+      // Period buttons (AM/PM)
+      const periodBtn = target.closest('.datepicker-time-period-btn') as HTMLElement;
+      if (periodBtn && periodBtn.dataset.period) {
+        e.stopPropagation();
+        this._period = periodBtn.dataset.period as 'AM' | 'PM';
+        this._updateValue();
+        this.update();
+        return;
+      }
+    };
+
+    // Change handler for time inputs
+    this._delegatedChangeHandler = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      if (target.classList.contains('datepicker-time-input')) {
+        const type = target.dataset.time;
+        const value = parseInt(target.value, 10);
+
+        if (type === 'hours') {
+          this._hours = Math.max(1, Math.min(12, value || 12));
+        } else if (type === 'minutes') {
+          this._minutes = Math.max(0, Math.min(59, value || 0));
+        }
+
+        this._updateValue();
+        this.update();
+      }
+    };
+
+    this.shadowRoot?.addEventListener('click', this._delegatedClickHandler);
+    this.shadowRoot?.addEventListener('change', this._delegatedChangeHandler);
+  }
+
+  private _removeEventDelegation() {
+    if (this._delegatedClickHandler) {
+      this.shadowRoot?.removeEventListener('click', this._delegatedClickHandler);
+    }
+    if (this._delegatedChangeHandler) {
+      this.shadowRoot?.removeEventListener('change', this._delegatedChangeHandler);
+    }
   }
 
   private _handleOutsideClick = (e: MouseEvent) => {
@@ -127,12 +295,49 @@ export class ElDmDatepicker extends BaseElement {
     this._viewMode = 'days';
     this.emit('open');
     this.update();
+
+    // Show popover and position it
+    const dropdown = this.shadowRoot?.querySelector('.datepicker-dropdown') as HTMLElement;
+    const trigger = this.shadowRoot?.querySelector('.datepicker-input') as HTMLElement;
+    if (dropdown && trigger) {
+      try {
+        dropdown.showPopover();
+        this._positionDropdown(dropdown, trigger);
+      } catch {
+        // Ignore if already shown
+      }
+
+      // Add scroll listener to reposition dropdown
+      this._scrollHandler = () => {
+        this._positionDropdown(dropdown, trigger);
+      };
+      window.addEventListener('scroll', this._scrollHandler, true);
+      window.addEventListener('resize', this._scrollHandler);
+    }
   }
 
   private _close() {
     if (!this._isOpen) return;
     this._isOpen = false;
     this.emit('close');
+
+    // Remove scroll/resize listeners
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler, true);
+      window.removeEventListener('resize', this._scrollHandler);
+      this._scrollHandler = null;
+    }
+
+    // Hide popover
+    const dropdown = this.shadowRoot?.querySelector('.datepicker-dropdown') as HTMLElement;
+    if (dropdown) {
+      try {
+        dropdown.hidePopover();
+      } catch {
+        // Ignore if already hidden
+      }
+    }
+
     this.update();
   }
 
@@ -142,6 +347,34 @@ export class ElDmDatepicker extends BaseElement {
     } else {
       this._open();
     }
+  }
+
+  private _positionDropdown(dropdown: HTMLElement, trigger: HTMLElement) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const dropdownRect = dropdown.getBoundingClientRect();
+
+    // Position below the trigger
+    let top = triggerRect.bottom + 4;
+    let left = triggerRect.left;
+
+    // Check if dropdown would go off the bottom of the screen
+    if (top + dropdownRect.height > window.innerHeight) {
+      // Position above the trigger
+      top = triggerRect.top - dropdownRect.height - 4;
+    }
+
+    // Check if dropdown would go off the right of the screen
+    if (left + dropdownRect.width > window.innerWidth) {
+      left = window.innerWidth - dropdownRect.width - 8;
+    }
+
+    // Ensure it doesn't go off the left
+    if (left < 8) {
+      left = 8;
+    }
+
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
   }
 
   private _formatDate(date: Date | null): string {
@@ -538,7 +771,7 @@ export class ElDmDatepicker extends BaseElement {
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </div>
-        <div class="datepicker-dropdown">
+        <div class="datepicker-dropdown" popover="manual">
           ${this._renderHeader()}
           <div class="datepicker-calendar">
             ${calendarContent}
@@ -549,73 +782,23 @@ export class ElDmDatepicker extends BaseElement {
     `;
   }
 
-  update() {
+  protected update(): void {
     super.update();
-    this._attachEventListeners();
-  }
+    // Event delegation is set up once in connectedCallback
 
-  private _attachEventListeners() {
-    const input = this.shadowRoot?.querySelector('.datepicker-input');
-    if (input) {
-      input.removeEventListener('click', this._toggle.bind(this));
-      input.addEventListener('click', this._toggle.bind(this));
+    // If dropdown is open, re-show the popover after DOM update
+    if (this._isOpen) {
+      const dropdown = this.shadowRoot?.querySelector('.datepicker-dropdown') as HTMLElement;
+      const trigger = this.shadowRoot?.querySelector('.datepicker-input') as HTMLElement;
+      if (dropdown && trigger) {
+        try {
+          dropdown.showPopover();
+          this._positionDropdown(dropdown, trigger);
+        } catch {
+          // Ignore if already shown or other errors
+        }
+      }
     }
-
-    // Navigation
-    const prevBtn = this.shadowRoot?.querySelector('[data-nav="prev"]');
-    const nextBtn = this.shadowRoot?.querySelector('[data-nav="next"]');
-
-    if (prevBtn) {
-      prevBtn.removeEventListener('click', this._handlePrev);
-      prevBtn.addEventListener('click', this._handlePrev);
-    }
-
-    if (nextBtn) {
-      nextBtn.removeEventListener('click', this._handleNext);
-      nextBtn.addEventListener('click', this._handleNext);
-    }
-
-    // Title toggle view
-    const titleBtn = this.shadowRoot?.querySelector('[data-action="toggle-view"]');
-    if (titleBtn) {
-      titleBtn.removeEventListener('click', this._handleToggleView);
-      titleBtn.addEventListener('click', this._handleToggleView);
-    }
-
-    // Day selection
-    const dayBtns = this.shadowRoot?.querySelectorAll('.datepicker-day');
-    dayBtns?.forEach((btn) => {
-      btn.removeEventListener('click', this._handleDayClick);
-      btn.addEventListener('click', this._handleDayClick);
-    });
-
-    // Month selection
-    const monthBtns = this.shadowRoot?.querySelectorAll('.datepicker-month');
-    monthBtns?.forEach((btn) => {
-      btn.removeEventListener('click', this._handleMonthClick);
-      btn.addEventListener('click', this._handleMonthClick);
-    });
-
-    // Year selection
-    const yearBtns = this.shadowRoot?.querySelectorAll('.datepicker-year');
-    yearBtns?.forEach((btn) => {
-      btn.removeEventListener('click', this._handleYearClick);
-      btn.addEventListener('click', this._handleYearClick);
-    });
-
-    // Time inputs
-    const timeInputs = this.shadowRoot?.querySelectorAll('.datepicker-time-input');
-    timeInputs?.forEach((input) => {
-      input.removeEventListener('change', this._handleTimeChange);
-      input.addEventListener('change', this._handleTimeChange);
-    });
-
-    // Period buttons
-    const periodBtns = this.shadowRoot?.querySelectorAll('.datepicker-time-period-btn');
-    periodBtns?.forEach((btn) => {
-      btn.removeEventListener('click', this._handlePeriodClick);
-      btn.addEventListener('click', this._handlePeriodClick);
-    });
   }
 
   private _handlePrev = () => {
@@ -647,55 +830,6 @@ export class ElDmDatepicker extends BaseElement {
       this._setViewMode('years');
     } else {
       this._setViewMode('days');
-    }
-  };
-
-  private _handleDayClick = (e: Event) => {
-    const btn = e.currentTarget as HTMLElement;
-    const dateStr = btn.dataset.date;
-    if (dateStr) {
-      this._selectDate(new Date(dateStr));
-    }
-  };
-
-  private _handleMonthClick = (e: Event) => {
-    const btn = e.currentTarget as HTMLElement;
-    const month = btn.dataset.month;
-    if (month !== undefined) {
-      this._selectMonth(parseInt(month, 10));
-    }
-  };
-
-  private _handleYearClick = (e: Event) => {
-    const btn = e.currentTarget as HTMLElement;
-    const year = btn.dataset.year;
-    if (year !== undefined) {
-      this._selectYear(parseInt(year, 10));
-    }
-  };
-
-  private _handleTimeChange = (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    const type = input.dataset.time;
-    const value = parseInt(input.value, 10);
-
-    if (type === 'hours') {
-      this._hours = Math.max(1, Math.min(12, value || 12));
-    } else if (type === 'minutes') {
-      this._minutes = Math.max(0, Math.min(59, value || 0));
-    }
-
-    this._updateValue();
-    this.update();
-  };
-
-  private _handlePeriodClick = (e: Event) => {
-    const btn = e.currentTarget as HTMLElement;
-    const period = btn.dataset.period as 'AM' | 'PM';
-    if (period) {
-      this._period = period;
-      this._updateValue();
-      this.update();
     }
   };
 }
