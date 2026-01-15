@@ -20,6 +20,13 @@ const pageData = {
     description:
       'Card container with header, content, footer, and media slots. Supports multiple variants and interactive states.',
   },
+  '/cascader.html': {
+    title: 'Cascader',
+    name: 'Cascader',
+    tag: 'el-dm-cascader',
+    description:
+      'Multi-panel cascading selection for hierarchical data like locations, categories, and organizational structures.',
+  },
   '/input.html': {
     title: 'Input',
     name: 'Input',
@@ -33,6 +40,13 @@ const pageData = {
     tag: 'el-dm-markdown',
     description:
       'Markdown renderer with GitHub Flavored Markdown support, syntax highlighting, and customizable themes.',
+  },
+  '/select.html': {
+    title: 'Select',
+    name: 'Select',
+    tag: 'el-dm-select',
+    description:
+      'Select component with single, multi-select, and tree-select modes with search and filtering support.',
   },
 };
 
@@ -66,8 +80,10 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         button: resolve(__dirname, 'button.html'),
         card: resolve(__dirname, 'card.html'),
+        cascader: resolve(__dirname, 'cascader.html'),
         input: resolve(__dirname, 'input.html'),
         markdown: resolve(__dirname, 'markdown.html'),
+        select: resolve(__dirname, 'select.html'),
       },
     },
   },

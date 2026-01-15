@@ -1,6 +1,52 @@
 :root {
+  /* Primary colors */
   --color-primary: oklch(55% 0.2 265);
   --color-primary-content: white;
+  --color-on-primary: white;
+  --color-primary-container: oklch(90% 0.05 265);
+  --color-on-primary-container: oklch(25% 0.1 265);
+
+  /* Secondary colors */
+  --color-secondary: oklch(50% 0.1 265);
+  --color-secondary-content: white;
+  --color-on-secondary: white;
+
+  /* Tertiary colors */
+  --color-tertiary: oklch(50% 0.12 300);
+  --color-tertiary-content: white;
+  --color-on-tertiary: white;
+
+  /* Surface colors - Light */
+  --color-surface: white;
+  --color-surface-dim: oklch(95% 0.01 260);
+  --color-surface-bright: white;
+  --color-surface-container: oklch(97% 0.01 260);
+  --color-surface-container-low: oklch(98% 0.005 260);
+  --color-surface-container-high: oklch(94% 0.01 260);
+  --color-surface-container-highest: oklch(92% 0.01 260);
+
+  /* On-surface colors */
+  --color-on-surface: oklch(20% 0.02 260);
+  --color-on-surface-variant: oklch(45% 0.02 260);
+
+  /* Outline colors */
+  --color-outline: oklch(70% 0.02 260);
+  --color-outline-variant: oklch(85% 0.01 260);
+
+  /* Semantic colors */
+  --color-success: oklch(55% 0.15 145);
+  --color-warning: oklch(70% 0.15 85);
+  --color-error: oklch(50% 0.2 25);
+  --color-info: oklch(55% 0.15 265);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--color-primary);
+  --focus-ring-offset: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
 }
 
 * {
