@@ -9,7 +9,7 @@ export { BaseElement } from './base-element.js';
 export type { PropertyDefinition, PropertyDefinitions } from './base-element.js';
 
 // Style utilities
-export { css, combineStyles, cssVars, defaultTheme, resetStyles } from './styles.js';
+export { css, combineStyles, cssVars, defaultTheme, resetStyles, lightThemeColors } from './styles.js';
 
 // Types
 export type {
