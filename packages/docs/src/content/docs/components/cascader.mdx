@@ -35,8 +35,14 @@ import '@duskmoon-dev/el-cascader/register';
 
 <ComponentDemo title="Basic Cascader">
   <el-dm-cascader
-    id="demo-basic-cascader"
     placeholder="Select location..."
+    options='[{"value":"usa","label":"United States","children":[{"value":"california","label":"California","children":[{"value":"sf","label":"San Francisco"},{"value":"la","label":"Los Angeles"}]},{"value":"texas","label":"Texas","children":[{"value":"houston","label":"Houston"},{"value":"dallas","label":"Dallas"}]}]},{"value":"china","label":"China","children":[{"value":"beijing","label":"Beijing"},{"value":"shanghai","label":"Shanghai"}]}]'
+  ></el-dm-cascader>
+</ComponentDemo>
+
+<ComponentDemo title="Empty Cascader (No Options)">
+  <el-dm-cascader
+    placeholder="No options provided..."
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -55,10 +61,21 @@ import '@duskmoon-dev/el-cascader/register';
 | `separator` | `string` | `' / '` | Display path separator |
 | `show-all-levels` | `boolean` | `true` | Show full path or only leaf label |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+| `options` | `string` | `''` | JSON string of cascader options |
 
 ## Option Format
 
-Options should be set via JavaScript using `setOptions()`:
+Options can be set via HTML attribute or JavaScript:
+
+### Via Attribute (JSON string)
+
+```html
+<el-dm-cascader
+  options='[{"value":"usa","label":"United States","children":[{"value":"ca","label":"California"}]}]'
+></el-dm-cascader>
+```
+
+### Via JavaScript
 
 ```typescript
 interface CascaderOption {
@@ -94,9 +111,9 @@ cascader.setOptions([
 
 <ComponentDemo title="Clearable Cascader">
   <el-dm-cascader
-    id="demo-clearable"
     clearable
     placeholder="Select and clear..."
+    options='[{"value":"electronics","label":"Electronics","children":[{"value":"phones","label":"Phones","children":[{"value":"iphone","label":"iPhone"},{"value":"android","label":"Android"}]},{"value":"laptops","label":"Laptops"}]},{"value":"clothing","label":"Clothing","children":[{"value":"mens","label":"Men"},{"value":"womens","label":"Women"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -108,10 +125,10 @@ cascader.setOptions([
 
 <ComponentDemo title="Searchable Cascader">
   <el-dm-cascader
-    id="demo-searchable"
     searchable
     clearable
     placeholder="Search locations..."
+    options='[{"value":"asia","label":"Asia","children":[{"value":"japan","label":"Japan","children":[{"value":"tokyo","label":"Tokyo"},{"value":"osaka","label":"Osaka"}]},{"value":"korea","label":"South Korea","children":[{"value":"seoul","label":"Seoul"},{"value":"busan","label":"Busan"}]}]},{"value":"europe","label":"Europe","children":[{"value":"uk","label":"United Kingdom","children":[{"value":"london","label":"London"}]},{"value":"france","label":"France","children":[{"value":"paris","label":"Paris"}]}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -125,10 +142,10 @@ Allow selecting non-leaf nodes:
 
 <ComponentDemo title="Change on Select">
   <el-dm-cascader
-    id="demo-change-on-select"
     change-on-select
     clearable
     placeholder="Select any level..."
+    options='[{"value":"dept1","label":"Engineering","children":[{"value":"frontend","label":"Frontend"},{"value":"backend","label":"Backend"},{"value":"devops","label":"DevOps"}]},{"value":"dept2","label":"Design","children":[{"value":"ui","label":"UI Design"},{"value":"ux","label":"UX Research"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -140,9 +157,9 @@ Allow selecting non-leaf nodes:
 
 <ComponentDemo title="Hover to Expand">
   <el-dm-cascader
-    id="demo-hover"
     expand-trigger="hover"
     placeholder="Hover to expand..."
+    options='[{"value":"animals","label":"Animals","children":[{"value":"mammals","label":"Mammals","children":[{"value":"dog","label":"Dog"},{"value":"cat","label":"Cat"}]},{"value":"birds","label":"Birds","children":[{"value":"eagle","label":"Eagle"},{"value":"sparrow","label":"Sparrow"}]}]},{"value":"plants","label":"Plants","children":[{"value":"trees","label":"Trees"},{"value":"flowers","label":"Flowers"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -154,10 +171,10 @@ Allow selecting non-leaf nodes:
 
 <ComponentDemo title="Multiple Selection">
   <el-dm-cascader
-    id="demo-multiple"
     multiple
     clearable
     placeholder="Select multiple paths..."
+    options='[{"value":"fruits","label":"Fruits","children":[{"value":"citrus","label":"Citrus","children":[{"value":"orange","label":"Orange"},{"value":"lemon","label":"Lemon"}]},{"value":"berries","label":"Berries","children":[{"value":"strawberry","label":"Strawberry"},{"value":"blueberry","label":"Blueberry"}]}]},{"value":"vegetables","label":"Vegetables","children":[{"value":"leafy","label":"Leafy Greens"},{"value":"root","label":"Root Vegetables"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -196,9 +213,9 @@ cascader.setLoadData(async (option) => {
 
 <ComponentDemo title="Custom Separator">
   <el-dm-cascader
-    id="demo-separator"
     separator=" > "
     placeholder="Custom separator..."
+    options='[{"value":"file","label":"File","children":[{"value":"documents","label":"Documents","children":[{"value":"work","label":"Work"},{"value":"personal","label":"Personal"}]},{"value":"photos","label":"Photos"}]},{"value":"settings","label":"Settings","children":[{"value":"account","label":"Account"},{"value":"privacy","label":"Privacy"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -210,9 +227,9 @@ cascader.setLoadData(async (option) => {
 
 <ComponentDemo title="Show Only Leaf Label">
   <el-dm-cascader
-    id="demo-leaf-only"
     show-all-levels="false"
     placeholder="Shows only last level..."
+    options='[{"value":"region","label":"Region","children":[{"value":"north","label":"North","children":[{"value":"ny","label":"New York"},{"value":"boston","label":"Boston"}]},{"value":"south","label":"South","children":[{"value":"miami","label":"Miami"},{"value":"atlanta","label":"Atlanta"}]}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 
@@ -224,19 +241,19 @@ cascader.setLoadData(async (option) => {
 
 <ComponentDemo title="Cascader Sizes">
   <el-dm-cascader
-    id="demo-sm"
     size="sm"
     placeholder="Small..."
+    options='[{"value":"a","label":"Option A","children":[{"value":"a1","label":"A-1"},{"value":"a2","label":"A-2"}]}]'
   ></el-dm-cascader>
   <el-dm-cascader
-    id="demo-md"
     size="md"
     placeholder="Medium..."
+    options='[{"value":"a","label":"Option A","children":[{"value":"a1","label":"A-1"},{"value":"a2","label":"A-2"}]}]'
   ></el-dm-cascader>
   <el-dm-cascader
-    id="demo-lg"
     size="lg"
     placeholder="Large..."
+    options='[{"value":"a","label":"Option A","children":[{"value":"a1","label":"A-1"},{"value":"a2","label":"A-2"}]}]'
   ></el-dm-cascader>
 </ComponentDemo>
 

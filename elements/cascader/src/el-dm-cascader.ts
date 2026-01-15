@@ -530,6 +530,7 @@ export class ElDmCascader extends BaseElement {
     showCheckedStrategy: { type: String, attribute: 'show-checked-strategy', default: 'all' },
     size: { type: String, reflect: true, default: 'md' },
     validationState: { type: String, reflect: true, attribute: 'validation-state' },
+    options: { type: String, default: '' },
   };
 
   // Declared properties
@@ -546,6 +547,7 @@ export class ElDmCascader extends BaseElement {
   declare showCheckedStrategy: 'all' | 'parent' | 'child';
   declare size: Size;
   declare validationState: ValidationState;
+  declare options: string;
 
   // Internal state
   private _isOpen = false;
@@ -571,7 +573,27 @@ export class ElDmCascader extends BaseElement {
     super.connectedCallback();
     document.addEventListener('click', this._handleOutsideClick);
     document.addEventListener('keydown', this._handleKeyDown);
+
+    // Parse options from attribute (for static HTML/MDX usage)
+    this._parseOptionsFromAttribute();
+
     this._parseValue();
+  }
+
+  /**
+   * Parse options from JSON string attribute
+   */
+  private _parseOptionsFromAttribute(): void {
+    if (this.options) {
+      try {
+        const parsed = JSON.parse(this.options);
+        if (Array.isArray(parsed)) {
+          this._options = parsed;
+        }
+      } catch {
+        // Invalid JSON, ignore
+      }
+    }
   }
 
   disconnectedCallback(): void {
