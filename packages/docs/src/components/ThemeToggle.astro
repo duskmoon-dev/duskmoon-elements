@@ -64,23 +64,17 @@
 </style>
 
 <script>
-  function initThemeToggle() {
-    const button = document.querySelector('.theme-toggle');
+  // Use event delegation on body to handle theme toggle clicks
+  // This ensures it works even with Astro page transitions
+  document.body.addEventListener('click', (e) => {
+    const button = (e.target as Element).closest('.theme-toggle');
     if (!button) return;
 
-    button.addEventListener('click', () => {
-      const html = document.documentElement;
-      const currentTheme = html.dataset.theme;
-      const newTheme = currentTheme === 'moonlight' ? 'sunshine' : 'moonlight';
+    const html = document.documentElement;
+    const currentTheme = html.dataset.theme || 'moonlight';
+    const newTheme = currentTheme === 'moonlight' ? 'sunshine' : 'moonlight';
 
-      html.dataset.theme = newTheme;
-      localStorage.setItem('duskmoon-theme', newTheme);
-    });
-  }
-
-  // Initialize on page load
-  initThemeToggle();
-
-  // Re-initialize after Astro page transitions
-  document.addEventListener('astro:page-load', initThemeToggle);
+    html.dataset.theme = newTheme;
+    localStorage.setItem('duskmoon-theme', newTheme);
+  });
 </script>

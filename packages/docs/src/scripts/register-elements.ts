@@ -16,7 +16,9 @@ import { register as registerForm } from '@duskmoon-dev/el-form';
 import { register as registerSlider } from '@duskmoon-dev/el-slider';
 import { register as registerFileUpload } from '@duskmoon-dev/el-file-upload';
 import { register as registerAutocomplete } from '@duskmoon-dev/el-autocomplete';
+import { register as registerCascader } from '@duskmoon-dev/el-cascader';
 import { register as registerDatepicker } from '@duskmoon-dev/el-datepicker';
+import { register as registerSelect } from '@duskmoon-dev/el-select';
 // Navigation elements
 import { register as registerBottomNavigation } from '@duskmoon-dev/el-bottom-navigation';
 import { register as registerBreadcrumbs } from '@duskmoon-dev/el-breadcrumbs';
@@ -48,7 +50,9 @@ registerForm();
 registerSlider();
 registerFileUpload();
 registerAutocomplete();
+registerCascader();
 registerDatepicker();
+registerSelect();
 // Navigation elements
 registerBottomNavigation();
 registerBreadcrumbs();

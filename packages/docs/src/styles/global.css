@@ -1,6 +1,6 @@
-/* Import theme styles from @duskmoon-dev/core */
-@import '@duskmoon-dev/core/themes/moonlight';
-@import '@duskmoon-dev/core/themes/sunshine';
+/* Import theme styles */
+@import './moonlight.css';
+@import './sunshine.css';
 
 /* Base styles */
 *,

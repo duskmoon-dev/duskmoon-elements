@@ -1,0 +1,56 @@
+/* Moonlight Theme - Dark Mode */
+[data-theme='moonlight'] {
+  /* Primary colors */
+  --color-primary: oklch(75% 0.15 250);
+  --color-primary-content: oklch(20% 0.02 250);
+  --color-on-primary: oklch(20% 0.02 250);
+  --color-primary-container: oklch(35% 0.1 250);
+  --color-on-primary-container: oklch(90% 0.05 250);
+
+  /* Secondary colors */
+  --color-secondary: oklch(70% 0.1 250);
+  --color-secondary-content: oklch(20% 0.02 250);
+  --color-on-secondary: oklch(20% 0.02 250);
+
+  /* Tertiary colors */
+  --color-tertiary: oklch(70% 0.12 300);
+  --color-tertiary-content: oklch(20% 0.02 300);
+  --color-on-tertiary: oklch(20% 0.02 300);
+
+  /* Surface colors - Dark */
+  --color-surface: oklch(20% 0.02 260);
+  --color-surface-dim: oklch(15% 0.02 260);
+  --color-surface-bright: oklch(30% 0.02 260);
+  --color-surface-container: oklch(25% 0.02 260);
+  --color-surface-container-low: oklch(22% 0.02 260);
+  --color-surface-container-high: oklch(30% 0.02 260);
+  --color-surface-container-highest: oklch(35% 0.02 260);
+
+  /* On-surface colors */
+  --color-on-surface: oklch(95% 0.01 260);
+  --color-on-surface-variant: oklch(75% 0.02 260);
+
+  /* Outline colors */
+  --color-outline: oklch(50% 0.02 260);
+  --color-outline-variant: oklch(35% 0.02 260);
+
+  /* Semantic colors */
+  --color-success: oklch(70% 0.15 145);
+  --color-warning: oklch(80% 0.15 85);
+  --color-error: oklch(65% 0.2 25);
+  --color-info: oklch(70% 0.15 250);
+
+  /* Inverse */
+  --color-inverse-surface: oklch(95% 0.01 260);
+  --color-inverse-on-surface: oklch(25% 0.02 260);
+  --color-inverse-primary: oklch(55% 0.15 250);
+
+  /* Shadows - darker for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--color-primary);
+  --focus-ring-offset: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primary);
+}
