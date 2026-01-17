@@ -34,7 +34,7 @@ const { code, lang = 'text', filename } = Astro.props;
     margin: 1rem 0;
     border-radius: 0.5rem;
     overflow: hidden;
-    background-color: var(--color-surface-container, #1e1e1e);
+    background-color: var(--color-surface-container-high);
   }
 
   .code-header {
@@ -43,7 +43,7 @@ const { code, lang = 'text', filename } = Astro.props;
     font-family: monospace;
     color: var(--color-on-surface);
     opacity: 0.7;
-    border-bottom: 1px solid var(--color-outline, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--color-outline-variant);
   }
 
   .code-content {
@@ -76,7 +76,7 @@ const { code, lang = 'text', filename } = Astro.props;
     padding: 0;
     border: none;
     border-radius: 0.375rem;
-    background-color: var(--color-surface, rgba(255, 255, 255, 0.1));
+    background-color: var(--color-surface-container);
     color: var(--color-on-surface);
     cursor: pointer;
     opacity: 0;

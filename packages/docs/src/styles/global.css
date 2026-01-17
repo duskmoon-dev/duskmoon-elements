@@ -1,4 +1,4 @@
-/* Import theme styles */
+/* Import theme styles - synced from @duskmoon-dev/core */
 @import './moonlight.css';
 @import './sunshine.css';
 
@@ -60,9 +60,8 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Code blocks */
+/* Code blocks - theme-appropriate background */
 pre {
-  background-color: var(--color-surface-container-high, #1e1e1e);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
@@ -70,12 +69,32 @@ pre {
   line-height: 1.7;
 }
 
+/* Shiki dual theme support - override inline styles */
+[data-theme='sunshine'] pre.astro-code {
+  background-color: var(--shiki-light-bg, #fff) !important;
+  color: var(--shiki-light, inherit);
+}
+
+[data-theme='sunshine'] pre.astro-code span {
+  color: var(--shiki-light, inherit);
+}
+
+[data-theme='moonlight'] pre.astro-code {
+  background-color: var(--shiki-dark-bg, #24292e) !important;
+  color: var(--shiki-dark, inherit);
+}
+
+[data-theme='moonlight'] pre.astro-code span {
+  color: var(--shiki-dark, inherit);
+}
+
 code {
   font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
 }
 
 :not(pre) > code {
-  background-color: var(--color-surface-container, #f0f0f0);
+  background-color: var(--color-surface-container-high, #e0e0e0);
+  color: var(--color-on-surface);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
