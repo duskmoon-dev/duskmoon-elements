@@ -82,8 +82,8 @@ const styles = css`
   /* Container for scrolling */
   .table-container {
     overflow-x: auto;
-    border: 1px solid var(--dm-color-outline, #e0e0e0);
-    border-radius: var(--dm-radius-md, 0.5rem);
+    border: 1px solid var(--color-outline, #e0e0e0);
+    border-radius: var(--radius-md, 0.5rem);
   }
 
   /* Sticky header variant */
@@ -103,7 +103,7 @@ const styles = css`
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
-    background-color: var(--dm-color-surface, #ffffff);
+    background-color: var(--color-surface, #ffffff);
   }
 
   /* Header styles */
@@ -111,9 +111,9 @@ const styles = css`
     padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
-    color: var(--dm-color-on-surface, #1a1a1a);
-    background-color: var(--dm-color-surface-variant, #f5f5f5);
-    border-bottom: 2px solid var(--dm-color-outline, #e0e0e0);
+    color: var(--color-on-surface, #1a1a1a);
+    background-color: var(--color-surface-container, #f5f5f5);
+    border-bottom: 2px solid var(--color-outline, #e0e0e0);
     white-space: nowrap;
   }
 
@@ -123,16 +123,16 @@ const styles = css`
   }
 
   .table-th.sortable:hover {
-    background-color: var(--dm-color-surface-container, #ebebeb);
+    background-color: var(--color-surface-container-high, #ebebeb);
   }
 
   .table-th.sortable:focus-visible {
-    outline: 2px solid var(--dm-color-primary, #6366f1);
+    outline: 2px solid var(--color-primary, #6366f1);
     outline-offset: -2px;
   }
 
   .table-th.sorted {
-    color: var(--dm-color-primary, #6366f1);
+    color: var(--color-primary, #6366f1);
   }
 
   .th-content {
@@ -156,8 +156,8 @@ const styles = css`
   /* Cell styles */
   .table-td {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--dm-color-outline-variant, #e8e8e8);
-    color: var(--dm-color-on-surface, #1a1a1a);
+    border-bottom: 1px solid var(--color-outline-variant, #e8e8e8);
+    color: var(--color-on-surface, #1a1a1a);
   }
 
   /* Row styles */
@@ -166,19 +166,15 @@ const styles = css`
   }
 
   :host([hoverable]) .table-row:hover {
-    background-color: var(--dm-color-surface-variant, #f5f5f5);
+    background-color: var(--color-surface-container, #f5f5f5);
   }
 
   .table-row.selected {
-    background-color: var(--dm-color-primary-container, #e8e8ff);
+    background-color: color-mix(in srgb, var(--color-primary, #6366f1) 15%, transparent);
   }
 
   :host([hoverable]) .table-row.selected:hover {
-    background-color: color-mix(
-      in srgb,
-      var(--dm-color-primary-container, #e8e8ff) 90%,
-      var(--dm-color-primary, #6366f1)
-    );
+    background-color: color-mix(in srgb, var(--color-primary, #6366f1) 20%, transparent);
   }
 
   /* Selection column */
@@ -192,22 +188,22 @@ const styles = css`
     cursor: pointer;
     width: 18px;
     height: 18px;
-    accent-color: var(--dm-color-primary, #6366f1);
+    accent-color: var(--color-primary, #6366f1);
   }
 
   /* Striped variant */
   :host([striped]) .table tbody tr:nth-child(even) {
-    background-color: var(--dm-color-surface-variant, #fafafa);
+    background-color: var(--color-surface-container-low, #fafafa);
   }
 
   :host([striped]) .table tbody tr.selected:nth-child(even) {
-    background-color: var(--dm-color-primary-container, #e8e8ff);
+    background-color: color-mix(in srgb, var(--color-primary, #6366f1) 15%, transparent);
   }
 
   /* Bordered variant */
   :host([bordered]) .table-td,
   :host([bordered]) .table-th {
-    border: 1px solid var(--dm-color-outline, #e0e0e0);
+    border: 1px solid var(--color-outline, #e0e0e0);
   }
 
   /* Compact variant */
@@ -225,15 +221,15 @@ const styles = css`
   .loading-row td {
     padding: 3rem;
     text-align: center;
-    color: var(--dm-color-on-surface-variant, #666);
+    color: var(--color-on-surface-variant, #666);
   }
 
   .loading-spinner {
     display: inline-block;
     width: 24px;
     height: 24px;
-    border: 2px solid var(--dm-color-outline, #e0e0e0);
-    border-top-color: var(--dm-color-primary, #6366f1);
+    border: 2px solid var(--color-outline, #e0e0e0);
+    border-top-color: var(--color-primary, #6366f1);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -248,7 +244,7 @@ const styles = css`
   .empty-row td {
     padding: 3rem;
     text-align: center;
-    color: var(--dm-color-on-surface-variant, #666);
+    color: var(--color-on-surface-variant, #666);
   }
 
   /* Pagination styles */
@@ -259,15 +255,15 @@ const styles = css`
     flex-wrap: wrap;
     gap: 1rem;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--dm-color-outline, #e0e0e0);
+    border: 1px solid var(--color-outline, #e0e0e0);
     border-top: none;
-    border-radius: 0 0 var(--dm-radius-md, 0.5rem) var(--dm-radius-md, 0.5rem);
-    background-color: var(--dm-color-surface-variant, #f5f5f5);
+    border-radius: 0 0 var(--radius-md, 0.5rem) var(--radius-md, 0.5rem);
+    background-color: var(--color-surface-container, #f5f5f5);
     font-size: 0.875rem;
   }
 
   .pagination-info {
-    color: var(--dm-color-on-surface-variant, #666);
+    color: var(--color-on-surface-variant, #666);
   }
 
   .pagination-controls {
@@ -288,20 +284,20 @@ const styles = css`
     justify-content: center;
     width: 32px;
     height: 32px;
-    border: 1px solid var(--dm-color-outline, #e0e0e0);
-    border-radius: var(--dm-radius-sm, 0.25rem);
-    background: var(--dm-color-surface, #ffffff);
+    border: 1px solid var(--color-outline, #e0e0e0);
+    border-radius: var(--radius-sm, 0.25rem);
+    background: var(--color-surface, #ffffff);
     cursor: pointer;
     transition: all 150ms ease;
-    color: var(--dm-color-on-surface, #1a1a1a);
+    color: var(--color-on-surface, #1a1a1a);
   }
 
   .pagination-btn:hover:not(:disabled) {
-    background: var(--dm-color-surface-container, #ebebeb);
+    background: var(--color-surface-container-high, #ebebeb);
   }
 
   .pagination-btn:focus-visible {
-    outline: 2px solid var(--dm-color-primary, #6366f1);
+    outline: 2px solid var(--color-primary, #6366f1);
     outline-offset: 2px;
   }
 
@@ -312,22 +308,22 @@ const styles = css`
 
   .pagination-current {
     padding: 0 0.75rem;
-    color: var(--dm-color-on-surface, #1a1a1a);
+    color: var(--color-on-surface, #1a1a1a);
     min-width: 100px;
     text-align: center;
   }
 
   .page-size-select {
     padding: 0.375rem 0.75rem;
-    border: 1px solid var(--dm-color-outline, #e0e0e0);
-    border-radius: var(--dm-radius-sm, 0.25rem);
-    background: var(--dm-color-surface, #ffffff);
+    border: 1px solid var(--color-outline, #e0e0e0);
+    border-radius: var(--radius-sm, 0.25rem);
+    background: var(--color-surface, #ffffff);
     font-size: 0.875rem;
     cursor: pointer;
   }
 
   .page-size-select:focus-visible {
-    outline: 2px solid var(--dm-color-primary, #6366f1);
+    outline: 2px solid var(--color-primary, #6366f1);
     outline-offset: 2px;
   }
 

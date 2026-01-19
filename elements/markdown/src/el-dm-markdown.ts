@@ -25,9 +25,9 @@
  * @fires dm-stream-chunk - Fired when a chunk is appended during streaming
  * @fires dm-stream-end - Fired when streaming ends
  *
- * @cssprop --dm-markdown-font-family - Font family for content
- * @cssprop --dm-markdown-code-font-family - Font family for code blocks
- * @cssprop --dm-markdown-line-height - Line height
+ * @cssprop --markdown-font-family - Font family for content
+ * @cssprop --markdown-code-font-family - Font family for code blocks
+ * @cssprop --markdown-line-height - Line height
  *
  * @example
  * // Streaming usage
@@ -64,10 +64,10 @@ const baseStyles = css`
   :host {
     display: block;
     font-family: var(
-      --dm-markdown-font-family,
+      --markdown-font-family,
       var(--font-family, system-ui, -apple-system, sans-serif)
     );
-    line-height: var(--dm-markdown-line-height, 1.6);
+    line-height: var(--markdown-line-height, 1.6);
     color: var(--color-on-surface);
   }
 
