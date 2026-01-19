@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-datepicker",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "DuskMoon Datepicker custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
