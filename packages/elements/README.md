@@ -25,7 +25,6 @@ The simplest way to use all elements - just add a script tag:
   <p>Card content</p>
 </el-dm-card>
 <el-dm-input label="Name" placeholder="Enter your name"></el-dm-input>
-<el-dm-markdown>## Hello **Markdown**</el-dm-markdown>
 ```
 
 ### Auto-Register with Bundler
@@ -47,16 +46,17 @@ registerAll();
 Or register individual elements:
 
 ```ts
-import { registerButton, registerCard } from '@duskmoon-dev/elements';
+import { registerButton, registerCard, registerTable } from '@duskmoon-dev/elements';
 
 registerButton();
 registerCard();
+registerTable();
 ```
 
 ### Using Element Classes
 
 ```ts
-import { ElDmButton, ElDmCard, ElDmInput, ElDmMarkdown } from '@duskmoon-dev/elements';
+import { ElDmButton, ElDmTable, ElDmTabs } from '@duskmoon-dev/elements';
 
 // Access element classes directly
 const button = document.querySelector('el-dm-button') as ElDmButton;
@@ -65,12 +65,63 @@ button.variant = 'primary';
 
 ## Included Elements
 
-| Element  | Tag                | Description                                                |
-| -------- | ------------------ | ---------------------------------------------------------- |
-| Button   | `<el-dm-button>`   | Customizable button with variants, sizes, loading state    |
-| Card     | `<el-dm-card>`     | Flexible card container with header, body, footer sections |
-| Input    | `<el-dm-input>`    | Form input with validation, labels, helper text            |
-| Markdown | `<el-dm-markdown>` | Markdown renderer with syntax highlighting, streaming mode |
+### Basic Components
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Button | `<el-dm-button>` | Button with variants, sizes, loading state |
+| Card | `<el-dm-card>` | Container with header, body, footer slots |
+
+### Form Elements
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Input | `<el-dm-input>` | Text input with validation states |
+| Switch | `<el-dm-switch>` | Toggle switch control |
+| Slider | `<el-dm-slider>` | Range slider with optional range mode |
+| Autocomplete | `<el-dm-autocomplete>` | Input with suggestion dropdown |
+| Datepicker | `<el-dm-datepicker>` | Date picker with calendar popup |
+| FileUpload | `<el-dm-file-upload>` | File upload with drag-and-drop |
+| Form | `<el-dm-form>` | Form container with validation |
+
+### Feedback & Display
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Alert | `<el-dm-alert>` | Alert messages with severity variants |
+| Dialog | `<el-dm-dialog>` | Modal dialog with backdrop |
+| Badge | `<el-dm-badge>` | Status badges and counters |
+| Chip | `<el-dm-chip>` | Tags and chips with optional delete |
+| Tooltip | `<el-dm-tooltip>` | Hover tooltips |
+| Progress | `<el-dm-progress>` | Progress bars and indeterminate spinners |
+| Markdown | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
+
+### Navigation
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Tabs | `<el-dm-tabs>` | Tabbed interface |
+| Menu | `<el-dm-menu>` | Dropdown and context menus |
+| Navbar | `<el-dm-navbar>` | Navigation bar |
+| Drawer | `<el-dm-drawer>` | Slide-out drawer panel |
+| Breadcrumbs | `<el-dm-breadcrumbs>` | Breadcrumb navigation |
+| Pagination | `<el-dm-pagination>` | Page navigation controls |
+| Stepper | `<el-dm-stepper>` | Step indicator for wizards |
+| BottomNavigation | `<el-dm-bottom-navigation>` | Mobile bottom navigation |
+
+### Surfaces & Containers
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Accordion | `<el-dm-accordion>` | Collapsible content sections |
+| Popover | `<el-dm-popover>` | Floating content popup |
+| BottomSheet | `<el-dm-bottom-sheet>` | Mobile bottom sheet |
+
+### Data Display
+
+| Element | Tag | Description |
+|---------|-----|-------------|
+| Table | `<el-dm-table>` | Data table with sorting, pagination, selection |
 
 ## Re-exported Utilities
 
@@ -91,11 +142,13 @@ import {
 
 If you only need specific elements, install them individually for smaller bundle size:
 
-| Package                     | CDN URL                                             |
-| --------------------------- | --------------------------------------------------- |
-| `@duskmoon-dev/el-button`   | `https://esm.sh/@duskmoon-dev/el-button/register`   |
-| `@duskmoon-dev/el-card`     | `https://esm.sh/@duskmoon-dev/el-card/register`     |
-| `@duskmoon-dev/el-input`    | `https://esm.sh/@duskmoon-dev/el-input/register`    |
+| Package | CDN URL |
+|---------|---------|
+| `@duskmoon-dev/el-button` | `https://esm.sh/@duskmoon-dev/el-button/register` |
+| `@duskmoon-dev/el-card` | `https://esm.sh/@duskmoon-dev/el-card/register` |
+| `@duskmoon-dev/el-input` | `https://esm.sh/@duskmoon-dev/el-input/register` |
+| `@duskmoon-dev/el-table` | `https://esm.sh/@duskmoon-dev/el-table/register` |
+| `@duskmoon-dev/el-tabs` | `https://esm.sh/@duskmoon-dev/el-tabs/register` |
 | `@duskmoon-dev/el-markdown` | `https://esm.sh/@duskmoon-dev/el-markdown/register` |
 
 Example using individual packages:
@@ -111,6 +164,28 @@ Or with a bundler:
 
 ```ts
 import '@duskmoon-dev/el-button/register';
+import '@duskmoon-dev/el-table/register';
+```
+
+## TypeScript Support
+
+All element types and interfaces are exported:
+
+```ts
+import type {
+  // Property types from core
+  Size,
+  Variant,
+  ValidationState,
+
+  // Element-specific types
+  TableColumn,
+  TableRow,
+  AutocompleteOption,
+  BreadcrumbItem,
+  PopoverPlacement,
+  TabsVariant,
+} from '@duskmoon-dev/elements';
 ```
 
 ## License
