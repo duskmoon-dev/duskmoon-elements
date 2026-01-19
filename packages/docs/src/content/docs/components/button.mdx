@@ -34,15 +34,23 @@ import '@duskmoon-dev/el-button/register';
 <ComponentDemo title="Button Variants">
   <el-dm-button variant="primary">Primary</el-dm-button>
   <el-dm-button variant="secondary">Secondary</el-dm-button>
+  <el-dm-button variant="tertiary">Tertiary</el-dm-button>
   <el-dm-button variant="outline">Outline</el-dm-button>
   <el-dm-button variant="ghost">Ghost</el-dm-button>
+</ComponentDemo>
+
+<ComponentDemo title="Semantic Colors">
+  <el-dm-button variant="success">Success</el-dm-button>
+  <el-dm-button variant="warning">Warning</el-dm-button>
+  <el-dm-button variant="error">Error</el-dm-button>
+  <el-dm-button variant="info">Info</el-dm-button>
 </ComponentDemo>
 
 ## Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost'` | `'primary'` | Visual style of the button |
+| `variant` | `'primary' \| 'secondary' \| 'tertiary' \| 'outline' \| 'ghost' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Visual style of the button |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the button |
 | `disabled` | `boolean` | `false` | Disables the button |
 | `loading` | `boolean` | `false` | Shows loading state |
@@ -80,6 +88,42 @@ The ghost variant is minimal, with no background or border.
 
 ```html
 <el-dm-button variant="ghost">Ghost</el-dm-button>
+```
+
+### Tertiary
+
+The tertiary variant provides an alternative accent color.
+
+```html
+<el-dm-button variant="tertiary">Tertiary</el-dm-button>
+```
+
+## Semantic Colors
+
+Semantic color variants communicate status or intent.
+
+### Success
+
+```html
+<el-dm-button variant="success">Success</el-dm-button>
+```
+
+### Warning
+
+```html
+<el-dm-button variant="warning">Warning</el-dm-button>
+```
+
+### Error
+
+```html
+<el-dm-button variant="error">Error</el-dm-button>
+```
+
+### Info
+
+```html
+<el-dm-button variant="info">Info</el-dm-button>
 ```
 
 ## Sizes

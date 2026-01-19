@@ -9,7 +9,7 @@
  * @attr {boolean} value - Whether the switch is on (true/false)
  * @attr {boolean} disabled - Whether the switch is disabled
  * @attr {string} size - Switch size: sm, md, lg
- * @attr {string} color - Switch color: primary, secondary, tertiary, success, error
+ * @attr {string} color - Switch color: primary, secondary, tertiary, success, warning, error, info
  * @attr {string} label - Label text for the switch
  * @attr {string} label-position - Label position: left, right
  * @attr {string} name - Form input name
@@ -39,11 +39,13 @@ const COLOR_CLASSES: Record<string, string> = {
   secondary: 'switch-secondary',
   tertiary: 'switch-tertiary',
   success: 'switch-success',
+  warning: 'switch-warning',
   error: 'switch-error',
+  info: 'switch-info',
 };
 
 export type SwitchSize = 'sm' | 'md' | 'lg';
-export type SwitchColor = 'primary' | 'secondary' | 'tertiary' | 'success' | 'error';
+export type SwitchColor = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error' | 'info';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = switchCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
@@ -73,6 +75,26 @@ const styles = css`
   :host([disabled]) .switch-label {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  /* Warning color variant (not in core) */
+  .switch-warning .switch-input:checked + .switch-track {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+  }
+
+  .switch-warning .switch-input:checked + .switch-track .switch-thumb {
+    background-color: var(--color-warning-content, white);
+  }
+
+  /* Info color variant (not in core) */
+  .switch-info .switch-input:checked + .switch-track {
+    background-color: var(--color-info);
+    border-color: var(--color-info);
+  }
+
+  .switch-info .switch-input:checked + .switch-track .switch-thumb {
+    background-color: var(--color-info-content, white);
   }
 `;
 

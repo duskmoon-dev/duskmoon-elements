@@ -12,7 +12,7 @@
  * @attr {number} step - Step increment
  * @attr {boolean} disabled - Whether the slider is disabled
  * @attr {string} size - Size: sm, md, lg
- * @attr {string} color - Color: primary, secondary, tertiary
+ * @attr {string} color - Color: primary, secondary, tertiary, success, warning, error, info
  * @attr {boolean} show-value - Show current value label
  *
  * @csspart slider - The slider container
@@ -27,7 +27,7 @@ import { BaseElement, css } from '@duskmoon-dev/el-core';
 import { css as sliderCSS } from '@duskmoon-dev/core/components/slider';
 
 export type SliderSize = 'sm' | 'md' | 'lg';
-export type SliderColor = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error';
+export type SliderColor = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error' | 'info';
 
 const SIZE_CLASSES: Record<string, string> = {
   sm: 'slider-sm',
@@ -42,6 +42,7 @@ const COLOR_CLASSES: Record<string, string> = {
   success: 'slider-success',
   warning: 'slider-warning',
   error: 'slider-error',
+  info: 'slider-info',
 };
 
 // Strip @layer wrapper for Shadow DOM compatibility
@@ -176,6 +177,11 @@ const styles = css`
   .slider-error .slider-track-filled,
   .slider-error .slider-thumb {
     background-color: var(--color-error);
+  }
+
+  .slider-info .slider-track-filled,
+  .slider-info .slider-thumb {
+    background-color: var(--color-info);
   }
 
   /* Disabled state */

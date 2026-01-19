@@ -1,56 +1,146 @@
-/* Sunshine Theme - Light Mode */
-[data-theme='sunshine'] {
-  /* Primary colors */
-  --color-primary: oklch(55% 0.15 250);
-  --color-primary-content: white;
-  --color-on-primary: white;
-  --color-primary-container: oklch(90% 0.05 250);
-  --color-on-primary-container: oklch(25% 0.1 250);
+/**
+ * Sunshine Theme - Light Mode
+ * Synced from @duskmoon-dev/core/dist/themes/sunshine.css
+ * A warm, bright theme optimized for daylight viewing
+ * Uses OKLCH format: "oklch(L% C H)"
+ */
 
-  /* Secondary colors */
-  --color-secondary: oklch(50% 0.1 250);
-  --color-secondary-content: white;
-  --color-on-secondary: white;
+[data-theme="sunshine"] {
+  color-scheme: light;
 
-  /* Tertiary colors */
-  --color-tertiary: oklch(50% 0.12 300);
-  --color-tertiary-content: white;
-  --color-on-tertiary: white;
+  /* ============================================
+   * BRAND COLORS
+   * ============================================ */
 
-  /* Surface colors - Light */
+  /* Primary Color Family - Warm Orange */
+  --color-primary: oklch(95.86% 0.0693 95.91);
+  --color-primary-content: oklch(20% 0 0);
+  --color-primary-container: oklch(95% 0.035 95.91);
+  --color-on-primary-container: oklch(25% 0.03 95.91);
+
+  /* Secondary Color Family - Coral Pink */
+  --color-secondary: oklch(87.42% 0.143 87.01);
+  --color-secondary-content: oklch(27.42% 0.143 87.01);
+  --color-secondary-container: oklch(94% 0.05 87.01);
+  --color-on-secondary-container: oklch(25% 0.05 87.01);
+
+  /* Tertiary Color Family - Violet */
+  --color-tertiary: oklch(80% 0.085 235);
+  --color-tertiary-content: oklch(18% 0.010 235);
+  --color-tertiary-container: oklch(95% 0.035 235);
+  --color-on-tertiary-container: oklch(22% 0.012 235);
+
+  /* ============================================
+   * SURFACE COLORS
+   * ============================================ */
+
   --color-surface: oklch(100% 0 0);
-  --color-surface-dim: oklch(95% 0.01 260);
+  --color-surface-dim: oklch(96% 0.01 85);
   --color-surface-bright: oklch(100% 0 0);
-  --color-surface-container: oklch(97% 0.01 260);
-  --color-surface-container-low: oklch(98% 0.005 260);
-  --color-surface-container-high: oklch(94% 0.01 260);
-  --color-surface-container-highest: oklch(92% 0.01 260);
+  --color-surface-container-lowest: oklch(100% 0 0);
+  --color-surface-container-low: oklch(99% 0.01 85);
+  --color-surface-container: oklch(97% 0.01 85);
+  --color-surface-container-high: oklch(96% 0.01 85);
+  --color-surface-container-highest: oklch(94% 0.01 85);
+  --color-on-surface: oklch(27% 0.02 260);
+  --color-on-surface-variant: oklch(50% 0.02 260);
 
-  /* On-surface colors */
-  --color-on-surface: oklch(20% 0.02 260);
-  --color-on-surface-variant: oklch(45% 0.02 260);
+  /* ============================================
+   * SEMANTIC COLORS
+   * ============================================ */
 
-  /* Outline colors */
-  --color-outline: oklch(70% 0.02 260);
+  /* Info - Sky Blue */
+  --color-info: oklch(41.94% 0.114 254.39);
+  --color-info-content: oklch(91.94% 0.114 254.39);
+  --color-info-container: oklch(95% 0.03 235);
+  --color-on-info-container: oklch(35% 0.08 235);
+
+  /* Success - Green */
+  --color-success: oklch(67.21% 0.19 133.55);
+  --color-success-content: oklch(27.21% 0.19 133.55);
+  --color-success-container: oklch(93% 0.04 150);
+  --color-on-success-container: oklch(30% 0.08 150);
+
+  /* Warning - Amber */
+  --color-warning: oklch(68.19% 0.203 42.44);
+  --color-warning-content: oklch(18.19% 0.6 42);
+  --color-warning-container: oklch(93% 0.05 80);
+  --color-on-warning-container: oklch(38% 0.10 80);
+
+  /* Error - Red */
+  --color-error: oklch(61.17% 0.237 28.15);
+  --color-error-content: oklch(90.01% 0.153 84.78);
+  --color-error-container: oklch(93% 0.04 25);
+  --color-on-error-container: oklch(32% 0.10 25);
+
+  /* ============================================
+   * NEUTRAL COLORS (Base Scale)
+   * ============================================ */
+
+  --color-base-100: oklch(100% 0.1 255);
+  --color-base-200: oklch(85% 0.1 255);
+  --color-base-300: oklch(70% 0.1 255);
+  --color-base-400: oklch(55% 0.06 255);
+  --color-base-500: oklch(45% 0.05 255);
+  --color-base-600: oklch(35% 0.04 255);
+  --color-base-700: oklch(25% 0.03 255);
+  --color-base-800: oklch(18% 0.02 255);
+  --color-base-900: oklch(12% 0.01 255);
+  --color-base-content: oklch(10% 0 255);
+
+  /* ============================================
+   * OUTLINE COLORS
+   * ============================================ */
+
+  --color-outline: oklch(75% 0.01 260);
   --color-outline-variant: oklch(85% 0.01 260);
 
-  /* Semantic colors */
-  --color-success: oklch(55% 0.15 145);
-  --color-warning: oklch(70% 0.15 85);
-  --color-error: oklch(50% 0.2 25);
-  --color-info: oklch(55% 0.15 250);
+  /* ============================================
+   * ACCENT COLORS
+   * ============================================ */
 
-  /* Inverse */
+  --color-accent: oklch(85.23% 0.14 327);
+  --color-accent-content: oklch(41% 0.112 45.904);
+
+  /* ============================================
+   * NEUTRAL COLORS
+   * ============================================ */
+
+  --color-neutral: oklch(0% 0 0);
+  --color-neutral-content: oklch(80% 0.1 50);
+  --color-neutral-variant: oklch(50% 0.02 260);
+
+  /* ============================================
+   * SHAPE & DEPTH
+   * ============================================ */
+
+  --radius-selector: 0rem;
+  --radius-field: 0.5rem;
+  --radius-box: 2rem;
+  --size-selector: 0.1875rem;
+  --size-field: 0.1875rem;
+  --border: 0.5px;
+  --depth: 1;
+  --noise: 1;
+
+  /* ============================================
+   * SURFACE VARIANT
+   * ============================================ */
+
+  --color-surface-variant: oklch(94% 0.02 85);
+
+  /* ============================================
+   * INVERSE COLORS
+   * ============================================ */
+
   --color-inverse-surface: oklch(25% 0.02 260);
   --color-inverse-on-surface: oklch(95% 0.01 260);
-  --color-inverse-primary: oklch(75% 0.15 250);
+  --color-inverse-primary: oklch(80% 0.14 55);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  /* ============================================
+   * SHADOW & SCRIM
+   * ============================================ */
 
-  /* Focus */
-  --focus-ring: 0 0 0 2px var(--color-primary);
-  --focus-ring-offset: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
+  --color-shadow: oklch(0% 0 0);
+  --color-scrim: oklch(0% 0 0 / 50%);
 }

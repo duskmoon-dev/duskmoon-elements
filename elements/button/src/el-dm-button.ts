@@ -6,7 +6,7 @@
  *
  * @element el-dm-button
  *
- * @attr {string} variant - Button variant: primary, secondary, tertiary, ghost, outline
+ * @attr {string} variant - Button variant: primary, secondary, tertiary, ghost, outline, success, warning, error, info
  * @attr {string} size - Button size: xs, sm, md, lg
  * @attr {boolean} disabled - Whether the button is disabled
  * @attr {string} type - Button type: button, submit, reset
@@ -34,6 +34,11 @@ const VARIANT_CLASSES: Record<string, string> = {
   tertiary: 'btn-tertiary',
   ghost: 'btn-ghost',
   outline: 'btn-outline',
+  // Semantic colors
+  success: 'btn-success',
+  warning: 'btn-warning',
+  error: 'btn-error',
+  info: 'btn-info',
 };
 
 // Map of size attribute values to CSS classes
@@ -44,7 +49,7 @@ const SIZE_CLASSES: Record<string, string> = {
   lg: 'btn-lg',
 };
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'outline';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'outline' | 'success' | 'warning' | 'error' | 'info';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility and add host styles

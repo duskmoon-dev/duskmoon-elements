@@ -45,7 +45,7 @@ import '@duskmoon-dev/el-switch/register';
 | `value` | `boolean` | `false` | Whether the switch is on (true/false) |
 | `disabled` | `boolean` | `false` | Disables the switch |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the switch |
-| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'error'` | `'primary'` | Color theme |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Color theme |
 | `label` | `string` | - | Label text |
 | `label-position` | `'left' \| 'right'` | `'right'` | Label position |
 | `name` | `string` | - | Form input name |
@@ -69,15 +69,21 @@ import '@duskmoon-dev/el-switch/register';
 <ComponentDemo title="Switch Colors">
   <el-dm-switch color="primary" value label="Primary"></el-dm-switch>
   <el-dm-switch color="secondary" value label="Secondary"></el-dm-switch>
+  <el-dm-switch color="tertiary" value label="Tertiary"></el-dm-switch>
   <el-dm-switch color="success" value label="Success"></el-dm-switch>
+  <el-dm-switch color="warning" value label="Warning"></el-dm-switch>
   <el-dm-switch color="error" value label="Error"></el-dm-switch>
+  <el-dm-switch color="info" value label="Info"></el-dm-switch>
 </ComponentDemo>
 
 ```html
 <el-dm-switch color="primary" value label="Primary"></el-dm-switch>
 <el-dm-switch color="secondary" value label="Secondary"></el-dm-switch>
+<el-dm-switch color="tertiary" value label="Tertiary"></el-dm-switch>
 <el-dm-switch color="success" value label="Success"></el-dm-switch>
+<el-dm-switch color="warning" value label="Warning"></el-dm-switch>
 <el-dm-switch color="error" value label="Error"></el-dm-switch>
+<el-dm-switch color="info" value label="Info"></el-dm-switch>
 ```
 
 ## Events
