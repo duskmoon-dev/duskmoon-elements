@@ -160,6 +160,21 @@ jobs:
 
           git push origin main --follow-tags || true
 
+      - name: Generate package list
+        id: packages
+        run: |
+          # Build element packages list for release notes
+          ELEMENTS=""
+          for pkg in elements/*; do
+            if [ -f "$pkg/package.json" ]; then
+              PKG_NAME=$(basename "$pkg")
+              ELEMENTS="$ELEMENTS- @duskmoon-dev/el-$PKG_NAME\n"
+            fi
+          done
+          echo "elements<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$ELEMENTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         if: ${{ !inputs.dry-run }}
         uses: softprops/action-gh-release@v2
@@ -172,14 +187,13 @@ jobs:
           body: |
             ## Published Packages
 
-            | Package | Description | npm |
-            |---------|-------------|-----|
-            | @duskmoon-dev/el-core | Base element class with reactive properties, Shadow DOM, and theming utilities | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-core)](https://www.npmjs.com/package/@duskmoon-dev/el-core) |
-            | @duskmoon-dev/el-button | Customizable button with variants, sizes, loading state, and icon slots | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-button)](https://www.npmjs.com/package/@duskmoon-dev/el-button) |
-            | @duskmoon-dev/el-card | Flexible card container with header, body, footer, and media sections | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-card)](https://www.npmjs.com/package/@duskmoon-dev/el-card) |
-            | @duskmoon-dev/el-input | Form input with validation, labels, helper text, and prefix/suffix slots | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-input)](https://www.npmjs.com/package/@duskmoon-dev/el-input) |
-            | @duskmoon-dev/el-markdown | Markdown renderer with syntax highlighting, streaming mode for LLM output, and mermaid support | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown) |
-            | @duskmoon-dev/elements | All DuskMoon elements in one bundle with auto-registration support | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/elements)](https://www.npmjs.com/package/@duskmoon-dev/elements) |
+            **Core:**
+            - @duskmoon-dev/el-core - Base element class with reactive properties, Shadow DOM, and theming utilities
+
+            **Elements:**
+            ${{ steps.packages.outputs.elements }}
+            **Bundle:**
+            - @duskmoon-dev/elements - All DuskMoon elements in one bundle with auto-registration support
 
             ## Installation
 
@@ -190,9 +204,6 @@ jobs:
             # Or install individual packages
             bun add @duskmoon-dev/el-core
             bun add @duskmoon-dev/el-button
-            bun add @duskmoon-dev/el-card
-            bun add @duskmoon-dev/el-input
-            bun add @duskmoon-dev/el-markdown
             ```
 
             ## What's Changed
@@ -207,9 +218,17 @@ jobs:
           echo "**Dry Run**: ${{ inputs.dry-run }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Core:**" >> $GITHUB_STEP_SUMMARY
           echo "- @duskmoon-dev/el-core" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/el-button" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/el-card" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/el-input" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/el-markdown" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Elements:**" >> $GITHUB_STEP_SUMMARY
+          for pkg in elements/*; do
+            if [ -f "$pkg/package.json" ]; then
+              PKG_NAME=$(basename "$pkg")
+              echo "- @duskmoon-dev/el-$PKG_NAME" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Bundle:**" >> $GITHUB_STEP_SUMMARY
           echo "- @duskmoon-dev/elements" >> $GITHUB_STEP_SUMMARY
