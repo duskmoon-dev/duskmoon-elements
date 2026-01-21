@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-autocomplete",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "DuskMoon Autocomplete custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
