@@ -34,26 +34,26 @@ export interface AutocompleteOption {
 
 export class ElDmAutocomplete extends BaseElement {
   static properties = {
-    value: { type: String, reflect: true, default: '' },
-    options: { type: String, reflect: true, default: '[]' },
-    multiple: { type: Boolean, reflect: true, default: false },
-    disabled: { type: Boolean, reflect: true, default: false },
-    clearable: { type: Boolean, reflect: true, default: false },
-    placeholder: { type: String, reflect: true, default: '' },
-    size: { type: String, reflect: true, default: 'md' },
-    loading: { type: Boolean, reflect: true, default: false },
-    noResultsText: { type: String, reflect: true, default: 'No results found' },
+    value: { type: String, reflect: true },
+    options: { type: String, reflect: true },
+    multiple: { type: Boolean, reflect: true },
+    disabled: { type: Boolean, reflect: true },
+    clearable: { type: Boolean, reflect: true },
+    placeholder: { type: String, reflect: true },
+    size: { type: String, reflect: true },
+    loading: { type: Boolean, reflect: true },
+    noResultsText: { type: String, reflect: true, attribute: 'no-results-text' },
   };
 
-  value!: string;
-  options!: string;
-  multiple!: boolean;
-  disabled!: boolean;
-  clearable!: boolean;
-  placeholder!: string;
-  size!: AutocompleteSize;
-  loading!: boolean;
-  noResultsText!: string;
+  declare value: string;
+  declare options: string;
+  declare multiple: boolean;
+  declare disabled: boolean;
+  declare clearable: boolean;
+  declare placeholder: string;
+  declare size: AutocompleteSize;
+  declare loading: boolean;
+  declare noResultsText: string;
 
   private _isOpen = false;
   private _searchValue = '';
@@ -96,7 +96,7 @@ export class ElDmAutocomplete extends BaseElement {
 
   private _getOptions(): AutocompleteOption[] {
     try {
-      return JSON.parse(this.options);
+      return JSON.parse(this.options || '[]');
     } catch {
       return [];
     }
@@ -325,7 +325,7 @@ export class ElDmAutocomplete extends BaseElement {
 
     if (filteredOptions.length === 0) {
       return `
-        <div class="autocomplete-no-results">${this.noResultsText}</div>
+        <div class="autocomplete-no-results">${this.noResultsText || 'No results found'}</div>
       `;
     }
 
@@ -402,12 +402,13 @@ export class ElDmAutocomplete extends BaseElement {
   }
 
   render() {
-    const sizeClass =
-      this.size !== 'md' ? `autocomplete-${this.size}` : '';
+    const size = this.size || 'md';
+    const sizeClass = size !== 'md' ? `autocomplete-${size}` : '';
     const openClass = this._isOpen ? 'autocomplete-open' : '';
     const clearableClass = this.clearable ? 'autocomplete-clearable' : '';
     const showClear =
       this.clearable && this._selectedValues.length > 0 && !this.disabled;
+    const placeholder = this.placeholder || '';
 
     if (this.multiple) {
       return `
@@ -417,7 +418,7 @@ export class ElDmAutocomplete extends BaseElement {
             <input
               type="text"
               class="autocomplete-tags-input"
-              placeholder="${this._selectedValues.length === 0 ? this.placeholder : ''}"
+              placeholder="${this._selectedValues.length === 0 ? placeholder : ''}"
               value="${this._searchValue}"
               ${this.disabled ? 'disabled' : ''}
               role="combobox"
@@ -445,7 +446,7 @@ export class ElDmAutocomplete extends BaseElement {
         <input
           type="text"
           class="autocomplete-input"
-          placeholder="${this.placeholder}"
+          placeholder="${placeholder}"
           value="${this._isOpen ? this._searchValue : this._getDisplayValue()}"
           ${this.disabled ? 'disabled' : ''}
           role="combobox"
