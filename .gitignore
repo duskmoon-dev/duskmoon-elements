@@ -8,6 +8,7 @@ bun.lock
 
 # Build outputs
 dist/
+.astro/
 *.tsbuildinfo
 *.tgz
 
