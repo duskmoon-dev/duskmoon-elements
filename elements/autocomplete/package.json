@@ -31,14 +31,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@duskmoon-dev/core": "^1.1.1",
+    "@duskmoon-dev/core": "^1.7.0",
     "@duskmoon-dev/el-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
-    "@duskmoon-dev/core": "^0.1.7"
+    "@duskmoon-dev/core": "^1.7.0"
   },
   "publishConfig": {
     "access": "public"
