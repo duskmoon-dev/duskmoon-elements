@@ -40,6 +40,10 @@ export {
 } from './themes.js';
 export type { ThemeName } from './themes.js';
 
+// Validation utilities
+export { validate, validateAsync, validators } from './validation.js';
+export type { ValidationResult, Validator } from './validation.js';
+
 // Types
 export type {
   CSSValue,
