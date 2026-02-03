@@ -20,6 +20,25 @@ const styles = cssTag`
   .autocomplete {
     width: 100%;
   }
+
+  /* Popover API styles for dropdown — override core's absolute positioning
+     and visibility rules since the top layer breaks parent-child CSS selectors */
+  .autocomplete-dropdown {
+    position: fixed;
+    margin: 0;
+    border: none;
+    padding: 0;
+    inset: unset;
+    /* Override core's hidden defaults — popover API controls visibility */
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .autocomplete-dropdown:popover-open {
+    display: block;
+  }
 `;
 
 export type AutocompleteSize = 'sm' | 'md' | 'lg';
@@ -59,6 +78,7 @@ export class ElDmAutocomplete extends BaseElement {
   private _searchValue = '';
   private _highlightedIndex = -1;
   private _selectedValues: string[] = [];
+  private _scrollHandler: (() => void) | null = null;
 
   constructor() {
     super();
@@ -74,6 +94,11 @@ export class ElDmAutocomplete extends BaseElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('click', this._handleOutsideClick);
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler, true);
+      window.removeEventListener('resize', this._scrollHandler);
+      this._scrollHandler = null;
+    }
   }
 
   private _handleOutsideClick = (e: MouseEvent) => {
@@ -120,13 +145,75 @@ export class ElDmAutocomplete extends BaseElement {
     this._isOpen = true;
     this._highlightedIndex = -1;
     this.update();
+
+    const dropdown = this.shadowRoot?.querySelector('.autocomplete-dropdown') as HTMLElement;
+    const trigger = this.shadowRoot?.querySelector('.autocomplete-input, .autocomplete-tags') as HTMLElement;
+    if (dropdown && trigger) {
+      try {
+        dropdown.showPopover();
+        this._positionDropdown(dropdown, trigger);
+      } catch {
+        // Ignore if already shown
+      }
+
+      this._scrollHandler = () => {
+        this._positionDropdown(dropdown, trigger);
+      };
+      window.addEventListener('scroll', this._scrollHandler, true);
+      window.addEventListener('resize', this._scrollHandler);
+    }
   }
 
   private _close() {
+    if (!this._isOpen) return;
     this._isOpen = false;
     this._searchValue = '';
     this._highlightedIndex = -1;
+
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler, true);
+      window.removeEventListener('resize', this._scrollHandler);
+      this._scrollHandler = null;
+    }
+
+    const dropdown = this.shadowRoot?.querySelector('.autocomplete-dropdown') as HTMLElement;
+    if (dropdown) {
+      try {
+        dropdown.hidePopover();
+      } catch {
+        // Ignore if already hidden
+      }
+    }
+
     this.update();
+  }
+
+  private _positionDropdown(dropdown: HTMLElement, trigger: HTMLElement) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const dropdownRect = dropdown.getBoundingClientRect();
+
+    // Position below the trigger
+    let top = triggerRect.bottom + 4;
+    let left = triggerRect.left;
+
+    // If dropdown would overflow the bottom, position above
+    if (top + dropdownRect.height > window.innerHeight) {
+      top = triggerRect.top - dropdownRect.height - 4;
+    }
+
+    // Clamp to viewport right edge
+    if (left + triggerRect.width > window.innerWidth) {
+      left = window.innerWidth - triggerRect.width - 8;
+    }
+
+    // Clamp to viewport left edge
+    if (left < 8) {
+      left = 8;
+    }
+
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
+    dropdown.style.width = `${triggerRect.width}px`;
   }
 
   private _toggle() {
@@ -434,7 +521,7 @@ export class ElDmAutocomplete extends BaseElement {
           `
               : ''
           }
-          <div class="autocomplete-dropdown" role="listbox">
+          <div class="autocomplete-dropdown" role="listbox" popover="manual">
             ${this._renderOptions()}
           </div>
         </div>
@@ -461,7 +548,7 @@ export class ElDmAutocomplete extends BaseElement {
         `
             : ''
         }
-        <div class="autocomplete-dropdown" role="listbox">
+        <div class="autocomplete-dropdown" role="listbox" popover="manual">
           ${this._renderOptions()}
         </div>
       </div>
@@ -471,6 +558,20 @@ export class ElDmAutocomplete extends BaseElement {
   update() {
     super.update();
     this._attachEventListeners();
+
+    // Re-show popover after DOM re-render (innerHTML replacement loses popover state)
+    if (this._isOpen) {
+      const dropdown = this.shadowRoot?.querySelector('.autocomplete-dropdown') as HTMLElement;
+      const trigger = this.shadowRoot?.querySelector('.autocomplete-input, .autocomplete-tags') as HTMLElement;
+      if (dropdown && trigger) {
+        try {
+          dropdown.showPopover();
+          this._positionDropdown(dropdown, trigger);
+        } catch {
+          // Ignore if already shown
+        }
+      }
+    }
   }
 
   private _attachEventListeners() {
