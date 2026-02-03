@@ -313,7 +313,7 @@ export class ElDmBottomNavigation extends BaseElement {
   /**
    * Render a single navigation item
    */
-  private _renderItem(item: BottomNavigationItem, index: number): string {
+  private _renderItem(item: BottomNavigationItem): string {
     const isSelected = item.value === this.value;
     const Tag = item.href ? 'a' : 'button';
     const hrefAttr = item.href ? `href="${item.href}"` : '';
@@ -353,7 +353,7 @@ export class ElDmBottomNavigation extends BaseElement {
 
     return `
       <nav class="bottom-nav" part="container" role="tablist" aria-label="Bottom navigation">
-        ${hasItems ? this.items.map((item, i) => this._renderItem(item, i)).join('') : '<slot></slot>'}
+        ${hasItems ? this.items.map((item) => this._renderItem(item)).join('') : '<slot></slot>'}
       </nav>
     `;
   }

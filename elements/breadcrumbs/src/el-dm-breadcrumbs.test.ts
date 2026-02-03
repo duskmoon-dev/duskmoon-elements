@@ -1,5 +1,6 @@
 import { expect, test, describe, beforeEach, afterEach } from 'bun:test';
 import { ElDmBreadcrumbs, register } from './index';
+import type { BreadcrumbItem } from './index';
 
 register();
 
@@ -33,7 +34,7 @@ describe('ElDmBreadcrumbs', () => {
       { label: 'Home', href: '/' },
       { label: 'Products', href: '/products' },
       { label: 'Current' },
-    ] as any;
+    ] as BreadcrumbItem[];
     container.appendChild(el);
 
     const items = el.shadowRoot?.querySelectorAll('.breadcrumbs-item');

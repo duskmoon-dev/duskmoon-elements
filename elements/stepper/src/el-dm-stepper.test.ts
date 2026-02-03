@@ -1,5 +1,6 @@
 import { expect, test, describe, beforeEach, afterEach } from 'bun:test';
 import { ElDmStepper, register } from './index';
+import type { StepData } from './index';
 
 register();
 
@@ -33,7 +34,7 @@ describe('ElDmStepper', () => {
       { label: 'Step 1' },
       { label: 'Step 2' },
       { label: 'Step 3' },
-    ] as any;
+    ] as StepData[];
     container.appendChild(el);
 
     const steps = el.shadowRoot?.querySelectorAll('.step');
@@ -45,7 +46,7 @@ describe('ElDmStepper', () => {
     el.steps = [
       { label: 'Step 1' },
       { label: 'Step 2' },
-    ] as any;
+    ] as StepData[];
     el.current = 1;
     container.appendChild(el);
 

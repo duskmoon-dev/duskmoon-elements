@@ -1,5 +1,6 @@
 import { expect, test, describe, beforeEach, afterEach } from 'bun:test';
 import { ElDmBottomNavigation, register } from './index';
+import type { BottomNavigationItem } from './index';
 
 register();
 
@@ -40,7 +41,7 @@ describe('ElDmBottomNavigation', () => {
     el.items = [
       { value: 'home', label: 'Home', icon: 'H' },
       { value: 'search', label: 'Search', icon: 'S' },
-    ] as any;
+    ] as BottomNavigationItem[];
     container.appendChild(el);
 
     const items = el.shadowRoot?.querySelectorAll('.nav-item');
@@ -52,7 +53,7 @@ describe('ElDmBottomNavigation', () => {
     el.items = [
       { value: 'home', label: 'Home', icon: 'H' },
       { value: 'search', label: 'Search', icon: 'S' },
-    ] as any;
+    ] as BottomNavigationItem[];
     el.value = 'home';
     container.appendChild(el);
 

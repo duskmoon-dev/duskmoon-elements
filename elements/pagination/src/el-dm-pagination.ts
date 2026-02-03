@@ -344,11 +344,9 @@ export class ElDmPagination extends BaseElement {
     const isLastPage = current === total;
 
     let pagesHtml = '';
-    let ellipsisCount = 0;
 
     for (const page of pages) {
       if (page === 'ellipsis') {
-        ellipsisCount++;
         pagesHtml += `
           <span class="ellipsis" part="ellipsis" aria-hidden="true">...</span>
         `;

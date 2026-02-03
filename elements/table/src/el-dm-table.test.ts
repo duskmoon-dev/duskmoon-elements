@@ -1,5 +1,6 @@
 import { expect, test, describe, beforeEach, afterEach } from 'bun:test';
 import { ElDmTable, register } from './index';
+import type { TableColumn, TableRow } from './index';
 
 register();
 
@@ -40,11 +41,11 @@ describe('ElDmTable', () => {
     el.columns = [
       { key: 'name', label: 'Name' },
       { key: 'age', label: 'Age' },
-    ] as any;
+    ] as TableColumn[];
     el.data = [
       { id: 1, name: 'Alice', age: 30 },
       { id: 2, name: 'Bob', age: 25 },
-    ] as any;
+    ] as TableRow[];
     container.appendChild(el);
 
     const headers = el.shadowRoot?.querySelectorAll('.table-th');
@@ -55,8 +56,8 @@ describe('ElDmTable', () => {
 
   test('shows empty message when no data', () => {
     const el = document.createElement('el-dm-table') as ElDmTable;
-    el.columns = [{ key: 'name', label: 'Name' }] as any;
-    el.data = [] as any;
+    el.columns = [{ key: 'name', label: 'Name' }] as TableColumn[];
+    el.data = [] as TableRow[];
     container.appendChild(el);
 
     const empty = el.shadowRoot?.querySelector('.empty-row');
