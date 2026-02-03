@@ -102,10 +102,7 @@ export function throttle<T extends (...args: Parameters<T>) => void>(
  *
  * @returns A cancel function
  */
-export function scheduleIdle(
-  callback: () => void,
-  options?: { timeout?: number },
-): () => void {
+export function scheduleIdle(callback: () => void, options?: { timeout?: number }): () => void {
   if (typeof requestIdleCallback === 'function') {
     const id = requestIdleCallback(callback, options);
     return () => cancelIdleCallback(id);

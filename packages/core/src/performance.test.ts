@@ -163,9 +163,12 @@ describe('Performance utilities', () => {
 
     test('returns cancel function', async () => {
       let called = false;
-      const cancel = scheduleIdle(() => {
-        called = true;
-      }, { timeout: 50 });
+      const cancel = scheduleIdle(
+        () => {
+          called = true;
+        },
+        { timeout: 50 },
+      );
 
       cancel();
       await new Promise((r) => setTimeout(r, 100));

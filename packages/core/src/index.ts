@@ -19,13 +19,7 @@ export {
 } from './styles.js';
 
 // Animation utilities
-export {
-  animationStyles,
-  animation,
-  transition,
-  durations,
-  easings,
-} from './animations.js';
+export { animationStyles, animation, transition, durations, easings } from './animations.js';
 export type { AnimationDuration, AnimationEasing } from './animations.js';
 
 // Theme presets
@@ -41,12 +35,7 @@ export {
 export type { ThemeName } from './themes.js';
 
 // Composition mixins
-export {
-  FocusableMixin,
-  FormMixin,
-  EventListenerMixin,
-  SlotObserverMixin,
-} from './mixins.js';
+export { FocusableMixin, FormMixin, EventListenerMixin, SlotObserverMixin } from './mixins.js';
 
 // Validation utilities
 export { validate, validateAsync, validators } from './validation.js';

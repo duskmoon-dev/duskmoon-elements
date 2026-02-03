@@ -151,10 +151,7 @@ export function SlotObserverMixin<T extends Constructor<BaseElementLike>>(Base: 
     /**
      * Observe a named slot (or '' for default) and call handler when content changes
      */
-    observeSlot(
-      slotName: string,
-      handler: (elements: Element[]) => void,
-    ): void {
+    observeSlot(slotName: string, handler: (elements: Element[]) => void): void {
       this.#slotObservers.set(slotName, handler);
     }
 

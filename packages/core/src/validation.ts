@@ -85,17 +85,13 @@ export const validators = {
   /** Requires a minimum string length */
   minLength(min: number, message?: string): Validator<string> {
     return (value) =>
-      value && value.length < min
-        ? (message ?? `Must be at least ${min} characters`)
-        : undefined;
+      value && value.length < min ? (message ?? `Must be at least ${min} characters`) : undefined;
   },
 
   /** Requires a maximum string length */
   maxLength(max: number, message?: string): Validator<string> {
     return (value) =>
-      value && value.length > max
-        ? (message ?? `Must be at most ${max} characters`)
-        : undefined;
+      value && value.length > max ? (message ?? `Must be at most ${max} characters`) : undefined;
   },
 
   /** Requires a value matching a regex pattern */

@@ -15,7 +15,10 @@ describe('Validation utilities', () => {
     });
 
     test('returns invalid on first failure', () => {
-      const result = validate('', [validators.required('Required'), validators.minLength(3, 'Too short')]);
+      const result = validate('', [
+        validators.required('Required'),
+        validators.minLength(3, 'Too short'),
+      ]);
       expect(result).toEqual({ state: 'invalid', message: 'Required' });
     });
 

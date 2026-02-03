@@ -1,11 +1,5 @@
 import { expect, test, describe } from 'bun:test';
-import {
-  animation,
-  transition,
-  durations,
-  easings,
-  animationStyles,
-} from './animations';
+import { animation, transition, durations, easings, animationStyles } from './animations';
 
 describe('Animation utilities', () => {
   describe('durations', () => {

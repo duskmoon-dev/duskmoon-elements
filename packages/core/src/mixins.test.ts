@@ -120,9 +120,7 @@ describe('Composition Mixins', () => {
 
   describe('FormMixin', () => {
     test('has name property', () => {
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       container.appendChild(el);
       expect(el.name).toBe('');
       el.name = 'email';
@@ -130,9 +128,7 @@ describe('Composition Mixins', () => {
     });
 
     test('has value property', () => {
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       container.appendChild(el);
       expect(el.value).toBe('');
       el.value = 'test';
@@ -140,34 +136,26 @@ describe('Composition Mixins', () => {
     });
 
     test('has disabled property', () => {
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       container.appendChild(el);
       expect(el.disabled).toBe(false);
     });
 
     test('has required property', () => {
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       container.appendChild(el);
       expect(el.required).toBe(false);
     });
 
     test('form getter returns null when not in form', () => {
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       container.appendChild(el);
       expect(el.form).toBeNull();
     });
 
     test('form getter returns parent form', () => {
       const form = document.createElement('form');
-      const el = document.createElement('test-form') as InstanceType<
-        ReturnType<typeof FormMixin>
-      >;
+      const el = document.createElement('test-form') as InstanceType<ReturnType<typeof FormMixin>>;
       form.appendChild(el);
       container.appendChild(form);
       expect(el.form).not.toBeNull();
