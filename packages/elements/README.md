@@ -67,61 +67,61 @@ button.variant = 'primary';
 
 ### Basic Components
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Button | `<el-dm-button>` | Button with variants, sizes, loading state |
-| Card | `<el-dm-card>` | Container with header, body, footer slots |
+| Element | Tag              | Description                                |
+| ------- | ---------------- | ------------------------------------------ |
+| Button  | `<el-dm-button>` | Button with variants, sizes, loading state |
+| Card    | `<el-dm-card>`   | Container with header, body, footer slots  |
 
 ### Form Elements
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Input | `<el-dm-input>` | Text input with validation states |
-| Switch | `<el-dm-switch>` | Toggle switch control |
-| Slider | `<el-dm-slider>` | Range slider with optional range mode |
-| Autocomplete | `<el-dm-autocomplete>` | Input with suggestion dropdown |
-| Datepicker | `<el-dm-datepicker>` | Date picker with calendar popup |
-| FileUpload | `<el-dm-file-upload>` | File upload with drag-and-drop |
-| Form | `<el-dm-form>` | Form container with validation |
+| Element      | Tag                    | Description                           |
+| ------------ | ---------------------- | ------------------------------------- |
+| Input        | `<el-dm-input>`        | Text input with validation states     |
+| Switch       | `<el-dm-switch>`       | Toggle switch control                 |
+| Slider       | `<el-dm-slider>`       | Range slider with optional range mode |
+| Autocomplete | `<el-dm-autocomplete>` | Input with suggestion dropdown        |
+| Datepicker   | `<el-dm-datepicker>`   | Date picker with calendar popup       |
+| FileUpload   | `<el-dm-file-upload>`  | File upload with drag-and-drop        |
+| Form         | `<el-dm-form>`         | Form container with validation        |
 
 ### Feedback & Display
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Alert | `<el-dm-alert>` | Alert messages with severity variants |
-| Dialog | `<el-dm-dialog>` | Modal dialog with backdrop |
-| Badge | `<el-dm-badge>` | Status badges and counters |
-| Chip | `<el-dm-chip>` | Tags and chips with optional delete |
-| Tooltip | `<el-dm-tooltip>` | Hover tooltips |
-| Progress | `<el-dm-progress>` | Progress bars and indeterminate spinners |
+| Element  | Tag                | Description                                |
+| -------- | ------------------ | ------------------------------------------ |
+| Alert    | `<el-dm-alert>`    | Alert messages with severity variants      |
+| Dialog   | `<el-dm-dialog>`   | Modal dialog with backdrop                 |
+| Badge    | `<el-dm-badge>`    | Status badges and counters                 |
+| Chip     | `<el-dm-chip>`     | Tags and chips with optional delete        |
+| Tooltip  | `<el-dm-tooltip>`  | Hover tooltips                             |
+| Progress | `<el-dm-progress>` | Progress bars and indeterminate spinners   |
 | Markdown | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
 
 ### Navigation
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Tabs | `<el-dm-tabs>` | Tabbed interface |
-| Menu | `<el-dm-menu>` | Dropdown and context menus |
-| Navbar | `<el-dm-navbar>` | Navigation bar |
-| Drawer | `<el-dm-drawer>` | Slide-out drawer panel |
-| Breadcrumbs | `<el-dm-breadcrumbs>` | Breadcrumb navigation |
-| Pagination | `<el-dm-pagination>` | Page navigation controls |
-| Stepper | `<el-dm-stepper>` | Step indicator for wizards |
-| BottomNavigation | `<el-dm-bottom-navigation>` | Mobile bottom navigation |
+| Element          | Tag                         | Description                |
+| ---------------- | --------------------------- | -------------------------- |
+| Tabs             | `<el-dm-tabs>`              | Tabbed interface           |
+| Menu             | `<el-dm-menu>`              | Dropdown and context menus |
+| Navbar           | `<el-dm-navbar>`            | Navigation bar             |
+| Drawer           | `<el-dm-drawer>`            | Slide-out drawer panel     |
+| Breadcrumbs      | `<el-dm-breadcrumbs>`       | Breadcrumb navigation      |
+| Pagination       | `<el-dm-pagination>`        | Page navigation controls   |
+| Stepper          | `<el-dm-stepper>`           | Step indicator for wizards |
+| BottomNavigation | `<el-dm-bottom-navigation>` | Mobile bottom navigation   |
 
 ### Surfaces & Containers
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Accordion | `<el-dm-accordion>` | Collapsible content sections |
-| Popover | `<el-dm-popover>` | Floating content popup |
-| BottomSheet | `<el-dm-bottom-sheet>` | Mobile bottom sheet |
+| Element     | Tag                    | Description                  |
+| ----------- | ---------------------- | ---------------------------- |
+| Accordion   | `<el-dm-accordion>`    | Collapsible content sections |
+| Popover     | `<el-dm-popover>`      | Floating content popup       |
+| BottomSheet | `<el-dm-bottom-sheet>` | Mobile bottom sheet          |
 
 ### Data Display
 
-| Element | Tag | Description |
-|---------|-----|-------------|
-| Table | `<el-dm-table>` | Data table with sorting, pagination, selection |
+| Element | Tag             | Description                                    |
+| ------- | --------------- | ---------------------------------------------- |
+| Table   | `<el-dm-table>` | Data table with sorting, pagination, selection |
 
 ## Re-exported Utilities
 
@@ -142,13 +142,13 @@ import {
 
 If you only need specific elements, install them individually for smaller bundle size:
 
-| Package | CDN URL |
-|---------|---------|
-| `@duskmoon-dev/el-button` | `https://esm.sh/@duskmoon-dev/el-button/register` |
-| `@duskmoon-dev/el-card` | `https://esm.sh/@duskmoon-dev/el-card/register` |
-| `@duskmoon-dev/el-input` | `https://esm.sh/@duskmoon-dev/el-input/register` |
-| `@duskmoon-dev/el-table` | `https://esm.sh/@duskmoon-dev/el-table/register` |
-| `@duskmoon-dev/el-tabs` | `https://esm.sh/@duskmoon-dev/el-tabs/register` |
+| Package                     | CDN URL                                             |
+| --------------------------- | --------------------------------------------------- |
+| `@duskmoon-dev/el-button`   | `https://esm.sh/@duskmoon-dev/el-button/register`   |
+| `@duskmoon-dev/el-card`     | `https://esm.sh/@duskmoon-dev/el-card/register`     |
+| `@duskmoon-dev/el-input`    | `https://esm.sh/@duskmoon-dev/el-input/register`    |
+| `@duskmoon-dev/el-table`    | `https://esm.sh/@duskmoon-dev/el-table/register`    |
+| `@duskmoon-dev/el-tabs`     | `https://esm.sh/@duskmoon-dev/el-tabs/register`     |
 | `@duskmoon-dev/el-markdown` | `https://esm.sh/@duskmoon-dev/el-markdown/register` |
 
 Example using individual packages:

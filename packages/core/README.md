@@ -108,79 +108,79 @@ this.shadowRoot.adoptedStyleSheets = [resetStyles, defaultTheme, componentStyles
 
 #### Color Tokens
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-primary` | Primary brand color |
-| `--dm-secondary` | Secondary color |
-| `--dm-success` | Success/positive color |
-| `--dm-warning` | Warning color |
-| `--dm-error` | Error/danger color |
-| `--dm-info` | Information color |
+| Variable         | Description            |
+| ---------------- | ---------------------- |
+| `--dm-primary`   | Primary brand color    |
+| `--dm-secondary` | Secondary color        |
+| `--dm-success`   | Success/positive color |
+| `--dm-warning`   | Warning color          |
+| `--dm-error`     | Error/danger color     |
+| `--dm-info`      | Information color      |
 
 #### Gray Scale
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-gray-50` | Lightest gray |
-| `--dm-gray-100` through `--dm-gray-800` | Gray scale |
-| `--dm-gray-900` | Darkest gray |
+| Variable                                | Description   |
+| --------------------------------------- | ------------- |
+| `--dm-gray-50`                          | Lightest gray |
+| `--dm-gray-100` through `--dm-gray-800` | Gray scale    |
+| `--dm-gray-900`                         | Darkest gray  |
 
 #### Typography
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-font-family` | Base font family |
-| `--dm-font-size-xs` through `--dm-font-size-2xl` | Font sizes |
-| `--dm-font-weight-normal`, `--dm-font-weight-medium`, `--dm-font-weight-semibold`, `--dm-font-weight-bold` | Font weights |
-| `--dm-line-height-tight`, `--dm-line-height-normal`, `--dm-line-height-relaxed` | Line heights |
+| Variable                                                                                                   | Description      |
+| ---------------------------------------------------------------------------------------------------------- | ---------------- |
+| `--dm-font-family`                                                                                         | Base font family |
+| `--dm-font-size-xs` through `--dm-font-size-2xl`                                                           | Font sizes       |
+| `--dm-font-weight-normal`, `--dm-font-weight-medium`, `--dm-font-weight-semibold`, `--dm-font-weight-bold` | Font weights     |
+| `--dm-line-height-tight`, `--dm-line-height-normal`, `--dm-line-height-relaxed`                            | Line heights     |
 
 #### Spacing
 
-| Variable | Description |
-|----------|-------------|
+| Variable          | Description           |
+| ----------------- | --------------------- |
 | `--dm-spacing-xs` | Extra small (0.25rem) |
-| `--dm-spacing-sm` | Small (0.5rem) |
-| `--dm-spacing-md` | Medium (1rem) |
-| `--dm-spacing-lg` | Large (1.5rem) |
-| `--dm-spacing-xl` | Extra large (2rem) |
+| `--dm-spacing-sm` | Small (0.5rem)        |
+| `--dm-spacing-md` | Medium (1rem)         |
+| `--dm-spacing-lg` | Large (1.5rem)        |
+| `--dm-spacing-xl` | Extra large (2rem)    |
 
 #### Border Radius
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-radius-sm` | Small radius |
-| `--dm-radius-md` | Medium radius |
-| `--dm-radius-lg` | Large radius |
+| Variable           | Description      |
+| ------------------ | ---------------- |
+| `--dm-radius-sm`   | Small radius     |
+| `--dm-radius-md`   | Medium radius    |
+| `--dm-radius-lg`   | Large radius     |
 | `--dm-radius-full` | Full/pill radius |
 
 #### Shadows
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-shadow-sm` | Small shadow |
+| Variable         | Description   |
+| ---------------- | ------------- |
+| `--dm-shadow-sm` | Small shadow  |
 | `--dm-shadow-md` | Medium shadow |
-| `--dm-shadow-lg` | Large shadow |
+| `--dm-shadow-lg` | Large shadow  |
 
 #### Transitions
 
-| Variable | Description |
-|----------|-------------|
-| `--dm-transition-fast` | Fast transition (150ms) |
+| Variable                 | Description               |
+| ------------------------ | ------------------------- |
+| `--dm-transition-fast`   | Fast transition (150ms)   |
 | `--dm-transition-normal` | Normal transition (200ms) |
-| `--dm-transition-slow` | Slow transition (300ms) |
+| `--dm-transition-slow`   | Slow transition (300ms)   |
 
 ## API
 
 ### BaseElement
 
-| Method | Description |
-|--------|-------------|
-| `attachStyles(styles)` | Attach one or more stylesheets to Shadow DOM |
-| `render()` | Override to return HTML content string |
-| `update()` | Called when reactive properties change (batched) |
-| `emit(name, detail?)` | Emit a CustomEvent from the element |
-| `query(selector)` | Query single element in Shadow DOM |
-| `queryAll(selector)` | Query all matching elements in Shadow DOM |
+| Method                 | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `attachStyles(styles)` | Attach one or more stylesheets to Shadow DOM     |
+| `render()`             | Override to return HTML content string           |
+| `update()`             | Called when reactive properties change (batched) |
+| `emit(name, detail?)`  | Emit a CustomEvent from the element              |
+| `query(selector)`      | Query single element in Shadow DOM               |
+| `queryAll(selector)`   | Query all matching elements in Shadow DOM        |
 
 ### Property Definitions
 
@@ -208,12 +208,12 @@ static properties = {
 
 Property definition options:
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `type` | `Function` | Type constructor: `String`, `Number`, `Boolean`, `Object`, `Array` |
-| `reflect` | `boolean` | Whether to reflect property to attribute |
-| `attribute` | `string` | Custom attribute name (defaults to lowercase property name) |
-| `default` | `any` | Default value for the property |
+| Option      | Type       | Description                                                        |
+| ----------- | ---------- | ------------------------------------------------------------------ |
+| `type`      | `Function` | Type constructor: `String`, `Number`, `Boolean`, `Object`, `Array` |
+| `reflect`   | `boolean`  | Whether to reflect property to attribute                           |
+| `attribute` | `string`   | Custom attribute name (defaults to lowercase property name)        |
+| `default`   | `any`      | Default value for the property                                     |
 
 ### Lifecycle
 

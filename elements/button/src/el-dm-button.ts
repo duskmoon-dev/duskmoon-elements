@@ -49,7 +49,16 @@ const SIZE_CLASSES: Record<string, string> = {
   lg: 'btn-lg',
 };
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'outline' | 'success' | 'warning' | 'error' | 'info';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'ghost'
+  | 'outline'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'info';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility and add host styles

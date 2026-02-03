@@ -30,11 +30,7 @@ describe('ElDmStepper', () => {
 
   test('renders steps from data', () => {
     const el = document.createElement('el-dm-stepper') as ElDmStepper;
-    el.steps = [
-      { label: 'Step 1' },
-      { label: 'Step 2' },
-      { label: 'Step 3' },
-    ] as StepData[];
+    el.steps = [{ label: 'Step 1' }, { label: 'Step 2' }, { label: 'Step 3' }] as StepData[];
     container.appendChild(el);
 
     const steps = el.shadowRoot?.querySelectorAll('.step');
@@ -43,10 +39,7 @@ describe('ElDmStepper', () => {
 
   test('marks current step', () => {
     const el = document.createElement('el-dm-stepper') as ElDmStepper;
-    el.steps = [
-      { label: 'Step 1' },
-      { label: 'Step 2' },
-    ] as StepData[];
+    el.steps = [{ label: 'Step 1' }, { label: 'Step 2' }] as StepData[];
     el.current = 1;
     container.appendChild(el);
 
