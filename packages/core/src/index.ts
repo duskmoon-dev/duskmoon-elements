@@ -18,6 +18,16 @@ export {
   lightThemeColors,
 } from './styles.js';
 
+// Animation utilities
+export {
+  animationStyles,
+  animation,
+  transition,
+  durations,
+  easings,
+} from './animations.js';
+export type { AnimationDuration, AnimationEasing } from './animations.js';
+
 // Types
 export type {
   CSSValue,
