@@ -40,6 +40,14 @@ export {
 } from './themes.js';
 export type { ThemeName } from './themes.js';
 
+// Composition mixins
+export {
+  FocusableMixin,
+  FormMixin,
+  EventListenerMixin,
+  SlotObserverMixin,
+} from './mixins.js';
+
 // Validation utilities
 export { validate, validateAsync, validators } from './validation.js';
 export type { ValidationResult, Validator } from './validation.js';
