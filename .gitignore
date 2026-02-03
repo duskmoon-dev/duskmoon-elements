@@ -44,6 +44,9 @@ npm-debug.log*
 # SvelteKit
 .svelte-kit
 
+# Loki autonomous agent state
+.loki/
+
 # Devenv
 /.devenv*
 /.direnv

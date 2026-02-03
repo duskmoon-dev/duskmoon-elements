@@ -28,6 +28,18 @@ export {
 } from './animations.js';
 export type { AnimationDuration, AnimationEasing } from './animations.js';
 
+// Theme presets
+export {
+  sunshineTheme,
+  moonlightTheme,
+  oceanTheme,
+  forestTheme,
+  roseTheme,
+  themes,
+  applyTheme,
+} from './themes.js';
+export type { ThemeName } from './themes.js';
+
 // Types
 export type {
   CSSValue,
