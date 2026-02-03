@@ -52,6 +52,9 @@ export {
 export { validate, validateAsync, validators } from './validation.js';
 export type { ValidationResult, Validator } from './validation.js';
 
+// Performance utilities
+export { debounce, throttle, scheduleIdle } from './performance.js';
+
 // Types
 export type {
   CSSValue,
