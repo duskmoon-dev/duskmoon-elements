@@ -5,6 +5,7 @@
  * Phase 2: Filtering, selection manager, pagination, column resize.
  * Phase 3: Floating filters, quick filter, column menu, filter debouncing.
  * Phase 4: Inline cell editing, undo/redo, validation, Tab navigation.
+ * Phase 5: Row grouping, aggregation, pivoting.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -17,6 +18,8 @@ import { SelectionManager } from './core/selection-manager.js';
 import { ColumnMenu, type ColumnMenuAction } from './core/column-menu.js';
 import { CellEditor } from './core/cell-editor.js';
 import { UndoRedoManager } from './core/undo-redo.js';
+import { RowGrouping, type RowNode } from './core/row-grouping.js';
+import { RowPivot } from './core/row-pivot.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -26,6 +29,7 @@ import { cellStyles } from './styles/cells.css.js';
 import { paginationStyles } from './styles/pagination.css.js';
 import { columnMenuStyles } from './styles/column-menu.css.js';
 import { editorStyles } from './styles/editor.css.js';
+import { groupingStyles } from './styles/grouping.css.js';
 import type {
   Row,
   ColumnDef,
@@ -62,6 +66,31 @@ export class ElDmProDataGrid extends BaseElement {
       attribute: 'filter-debounce-ms',
       default: 300,
     },
+    enableRowGrouping: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'enable-row-grouping',
+      default: false,
+    },
+    groupDefaultExpanded: {
+      type: Number,
+      reflect: true,
+      attribute: 'group-default-expanded',
+      default: 0,
+    },
+    showGroupPanel: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'show-group-panel',
+      default: false,
+    },
+    enablePivoting: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'enable-pivoting',
+      default: false,
+    },
+    pivotMode: { type: Boolean, reflect: true, attribute: 'pivot-mode', default: false },
   };
 
   // ─── Private State ───────────────────────────
@@ -72,6 +101,7 @@ export class ElDmProDataGrid extends BaseElement {
   #filterModel: Record<string, FilterModel> = {};
   #processedRows: Row[] = [];
   #paginatedRows: Row[] = [];
+  #displayNodes: RowNode[] = [];
 
   // ─── Core Engines ────────────────────────────
 
@@ -84,6 +114,8 @@ export class ElDmProDataGrid extends BaseElement {
   #columnMenu = new ColumnMenu();
   #cellEditor = new CellEditor();
   #undoRedo = new UndoRedoManager();
+  #rowGrouping = new RowGrouping();
+  #rowPivot = new RowPivot();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -115,6 +147,7 @@ export class ElDmProDataGrid extends BaseElement {
       paginationStyles,
       columnMenuStyles,
       editorStyles,
+      groupingStyles,
     ]);
 
     this.#scroller = new VirtualScroller({
@@ -298,6 +331,61 @@ export class ElDmProDataGrid extends BaseElement {
       this.emit('undo-redo', { type: 'redo', change });
     }
     return change;
+  }
+
+  // ─── Grouping & Pivoting API ─────────────
+
+  get rowGroupColumns(): string[] {
+    return this.#rowGrouping.groupColumns;
+  }
+
+  set rowGroupColumns(value: string[]) {
+    this.#rowGrouping.groupColumns = value;
+    this.#rowGrouping.buildAggColumnsFromDefs(this.#columns);
+    this.#processData();
+    this.#renderContent();
+    this.emit('group-change', { groupColumns: value });
+  }
+
+  setRowGroupColumns(fields: string[]): void {
+    this.rowGroupColumns = fields;
+  }
+
+  setPivotColumns(fields: string[]): void {
+    this.#rowPivot.pivotColumns = fields;
+    this.#processData();
+    this.#renderContent();
+    this.emit('pivot-change', { pivotColumns: fields });
+  }
+
+  setPivotMode(enabled: boolean): void {
+    (this as unknown as { pivotMode: boolean }).pivotMode = enabled;
+    this.#processData();
+    this.#renderContent();
+  }
+
+  expandAll(depth = -1): void {
+    this.#rowGrouping.expandAll(depth);
+    this.#processData();
+    this.#renderContent();
+  }
+
+  collapseAll(): void {
+    this.#rowGrouping.collapseAll();
+    this.#processData();
+    this.#renderContent();
+  }
+
+  expandGroup(keyPath: string): void {
+    this.#rowGrouping.expandGroup(keyPath);
+    this.#processData();
+    this.#renderContent();
+  }
+
+  collapseGroup(keyPath: string): void {
+    this.#rowGrouping.collapseGroup(keyPath);
+    this.#processData();
+    this.#renderContent();
   }
 
   exportCsv(opts?: { filename?: string; selectedOnly?: boolean }): void {
@@ -490,6 +578,19 @@ export class ElDmProDataGrid extends BaseElement {
       // Don't process clicks on editor elements
       if ((e.target as HTMLElement).closest('[data-editor]')) return;
 
+      // Handle group row expand/collapse
+      const groupRow = (e.target as HTMLElement).closest('[data-group-key]') as HTMLElement | null;
+      if (groupRow) {
+        const keyPath = groupRow.dataset.groupKey ?? '';
+        if (keyPath) {
+          const expanded = this.#rowGrouping.toggleGroup(keyPath);
+          this.#processData();
+          this.#renderContent();
+          this.emit('group-toggle', { keyPath, expanded });
+        }
+        return;
+      }
+
       const cell = (e.target as HTMLElement).closest('[data-grid-cell]') as HTMLElement | null;
       if (!cell) return;
 
@@ -607,6 +708,18 @@ export class ElDmProDataGrid extends BaseElement {
       }
     });
 
+    // Group panel chip removal
+    this.shadowRoot?.addEventListener('click', (e) => {
+      const removeBtn = (e.target as HTMLElement).closest(
+        '[data-remove-group]',
+      ) as HTMLElement | null;
+      if (removeBtn) {
+        const field = removeBtn.dataset.removeGroup!;
+        const newCols = this.#rowGrouping.groupColumns.filter((f) => f !== field);
+        this.rowGroupColumns = newCols;
+      }
+    });
+
     // Undo/Redo keyboard shortcut (Ctrl+Z / Ctrl+Shift+Z)
     this.addEventListener('keydown', (e) => {
       const event = e as KeyboardEvent;
@@ -645,6 +758,19 @@ export class ElDmProDataGrid extends BaseElement {
     }
 
     this.#processedRows = rows;
+
+    // Apply row grouping
+    const enableGrouping = (this as unknown as { enableRowGrouping: boolean }).enableRowGrouping;
+    if (enableGrouping && this.#rowGrouping.isGrouped) {
+      this.#rowGrouping.groupDefaultExpanded =
+        (this as unknown as { groupDefaultExpanded: number }).groupDefaultExpanded ?? 0;
+      this.#rowGrouping.buildAggColumnsFromDefs(colDefs);
+      this.#displayNodes = this.#rowGrouping.group(rows);
+      // For pagination and scrolling, use the flat display list length
+      rows = this.#displayNodes.map((n) => n.data);
+    } else {
+      this.#displayNodes = [];
+    }
 
     // Apply pagination
     const pageSize = (this as unknown as { pageSize: number }).pageSize ?? 0;
@@ -686,6 +812,7 @@ export class ElDmProDataGrid extends BaseElement {
     this.#isRendering = true;
     queueMicrotask(() => {
       this.#isRendering = false;
+      this.#renderGroupPanel();
       this.#renderQuickFilterBar();
       this.#renderHeader();
       this.#renderFloatingFilterRow();
@@ -741,6 +868,7 @@ export class ElDmProDataGrid extends BaseElement {
     const visible = this.#columnController.visibleColumns;
     const rowHeight = (this as unknown as { rowHeight: number }).rowHeight ?? 40;
     const displayRows = this.#paginatedRows;
+    const hasGrouping = this.#displayNodes.length > 0;
 
     // Set container height for scrollbar
     this.#scrollContainer.style.height = `${this.#scroller.totalContentHeight}px`;
@@ -751,12 +879,100 @@ export class ElDmProDataGrid extends BaseElement {
     // Build rows HTML
     const rowsHtml: string[] = [];
     for (let i = startIndex; i <= endIndex && i < displayRows.length; i++) {
+      if (hasGrouping && this.#displayNodes[i]) {
+        const node = this.#displayNodes[i];
+        if (node.group) {
+          rowsHtml.push(this.#renderGroupRow(node, i, visible, rowHeight));
+          continue;
+        }
+      }
       const row = displayRows[i];
       const isSelected = this.#selectionManager.isSelected(row);
       rowsHtml.push(this.#renderRow(row, i, visible, rowHeight, isSelected));
     }
 
     this.#body.innerHTML = rowsHtml.join('');
+  }
+
+  #renderGroupRow(
+    node: RowNode,
+    rowIndex: number,
+    columns: ColumnStateInternal[],
+    rowHeight: number,
+  ): string {
+    const indent = node.level * 28;
+    const chevron = node.expanded ? '▶' : '▶';
+    const childCount = node.allLeafChildren.length;
+    const totalWidth = columns.reduce((sum, col) => sum + col.width, 0);
+
+    // Build aggregation summary
+    let aggHtml = '';
+    if (Object.keys(node.aggData).length > 0) {
+      const aggParts = Object.entries(node.aggData)
+        .map(([field, value]) => {
+          const formatted = value == null ? '' : String(value);
+          return `<span class="grid-group-agg-value">${this.#escapeHtml(field)}: ${this.#escapeHtml(formatted)}</span>`;
+        })
+        .join('');
+      aggHtml = `<span class="grid-group-agg">${aggParts}</span>`;
+    }
+
+    return `
+      <div class="grid-row" role="row"
+           data-group
+           data-row-index="${rowIndex}"
+           data-group-key="${this.#escapeHtml(node.id)}"
+           data-group-level="${node.level}"
+           aria-rowindex="${rowIndex + 1}"
+           aria-expanded="${node.expanded}">
+        <div class="grid-group-cell" style="width:${totalWidth}px;height:${rowHeight}px">
+          <span class="grid-group-indent" style="width:${indent}px"></span>
+          <span class="grid-group-chevron" ${node.expanded ? 'data-expanded' : ''}>${chevron}</span>
+          <span class="grid-group-key">${this.#escapeHtml(node.key)}</span>
+          <span class="grid-group-count">(${childCount})</span>
+          ${aggHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  #renderGroupPanel(): void {
+    const showPanel = (this as unknown as { showGroupPanel: boolean }).showGroupPanel;
+    const root = this.shadowRoot;
+    if (!root) return;
+
+    let panel = root.querySelector('.grid-group-panel') as HTMLElement | null;
+
+    if (!showPanel) {
+      if (panel) panel.remove();
+      return;
+    }
+
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'grid-group-panel';
+      // Insert before viewport
+      const viewport = root.querySelector('.grid-viewport');
+      if (viewport) {
+        viewport.parentNode?.insertBefore(panel, viewport);
+      }
+    }
+
+    const groupCols = this.#rowGrouping.groupColumns;
+    if (groupCols.length === 0) {
+      panel.innerHTML =
+        '<span class="grid-group-panel-placeholder">Drag columns here to group</span>';
+    } else {
+      panel.innerHTML = groupCols
+        .map(
+          (field) =>
+            `<span class="grid-group-chip">
+              ${this.#escapeHtml(field)}
+              <button class="grid-group-chip-remove" data-remove-group="${field}" aria-label="Remove group">&times;</button>
+            </span>`,
+        )
+        .join('');
+    }
   }
 
   #renderRow(
