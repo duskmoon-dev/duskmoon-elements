@@ -9,6 +9,7 @@
  * Phase 6: Tree data, row expanding.
  * Phase 7: Cell selection, clipboard, export.
  * Phase 8: Accessories (context menu, status bar, find bar, sparklines).
+ * Phase 9: Row pinning, row drag, row styling & full-width rows.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -33,6 +34,9 @@ import { ContextMenu } from './core/context-menu.js';
 import { StatusBar } from './core/status-bar.js';
 import { FindBar } from './core/find-bar.js';
 import { Sparkline } from './core/sparkline.js';
+import { RowPinning } from './core/row-pinning.js';
+import { RowDrag } from './core/row-drag.js';
+import { RowStyling } from './core/row-styling.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -46,6 +50,7 @@ import { groupingStyles } from './styles/grouping.css.js';
 import { treeExpandStyles } from './styles/tree-expand.css.js';
 import { selectionStyles } from './styles/selection.css.js';
 import { accessoryStyles } from './styles/accessories.css.js';
+import { rowFeatureStyles } from './styles/row-features.css.js';
 import type {
   Row,
   ColumnDef,
@@ -140,6 +145,31 @@ export class ElDmProDataGrid extends BaseElement {
       attribute: 'suppress-clipboard-paste',
       default: false,
     },
+    enableRowDrag: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'enable-row-drag',
+      default: false,
+    },
+    rowDragMultiRow: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'row-drag-multi-row',
+      default: false,
+    },
+    rowDragManaged: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'row-drag-managed',
+      default: true,
+    },
+    showRowNumbers: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'show-row-numbers',
+      default: false,
+    },
+    animateRows: { type: Boolean, reflect: true, attribute: 'animate-rows', default: false },
   };
 
   // ─── Private State ───────────────────────────
@@ -174,6 +204,9 @@ export class ElDmProDataGrid extends BaseElement {
   #statusBar = new StatusBar();
   #findBar = new FindBar();
   #sparkline = new Sparkline();
+  #rowPinning = new RowPinning();
+  #rowDrag = new RowDrag();
+  #rowStyling = new RowStyling();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -209,6 +242,7 @@ export class ElDmProDataGrid extends BaseElement {
       treeExpandStyles,
       selectionStyles,
       accessoryStyles,
+      rowFeatureStyles,
     ]);
 
     this.#scroller = new VirtualScroller({
@@ -549,6 +583,42 @@ export class ElDmProDataGrid extends BaseElement {
     const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
     const cols = this.#columnController.visibleColumns.map((c) => c.def);
     this.#dataExport.exportExcel(rows, cols, params);
+  }
+
+  // ─── Phase 9: Row Pinning API ─────────────────
+
+  pinRowTop(row: Row): void {
+    this.#rowPinning.pinTop(row);
+    this.emit('row-pinned', { row, position: 'top' });
+    this.#renderContent();
+  }
+
+  pinRowBottom(row: Row): void {
+    this.#rowPinning.pinBottom(row);
+    this.emit('row-pinned', { row, position: 'bottom' });
+    this.#renderContent();
+  }
+
+  unpinRow(row: Row): void {
+    const result = this.#rowPinning.unpin(row);
+    if (result) {
+      this.emit('row-unpinned', { row });
+      this.#renderContent();
+    }
+  }
+
+  get pinnedTopRows(): Row[] {
+    return this.#rowPinning.topRows;
+  }
+
+  get pinnedBottomRows(): Row[] {
+    return this.#rowPinning.bottomRows;
+  }
+
+  // ─── Phase 9: Row Drag API ─────────────────
+
+  get isRowDragging(): boolean {
+    return this.#rowDrag.isDragging;
   }
 
   // ─── Lifecycle ───────────────────────────────

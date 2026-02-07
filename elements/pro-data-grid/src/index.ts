@@ -50,6 +50,17 @@ export { FindBar } from './core/find-bar.js';
 export type { FindMatch, FindBarState } from './core/find-bar.js';
 export { Sparkline } from './core/sparkline.js';
 export type { SparklineDef, SparklineOptions } from './core/sparkline.js';
+export { RowPinning } from './core/row-pinning.js';
+export type { PinnedRowsConfig } from './core/row-pinning.js';
+export { RowDrag } from './core/row-drag.js';
+export type { RowDragConfig, DragState, DropResult } from './core/row-drag.js';
+export { RowStyling } from './core/row-styling.js';
+export type {
+  RowStylingConfig,
+  RowClassParams,
+  RowStyleParams,
+  RowHeightParams,
+} from './core/row-styling.js';
 
 import { registerProDataGrid } from './pro-data-grid.js';
 import { registerGridColumn } from './grid-column.js';
