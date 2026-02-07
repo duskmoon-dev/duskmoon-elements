@@ -5,7 +5,7 @@
  * nested groups, and multiple operators per field.
  */
 
-import type { Row, ColumnDef } from '../types.js';
+import type { Row } from '../types.js';
 
 // ─── Types ──────────────────────────────────
 
@@ -83,7 +83,7 @@ export class AdvancedFilter {
 
   // ─── Apply Filter ──────────────────────────
 
-  filter(rows: Row[], _columns?: ColumnDef[]): Row[] {
+  filter(rows: Row[]): Row[] {
     let result = rows;
 
     // Apply expression filter

@@ -114,7 +114,7 @@ export class RowPivot {
     const pivotKeys = this.#discoverPivotKeys(rows);
 
     // 2. Generate dynamic pivot columns
-    const pivotColDefs = this.#generatePivotColumns(pivotKeys, originalColumns);
+    const pivotColDefs = this.#generatePivotColumns(pivotKeys);
 
     // 3. Build row-group columns (non-pivot, non-value columns used for grouping)
     const groupColDefs = originalColumns.filter(
@@ -156,7 +156,7 @@ export class RowPivot {
    * Generate pivot column definitions.
    * For each pivot key × value column, a new ColumnDef is created.
    */
-  #generatePivotColumns(pivotKeys: string[], _originalColumns: ColumnDef[]): ColumnDef[] {
+  #generatePivotColumns(pivotKeys: string[]): ColumnDef[] {
     const cols: ColumnDef[] = [];
 
     for (const pivotKey of pivotKeys) {
@@ -201,7 +201,7 @@ export class RowPivot {
 
     // Build pivoted rows
     const result: Row[] = [];
-    for (const [_groupKey, groupRows] of groups) {
+    for (const [, groupRows] of groups) {
       const pivotedRow: Row = {};
 
       // Copy group column values from first row

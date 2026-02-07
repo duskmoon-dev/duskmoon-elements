@@ -204,7 +204,7 @@ export class ColumnMenu {
     });
   }
 
-  #handleAction(action: string, element: HTMLElement): void {
+  #handleAction(action: string, _element: HTMLElement): void {
     if (!this.#config) return;
     const { field } = this.#config;
 

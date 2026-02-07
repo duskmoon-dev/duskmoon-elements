@@ -5,8 +5,6 @@
  * and aggregation panel for selected cell ranges.
  */
 
-import type { Row } from '../types.js';
-
 // ─── Public Types ────────────────────────────
 
 export interface StatusBarPanel {

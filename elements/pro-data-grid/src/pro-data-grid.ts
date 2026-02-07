@@ -213,17 +213,24 @@ export class ElDmProDataGrid extends BaseElement {
   #undoRedo = new UndoRedoManager();
   #rowGrouping = new RowGrouping();
   #rowPivot = new RowPivot();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #treeData = new TreeData();
   #rowExpander = new RowExpander();
   #cellSelection = new CellSelection();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #clipboardService = new ClipboardService();
   #dataExport = new DataExport();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #contextMenu = new ContextMenu();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #statusBar = new StatusBar();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #findBar = new FindBar();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #sparkline = new Sparkline();
   #rowPinning = new RowPinning();
   #rowDrag = new RowDrag();
+  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #rowStyling = new RowStyling();
   #serverRowModel = new ServerRowModel();
   #infiniteScroll = new InfiniteScroll();
@@ -396,7 +403,7 @@ export class ElDmProDataGrid extends BaseElement {
     this.emit('column-pinned', { field, pinned });
   }
 
-  autoSizeColumns(fields?: string[]): void {
+  autoSizeColumns(_fields?: string[]): void {
     // Auto-size to fit container width
     if (this.#viewport) {
       this.#columnController.sizeColumnsToFit(this.#viewport.clientWidth);

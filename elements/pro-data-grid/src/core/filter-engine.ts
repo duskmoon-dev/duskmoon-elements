@@ -23,7 +23,7 @@ export class FilterEngine {
    * Filter rows by applying all active filters.
    * Returns a new filtered array (does not mutate input).
    */
-  filter(rows: Row[], filterModel: Record<string, FilterModel>, columns: ColumnDef[]): Row[] {
+  filter(rows: Row[], filterModel: Record<string, FilterModel>, _columns: ColumnDef[]): Row[] {
     const activeFilters = Object.entries(filterModel);
     if (activeFilters.length === 0) return rows;
 
