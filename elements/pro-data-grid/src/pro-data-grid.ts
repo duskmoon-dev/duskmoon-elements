@@ -8,6 +8,7 @@
  * Phase 5: Row grouping, aggregation, pivoting.
  * Phase 6: Tree data, row expanding.
  * Phase 7: Cell selection, clipboard, export.
+ * Phase 8: Accessories (context menu, status bar, find bar, sparklines).
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -28,6 +29,10 @@ import { CellSelection } from './core/cell-selection.js';
 import { ClipboardService } from './core/clipboard-service.js';
 import { DataExport } from './core/data-export.js';
 import type { CsvExportParams, JsonExportParams, ExcelExportParams } from './core/data-export.js';
+import { ContextMenu } from './core/context-menu.js';
+import { StatusBar } from './core/status-bar.js';
+import { FindBar } from './core/find-bar.js';
+import { Sparkline } from './core/sparkline.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -40,6 +45,7 @@ import { editorStyles } from './styles/editor.css.js';
 import { groupingStyles } from './styles/grouping.css.js';
 import { treeExpandStyles } from './styles/tree-expand.css.js';
 import { selectionStyles } from './styles/selection.css.js';
+import { accessoryStyles } from './styles/accessories.css.js';
 import type {
   Row,
   ColumnDef,
@@ -164,6 +170,10 @@ export class ElDmProDataGrid extends BaseElement {
   #cellSelection = new CellSelection();
   #clipboardService = new ClipboardService();
   #dataExport = new DataExport();
+  #contextMenu = new ContextMenu();
+  #statusBar = new StatusBar();
+  #findBar = new FindBar();
+  #sparkline = new Sparkline();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -198,6 +208,7 @@ export class ElDmProDataGrid extends BaseElement {
       groupingStyles,
       treeExpandStyles,
       selectionStyles,
+      accessoryStyles,
     ]);
 
     this.#scroller = new VirtualScroller({

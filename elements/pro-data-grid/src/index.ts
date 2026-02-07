@@ -42,6 +42,14 @@ export { ClipboardService } from './core/clipboard-service.js';
 export type { ClipboardOptions, PasteResult } from './core/clipboard-service.js';
 export { DataExport } from './core/data-export.js';
 export type { CsvExportParams, JsonExportParams, ExcelExportParams } from './core/data-export.js';
+export { ContextMenu } from './core/context-menu.js';
+export type { ContextMenuItem, ContextMenuConfig } from './core/context-menu.js';
+export { StatusBar } from './core/status-bar.js';
+export type { StatusBarPanel, StatusBarConfig } from './core/status-bar.js';
+export { FindBar } from './core/find-bar.js';
+export type { FindMatch, FindBarState } from './core/find-bar.js';
+export { Sparkline } from './core/sparkline.js';
+export type { SparklineDef, SparklineOptions } from './core/sparkline.js';
 
 import { registerProDataGrid } from './pro-data-grid.js';
 import { registerGridColumn } from './grid-column.js';
