@@ -4,6 +4,7 @@
  * Phase 1: Virtual scrolling, sort, basic rendering, keyboard nav, ARIA.
  * Phase 2: Filtering, selection manager, pagination, column resize.
  * Phase 3: Floating filters, quick filter, column menu, filter debouncing.
+ * Phase 4: Inline cell editing, undo/redo, validation, Tab navigation.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -14,6 +15,8 @@ import { QuickFilter } from './core/quick-filter.js';
 import { ColumnController } from './core/column-controller.js';
 import { SelectionManager } from './core/selection-manager.js';
 import { ColumnMenu, type ColumnMenuAction } from './core/column-menu.js';
+import { CellEditor } from './core/cell-editor.js';
+import { UndoRedoManager } from './core/undo-redo.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -22,11 +25,13 @@ import { headerStyles } from './styles/header.css.js';
 import { cellStyles } from './styles/cells.css.js';
 import { paginationStyles } from './styles/pagination.css.js';
 import { columnMenuStyles } from './styles/column-menu.css.js';
+import { editorStyles } from './styles/editor.css.js';
 import type {
   Row,
   ColumnDef,
   SortItem,
   FilterModel,
+  CellChange,
   CellRendererParams,
   ColumnStateInternal,
 } from './types.js';
@@ -77,6 +82,8 @@ export class ElDmProDataGrid extends BaseElement {
   #columnController = new ColumnController();
   #selectionManager = new SelectionManager();
   #columnMenu = new ColumnMenu();
+  #cellEditor = new CellEditor();
+  #undoRedo = new UndoRedoManager();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -101,7 +108,14 @@ export class ElDmProDataGrid extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles([gridStyles, headerStyles, cellStyles, paginationStyles, columnMenuStyles]);
+    this.attachStyles([
+      gridStyles,
+      headerStyles,
+      cellStyles,
+      paginationStyles,
+      columnMenuStyles,
+      editorStyles,
+    ]);
 
     this.#scroller = new VirtualScroller({
       rowHeight: (this as unknown as { rowHeight: number }).rowHeight ?? 40,
@@ -245,6 +259,45 @@ export class ElDmProDataGrid extends BaseElement {
   refreshLayout(): void {
     this.#updateViewportSize();
     this.#renderContent();
+  }
+
+  // ─── Editing API ──────────────────────────
+
+  startEditingCell(rowIndex: number, field: string, keyChar?: string): void {
+    const row = this.#paginatedRows[rowIndex];
+    const colState = this.#columnController.getColumn(field);
+    if (!row || !colState) return;
+    const state = this.#cellEditor.startEditing(row, rowIndex, colState.def, keyChar);
+    if (state) {
+      this.emit('cell-edit-start', { rowIndex, field, value: state.originalValue });
+      this.#renderRows();
+    }
+  }
+
+  stopEditingCell(cancel = false): void {
+    const change = this.#cellEditor.stopEditing(cancel);
+    if (change) {
+      this.#applyCellChange(change);
+    }
+    this.#renderRows();
+  }
+
+  undo(): CellChange | null {
+    const change = this.#undoRedo.undo();
+    if (change) {
+      this.#applyCellChange(change, false);
+      this.emit('undo-redo', { type: 'undo', change });
+    }
+    return change;
+  }
+
+  redo(): CellChange | null {
+    const change = this.#undoRedo.redo();
+    if (change) {
+      this.#applyCellChange(change, false);
+      this.emit('undo-redo', { type: 'redo', change });
+    }
+    return change;
   }
 
   exportCsv(opts?: { filename?: string; selectedOnly?: boolean }): void {
@@ -434,6 +487,9 @@ export class ElDmProDataGrid extends BaseElement {
 
     // Row/cell click
     this.#body?.addEventListener('click', (e) => {
+      // Don't process clicks on editor elements
+      if ((e.target as HTMLElement).closest('[data-editor]')) return;
+
       const cell = (e.target as HTMLElement).closest('[data-grid-cell]') as HTMLElement | null;
       if (!cell) return;
 
@@ -443,8 +499,19 @@ export class ElDmProDataGrid extends BaseElement {
       const row = this.#paginatedRows[rowIndex];
       if (!row) return;
 
+      // Stop any current edit
+      if (this.#cellEditor.isEditing) {
+        this.stopEditingCell();
+      }
+
       // Emit cell-click
       this.emit('cell-click', { row, field, value: row[field], rowIndex });
+
+      // Single-click edit mode
+      const editable = (this as unknown as { editable: boolean }).editable;
+      if (editable && this.#cellEditor.options.singleClickEdit) {
+        this.startEditingCell(rowIndex, field);
+      }
 
       // Handle selection
       this.#handleRowSelection(row, rowIndex, e as MouseEvent);
@@ -452,6 +519,105 @@ export class ElDmProDataGrid extends BaseElement {
       // Update keyboard position
       this.#keyboardNav.position = { rowIndex, colIndex };
       this.#focusManager.focusCell(rowIndex, colIndex);
+    });
+
+    // Double-click to start editing
+    this.#body?.addEventListener('dblclick', (e) => {
+      const cell = (e.target as HTMLElement).closest('[data-grid-cell]') as HTMLElement | null;
+      if (!cell) return;
+
+      const rowIndex = Number(cell.dataset.rowIndex);
+      const field = cell.dataset.field ?? '';
+      const editable = (this as unknown as { editable: boolean }).editable;
+      if (editable) {
+        this.startEditingCell(rowIndex, field);
+        // Focus the editor input after rendering
+        requestAnimationFrame(() => {
+          const editor = this.shadowRoot.querySelector('[data-editor]') as HTMLElement | null;
+          editor?.focus();
+        });
+      }
+    });
+
+    // Handle editor keydown (Enter to commit, Escape to cancel, Tab to move)
+    this.#body?.addEventListener('keydown', (e) => {
+      if (!this.#cellEditor.isEditing) return;
+      const event = e as KeyboardEvent;
+
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.stopEditingCell();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        this.stopEditingCell(true);
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        const state = this.#cellEditor.editingState;
+        if (!state) return;
+
+        // Commit current edit
+        this.stopEditingCell();
+
+        // Find next editable cell
+        const visible = this.#columnController.visibleColumns;
+        const colIdx = visible.findIndex((c) => c.def.field === state.field);
+        const next = this.#cellEditor.findNextEditableCell(
+          state.rowIndex,
+          colIdx,
+          visible.map((c) => c.def),
+          this.#paginatedRows,
+          event.shiftKey ? 'backward' : 'forward',
+        );
+
+        if (next) {
+          const nextField = visible[next.colIndex]?.def.field;
+          if (nextField) {
+            this.startEditingCell(next.rowIndex, nextField);
+            requestAnimationFrame(() => {
+              const editor = this.shadowRoot.querySelector('[data-editor]') as HTMLElement | null;
+              editor?.focus();
+            });
+          }
+        }
+      }
+    });
+
+    // Handle editor input changes
+    this.#body?.addEventListener('input', (e) => {
+      const editor = (e.target as HTMLElement).closest('[data-editor]') as
+        | HTMLInputElement
+        | HTMLSelectElement
+        | null;
+      if (!editor || !this.#cellEditor.isEditing) return;
+
+      if (editor instanceof HTMLInputElement && editor.type === 'checkbox') {
+        this.#cellEditor.setValue(editor.checked);
+      } else {
+        this.#cellEditor.setValue(editor.value);
+      }
+
+      // Validate in real-time
+      const state = this.#cellEditor.editingState;
+      if (state) {
+        const row = this.#paginatedRows[state.rowIndex];
+        const colState = this.#columnController.getColumn(state.field);
+        if (row && colState) {
+          this.#cellEditor.validate(row, colState.def);
+        }
+      }
+    });
+
+    // Undo/Redo keyboard shortcut (Ctrl+Z / Ctrl+Shift+Z)
+    this.addEventListener('keydown', (e) => {
+      const event = e as KeyboardEvent;
+      if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) {
+          this.redo();
+        } else {
+          this.undo();
+        }
+      }
     });
   }
 
@@ -600,10 +766,23 @@ export class ElDmProDataGrid extends BaseElement {
     rowHeight: number,
     isSelected: boolean,
   ): string {
+    const editState = this.#cellEditor.editingState;
     const cells = columns
       .map((col, colIndex) => {
+        const isEditingThis =
+          editState?.rowIndex === rowIndex && editState?.field === col.def.field;
         const value = row[col.def.field];
-        const cellContent = this.#renderCellContent(value, row, col.def, rowIndex);
+
+        let cellContent: string;
+        let editAttrs = '';
+        if (isEditingThis) {
+          cellContent = this.#cellEditor.renderEditor(col.def);
+          editAttrs = 'data-editing';
+          if (!editState.isValid) editAttrs += ' data-invalid';
+        } else {
+          cellContent = this.#renderCellContent(value, row, col.def, rowIndex);
+        }
+
         return `
           <div class="grid-cell"
                role="gridcell"
@@ -611,11 +790,12 @@ export class ElDmProDataGrid extends BaseElement {
                data-row-index="${rowIndex}"
                data-col-index="${colIndex}"
                data-field="${col.def.field}"
+               ${editAttrs}
                ${col.def.align ? `data-align="${col.def.align}"` : ''}
                style="width:${col.width}px;height:${rowHeight}px"
                tabindex="-1"
-               aria-readonly="true">
-            <span class="grid-cell-content">${cellContent}</span>
+               aria-readonly="${isEditingThis ? 'false' : 'true'}">
+            ${isEditingThis ? cellContent : `<span class="grid-cell-content">${cellContent}</span>`}
           </div>
         `;
       })
@@ -1081,6 +1261,13 @@ export class ElDmProDataGrid extends BaseElement {
     const row = this.#paginatedRows[pos.rowIndex];
     const col = this.#columnController.visibleColumns[pos.colIndex];
     if (!row || !col) return;
+
+    // Start editing on Enter/F2
+    const editable = (this as unknown as { editable: boolean }).editable;
+    if (editable) {
+      this.startEditingCell(pos.rowIndex, col.def.field);
+    }
+
     this.emit('cell-double-click', {
       row,
       field: col.def.field,
@@ -1093,6 +1280,29 @@ export class ElDmProDataGrid extends BaseElement {
     const row = this.#paginatedRows[pos.rowIndex];
     if (!row) return;
     this.#handleRowSelection(row, pos.rowIndex, new MouseEvent('click'));
+  }
+
+  // ─── Private: Editing ────────────────────────
+
+  #applyCellChange(change: CellChange, pushToUndo = true): void {
+    const row = this.#data[change.rowIndex];
+    if (!row) return;
+
+    row[change.field] = change.newValue;
+
+    if (pushToUndo) {
+      this.#undoRedo.push(change);
+    }
+
+    this.emit('cell-edit-end', {
+      rowIndex: change.rowIndex,
+      field: change.field,
+      oldValue: change.oldValue,
+      newValue: change.newValue,
+    });
+
+    this.#processData();
+    this.#renderContent();
   }
 
   // ─── Private: Utilities ──────────────────────
