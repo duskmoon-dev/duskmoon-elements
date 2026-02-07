@@ -216,33 +216,6 @@ export interface MultiFilterModel {
   filterModels: FilterModel[];
 }
 
-// ─── Grid State ──────────────────────────────
-
-export interface GridState {
-  columns: ColumnState[];
-  sort: SortItem[];
-  filter: Record<string, FilterModel>;
-  group: { groupColumns: string[]; expandedGroups: string[][] };
-  pivot: { pivotMode: boolean; pivotColumns: string[] };
-  rangeSelection?: CellRange[];
-  pagination?: { currentPage: number; pageSize: number };
-  sideBar?: { openToolPanel: string | null };
-  scroll?: { top: number; left: number };
-}
-
-export interface ColumnState {
-  colId: string;
-  width: number;
-  pinned: 'left' | 'right' | null;
-  hidden: boolean;
-  sortIndex: number | null;
-  sortDirection: 'asc' | 'desc' | null;
-  rowGroupIndex: number | null;
-  pivotIndex: number | null;
-  aggFunc: string | null;
-  flex: number | null;
-}
-
 // ─── Range Selection ─────────────────────────
 
 export interface CellRange {
