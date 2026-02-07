@@ -1,19 +1,23 @@
 /**
  * ElDmProDataGrid — Enterprise-grade data grid web component.
  *
- * Phase 1 (MVP): Virtual scrolling, single/multi sort, basic rendering,
- * striped/bordered, loading/empty overlays, keyboard nav, ARIA grid roles.
+ * Phase 1: Virtual scrolling, sort, basic rendering, keyboard nav, ARIA.
+ * Phase 2: Filtering, selection manager, pagination, column resize.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
 import { VirtualScroller } from './core/virtual-scroller.js';
 import { SortEngine } from './core/sort-engine.js';
+import { FilterEngine } from './core/filter-engine.js';
 import { ColumnController } from './core/column-controller.js';
+import { SelectionManager } from './core/selection-manager.js';
+import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
 import { gridStyles } from './styles/grid.css.js';
 import { headerStyles } from './styles/header.css.js';
 import { cellStyles } from './styles/cells.css.js';
+import { paginationStyles } from './styles/pagination.css.js';
 import type {
   Row,
   ColumnDef,
@@ -50,13 +54,16 @@ export class ElDmProDataGrid extends BaseElement {
   #sortModel: SortItem[] = [];
   #filterModel: Record<string, FilterModel> = {};
   #processedRows: Row[] = [];
-  #selectedRowKeys = new Set<unknown>();
+  #paginatedRows: Row[] = [];
 
   // ─── Core Engines ────────────────────────────
 
   #scroller: VirtualScroller;
   #sortEngine = new SortEngine();
+  #filterEngine = new FilterEngine();
   #columnController = new ColumnController();
+  #selectionManager = new SelectionManager();
+  #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
 
@@ -66,13 +73,17 @@ export class ElDmProDataGrid extends BaseElement {
   #scrollContainer: HTMLElement | null = null;
   #body: HTMLElement | null = null;
   #headerRow: HTMLElement | null = null;
+  #paginationEl: HTMLElement | null = null;
   #resizeObserver: ResizeObserver | null = null;
   #animFrameId: number | null = null;
   #isRendering = false;
+  #resizingColumn: string | null = null;
+  #resizeStartX = 0;
+  #resizeStartWidth = 0;
 
   constructor() {
     super();
-    this.attachStyles([gridStyles, headerStyles, cellStyles]);
+    this.attachStyles([gridStyles, headerStyles, cellStyles, paginationStyles]);
 
     this.#scroller = new VirtualScroller({
       rowHeight: (this as unknown as { rowHeight: number }).rowHeight ?? 40,
@@ -141,8 +152,7 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   get selectedRows(): Row[] {
-    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
-    return this.#data.filter((r) => this.#selectedRowKeys.has(r[rowKey]));
+    return this.#selectionManager.getSelectedRows(this.#processedRows);
   }
 
   // ─── Public Methods ──────────────────────────
@@ -154,27 +164,41 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   selectAll(): void {
-    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
-    for (const row of this.#processedRows) {
-      this.#selectedRowKeys.add(row[rowKey]);
-    }
+    const { added } = this.#selectionManager.selectAll(this.#processedRows);
     this.#renderContent();
     this.emit('selection-change', {
       selectedRows: this.selectedRows,
-      added: [...this.#processedRows],
+      added,
       removed: [],
     });
   }
 
   deselectAll(): void {
-    const removed = this.selectedRows;
-    this.#selectedRowKeys.clear();
+    const { removed } = this.#selectionManager.deselectAll(this.#processedRows);
     this.#renderContent();
     this.emit('selection-change', {
       selectedRows: [],
       added: [],
       removed,
     });
+  }
+
+  setColumnVisible(field: string, visible: boolean): void {
+    this.#columnController.setColumnVisible(field, visible);
+    this.#renderContent();
+    this.emit('column-visible', { field, visible });
+  }
+
+  moveColumn(field: string, toIndex: number): void {
+    const fromIndex = this.#columnController.visibleColumns.findIndex((c) => c.def.field === field);
+    this.#columnController.moveColumn(field, toIndex);
+    this.#renderContent();
+    this.emit('column-move', { field, fromIndex, toIndex });
+  }
+
+  pinColumn(field: string, pinned: 'left' | 'right' | false): void {
+    // Pin column support will be fully implemented in Phase 3
+    this.emit('column-pinned', { field, pinned });
   }
 
   autoSizeColumns(fields?: string[]): void {
@@ -345,6 +369,9 @@ export class ElDmProDataGrid extends BaseElement {
 
     // Header click for sorting
     this.#headerRow?.addEventListener('click', (e) => {
+      // Ignore clicks on resize handle
+      if ((e.target as HTMLElement).classList.contains('grid-resize-handle')) return;
+
       const target = (e.target as HTMLElement).closest('[data-field]') as HTMLElement | null;
       if (!target) return;
       const field = target.dataset.field;
@@ -355,6 +382,16 @@ export class ElDmProDataGrid extends BaseElement {
       this.sortModel = this.#sortEngine.updateSortModel(this.#sortModel, field, multiSort);
     });
 
+    // Column resize via drag handle
+    this.#headerRow?.addEventListener('mousedown', (e) => {
+      const handle = (e.target as HTMLElement).closest('.grid-resize-handle');
+      if (!handle) return;
+      e.preventDefault();
+      const headerCell = handle.closest('[data-field]') as HTMLElement | null;
+      if (!headerCell?.dataset.field) return;
+      this.#startResize(headerCell.dataset.field, (e as MouseEvent).clientX);
+    });
+
     // Row/cell click
     this.#body?.addEventListener('click', (e) => {
       const cell = (e.target as HTMLElement).closest('[data-grid-cell]') as HTMLElement | null;
@@ -363,14 +400,14 @@ export class ElDmProDataGrid extends BaseElement {
       const rowIndex = Number(cell.dataset.rowIndex);
       const colIndex = Number(cell.dataset.colIndex);
       const field = cell.dataset.field ?? '';
-      const row = this.#processedRows[rowIndex];
+      const row = this.#paginatedRows[rowIndex];
       if (!row) return;
 
       // Emit cell-click
       this.emit('cell-click', { row, field, value: row[field], rowIndex });
 
       // Handle selection
-      this.#handleRowSelection(row, e as MouseEvent);
+      this.#handleRowSelection(row, rowIndex, e as MouseEvent);
 
       // Update keyboard position
       this.#keyboardNav.position = { rowIndex, colIndex };
@@ -382,20 +419,46 @@ export class ElDmProDataGrid extends BaseElement {
 
   #processData(): void {
     let rows = [...this.#data];
+    const colDefs = this.#columnController.columns.map((c) => c.def);
+
+    // Apply client-side filter
+    const filterMode = (this as unknown as { filterMode: string }).filterMode ?? 'client';
+    if (filterMode === 'client' && Object.keys(this.#filterModel).length > 0) {
+      rows = this.#filterEngine.filter(rows, this.#filterModel, colDefs);
+    }
 
     // Apply client-side sort
     const sortMode = (this as unknown as { sortMode: string }).sortMode ?? 'client';
     if (sortMode === 'client' && this.#sortModel.length > 0) {
-      rows = this.#sortEngine.sort(
-        rows,
-        this.#sortModel,
-        this.#columnController.columns.map((c) => c.def),
-      );
+      rows = this.#sortEngine.sort(rows, this.#sortModel, colDefs);
     }
 
     this.#processedRows = rows;
-    this.#scroller.totalRows = rows.length;
-    this.#keyboardNav.updateBounds(rows.length, this.#columnController.visibleColumns.length);
+
+    // Apply pagination
+    const pageSize = (this as unknown as { pageSize: number }).pageSize ?? 0;
+    if (pageSize > 0) {
+      this.#pagination.pageSize = pageSize;
+      this.#pagination.totalRows = rows.length;
+      this.#paginatedRows = this.#pagination.getPageRows(rows);
+      this.#scroller.totalRows = this.#paginatedRows.length;
+    } else {
+      this.#paginatedRows = rows;
+      this.#scroller.totalRows = rows.length;
+    }
+
+    // Sync selection manager
+    this.#selectionManager.mode =
+      ((this as unknown as { selectionMode: string }).selectionMode as
+        | 'none'
+        | 'single'
+        | 'multiple') ?? 'none';
+    this.#selectionManager.rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+
+    this.#keyboardNav.updateBounds(
+      this.#paginatedRows.length,
+      this.#columnController.visibleColumns.length,
+    );
   }
 
   #updateViewportSize(): void {
@@ -414,6 +477,7 @@ export class ElDmProDataGrid extends BaseElement {
       this.#isRendering = false;
       this.#renderHeader();
       this.#renderRows();
+      this.#renderPagination();
       this.#renderOverlays();
       this.#updateAriaAttributes();
     });
@@ -462,7 +526,7 @@ export class ElDmProDataGrid extends BaseElement {
     const { startIndex, endIndex, startOffset } = this.#scroller.getVisibleRange();
     const visible = this.#columnController.visibleColumns;
     const rowHeight = (this as unknown as { rowHeight: number }).rowHeight ?? 40;
-    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+    const displayRows = this.#paginatedRows;
 
     // Set container height for scrollbar
     this.#scrollContainer.style.height = `${this.#scroller.totalContentHeight}px`;
@@ -472,9 +536,9 @@ export class ElDmProDataGrid extends BaseElement {
 
     // Build rows HTML
     const rowsHtml: string[] = [];
-    for (let i = startIndex; i <= endIndex && i < this.#processedRows.length; i++) {
-      const row = this.#processedRows[i];
-      const isSelected = this.#selectedRowKeys.has(row[rowKey]);
+    for (let i = startIndex; i <= endIndex && i < displayRows.length; i++) {
+      const row = displayRows[i];
+      const isSelected = this.#selectionManager.isSelected(row);
       rowsHtml.push(this.#renderRow(row, i, visible, rowHeight, isSelected));
     }
 
@@ -598,29 +662,132 @@ export class ElDmProDataGrid extends BaseElement {
 
   // ─── Private: Selection ──────────────────────
 
-  #handleRowSelection(row: Row, event: MouseEvent): void {
-    const mode = (this as unknown as { selectionMode: string }).selectionMode ?? 'none';
-    if (mode === 'none') return;
+  #handleRowSelection(row: Row, rowIndex: number, event: MouseEvent): void {
+    const { added, removed } = this.#selectionManager.handleClick(
+      row,
+      rowIndex,
+      this.#paginatedRows,
+      event.shiftKey,
+      event.ctrlKey || event.metaKey,
+    );
 
-    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
-    const key = row[rowKey];
+    if (added.length > 0 || removed.length > 0) {
+      this.#renderRows();
+      this.emit('selection-change', {
+        selectedRows: this.selectedRows,
+        added,
+        removed,
+      });
+    }
+  }
 
-    if (mode === 'single') {
-      this.#selectedRowKeys.clear();
-      this.#selectedRowKeys.add(key);
-    } else if (mode === 'multiple') {
-      if (this.#selectedRowKeys.has(key)) {
-        this.#selectedRowKeys.delete(key);
-      } else {
-        this.#selectedRowKeys.add(key);
+  // ─── Private: Column Resize ─────────────────
+
+  #startResize(field: string, startX: number): void {
+    const col = this.#columnController.getColumn(field);
+    if (!col) return;
+
+    this.#resizingColumn = field;
+    this.#resizeStartX = startX;
+    this.#resizeStartWidth = col.width;
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!this.#resizingColumn) return;
+      const delta = e.clientX - this.#resizeStartX;
+      this.#columnController.resizeColumn(this.#resizingColumn, this.#resizeStartWidth + delta);
+      this.#renderHeader();
+      this.#renderRows();
+    };
+
+    const onMouseUp = () => {
+      if (this.#resizingColumn) {
+        const finalCol = this.#columnController.getColumn(this.#resizingColumn);
+        if (finalCol) {
+          this.emit('column-resize', { field: this.#resizingColumn, width: finalCol.width });
+        }
       }
+      this.#resizingColumn = null;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  // ─── Private: Pagination Rendering ──────────
+
+  #renderPagination(): void {
+    const pageSize = (this as unknown as { pageSize: number }).pageSize ?? 0;
+    if (pageSize <= 0) {
+      this.#paginationEl?.remove();
+      this.#paginationEl = null;
+      return;
     }
 
-    this.#renderRows();
-    this.emit('selection-change', {
-      selectedRows: this.selectedRows,
-      added: this.#selectedRowKeys.has(key) ? [row] : [],
-      removed: !this.#selectedRowKeys.has(key) ? [row] : [],
+    const wrapper = this.shadowRoot.querySelector('.grid-wrapper');
+    if (!wrapper) return;
+
+    if (!this.#paginationEl) {
+      this.#paginationEl = document.createElement('div');
+      this.#paginationEl.className = 'grid-pagination';
+      this.#paginationEl.setAttribute('role', 'navigation');
+      this.#paginationEl.setAttribute('aria-label', 'Pagination');
+      wrapper.appendChild(this.#paginationEl);
+      this.#paginationEl.addEventListener('click', (e) => this.#handlePaginationClick(e));
+    }
+
+    const state = this.#pagination.getState();
+    const pages = this.#pagination.getPageNumbers();
+
+    this.#paginationEl.innerHTML = `
+      <span class="grid-pagination-info">
+        ${state.totalRows > 0 ? `${this.#pagination.startRow + 1}–${this.#pagination.endRow} of ${state.totalRows}` : '0 rows'}
+      </span>
+      <div class="grid-pagination-controls">
+        <button class="grid-pagination-btn" data-page="first" ${state.currentPage === 1 ? 'disabled' : ''}>«</button>
+        <button class="grid-pagination-btn" data-page="prev" ${state.currentPage === 1 ? 'disabled' : ''}>‹</button>
+        ${pages
+          .map((p) =>
+            p === -1
+              ? '<span class="grid-pagination-ellipsis">…</span>'
+              : `<button class="grid-pagination-btn" data-page="${p}" ${p === state.currentPage ? 'data-active' : ''}>${p}</button>`,
+          )
+          .join('')}
+        <button class="grid-pagination-btn" data-page="next" ${state.currentPage >= state.totalPages ? 'disabled' : ''}>›</button>
+        <button class="grid-pagination-btn" data-page="last" ${state.currentPage >= state.totalPages ? 'disabled' : ''}>»</button>
+      </div>
+    `;
+  }
+
+  #handlePaginationClick(e: Event): void {
+    const btn = (e.target as HTMLElement).closest('[data-page]') as HTMLElement | null;
+    if (!btn || btn.hasAttribute('disabled')) return;
+
+    const action = btn.dataset.page;
+    switch (action) {
+      case 'first':
+        this.#pagination.firstPage();
+        break;
+      case 'prev':
+        this.#pagination.prevPage();
+        break;
+      case 'next':
+        this.#pagination.nextPage();
+        break;
+      case 'last':
+        this.#pagination.lastPage();
+        break;
+      default:
+        this.#pagination.goToPage(Number(action));
+    }
+
+    (this as unknown as { currentPage: number }).currentPage = this.#pagination.currentPage;
+    this.#processData();
+    this.#renderContent();
+    this.emit('page-change', {
+      page: this.#pagination.currentPage,
+      pageSize: this.#pagination.pageSize,
     });
   }
 
@@ -633,7 +800,7 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   #onActivate(pos: GridPosition): void {
-    const row = this.#processedRows[pos.rowIndex];
+    const row = this.#paginatedRows[pos.rowIndex];
     const col = this.#columnController.visibleColumns[pos.colIndex];
     if (!row || !col) return;
     this.emit('cell-double-click', {
@@ -645,9 +812,9 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   #onSelect(pos: GridPosition): void {
-    const row = this.#processedRows[pos.rowIndex];
+    const row = this.#paginatedRows[pos.rowIndex];
     if (!row) return;
-    this.#handleRowSelection(row, new MouseEvent('click'));
+    this.#handleRowSelection(row, pos.rowIndex, new MouseEvent('click'));
   }
 
   // ─── Private: Utilities ──────────────────────
