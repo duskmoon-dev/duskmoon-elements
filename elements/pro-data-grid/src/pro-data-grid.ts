@@ -11,6 +11,7 @@
  * Phase 8: Accessories (context menu, status bar, find bar, sparklines).
  * Phase 9: Row pinning, row drag, row styling & full-width rows.
  * Phase 10: Server-side row model, infinite scroll, transactions.
+ * Phase 11: i18n, RTL, state persistence, advanced filter.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -43,6 +44,11 @@ import type { IDatasource } from './core/datasource.js';
 import { InfiniteScroll } from './core/infinite-scroll.js';
 import { TransactionManager } from './core/transaction.js';
 import type { RowTransaction } from './core/transaction.js';
+import { Locale } from './core/locale.js';
+import { GridStateManager } from './core/grid-state.js';
+import type { GridState } from './core/grid-state.js';
+import { AdvancedFilter } from './core/advanced-filter.js';
+import type { FilterExpression } from './core/advanced-filter.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -222,6 +228,9 @@ export class ElDmProDataGrid extends BaseElement {
   #serverRowModel = new ServerRowModel();
   #infiniteScroll = new InfiniteScroll();
   #transactionManager = new TransactionManager();
+  #locale = new Locale();
+  #gridState = new GridStateManager();
+  #advancedFilter = new AdvancedFilter();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -667,6 +676,68 @@ export class ElDmProDataGrid extends BaseElement {
       remove: result.remove,
     });
     return result;
+  }
+
+  // ─── Phase 11: i18n API ───────────────────
+
+  get locale(): Locale {
+    return this.#locale;
+  }
+
+  setLocaleText(overrides: Record<string, string>): void {
+    this.#locale.mergeLocaleText(overrides as Record<string, string>);
+    this.#renderContent();
+  }
+
+  // ─── Phase 11: State Persistence API ──────
+
+  getState(): GridState {
+    return this.#gridState.captureState({
+      sortModel: this.#sortModel,
+      filterModel: this.#filterModel,
+      columns: this.#columns,
+      currentPage: (this as unknown as { currentPage: number }).currentPage ?? 1,
+      pageSize: (this as unknown as { pageSize: number }).pageSize ?? 0,
+      groupColumns: this.#rowGrouping.groupColumns,
+      quickFilterText: this.#quickFilter.text,
+    });
+  }
+
+  setState(state: GridState): void {
+    this.#gridState.setState(state);
+    if (state.sortModel) this.#sortModel = state.sortModel;
+    if (state.filterModel) this.#filterModel = state.filterModel;
+    if (state.quickFilterText !== undefined) this.#quickFilter.text = state.quickFilterText;
+    this.#processData();
+    this.#renderContent();
+    this.emit('state-changed', { state });
+  }
+
+  resetState(): void {
+    this.#gridState.resetState();
+    this.#sortModel = [];
+    this.#filterModel = {};
+    this.#quickFilter.text = '';
+    this.#processData();
+    this.#renderContent();
+  }
+
+  // ─── Phase 11: Advanced Filter API ────────
+
+  get advancedFilterExpression(): FilterExpression | null {
+    return this.#advancedFilter.expression;
+  }
+
+  set advancedFilterExpression(expr: FilterExpression | null) {
+    this.#advancedFilter.expression = expr;
+    this.#processData();
+    this.#renderContent();
+  }
+
+  setExternalFilter(predicate: ((row: Row) => boolean) | null): void {
+    this.#advancedFilter.externalPredicate = predicate;
+    this.#processData();
+    this.#renderContent();
   }
 
   // ─── Lifecycle ───────────────────────────────

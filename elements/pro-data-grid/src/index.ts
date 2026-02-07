@@ -72,6 +72,18 @@ export { InfiniteScroll } from './core/infinite-scroll.js';
 export type { InfiniteScrollConfig, InfiniteBlockInfo } from './core/infinite-scroll.js';
 export { TransactionManager } from './core/transaction.js';
 export type { RowTransaction, TransactionResult, TransactionLogEntry } from './core/transaction.js';
+export { Locale } from './core/locale.js';
+export type { LocaleText, LocaleTextOverrides, TextDirection } from './core/locale.js';
+export { GridStateManager } from './core/grid-state.js';
+export type { GridState, GridStateKey, ColumnState } from './core/grid-state.js';
+export { AdvancedFilter } from './core/advanced-filter.js';
+export type {
+  FilterExpression,
+  FilterCondition,
+  FilterGroup,
+  FilterNot,
+  FilterOperator,
+} from './core/advanced-filter.js';
 
 import { registerProDataGrid } from './pro-data-grid.js';
 import { registerGridColumn } from './grid-column.js';
