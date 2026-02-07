@@ -661,9 +661,7 @@ export class ElDmProDataGrid extends BaseElement {
   set datasource(ds: IDatasource | null) {
     this.#serverRowModel.datasource = ds;
     this.#infiniteScroll.datasource = ds;
-    if (ds) {
-      this.#renderContent();
-    }
+    this.#renderContent();
   }
 
   // ─── Phase 10: Transaction API ────────────

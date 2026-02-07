@@ -216,5 +216,21 @@ describe('FindBar', () => {
       const html = fb.render();
       expect(html).toContain('No matches');
     });
+
+    it('escapes special characters in search text attribute', () => {
+      const fb = new FindBar();
+      fb.open();
+      const testRows: Row[] = [{ name: 'test' }];
+      const testCols: ColumnDef[] = [{ field: 'name', header: 'Name' }];
+      fb.search('"<script>&amp;', testRows, testCols);
+
+      const html = fb.render();
+      // Must not contain raw " inside value attribute
+      expect(html).not.toContain('value=""<script>');
+      // Must escape & before other entities
+      expect(html).toContain('&amp;amp;');
+      expect(html).toContain('&quot;');
+      expect(html).toContain('&lt;script&gt;');
+    });
   });
 });
