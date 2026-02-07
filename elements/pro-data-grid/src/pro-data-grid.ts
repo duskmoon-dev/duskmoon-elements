@@ -3,14 +3,17 @@
  *
  * Phase 1: Virtual scrolling, sort, basic rendering, keyboard nav, ARIA.
  * Phase 2: Filtering, selection manager, pagination, column resize.
+ * Phase 3: Floating filters, quick filter, column menu, filter debouncing.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
 import { VirtualScroller } from './core/virtual-scroller.js';
 import { SortEngine } from './core/sort-engine.js';
 import { FilterEngine } from './core/filter-engine.js';
+import { QuickFilter } from './core/quick-filter.js';
 import { ColumnController } from './core/column-controller.js';
 import { SelectionManager } from './core/selection-manager.js';
+import { ColumnMenu, type ColumnMenuAction } from './core/column-menu.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -18,6 +21,7 @@ import { gridStyles } from './styles/grid.css.js';
 import { headerStyles } from './styles/header.css.js';
 import { cellStyles } from './styles/cells.css.js';
 import { paginationStyles } from './styles/pagination.css.js';
+import { columnMenuStyles } from './styles/column-menu.css.js';
 import type {
   Row,
   ColumnDef,
@@ -45,6 +49,14 @@ export class ElDmProDataGrid extends BaseElement {
     stickyHeader: { type: Boolean, reflect: true, attribute: 'sticky-header', default: true },
     rowKey: { type: String, reflect: true, attribute: 'row-key', default: 'id' },
     emptyText: { type: String, reflect: true, attribute: 'empty-text', default: 'No data' },
+    quickFilterText: { type: String, reflect: true, attribute: 'quick-filter-text', default: '' },
+    floatingFilter: { type: Boolean, reflect: true, attribute: 'floating-filter', default: false },
+    filterDebounceMs: {
+      type: Number,
+      reflect: true,
+      attribute: 'filter-debounce-ms',
+      default: 300,
+    },
   };
 
   // ─── Private State ───────────────────────────
@@ -61,8 +73,10 @@ export class ElDmProDataGrid extends BaseElement {
   #scroller: VirtualScroller;
   #sortEngine = new SortEngine();
   #filterEngine = new FilterEngine();
+  #quickFilter = new QuickFilter();
   #columnController = new ColumnController();
   #selectionManager = new SelectionManager();
+  #columnMenu = new ColumnMenu();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -77,13 +91,17 @@ export class ElDmProDataGrid extends BaseElement {
   #resizeObserver: ResizeObserver | null = null;
   #animFrameId: number | null = null;
   #isRendering = false;
+  #floatingFilterRow: HTMLElement | null = null;
+  #quickFilterBar: HTMLElement | null = null;
   #resizingColumn: string | null = null;
   #resizeStartX = 0;
   #resizeStartWidth = 0;
+  #filterDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  #quickFilterDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     super();
-    this.attachStyles([gridStyles, headerStyles, cellStyles, paginationStyles]);
+    this.attachStyles([gridStyles, headerStyles, cellStyles, paginationStyles, columnMenuStyles]);
 
     this.#scroller = new VirtualScroller({
       rowHeight: (this as unknown as { rowHeight: number }).rowHeight ?? 40,
@@ -156,6 +174,17 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   // ─── Public Methods ──────────────────────────
+
+  setQuickFilterText(text: string): void {
+    this.#quickFilter.text = text;
+    this.#processData();
+    this.#renderContent();
+    this.emit('quick-filter-change', { text });
+  }
+
+  getQuickFilterText(): string {
+    return this.#quickFilter.text;
+  }
 
   scrollToRow(index: number): void {
     if (!this.#viewport) return;
@@ -261,6 +290,10 @@ export class ElDmProDataGrid extends BaseElement {
       cancelAnimationFrame(this.#animFrameId);
     }
     this.#focusManager.detach();
+    this.#columnMenu.close();
+    for (const timer of this.#filterDebounceTimers.values()) clearTimeout(timer);
+    this.#filterDebounceTimers.clear();
+    if (this.#quickFilterDebounceTimer) clearTimeout(this.#quickFilterDebounceTimer);
   }
 
   // ─── Rendering (overrides BaseElement) ───────
@@ -316,7 +349,6 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   #renderShell(): string {
-    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
     return `
       <div class="grid-wrapper" role="grid"
            aria-label="Data Grid"
@@ -367,10 +399,18 @@ export class ElDmProDataGrid extends BaseElement {
       this.#keyboardNav.handleKeyDown(e as KeyboardEvent);
     });
 
-    // Header click for sorting
+    // Header click for sorting and menu
     this.#headerRow?.addEventListener('click', (e) => {
       // Ignore clicks on resize handle
       if ((e.target as HTMLElement).classList.contains('grid-resize-handle')) return;
+
+      // Handle menu button click
+      const menuBtn = (e.target as HTMLElement).closest('[data-menu-field]') as HTMLElement | null;
+      if (menuBtn) {
+        e.stopPropagation();
+        this.#openColumnMenu(menuBtn.dataset.menuField!, menuBtn);
+        return;
+      }
 
       const target = (e.target as HTMLElement).closest('[data-field]') as HTMLElement | null;
       if (!target) return;
@@ -421,8 +461,13 @@ export class ElDmProDataGrid extends BaseElement {
     let rows = [...this.#data];
     const colDefs = this.#columnController.columns.map((c) => c.def);
 
-    // Apply client-side filter
+    // Apply quick filter (global search)
     const filterMode = (this as unknown as { filterMode: string }).filterMode ?? 'client';
+    if (filterMode === 'client' && this.#quickFilter.text.trim()) {
+      rows = this.#quickFilter.filter(rows, colDefs);
+    }
+
+    // Apply column-level client-side filter
     if (filterMode === 'client' && Object.keys(this.#filterModel).length > 0) {
       rows = this.#filterEngine.filter(rows, this.#filterModel, colDefs);
     }
@@ -475,7 +520,9 @@ export class ElDmProDataGrid extends BaseElement {
     this.#isRendering = true;
     queueMicrotask(() => {
       this.#isRendering = false;
+      this.#renderQuickFilterBar();
       this.#renderHeader();
+      this.#renderFloatingFilterRow();
       this.#renderRows();
       this.#renderPagination();
       this.#renderOverlays();
@@ -503,6 +550,7 @@ export class ElDmProDataGrid extends BaseElement {
                tabindex="-1">
             <span class="grid-header-text">${this.#escapeHtml(col.def.header)}</span>
             ${sortIndicator}
+            <button class="grid-header-menu-btn" data-menu-field="${col.def.field}" aria-label="Column menu">☰</button>
             ${col.def.resizable !== false ? '<div class="grid-resize-handle"></div>' : ''}
           </div>
         `;
@@ -789,6 +837,236 @@ export class ElDmProDataGrid extends BaseElement {
       page: this.#pagination.currentPage,
       pageSize: this.#pagination.pageSize,
     });
+  }
+
+  // ─── Private: Quick Filter Bar ─────────────
+
+  #renderQuickFilterBar(): void {
+    const quickText = (this as unknown as { quickFilterText: string }).quickFilterText ?? '';
+    const wrapper = this.shadowRoot.querySelector('.grid-wrapper');
+    if (!wrapper) return;
+
+    // Sync engine text from reactive property
+    if (quickText && quickText !== this.#quickFilter.text) {
+      this.#quickFilter.text = quickText;
+      this.#processData();
+    }
+
+    // Only render when quick filter has content or was previously shown
+    if (!quickText && !this.#quickFilterBar) return;
+
+    if (!this.#quickFilterBar) {
+      this.#quickFilterBar = document.createElement('div');
+      this.#quickFilterBar.className = 'grid-quick-filter';
+      this.#quickFilterBar.innerHTML =
+        '<input class="grid-quick-filter-input" type="text" placeholder="Search all columns..." aria-label="Quick filter" />';
+      // Insert before viewport
+      const viewport = wrapper.querySelector('.grid-viewport');
+      if (viewport) {
+        wrapper.insertBefore(this.#quickFilterBar, viewport);
+      } else {
+        wrapper.prepend(this.#quickFilterBar);
+      }
+
+      const input = this.#quickFilterBar.querySelector('input')!;
+      input.addEventListener('input', () => {
+        const debounceMs =
+          (this as unknown as { filterDebounceMs: number }).filterDebounceMs ?? 300;
+        if (this.#quickFilterDebounceTimer) clearTimeout(this.#quickFilterDebounceTimer);
+        this.#quickFilterDebounceTimer = setTimeout(() => {
+          this.#quickFilter.text = input.value;
+          this.#processData();
+          this.#renderRows();
+          this.#renderPagination();
+          this.#renderOverlays();
+          this.emit('quick-filter-change', { text: input.value });
+        }, debounceMs);
+      });
+    }
+
+    // Sync input value if set programmatically
+    const input = this.#quickFilterBar.querySelector('input');
+    if (input && document.activeElement !== input && input.value !== this.#quickFilter.text) {
+      input.value = this.#quickFilter.text;
+    }
+
+    if (!quickText && this.#quickFilter.text === '') {
+      this.#quickFilterBar.remove();
+      this.#quickFilterBar = null;
+    }
+  }
+
+  // ─── Private: Floating Filter Row ─────────────
+
+  #renderFloatingFilterRow(): void {
+    const showFloating = (this as unknown as { floatingFilter: boolean }).floatingFilter ?? false;
+    const viewport = this.shadowRoot.querySelector('.grid-viewport');
+    if (!viewport) return;
+
+    if (!showFloating) {
+      this.#floatingFilterRow?.remove();
+      this.#floatingFilterRow = null;
+      return;
+    }
+
+    const visible = this.#columnController.visibleColumns;
+
+    if (!this.#floatingFilterRow) {
+      this.#floatingFilterRow = document.createElement('div');
+      this.#floatingFilterRow.className = 'grid-floating-filter-row';
+      this.#floatingFilterRow.setAttribute('role', 'row');
+      this.#floatingFilterRow.setAttribute('aria-label', 'Column filters');
+      // Insert after header
+      const header = viewport.querySelector('.grid-header');
+      if (header?.nextSibling) {
+        viewport.insertBefore(this.#floatingFilterRow, header.nextSibling);
+      } else {
+        viewport.appendChild(this.#floatingFilterRow);
+      }
+    }
+
+    this.#floatingFilterRow.innerHTML = visible
+      .map((col) => {
+        if (col.def.filterable === false) {
+          return `<div class="grid-floating-filter-cell" style="width:${col.width}px"></div>`;
+        }
+        const currentValue = this.#getFloatingFilterValue(col.def.field);
+        return `
+          <div class="grid-floating-filter-cell" style="width:${col.width}px">
+            <input class="grid-floating-filter-input"
+                   type="${col.def.type === 'number' ? 'number' : 'text'}"
+                   data-filter-field="${col.def.field}"
+                   placeholder="Filter..."
+                   value="${this.#escapeHtml(currentValue)}"
+                   aria-label="Filter ${col.def.header}" />
+          </div>
+        `;
+      })
+      .join('');
+
+    // Attach input handlers (re-attached since innerHTML replaces elements)
+    this.#floatingFilterRow.querySelectorAll('input[data-filter-field]').forEach((input) => {
+      input.addEventListener('input', (e) => {
+        const el = e.target as HTMLInputElement;
+        const field = el.dataset.filterField!;
+        this.#handleFloatingFilterInput(field, el.value);
+      });
+    });
+  }
+
+  #getFloatingFilterValue(field: string): string {
+    const model = this.#filterModel[field];
+    if (!model) return '';
+    if (model.type === 'text') return model.value ?? '';
+    if (model.type === 'number') return String(model.value ?? '');
+    return '';
+  }
+
+  #handleFloatingFilterInput(field: string, value: string): void {
+    const debounceMs = (this as unknown as { filterDebounceMs: number }).filterDebounceMs ?? 300;
+
+    // Clear existing timer for this field
+    const existing = this.#filterDebounceTimers.get(field);
+    if (existing) clearTimeout(existing);
+
+    this.#filterDebounceTimers.set(
+      field,
+      setTimeout(() => {
+        this.#filterDebounceTimers.delete(field);
+        const newFilterModel = { ...this.#filterModel };
+
+        if (value.trim() === '') {
+          delete newFilterModel[field];
+        } else {
+          const col = this.#columnController.getColumn(field);
+          const colType = col?.def.type;
+
+          if (colType === 'number') {
+            const num = Number(value);
+            if (!Number.isNaN(num)) {
+              newFilterModel[field] = { type: 'number', operator: 'equals', value: num };
+            }
+          } else {
+            newFilterModel[field] = { type: 'text', operator: 'contains', value: value.trim() };
+          }
+        }
+
+        this.#filterModel = newFilterModel;
+        this.#processData();
+        this.#renderRows();
+        this.#renderPagination();
+        this.#renderOverlays();
+        this.emit('filter-change', { filterModel: this.#filterModel });
+      }, debounceMs),
+    );
+  }
+
+  // ─── Private: Column Menu ─────────────────────
+
+  #openColumnMenu(field: string, anchor: HTMLElement): void {
+    const col = this.#columnController.getColumn(field);
+    if (!col) return;
+
+    this.#columnMenu.open(
+      this.shadowRoot,
+      {
+        field,
+        column: col.def,
+        anchorRect: anchor.getBoundingClientRect(),
+        currentFilter: this.#filterModel[field],
+        allColumns:
+          this.#columns.length > 0
+            ? this.#columns
+            : this.#columnController.columns.map((c) => c.def),
+      },
+      (action) => this.#handleColumnMenuAction(action),
+      () => {},
+    );
+  }
+
+  #handleColumnMenuAction(action: ColumnMenuAction): void {
+    switch (action.type) {
+      case 'sort-asc':
+        this.sortModel = [{ field: action.field, direction: 'asc' }];
+        break;
+      case 'sort-desc':
+        this.sortModel = [{ field: action.field, direction: 'desc' }];
+        break;
+      case 'clear-sort':
+        this.sortModel = this.#sortModel.filter((s) => s.field !== action.field);
+        break;
+      case 'hide-column':
+        this.setColumnVisible(action.field, false);
+        break;
+      case 'auto-size':
+        this.autoSizeColumns([action.field]);
+        break;
+      case 'pin-left':
+        this.pinColumn(action.field, 'left');
+        break;
+      case 'pin-right':
+        this.pinColumn(action.field, 'right');
+        break;
+      case 'unpin':
+        this.pinColumn(action.field, false);
+        break;
+      case 'apply-filter':
+        if (action.filterModel) {
+          this.filterModel = { ...this.#filterModel, [action.field]: action.filterModel };
+        }
+        break;
+      case 'clear-filter': {
+        const newModel = { ...this.#filterModel };
+        delete newModel[action.field];
+        this.filterModel = newModel;
+        break;
+      }
+      case 'toggle-column':
+        if (action.targetField != null && action.visible != null) {
+          this.setColumnVisible(action.targetField, action.visible);
+        }
+        break;
+    }
   }
 
   // ─── Private: Keyboard Handlers ──────────────
