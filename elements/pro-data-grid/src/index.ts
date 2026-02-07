@@ -61,6 +61,17 @@ export type {
   RowStyleParams,
   RowHeightParams,
 } from './core/row-styling.js';
+export { ServerRowModel } from './core/datasource.js';
+export type {
+  IDatasource,
+  IDatasourceGetRowsParams,
+  BlockState,
+  ServerRowModelState,
+} from './core/datasource.js';
+export { InfiniteScroll } from './core/infinite-scroll.js';
+export type { InfiniteScrollConfig, InfiniteBlockInfo } from './core/infinite-scroll.js';
+export { TransactionManager } from './core/transaction.js';
+export type { RowTransaction, TransactionResult, TransactionLogEntry } from './core/transaction.js';
 
 import { registerProDataGrid } from './pro-data-grid.js';
 import { registerGridColumn } from './grid-column.js';

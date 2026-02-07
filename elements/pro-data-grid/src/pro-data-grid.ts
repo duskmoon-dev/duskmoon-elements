@@ -10,6 +10,7 @@
  * Phase 7: Cell selection, clipboard, export.
  * Phase 8: Accessories (context menu, status bar, find bar, sparklines).
  * Phase 9: Row pinning, row drag, row styling & full-width rows.
+ * Phase 10: Server-side row model, infinite scroll, transactions.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -37,6 +38,11 @@ import { Sparkline } from './core/sparkline.js';
 import { RowPinning } from './core/row-pinning.js';
 import { RowDrag } from './core/row-drag.js';
 import { RowStyling } from './core/row-styling.js';
+import { ServerRowModel } from './core/datasource.js';
+import type { IDatasource } from './core/datasource.js';
+import { InfiniteScroll } from './core/infinite-scroll.js';
+import { TransactionManager } from './core/transaction.js';
+import type { RowTransaction } from './core/transaction.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -170,6 +176,12 @@ export class ElDmProDataGrid extends BaseElement {
       default: false,
     },
     animateRows: { type: Boolean, reflect: true, attribute: 'animate-rows', default: false },
+    rowModelType: {
+      type: String,
+      reflect: true,
+      attribute: 'row-model-type',
+      default: 'client',
+    },
   };
 
   // ─── Private State ───────────────────────────
@@ -207,6 +219,9 @@ export class ElDmProDataGrid extends BaseElement {
   #rowPinning = new RowPinning();
   #rowDrag = new RowDrag();
   #rowStyling = new RowStyling();
+  #serverRowModel = new ServerRowModel();
+  #infiniteScroll = new InfiniteScroll();
+  #transactionManager = new TransactionManager();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -619,6 +634,39 @@ export class ElDmProDataGrid extends BaseElement {
 
   get isRowDragging(): boolean {
     return this.#rowDrag.isDragging;
+  }
+
+  // ─── Phase 10: Datasource API ─────────────
+
+  get datasource(): IDatasource | null {
+    return this.#serverRowModel.datasource;
+  }
+
+  set datasource(ds: IDatasource | null) {
+    this.#serverRowModel.datasource = ds;
+    this.#infiniteScroll.datasource = ds;
+    if (ds) {
+      this.#renderContent();
+    }
+  }
+
+  // ─── Phase 10: Transaction API ────────────
+
+  applyTransaction(tx: RowTransaction): {
+    add: Row[];
+    update: Array<{ oldRow: Row; newRow: Row }>;
+    remove: Row[];
+  } {
+    const { rows, result } = this.#transactionManager.apply(this.#data, tx);
+    this.#data = rows;
+    this.#processData();
+    this.#renderContent();
+    this.emit('row-data-updated', {
+      add: result.add,
+      update: result.update.map((u) => u.newRow),
+      remove: result.remove,
+    });
+    return result;
   }
 
   // ─── Lifecycle ───────────────────────────────
