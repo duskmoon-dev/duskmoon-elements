@@ -131,7 +131,7 @@ export class ColumnMenu {
                    type="text"
                    placeholder="Filter..."
                    data-action="filter-input"
-                   aria-label="Filter ${column.header}" />
+                   aria-label="Filter ${this.#escapeHtml(column.header)}" />
             <div class="grid-column-menu-filter-actions">
               <button class="grid-column-menu-btn" data-action="apply-filter">Apply</button>
               <button class="grid-column-menu-btn" data-action="clear-filter">Clear</button>
