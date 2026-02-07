@@ -36,6 +36,12 @@ export type { RowExpanderConfig } from './core/row-expander.js';
 export { KeyboardNav } from './core/keyboard-nav.js';
 export type { GridPosition, KeyboardNavOptions } from './core/keyboard-nav.js';
 export { FocusManager } from './core/focus-manager.js';
+export { CellSelection } from './core/cell-selection.js';
+export type { CellSelectionOptions, RangeAggregation, FillResult } from './core/cell-selection.js';
+export { ClipboardService } from './core/clipboard-service.js';
+export type { ClipboardOptions, PasteResult } from './core/clipboard-service.js';
+export { DataExport } from './core/data-export.js';
+export type { CsvExportParams, JsonExportParams, ExcelExportParams } from './core/data-export.js';
 
 import { registerProDataGrid } from './pro-data-grid.js';
 import { registerGridColumn } from './grid-column.js';

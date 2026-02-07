@@ -6,6 +6,8 @@
  * Phase 3: Floating filters, quick filter, column menu, filter debouncing.
  * Phase 4: Inline cell editing, undo/redo, validation, Tab navigation.
  * Phase 5: Row grouping, aggregation, pivoting.
+ * Phase 6: Tree data, row expanding.
+ * Phase 7: Cell selection, clipboard, export.
  */
 
 import { BaseElement } from '@duskmoon-dev/el-core';
@@ -22,6 +24,10 @@ import { RowGrouping, type RowNode } from './core/row-grouping.js';
 import { RowPivot } from './core/row-pivot.js';
 import { TreeData } from './core/tree-data.js';
 import { RowExpander } from './core/row-expander.js';
+import { CellSelection } from './core/cell-selection.js';
+import { ClipboardService } from './core/clipboard-service.js';
+import { DataExport } from './core/data-export.js';
+import type { CsvExportParams, JsonExportParams, ExcelExportParams } from './core/data-export.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -33,6 +39,7 @@ import { columnMenuStyles } from './styles/column-menu.css.js';
 import { editorStyles } from './styles/editor.css.js';
 import { groupingStyles } from './styles/grouping.css.js';
 import { treeExpandStyles } from './styles/tree-expand.css.js';
+import { selectionStyles } from './styles/selection.css.js';
 import type {
   Row,
   ColumnDef,
@@ -114,6 +121,19 @@ export class ElDmProDataGrid extends BaseElement {
       attribute: 'expand-on-row-click',
       default: false,
     },
+    cellSelection: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'cell-selection',
+      default: false,
+    },
+    fillHandle: { type: Boolean, reflect: true, attribute: 'fill-handle', default: false },
+    suppressClipboardPaste: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'suppress-clipboard-paste',
+      default: false,
+    },
   };
 
   // ─── Private State ───────────────────────────
@@ -141,6 +161,9 @@ export class ElDmProDataGrid extends BaseElement {
   #rowPivot = new RowPivot();
   #treeData = new TreeData();
   #rowExpander = new RowExpander();
+  #cellSelection = new CellSelection();
+  #clipboardService = new ClipboardService();
+  #dataExport = new DataExport();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -174,6 +197,7 @@ export class ElDmProDataGrid extends BaseElement {
       editorStyles,
       groupingStyles,
       treeExpandStyles,
+      selectionStyles,
     ]);
 
     this.#scroller = new VirtualScroller({
@@ -464,31 +488,56 @@ export class ElDmProDataGrid extends BaseElement {
     return this.#processedRows.find((r) => String(r[rowKey]) === rowId);
   }
 
-  exportCsv(opts?: { filename?: string; selectedOnly?: boolean }): void {
-    const rows = opts?.selectedOnly ? this.selectedRows : this.#processedRows;
-    const visible = this.#columnController.visibleColumns;
-    const headers = visible.map((c) => c.def.header).join(',');
-    const body = rows
-      .map((row) =>
-        visible
-          .map((c) => {
-            const val = row[c.def.field];
-            const str = val == null ? '' : String(val);
-            return str.includes(',') || str.includes('"') || str.includes('\n')
-              ? `"${str.replace(/"/g, '""')}"`
-              : str;
-          })
-          .join(','),
-      )
-      .join('\n');
-    const csv = `${headers}\n${body}`;
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = opts?.filename ?? 'export.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+  // ─── Phase 7: Cell Selection API ─────────────
+
+  get cellSelections() {
+    return this.#cellSelection.ranges;
+  }
+
+  selectCellRange(params: { rowStartIndex: number; rowEndIndex: number; columns: string[] }): void {
+    this.#cellSelection.selectRange(params);
+    this.emit('cell-selection-change', { ranges: this.#cellSelection.ranges });
+  }
+
+  getCellRanges() {
+    return this.#cellSelection.ranges;
+  }
+
+  clearCellSelections(): void {
+    this.#cellSelection.clearSelections();
+    this.emit('cell-selection-change', { ranges: [] });
+  }
+
+  // ─── Phase 7: Export API ────────────────────
+
+  exportCsv(params?: CsvExportParams): void {
+    const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
+    const cols = this.#columnController.visibleColumns.map((c) => c.def);
+    this.#dataExport.exportCsv(rows, cols, params);
+  }
+
+  getDataAsCsv(params?: CsvExportParams): string {
+    const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
+    const cols = this.#columnController.visibleColumns.map((c) => c.def);
+    return this.#dataExport.getDataAsCsv(rows, cols, params);
+  }
+
+  exportJson(params?: JsonExportParams): void {
+    const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
+    const cols = this.#columnController.visibleColumns.map((c) => c.def);
+    this.#dataExport.exportJson(rows, cols, params);
+  }
+
+  getDataAsJson(params?: JsonExportParams): string {
+    const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
+    const cols = this.#columnController.visibleColumns.map((c) => c.def);
+    return this.#dataExport.getDataAsJson(rows, cols, params);
+  }
+
+  exportExcel(params?: ExcelExportParams): void {
+    const rows = params?.selectedOnly ? this.selectedRows : this.#processedRows;
+    const cols = this.#columnController.visibleColumns.map((c) => c.def);
+    this.#dataExport.exportExcel(rows, cols, params);
   }
 
   // ─── Lifecycle ───────────────────────────────
