@@ -20,6 +20,8 @@ import { CellEditor } from './core/cell-editor.js';
 import { UndoRedoManager } from './core/undo-redo.js';
 import { RowGrouping, type RowNode } from './core/row-grouping.js';
 import { RowPivot } from './core/row-pivot.js';
+import { TreeData } from './core/tree-data.js';
+import { RowExpander } from './core/row-expander.js';
 import { Pagination } from './core/pagination.js';
 import { KeyboardNav, type GridPosition } from './core/keyboard-nav.js';
 import { FocusManager } from './core/focus-manager.js';
@@ -30,6 +32,7 @@ import { paginationStyles } from './styles/pagination.css.js';
 import { columnMenuStyles } from './styles/column-menu.css.js';
 import { editorStyles } from './styles/editor.css.js';
 import { groupingStyles } from './styles/grouping.css.js';
+import { treeExpandStyles } from './styles/tree-expand.css.js';
 import type {
   Row,
   ColumnDef,
@@ -91,6 +94,26 @@ export class ElDmProDataGrid extends BaseElement {
       default: false,
     },
     pivotMode: { type: Boolean, reflect: true, attribute: 'pivot-mode', default: false },
+    treeData: { type: Boolean, reflect: true, attribute: 'tree-data', default: false },
+    treeDataChildField: {
+      type: String,
+      reflect: true,
+      attribute: 'tree-data-child-field',
+      default: 'children',
+    },
+    rowExpandable: { type: Boolean, reflect: true, attribute: 'row-expandable', default: false },
+    rowExpandMultiple: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'row-expand-multiple',
+      default: true,
+    },
+    expandOnRowClick: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'expand-on-row-click',
+      default: false,
+    },
   };
 
   // ─── Private State ───────────────────────────
@@ -116,6 +139,8 @@ export class ElDmProDataGrid extends BaseElement {
   #undoRedo = new UndoRedoManager();
   #rowGrouping = new RowGrouping();
   #rowPivot = new RowPivot();
+  #treeData = new TreeData();
+  #rowExpander = new RowExpander();
   #pagination = new Pagination();
   #keyboardNav: KeyboardNav;
   #focusManager = new FocusManager();
@@ -148,6 +173,7 @@ export class ElDmProDataGrid extends BaseElement {
       columnMenuStyles,
       editorStyles,
       groupingStyles,
+      treeExpandStyles,
     ]);
 
     this.#scroller = new VirtualScroller({
@@ -386,6 +412,56 @@ export class ElDmProDataGrid extends BaseElement {
     this.#rowGrouping.collapseGroup(keyPath);
     this.#processData();
     this.#renderContent();
+  }
+
+  // ─── Row Expanding API ──────────────────
+
+  expandRow(rowId: string): void {
+    const row = this.#findRowById(rowId);
+    if (row && this.#rowExpander.expandRow(row)) {
+      this.emit('row-expanded', { rowId, row });
+      this.#renderContent();
+    }
+  }
+
+  collapseRow(rowId: string): void {
+    const row = this.#findRowById(rowId);
+    if (row && this.#rowExpander.collapseRow(row)) {
+      this.emit('row-collapsed', { rowId, row });
+      this.#renderContent();
+    }
+  }
+
+  toggleRowExpand(rowId: string): void {
+    const row = this.#findRowById(rowId);
+    if (!row) return;
+    const expanded = this.#rowExpander.toggleRow(row);
+    this.emit(expanded ? 'row-expanded' : 'row-collapsed', { rowId, row });
+    this.#renderContent();
+  }
+
+  expandAllRows(): void {
+    this.#rowExpander.expandAllRows(this.#processedRows);
+    this.#renderContent();
+  }
+
+  collapseAllRows(): void {
+    this.#rowExpander.collapseAllRows();
+    this.#renderContent();
+  }
+
+  isRowExpanded(rowId: string): boolean {
+    const row = this.#findRowById(rowId);
+    return row ? this.#rowExpander.isExpanded(row) : false;
+  }
+
+  getExpandedRows(): string[] {
+    return this.#rowExpander.expandedIds;
+  }
+
+  #findRowById(rowId: string): Row | undefined {
+    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+    return this.#processedRows.find((r) => String(r[rowKey]) === rowId);
   }
 
   exportCsv(opts?: { filename?: string; selectedOnly?: boolean }): void {
