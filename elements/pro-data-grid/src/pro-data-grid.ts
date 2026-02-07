@@ -1083,6 +1083,11 @@ export class ElDmProDataGrid extends BaseElement {
       rows = this.#filterEngine.filter(rows, this.#filterModel, colDefs);
     }
 
+    // Apply advanced filter (expression + external predicate)
+    if (this.#advancedFilter.hasExpression || this.#advancedFilter.hasExternalFilter) {
+      rows = this.#advancedFilter.filter(rows);
+    }
+
     // Apply client-side sort
     const sortMode = (this as unknown as { sortMode: string }).sortMode ?? 'client';
     if (sortMode === 'client' && this.#sortModel.length > 0) {
