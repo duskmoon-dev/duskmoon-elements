@@ -34,7 +34,7 @@ duskmoon-elements/
 │   ├── core/             # @duskmoon-dev/el-core — base class, styles, utilities
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
-├── elements/             # 30 individual element packages (@duskmoon-dev/el-*)
+├── elements/             # 31 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/
 │   ├── card/
 │   ├── input/
@@ -526,6 +526,13 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`
 3. TypeScript type checking
 4. Full build
 5. Publish dry-run
+
+### Documentation Deployment
+
+The docs workflow (`.github/workflows/docs.yml`) deploys to GitHub Pages on push to `main` when `packages/docs/` changes:
+1. Builds all packages
+2. Builds documentation (`bun run --filter @duskmoon-dev/docs build`)
+3. Deploys to GitHub Pages
 
 ### Releases
 
