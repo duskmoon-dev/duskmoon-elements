@@ -225,6 +225,74 @@ import '@duskmoon-dev/el-pro-data-grid/register';
           { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 }
         ];
       }
+
+      // Tree Data demo
+      const treeGrid = document.getElementById('demo-tree-grid');
+      if (treeGrid) {
+        treeGrid.columns = [
+          { field: 'name', header: 'Name', flex: 1 },
+          { field: 'type', header: 'Type', width: 120 },
+          { field: 'size', header: 'Size', align: 'right', width: 100 }
+        ];
+        treeGrid.data = [
+          { id: 'src', name: 'src', type: 'Folder', size: '', children: [
+            { id: 'components', name: 'components', type: 'Folder', size: '', children: [
+              { id: 'btn', name: 'Button.tsx', type: 'File', size: '3.2 KB' },
+              { id: 'card', name: 'Card.tsx', type: 'File', size: '2.8 KB' },
+              { id: 'input', name: 'Input.tsx', type: 'File', size: '4.1 KB' }
+            ]},
+            { id: 'utils', name: 'utils', type: 'Folder', size: '', children: [
+              { id: 'helpers', name: 'helpers.ts', type: 'File', size: '1.5 KB' },
+              { id: 'format', name: 'format.ts', type: 'File', size: '0.9 KB' }
+            ]},
+            { id: 'app', name: 'App.tsx', type: 'File', size: '2.1 KB' },
+            { id: 'index', name: 'index.ts', type: 'File', size: '0.4 KB' }
+          ]},
+          { id: 'public', name: 'public', type: 'Folder', size: '', children: [
+            { id: 'favicon', name: 'favicon.ico', type: 'File', size: '4.0 KB' },
+            { id: 'indexhtml', name: 'index.html', type: 'File', size: '0.8 KB' }
+          ]},
+          { id: 'pkg', name: 'package.json', type: 'File', size: '1.2 KB' },
+          { id: 'readme', name: 'README.md', type: 'File', size: '3.5 KB' }
+        ];
+      }
+
+      // Row Expandable demo
+      const expandGrid = document.getElementById('demo-expand-grid');
+      if (expandGrid) {
+        expandGrid.columns = [
+          { field: 'name', header: 'Name', flex: 1 },
+          { field: 'department', header: 'Department', width: 140 },
+          { field: 'role', header: 'Role', width: 160 },
+          { field: 'salary', header: 'Salary', align: 'right', width: 120, type: 'number' }
+        ];
+        expandGrid.data = [
+          { id: 1, name: 'Alice Johnson', department: 'Engineering', role: 'Senior Engineer', salary: 95000, email: 'alice@example.com', location: 'New York', startDate: '2020-03-15' },
+          { id: 2, name: 'Bob Smith', department: 'Marketing', role: 'Marketing Lead', salary: 72000, email: 'bob@example.com', location: 'London', startDate: '2019-07-22' },
+          { id: 3, name: 'Carol Williams', department: 'Engineering', role: 'Staff Engineer', salary: 88000, email: 'carol@example.com', location: 'Berlin', startDate: '2021-01-10' },
+          { id: 4, name: 'David Brown', department: 'Sales', role: 'Account Exec', salary: 68000, email: 'david@example.com', location: 'Tokyo', startDate: '2022-06-01' },
+          { id: 5, name: 'Eve Davis', department: 'Engineering', role: 'Tech Lead', salary: 92000, email: 'eve@example.com', location: 'San Francisco', startDate: '2018-11-30' }
+        ];
+      }
+
+      // Cell Selection demo
+      const cellSelGrid = document.getElementById('demo-cellsel-grid');
+      if (cellSelGrid) {
+        cellSelGrid.columns = [
+          { field: 'product', header: 'Product', flex: 1 },
+          { field: 'q1', header: 'Q1', align: 'right', width: 100, type: 'number' },
+          { field: 'q2', header: 'Q2', align: 'right', width: 100, type: 'number' },
+          { field: 'q3', header: 'Q3', align: 'right', width: 100, type: 'number' },
+          { field: 'q4', header: 'Q4', align: 'right', width: 100, type: 'number' }
+        ];
+        cellSelGrid.data = [
+          { id: 1, product: 'Widget A', q1: 1200, q2: 1350, q3: 1100, q4: 1500 },
+          { id: 2, product: 'Widget B', q1: 800, q2: 950, q3: 1050, q4: 900 },
+          { id: 3, product: 'Widget C', q1: 2100, q2: 1900, q3: 2300, q4: 2500 },
+          { id: 4, product: 'Widget D', q1: 450, q2: 520, q3: 480, q4: 610 },
+          { id: 5, product: 'Widget E', q1: 3200, q2: 3100, q3: 3400, q4: 3600 }
+        ];
+      }
     });
   `}
 </script>
@@ -410,15 +478,41 @@ grid.columns = [
 
 ## Tree Data
 
-Display hierarchical data with expand/collapse.
+Display hierarchical data with expand/collapse. Click the toggle arrows to expand/collapse tree nodes.
+
+<ComponentDemo title="Tree Data">
+  <div style="height: 350px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-tree-grid" tree-data tree-data-child-field="children" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
 
 ```html
 <el-dm-pro-data-grid tree-data tree-data-child-field="children"></el-dm-pro-data-grid>
 ```
 
+## Row Expandable
+
+Enable expandable detail panels below each row. Click the toggle arrow to expand a row and see its details.
+
+<ComponentDemo title="Row Expandable">
+  <div style="height: 350px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-expand-grid" row-expandable row-expand-multiple striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-pro-data-grid row-expandable row-expand-multiple></el-dm-pro-data-grid>
+```
+
 ## Cell Selection & Clipboard
 
-Enable range selection and copy/paste with Ctrl+C / Ctrl+V.
+Click and drag to select cell ranges. Hold Ctrl/Cmd to select multiple ranges. Copy with Ctrl+C.
+
+<ComponentDemo title="Cell Selection">
+  <div style="height: 300px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-cellsel-grid" cell-selection fill-handle striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
 
 ```html
 <el-dm-pro-data-grid cell-selection fill-handle></el-dm-pro-data-grid>

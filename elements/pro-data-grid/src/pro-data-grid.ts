@@ -26,7 +26,7 @@ import { CellEditor } from './core/cell-editor.js';
 import { UndoRedoManager } from './core/undo-redo.js';
 import { RowGrouping, type RowNode } from './core/row-grouping.js';
 import { RowPivot } from './core/row-pivot.js';
-import { TreeData } from './core/tree-data.js';
+import { TreeData, type TreeNode } from './core/tree-data.js';
 import { RowExpander } from './core/row-expander.js';
 import { CellSelection } from './core/cell-selection.js';
 import { ClipboardService } from './core/clipboard-service.js';
@@ -213,7 +213,6 @@ export class ElDmProDataGrid extends BaseElement {
   #undoRedo = new UndoRedoManager();
   #rowGrouping = new RowGrouping();
   #rowPivot = new RowPivot();
-  // eslint-disable-next-line no-unused-private-class-members -- wired in rendering phase
   #treeData = new TreeData();
   #rowExpander = new RowExpander();
   #cellSelection = new CellSelection();
@@ -312,6 +311,7 @@ export class ElDmProDataGrid extends BaseElement {
   set columns(value: ColumnDef[]) {
     this.#columns = value;
     this.#columnController.setColumns(value);
+    this.#cellSelection.setColumns(value);
     this.#keyboardNav.updateBounds(
       this.#processedRows.length,
       this.#columnController.visibleColumns.length,
@@ -491,13 +491,23 @@ export class ElDmProDataGrid extends BaseElement {
   }
 
   expandAll(depth = -1): void {
-    this.#rowGrouping.expandAll(depth);
+    const isTreeData = (this as unknown as { treeData: boolean }).treeData;
+    if (isTreeData) {
+      this.#treeData.expandAll(depth);
+    } else {
+      this.#rowGrouping.expandAll(depth);
+    }
     this.#processData();
     this.#renderContent();
   }
 
   collapseAll(): void {
-    this.#rowGrouping.collapseAll();
+    const isTreeData = (this as unknown as { treeData: boolean }).treeData;
+    if (isTreeData) {
+      this.#treeData.collapseAll();
+    } else {
+      this.#rowGrouping.collapseAll();
+    }
     this.#processData();
     this.#renderContent();
   }
@@ -572,6 +582,7 @@ export class ElDmProDataGrid extends BaseElement {
 
   selectCellRange(params: { rowStartIndex: number; rowEndIndex: number; columns: string[] }): void {
     this.#cellSelection.selectRange(params);
+    this.#renderRows();
     this.emit('cell-selection-change', { ranges: this.#cellSelection.ranges });
   }
 
@@ -581,6 +592,7 @@ export class ElDmProDataGrid extends BaseElement {
 
   clearCellSelections(): void {
     this.#cellSelection.clearSelections();
+    this.#renderRows();
     this.emit('cell-selection-change', { ranges: [] });
   }
 
@@ -908,6 +920,31 @@ export class ElDmProDataGrid extends BaseElement {
       // Don't process clicks on editor elements
       if ((e.target as HTMLElement).closest('[data-editor]')) return;
 
+      // Handle tree node expand/collapse
+      const treeToggle = (e.target as HTMLElement).closest('[data-tree-id]') as HTMLElement | null;
+      if (treeToggle) {
+        const treeId = treeToggle.dataset.treeId ?? '';
+        if (treeId) {
+          const expanded = this.#treeData.toggleNode(treeId);
+          this.#processData();
+          this.#renderContent();
+          this.emit('tree-toggle', { nodeId: treeId, expanded });
+        }
+        return;
+      }
+
+      // Handle row expand toggle
+      const expandToggle = (e.target as HTMLElement).closest(
+        '[data-expand-toggle]',
+      ) as HTMLElement | null;
+      if (expandToggle) {
+        const rowId = expandToggle.dataset.expandToggle ?? '';
+        if (rowId) {
+          this.toggleRowExpand(rowId);
+        }
+        return;
+      }
+
       // Handle group row expand/collapse
       const groupRow = (e.target as HTMLElement).closest('[data-group-key]') as HTMLElement | null;
       if (groupRow) {
@@ -1050,6 +1087,62 @@ export class ElDmProDataGrid extends BaseElement {
       }
     });
 
+    // Cell selection via mousedown + drag
+    this.#body?.addEventListener('mousedown', (e) => {
+      const cellSelEnabled = (this as unknown as { cellSelection: boolean }).cellSelection;
+      if (!cellSelEnabled) return;
+
+      const target = e.target as HTMLElement;
+      if (
+        target.closest('[data-editor]') ||
+        target.closest('[data-tree-id]') ||
+        target.closest('[data-expand-toggle]') ||
+        target.closest('[data-group-key]')
+      )
+        return;
+
+      const cell = target.closest('[data-grid-cell]') as HTMLElement | null;
+      if (!cell) return;
+
+      const rowIndex = Number(cell.dataset.rowIndex);
+      const field = cell.dataset.field ?? '';
+      const mouseEvent = e as MouseEvent;
+
+      if (mouseEvent.shiftKey) {
+        this.#cellSelection.extendSelection(rowIndex, field);
+      } else {
+        this.#cellSelection.startSelection(
+          rowIndex,
+          field,
+          mouseEvent.ctrlKey || mouseEvent.metaKey,
+        );
+      }
+      this.#renderRows();
+
+      const onMouseMove = (me: MouseEvent) => {
+        const moveTarget = this.shadowRoot.elementFromPoint(me.clientX, me.clientY) as
+          | HTMLElement
+          | null;
+        const moveCell = moveTarget?.closest?.('[data-grid-cell]') as HTMLElement | null;
+        if (!moveCell) return;
+        const moveRow = Number(moveCell.dataset.rowIndex);
+        const moveField = moveCell.dataset.field ?? '';
+        this.#cellSelection.updateSelection(moveRow, moveField);
+        this.#renderRows();
+      };
+
+      const onMouseUp = () => {
+        this.#cellSelection.endSelection();
+        this.#renderRows();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        this.emit('cell-selection-change', { ranges: this.#cellSelection.ranges });
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
     // Undo/Redo keyboard shortcut (Ctrl+Z / Ctrl+Shift+Z)
     this.addEventListener('keydown', (e) => {
       const event = e as KeyboardEvent;
@@ -1092,6 +1185,17 @@ export class ElDmProDataGrid extends BaseElement {
       rows = this.#sortEngine.sort(rows, this.#sortModel, colDefs);
     }
 
+    // Apply tree data (flattens hierarchical data before grouping/pagination)
+    const isTreeData = (this as unknown as { treeData: boolean }).treeData;
+    if (isTreeData) {
+      const childField =
+        (this as unknown as { treeDataChildField: string }).treeDataChildField ?? 'children';
+      this.#treeData.childField = childField;
+      this.#treeData.rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+      this.#treeData.buildTree(rows);
+      rows = this.#treeData.displayList.map((n) => n.data);
+    }
+
     this.#processedRows = rows;
 
     // Apply row grouping
@@ -1126,6 +1230,23 @@ export class ElDmProDataGrid extends BaseElement {
         | 'single'
         | 'multiple') ?? 'none';
     this.#selectionManager.rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+
+    // Sync row expander configuration
+    const isRowExpandable = (this as unknown as { rowExpandable: boolean }).rowExpandable;
+    if (isRowExpandable) {
+      this.#rowExpander.configure({
+        rowKey: (this as unknown as { rowKey: string }).rowKey ?? 'id',
+        multiple: (this as unknown as { rowExpandMultiple: boolean }).rowExpandMultiple ?? true,
+      });
+    }
+
+    // Sync cell selection configuration
+    const cellSelEnabled = (this as unknown as { cellSelection: boolean }).cellSelection;
+    this.#cellSelection.enabled = !!cellSelEnabled;
+    if (cellSelEnabled) {
+      this.#cellSelection.setColumns(colDefs);
+      this.#cellSelection.fillHandle = !!(this as unknown as { fillHandle: boolean }).fillHandle;
+    }
 
     this.#keyboardNav.updateBounds(
       this.#paginatedRows.length,
@@ -1211,6 +1332,11 @@ export class ElDmProDataGrid extends BaseElement {
     // Position body at the correct offset
     this.#body.style.transform = `translateY(${startOffset}px)`;
 
+    // Feature flags
+    const isTreeData = (this as unknown as { treeData: boolean }).treeData;
+    const treeDisplayList = isTreeData ? this.#treeData.displayList : [];
+    const isRowExpandable = (this as unknown as { rowExpandable: boolean }).rowExpandable;
+
     // Build rows HTML
     const rowsHtml: string[] = [];
     for (let i = startIndex; i <= endIndex && i < displayRows.length; i++) {
@@ -1221,9 +1347,20 @@ export class ElDmProDataGrid extends BaseElement {
           continue;
         }
       }
+
       const row = displayRows[i];
       const isSelected = this.#selectionManager.isSelected(row);
-      rowsHtml.push(this.#renderRow(row, i, visible, rowHeight, isSelected));
+
+      if (isTreeData && treeDisplayList[i]) {
+        rowsHtml.push(this.#renderTreeRow(treeDisplayList[i], i, visible, rowHeight, isSelected));
+      } else {
+        rowsHtml.push(this.#renderRow(row, i, visible, rowHeight, isSelected));
+      }
+
+      // Add detail row for expanded rows
+      if (isRowExpandable && this.#rowExpander.isExpanded(row)) {
+        rowsHtml.push(this.#renderDetailRow(row, i, visible));
+      }
     }
 
     this.#body.innerHTML = rowsHtml.join('');
@@ -1266,6 +1403,124 @@ export class ElDmProDataGrid extends BaseElement {
           <span class="grid-group-key">${this.#escapeHtml(node.key)}</span>
           <span class="grid-group-count">(${childCount})</span>
           ${aggHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  #renderTreeRow(
+    treeNode: TreeNode,
+    rowIndex: number,
+    columns: ColumnStateInternal[],
+    rowHeight: number,
+    isSelected: boolean,
+  ): string {
+    const indent = treeNode.level * 20;
+    const editState = this.#cellEditor.editingState;
+    const cellSelEnabled = (this as unknown as { cellSelection: boolean }).cellSelection;
+
+    const cells = columns
+      .map((col, colIndex) => {
+        const isEditingThis =
+          editState?.rowIndex === rowIndex && editState?.field === col.def.field;
+        const value = treeNode.data[col.def.field];
+
+        let cellContent: string;
+        let editAttrs = '';
+        if (isEditingThis) {
+          cellContent = this.#cellEditor.renderEditor(col.def);
+          editAttrs = 'data-editing';
+          if (!editState.isValid) editAttrs += ' data-invalid';
+        } else {
+          cellContent = this.#renderCellContent(value, treeNode.data, col.def, rowIndex);
+        }
+
+        const cellSelectedClass =
+          cellSelEnabled && this.#cellSelection.isCellSelected(rowIndex, col.def.field)
+            ? ' cell-selected'
+            : '';
+
+        // First column gets tree indentation and toggle
+        if (colIndex === 0) {
+          const toggle = treeNode.hasChildren
+            ? `<span class="grid-tree-toggle" data-tree-id="${this.#escapeHtml(treeNode.id)}" ${treeNode.expanded ? 'data-expanded' : ''}>▶</span>`
+            : '<span class="grid-tree-indent" style="width:20px"></span>';
+          const countBadge = treeNode.hasChildren
+            ? `<span class="grid-tree-count">${treeNode.leafCount}</span>`
+            : '';
+          return `
+            <div class="grid-cell grid-tree-cell${cellSelectedClass}"
+                 role="gridcell"
+                 data-grid-cell
+                 data-row-index="${rowIndex}"
+                 data-col-index="${colIndex}"
+                 data-field="${col.def.field}"
+                 ${editAttrs}
+                 style="width:${col.width}px;height:${rowHeight}px"
+                 tabindex="-1">
+              <span class="grid-tree-indent" style="width:${indent}px"></span>
+              ${toggle}
+              <span class="grid-tree-label">${cellContent}</span>
+              ${countBadge}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="grid-cell${cellSelectedClass}"
+               role="gridcell"
+               data-grid-cell
+               data-row-index="${rowIndex}"
+               data-col-index="${colIndex}"
+               data-field="${col.def.field}"
+               ${editAttrs}
+               ${col.def.align ? `data-align="${col.def.align}"` : ''}
+               style="width:${col.width}px;height:${rowHeight}px"
+               tabindex="-1"
+               aria-readonly="${isEditingThis ? 'false' : 'true'}">
+            ${isEditingThis ? cellContent : `<span class="grid-cell-content">${cellContent}</span>`}
+          </div>
+        `;
+      })
+      .join('');
+
+    return `
+      <div class="grid-row" role="row"
+           data-row-index="${rowIndex}"
+           data-tree-node="${this.#escapeHtml(treeNode.id)}"
+           ${isSelected ? 'data-selected' : ''}
+           aria-rowindex="${rowIndex + 1}"
+           aria-selected="${isSelected}"
+           ${treeNode.hasChildren ? `aria-expanded="${treeNode.expanded}"` : ''}
+           aria-level="${treeNode.level + 1}">
+        ${cells}
+      </div>
+    `;
+  }
+
+  #renderDetailRow(
+    row: Row,
+    _rowIndex: number,
+    columns: ColumnStateInternal[],
+  ): string {
+    const totalWidth = columns.reduce((sum, col) => sum + col.width, 0) + 40;
+    const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+    const rowId = String(row[rowKey] ?? '');
+
+    // Build detail content — show all fields
+    const detailItems = Object.entries(row)
+      .filter(([key]) => key !== rowKey && !key.startsWith('_'))
+      .map(
+        ([key, value]) =>
+          `<strong>${this.#escapeHtml(key)}:</strong> ${this.#escapeHtml(String(value ?? ''))}`,
+      )
+      .join(' &nbsp;|&nbsp; ');
+
+    return `
+      <div class="grid-row" role="row"
+           data-detail-row="${this.#escapeHtml(rowId)}">
+        <div class="grid-row-detail" style="width:${totalWidth}px">
+          ${detailItems || 'No additional details'}
         </div>
       </div>
     `;
@@ -1318,6 +1573,25 @@ export class ElDmProDataGrid extends BaseElement {
     isSelected: boolean,
   ): string {
     const editState = this.#cellEditor.editingState;
+    const isRowExpandable = (this as unknown as { rowExpandable: boolean }).rowExpandable;
+    const cellSelEnabled = (this as unknown as { cellSelection: boolean }).cellSelection;
+
+    // Expand toggle cell
+    let expandCell = '';
+    if (isRowExpandable) {
+      const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
+      const rowId = String(row[rowKey] ?? rowIndex);
+      const expanded = this.#rowExpander.isExpanded(row);
+      expandCell = `
+        <div class="grid-cell grid-expand-cell"
+             data-expand-toggle="${this.#escapeHtml(rowId)}"
+             style="width:40px;height:${rowHeight}px"
+             role="gridcell">
+          <span class="grid-expand-toggle" ${expanded ? 'data-expanded' : ''}>▶</span>
+        </div>
+      `;
+    }
+
     const cells = columns
       .map((col, colIndex) => {
         const isEditingThis =
@@ -1334,8 +1608,13 @@ export class ElDmProDataGrid extends BaseElement {
           cellContent = this.#renderCellContent(value, row, col.def, rowIndex);
         }
 
+        const cellSelectedClass =
+          cellSelEnabled && this.#cellSelection.isCellSelected(rowIndex, col.def.field)
+            ? ' cell-selected'
+            : '';
+
         return `
-          <div class="grid-cell"
+          <div class="grid-cell${cellSelectedClass}"
                role="gridcell"
                data-grid-cell
                data-row-index="${rowIndex}"
@@ -1358,7 +1637,7 @@ export class ElDmProDataGrid extends BaseElement {
            ${isSelected ? 'data-selected' : ''}
            aria-rowindex="${rowIndex + 1}"
            aria-selected="${isSelected}">
-        ${cells}
+        ${expandCell}${cells}
       </div>
     `;
   }
