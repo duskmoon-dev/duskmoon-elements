@@ -1,0 +1,531 @@
+---
+title: Pro Data Grid
+description: Enterprise-grade data grid with virtual scrolling, sorting, filtering, editing, grouping, and more
+order: 2
+section: data-display
+component: "@duskmoon-dev/el-pro-data-grid"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Pro Data Grid
+
+The Pro Data Grid is an enterprise-grade data grid web component with virtual scrolling, multi-column sorting, filtering, inline editing, row grouping, pivoting, cell selection, clipboard support, and data export. It handles 1M+ rows via virtualized rendering.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-pro-data-grid
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-pro-data-grid/register';
+```
+
+```html
+<el-dm-pro-data-grid id="grid" striped></el-dm-pro-data-grid>
+
+<script>
+  const grid = document.getElementById('grid');
+  grid.columns = [
+    { field: 'name', header: 'Name', sortable: true },
+    { field: 'email', header: 'Email', sortable: true },
+    { field: 'salary', header: 'Salary', type: 'number', align: 'right' }
+  ];
+  grid.data = [
+    { id: 1, name: 'Alice', email: 'alice@example.com', salary: 85000 },
+    { id: 2, name: 'Bob', email: 'bob@example.com', salary: 72000 }
+  ];
+</script>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Pro Data Grid">
+  <div style="height: 350px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-basic-grid" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+<ComponentDemo title="Sortable with Floating Filters">
+  <div style="height: 350px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-filter-grid" striped floating-filter style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+<ComponentDemo title="Row Selection (Multiple)">
+  <div style="height: 300px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-select-grid" selection-mode="multiple" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+<script>
+  {`
+    customElements.whenDefined('el-dm-pro-data-grid').then(() => {
+      const demoGrid = document.getElementById('demo-basic-grid');
+      if (demoGrid) {
+        demoGrid.columns = [
+          { field: 'name', header: 'Name', sortable: true, flex: 1 },
+          { field: 'email', header: 'Email', sortable: true, flex: 1 },
+          { field: 'department', header: 'Department', sortable: true, width: 140 },
+          { field: 'salary', header: 'Salary', sortable: true, align: 'right', width: 120, type: 'number' }
+        ];
+        demoGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 },
+          { id: 5, name: 'Eve Davis', email: 'eve@example.com', department: 'Engineering', salary: 92000 },
+          { id: 6, name: 'Frank Miller', email: 'frank@example.com', department: 'HR', salary: 65000 },
+          { id: 7, name: 'Grace Wilson', email: 'grace@example.com', department: 'Finance', salary: 78000 },
+          { id: 8, name: 'Henry Taylor', email: 'henry@example.com', department: 'Marketing', salary: 71000 }
+        ];
+      }
+
+      const filterGrid = document.getElementById('demo-filter-grid');
+      if (filterGrid) {
+        filterGrid.columns = [
+          { field: 'name', header: 'Name', sortable: true, filterable: true, flex: 1 },
+          { field: 'email', header: 'Email', sortable: true, filterable: true, flex: 1 },
+          { field: 'department', header: 'Department', sortable: true, filterable: true, width: 140 },
+          { field: 'salary', header: 'Salary', sortable: true, filterable: true, align: 'right', width: 120, type: 'number' }
+        ];
+        filterGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 },
+          { id: 5, name: 'Eve Davis', email: 'eve@example.com', department: 'Engineering', salary: 92000 },
+          { id: 6, name: 'Frank Miller', email: 'frank@example.com', department: 'HR', salary: 65000 }
+        ];
+      }
+
+      const selectGrid = document.getElementById('demo-select-grid');
+      if (selectGrid) {
+        selectGrid.columns = [
+          { field: 'name', header: 'Name', sortable: true, flex: 1 },
+          { field: 'department', header: 'Department', width: 140 },
+          { field: 'status', header: 'Status', width: 100 },
+          { field: 'salary', header: 'Salary', align: 'right', width: 120, type: 'number' }
+        ];
+        selectGrid.data = [
+          { id: 1, name: 'Alice Johnson', department: 'Engineering', status: 'Active', salary: 95000 },
+          { id: 2, name: 'Bob Smith', department: 'Marketing', status: 'Active', salary: 72000 },
+          { id: 3, name: 'Carol Williams', department: 'Engineering', status: 'Inactive', salary: 88000 },
+          { id: 4, name: 'David Brown', department: 'Sales', status: 'Active', salary: 68000 },
+          { id: 5, name: 'Eve Davis', department: 'Engineering', status: 'Active', salary: 92000 }
+        ];
+      }
+
+      const sortGrid = document.getElementById('demo-sort-grid');
+      if (sortGrid) {
+        sortGrid.columns = [
+          { field: 'name', header: 'Name', sortable: true, flex: 1 },
+          { field: 'department', header: 'Department', sortable: true, width: 140 },
+          { field: 'salary', header: 'Salary', sortable: true, align: 'right', width: 120, type: 'number' },
+          { field: 'joined', header: 'Joined', sortable: true, width: 120 }
+        ];
+        sortGrid.data = [
+          { id: 1, name: 'Alice Johnson', department: 'Engineering', salary: 95000, joined: '2020-03-15' },
+          { id: 2, name: 'Bob Smith', department: 'Marketing', salary: 72000, joined: '2019-07-22' },
+          { id: 3, name: 'Carol Williams', department: 'Engineering', salary: 88000, joined: '2021-01-10' },
+          { id: 4, name: 'David Brown', department: 'Sales', salary: 68000, joined: '2022-06-01' },
+          { id: 5, name: 'Eve Davis', department: 'Engineering', salary: 92000, joined: '2018-11-30' }
+        ];
+      }
+
+      const pageGrid = document.getElementById('demo-page-grid');
+      if (pageGrid) {
+        pageGrid.columns = [
+          { field: 'name', header: 'Name', sortable: true, flex: 1 },
+          { field: 'email', header: 'Email', flex: 1 },
+          { field: 'department', header: 'Department', width: 140 },
+          { field: 'salary', header: 'Salary', align: 'right', width: 120, type: 'number' }
+        ];
+        pageGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 },
+          { id: 5, name: 'Eve Davis', email: 'eve@example.com', department: 'Engineering', salary: 92000 },
+          { id: 6, name: 'Frank Miller', email: 'frank@example.com', department: 'HR', salary: 65000 },
+          { id: 7, name: 'Grace Wilson', email: 'grace@example.com', department: 'Finance', salary: 78000 },
+          { id: 8, name: 'Henry Taylor', email: 'henry@example.com', department: 'Marketing', salary: 71000 },
+          { id: 9, name: 'Ivy Chen', email: 'ivy@example.com', department: 'Engineering', salary: 98000 },
+          { id: 10, name: 'Jack Lee', email: 'jack@example.com', department: 'Sales', salary: 74000 },
+          { id: 11, name: 'Karen White', email: 'karen@example.com', department: 'HR', salary: 67000 },
+          { id: 12, name: 'Leo Martin', email: 'leo@example.com', department: 'Finance', salary: 82000 }
+        ];
+      }
+
+      const editGrid = document.getElementById('demo-edit-grid');
+      if (editGrid) {
+        editGrid.columns = [
+          { field: 'name', header: 'Name', editable: true, flex: 1 },
+          { field: 'email', header: 'Email', editable: true, flex: 1 },
+          { field: 'department', header: 'Department', editable: true, width: 140 },
+          { field: 'salary', header: 'Salary', editable: true, align: 'right', width: 120, type: 'number' }
+        ];
+        editGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 }
+        ];
+      }
+
+      const pinGrid = document.getElementById('demo-pin-grid');
+      if (pinGrid) {
+        pinGrid.columns = [
+          { field: 'name', header: 'Name', pinned: 'left', width: 150 },
+          { field: 'email', header: 'Email', flex: 1 },
+          { field: 'department', header: 'Department', width: 140 },
+          { field: 'location', header: 'Location', width: 140 },
+          { field: 'salary', header: 'Salary', pinned: 'right', align: 'right', width: 120, type: 'number' }
+        ];
+        pinGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', location: 'New York', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', location: 'London', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', location: 'Berlin', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', location: 'Tokyo', salary: 68000 }
+        ];
+      }
+
+      const groupGrid = document.getElementById('demo-group-grid');
+      if (groupGrid) {
+        groupGrid.columns = [
+          { field: 'department', header: 'Department', rowGroup: true, width: 160 },
+          { field: 'name', header: 'Name', flex: 1 },
+          { field: 'role', header: 'Role', width: 160 },
+          { field: 'salary', header: 'Salary', align: 'right', width: 120, type: 'number', aggFunc: 'sum' }
+        ];
+        groupGrid.data = [
+          { id: 1, name: 'Alice Johnson', department: 'Engineering', role: 'Senior Engineer', salary: 95000 },
+          { id: 2, name: 'Bob Smith', department: 'Marketing', role: 'Marketing Lead', salary: 72000 },
+          { id: 3, name: 'Carol Williams', department: 'Engineering', role: 'Staff Engineer', salary: 88000 },
+          { id: 4, name: 'David Brown', department: 'Sales', role: 'Account Exec', salary: 68000 },
+          { id: 5, name: 'Eve Davis', department: 'Engineering', role: 'Tech Lead', salary: 92000 },
+          { id: 6, name: 'Frank Miller', department: 'Marketing', role: 'Content Writer', salary: 65000 },
+          { id: 7, name: 'Grace Wilson', department: 'Sales', role: 'Sales Manager', salary: 78000 }
+        ];
+        groupGrid.rowGroupColumns = ['department'];
+      }
+
+      const declGrid = document.getElementById('demo-declarative-grid');
+      if (declGrid) {
+        // Read columns from declarative child elements after they are upgraded
+        const defs = Array.from(declGrid.querySelectorAll('el-dm-grid-column')).map(el => el.columnDef);
+        if (defs.length > 0) declGrid.columns = defs;
+        declGrid.data = [
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com', department: 'Engineering', salary: 95000 },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com', department: 'Marketing', salary: 72000 },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com', department: 'Engineering', salary: 88000 },
+          { id: 4, name: 'David Brown', email: 'david@example.com', department: 'Sales', salary: 68000 }
+        ];
+      }
+    });
+  `}
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `row-height` | `number` | `40` | Height of each row in pixels |
+| `header-height` | `number` | `48` | Height of the header row |
+| `page-size` | `number` | `0` | Rows per page (0 = no pagination) |
+| `current-page` | `number` | `1` | Current page number |
+| `selection-mode` | `'none' \| 'single' \| 'multiple'` | `'none'` | Row selection mode |
+| `sort-mode` | `'client' \| 'server'` | `'client'` | Client or server-side sorting |
+| `filter-mode` | `'client' \| 'server'` | `'client'` | Client or server-side filtering |
+| `editable` | `boolean` | `false` | Enable inline cell editing |
+| `striped` | `boolean` | `false` | Alternating row colors |
+| `bordered` | `boolean` | `false` | Show cell borders |
+| `loading` | `boolean` | `false` | Show loading overlay |
+| `sticky-header` | `boolean` | `true` | Fixed header on scroll |
+| `row-key` | `string` | `'id'` | Unique row identifier field |
+| `empty-text` | `string` | `'No data'` | Empty state message |
+| `quick-filter-text` | `string` | `''` | Global filter text |
+| `floating-filter` | `boolean` | `false` | Show floating filter row |
+| `filter-debounce-ms` | `number` | `300` | Filter input debounce delay |
+| `enable-row-grouping` | `boolean` | `false` | Enable row grouping |
+| `group-default-expanded` | `number` | `0` | Default expanded group depth |
+| `show-group-panel` | `boolean` | `false` | Show grouping drag panel |
+| `enable-pivoting` | `boolean` | `false` | Enable pivot mode |
+| `pivot-mode` | `boolean` | `false` | Activate pivot layout |
+| `tree-data` | `boolean` | `false` | Enable tree data mode |
+| `tree-data-child-field` | `string` | `'children'` | Tree child field name |
+| `row-expandable` | `boolean` | `false` | Enable row expand/detail |
+| `cell-selection` | `boolean` | `false` | Enable cell range selection |
+| `fill-handle` | `boolean` | `false` | Enable fill handle |
+| `enable-row-drag` | `boolean` | `false` | Enable row drag and drop |
+| `show-row-numbers` | `boolean` | `false` | Show row number column |
+| `animate-rows` | `boolean` | `false` | Animate row transitions |
+| `row-model-type` | `'client' \| 'server' \| 'infinite'` | `'client'` | Row model type |
+
+### ColumnDef Interface
+
+```typescript
+interface ColumnDef {
+  field: string;          // Data field key
+  header: string;         // Display header text
+  width?: number;         // Fixed width in pixels
+  minWidth?: number;      // Minimum width
+  maxWidth?: number;      // Maximum width
+  flex?: number;          // Flex grow factor
+  sortable?: boolean;     // Enable sorting
+  filterable?: boolean;   // Enable filtering
+  editable?: boolean;     // Enable editing
+  hidden?: boolean;       // Hide column
+  pinned?: 'left' | 'right' | false;
+  type?: 'text' | 'number' | 'date' | 'boolean' | 'badge' | 'custom';
+  align?: 'left' | 'center' | 'right';
+  resizable?: boolean;    // Enable column resize
+  filterType?: 'text' | 'number' | 'date' | 'set' | 'multi';
+  editor?: 'text' | 'number' | 'select' | 'date' | 'checkbox' | 'richText';
+  rowGroup?: boolean;     // Group by this column
+  aggFunc?: 'sum' | 'avg' | 'min' | 'max' | 'count';
+  renderer?: (params: CellRendererParams) => string | HTMLElement;
+  children?: ColumnDef[]; // Column groups
+}
+```
+
+## Sorting
+
+Click column headers to sort. Hold Shift to multi-sort. Supports both client-side and server-side sorting modes.
+
+<ComponentDemo title="Sortable Columns">
+  <div style="height: 280px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-sort-grid" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-pro-data-grid id="grid"></el-dm-pro-data-grid>
+
+<script>
+  grid.columns = [
+    { field: 'name', header: 'Name', sortable: true },
+    { field: 'salary', header: 'Salary', sortable: true, type: 'number' }
+  ];
+</script>
+```
+
+## Filtering
+
+Enable per-column filters with `filterable: true`, or use a global quick filter.
+
+### Floating Filters
+
+```html
+<el-dm-pro-data-grid floating-filter></el-dm-pro-data-grid>
+```
+
+### Quick Filter
+
+```html
+<el-dm-pro-data-grid id="grid" quick-filter-text="search term"></el-dm-pro-data-grid>
+```
+
+```javascript
+// Programmatic quick filter
+grid.quickFilterText = 'engineering';
+```
+
+## Pagination
+
+<ComponentDemo title="Paginated Grid">
+  <div style="height: 340px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-page-grid" page-size="5" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-pro-data-grid page-size="25" current-page="1"></el-dm-pro-data-grid>
+```
+
+## Row Selection
+
+```html
+<!-- Multiple selection with checkboxes -->
+<el-dm-pro-data-grid selection-mode="multiple"></el-dm-pro-data-grid>
+
+<!-- Single selection -->
+<el-dm-pro-data-grid selection-mode="single"></el-dm-pro-data-grid>
+```
+
+## Inline Editing
+
+Double-click a cell to enter edit mode. Tab to move between cells. Ctrl+Z / Ctrl+Y for undo/redo.
+
+<ComponentDemo title="Editable Grid">
+  <div style="height: 280px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-edit-grid" editable striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```javascript
+grid.columns = [
+  { field: 'name', header: 'Name', editable: true },
+  { field: 'salary', header: 'Salary', editable: true, editor: 'number' }
+];
+```
+
+## Column Pinning
+
+Pin columns to the left or right edge so they remain visible while scrolling.
+
+<ComponentDemo title="Pinned Columns">
+  <div style="height: 280px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-pin-grid" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```javascript
+grid.columns = [
+  { field: 'name', header: 'Name', pinned: 'left' },
+  { field: 'email', header: 'Email' },
+  { field: 'actions', header: '', pinned: 'right', width: 80 }
+];
+```
+
+## Row Grouping
+
+Group rows by one or more columns with aggregation.
+
+<ComponentDemo title="Grouped Rows">
+  <div style="height: 350px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-group-grid" enable-row-grouping group-default-expanded="1" striped style="height: 100%;"></el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```javascript
+grid.columns = [
+  { field: 'department', header: 'Department', rowGroup: true },
+  { field: 'salary', header: 'Salary', aggFunc: 'sum' }
+];
+```
+
+## Tree Data
+
+Display hierarchical data with expand/collapse.
+
+```html
+<el-dm-pro-data-grid tree-data tree-data-child-field="children"></el-dm-pro-data-grid>
+```
+
+## Cell Selection & Clipboard
+
+Enable range selection and copy/paste with Ctrl+C / Ctrl+V.
+
+```html
+<el-dm-pro-data-grid cell-selection fill-handle></el-dm-pro-data-grid>
+```
+
+## Data Export
+
+```javascript
+// Export as CSV
+grid.exportCsv({ fileName: 'export.csv' });
+
+// Export as JSON
+grid.exportJson({ fileName: 'export.json' });
+
+// Export as Excel XML
+grid.exportExcel({ fileName: 'export.xlsx' });
+```
+
+## Declarative Columns
+
+Use child elements to define columns declaratively:
+
+<ComponentDemo title="Declarative Column Definitions">
+  <div style="height: 280px; width: 100%;">
+    <el-dm-pro-data-grid id="demo-declarative-grid" striped style="height: 100%;">
+      <el-dm-grid-column field="name" header="Name" sortable></el-dm-grid-column>
+      <el-dm-grid-column field="email" header="Email" sortable></el-dm-grid-column>
+      <el-dm-grid-column field="department" header="Department" width="140"></el-dm-grid-column>
+      <el-dm-grid-column field="salary" header="Salary" type="number" align="right" width="120"></el-dm-grid-column>
+    </el-dm-pro-data-grid>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-pro-data-grid>
+  <el-dm-grid-column field="name" header="Name" sortable></el-dm-grid-column>
+  <el-dm-grid-column field="email" header="Email"></el-dm-grid-column>
+  <el-dm-grid-column-group header="Details">
+    <el-dm-grid-column field="department" header="Dept"></el-dm-grid-column>
+    <el-dm-grid-column field="salary" header="Salary" type="number"></el-dm-grid-column>
+  </el-dm-grid-column-group>
+</el-dm-pro-data-grid>
+```
+
+## Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `sort-change` | `{ sortModel }` | Sort model changed |
+| `filter-change` | `{ filterModel }` | Filter model changed |
+| `page-change` | `{ page, pageSize }` | Page changed |
+| `selection-change` | `{ selectedRows, added, removed }` | Row selection changed |
+| `cell-click` | `{ row, field, value, rowIndex }` | Cell clicked |
+| `row-click` | `{ row, index }` | Row clicked |
+| `cell-edit` | `{ rowIndex, field, oldValue, newValue }` | Cell edited |
+| `column-resize` | `{ field, width }` | Column resized |
+| `column-move` | `{ field, fromIndex, toIndex }` | Column moved |
+
+### Event Handling
+
+```javascript
+const grid = document.querySelector('el-dm-pro-data-grid');
+
+grid.addEventListener('sort-change', (e) => {
+  console.log('Sort model:', e.detail.sortModel);
+});
+
+grid.addEventListener('cell-edit', (e) => {
+  console.log(`${e.detail.field}: ${e.detail.oldValue} → ${e.detail.newValue}`);
+});
+```
+
+## Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `exportCsv(params?)` | `CsvExportParams` | Export grid as CSV |
+| `exportJson(params?)` | `JsonExportParams` | Export grid as JSON |
+| `exportExcel(params?)` | `ExcelExportParams` | Export grid as Excel XML |
+| `selectAll()` | - | Select all rows |
+| `deselectAll()` | - | Deselect all rows |
+| `expandAll()` | - | Expand all groups/tree nodes |
+| `collapseAll()` | - | Collapse all groups/tree nodes |
+| `setFilterModel(model)` | `Record<string, FilterModel>` | Set column filter model |
+| `setSortModel(model)` | `SortItem[]` | Set sort model |
+| `applyTransaction(tx)` | `RowTransaction` | Apply add/update/remove transaction |
+| `getState()` | - | Get grid state for persistence |
+| `setState(state)` | `GridState` | Restore grid state |
+| `undo()` | - | Undo last edit |
+| `redo()` | - | Redo last undone edit |
+
+## CSS Custom Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--dm-color-surface` | - | Grid background |
+| `--dm-color-surface-variant` | - | Header/stripe background |
+| `--dm-color-outline` | - | Border color |
+| `--dm-color-primary` | - | Sort indicator, selection highlight |
+| `--dm-color-primary-container` | - | Selected row/cell background |
+
+## Accessibility
+
+- ARIA `role="grid"` with `role="row"` and `role="gridcell"`
+- Keyboard navigation: Arrow keys, Home/End, Page Up/Down
+- `aria-sort` on sortable headers
+- `aria-selected` on selected rows/cells
+- `aria-expanded` on group/tree rows
+- `aria-busy` during loading
+- Focus management across virtual scroll boundaries

@@ -48,6 +48,13 @@ const pageData = {
     description:
       'Select component with single, multi-select, and tree-select modes with search and filtering support.',
   },
+  '/pro-data-grid.html': {
+    title: 'Pro Data Grid',
+    name: 'Pro Data Grid',
+    tag: 'el-dm-pro-data-grid',
+    description:
+      'Enterprise-grade data grid with virtual scrolling, sorting, filtering, editing, grouping, and export.',
+  },
 };
 
 export default defineConfig({
@@ -84,6 +91,7 @@ export default defineConfig({
         input: resolve(__dirname, 'input.html'),
         markdown: resolve(__dirname, 'markdown.html'),
         select: resolve(__dirname, 'select.html'),
+        'pro-data-grid': resolve(__dirname, 'pro-data-grid.html'),
       },
     },
   },

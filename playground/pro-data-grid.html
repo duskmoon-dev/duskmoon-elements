@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+  <style>
+    .demo-grid {
+      width: 100%;
+      height: 500px;
+    }
+    .demo-grid-small {
+      width: 100%;
+      height: 350px;
+    }
+    .event-log {
+      background: var(--dm-color-surface-variant, #f5f5f5);
+      border: 1px solid var(--dm-color-outline, #e0e0e0);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.875rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .event-log:empty::before {
+      content: 'Events will appear here...';
+      color: var(--dm-color-on-surface-variant, #666);
+    }
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .controls button {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--dm-color-outline, #ccc);
+      border-radius: 0.25rem;
+      background: var(--dm-color-surface, #fff);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .controls button:hover {
+      background: var(--dm-color-surface-variant, #f0f0f0);
+    }
+  </style>
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Grid with Virtual Scrolling</h2>
+    <p>1,000 rows rendered with virtual scrolling — only visible rows are in the DOM.</p>
+    <div class="demo-grid">
+      <el-dm-pro-data-grid id="basic-grid" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sorting &amp; Filtering</h2>
+    <p>Click column headers to sort. Use floating filters to filter columns.</p>
+    <div class="demo-grid">
+      <el-dm-pro-data-grid id="filter-grid" floating-filter striped></el-dm-pro-data-grid>
+    </div>
+    <div id="sort-log" class="event-log"></div>
+  </section>
+
+  <section>
+    <h2>Pagination</h2>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="paginated-grid" page-size="10" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Row Selection</h2>
+    <p>Multiple row selection with checkboxes.</p>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="selection-grid" selection-mode="multiple" striped></el-dm-pro-data-grid>
+    </div>
+    <div id="selection-log" class="event-log"></div>
+  </section>
+
+  <section>
+    <h2>Inline Editing</h2>
+    <p>Double-click a cell to edit. Supports undo/redo with Ctrl+Z / Ctrl+Y.</p>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="edit-grid" editable striped></el-dm-pro-data-grid>
+    </div>
+    <div id="edit-log" class="event-log"></div>
+  </section>
+
+  <section>
+    <h2>Column Pinning &amp; Resizing</h2>
+    <p>The "Name" column is pinned left. Drag column borders to resize.</p>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="pinned-grid" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Row Grouping</h2>
+    <p>Rows grouped by department with sum aggregation on salary.</p>
+    <div class="demo-grid">
+      <el-dm-pro-data-grid id="group-grid" enable-row-grouping group-default-expanded="1" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quick Filter</h2>
+    <p>Type to filter all columns at once.</p>
+    <div class="controls">
+      <input type="text" id="quick-filter-input" placeholder="Type to filter..." style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.25rem; min-width: 250px;">
+    </div>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="quick-filter-grid" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Export</h2>
+    <div class="controls">
+      <button id="export-csv">Export CSV</button>
+      <button id="export-json">Export JSON</button>
+    </div>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="export-grid" striped></el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <section>
+    <h2>Declarative Columns</h2>
+    <p>Define columns with child elements instead of JavaScript.</p>
+    <div class="demo-grid-small">
+      <el-dm-pro-data-grid id="declarative-grid" striped>
+        <el-dm-grid-column field="name" header="Name" sortable></el-dm-grid-column>
+        <el-dm-grid-column field="email" header="Email" sortable></el-dm-grid-column>
+        <el-dm-grid-column field="department" header="Department" sortable></el-dm-grid-column>
+        <el-dm-grid-column field="salary" header="Salary" type="number" align="right" sortable></el-dm-grid-column>
+      </el-dm-pro-data-grid>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../elements/pro-data-grid/src/index.ts';
+    register();
+
+    // ─── Sample Data ────────────────────────────
+    const departments = ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance', 'Legal', 'Support'];
+    const statuses = ['Active', 'Inactive', 'On Leave'];
+
+    function generateRows(count) {
+      const rows = [];
+      for (let i = 1; i <= count; i++) {
+        rows.push({
+          id: i,
+          name: `Employee ${i}`,
+          email: `emp${i}@example.com`,
+          department: departments[i % departments.length],
+          status: statuses[i % statuses.length],
+          salary: 50000 + Math.floor(Math.random() * 80000),
+          age: 22 + (i % 40),
+          startDate: `2020-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
+        });
+      }
+      return rows;
+    }
+
+    const smallData = generateRows(50);
+    const largeData = generateRows(1000);
+
+    const basicColumns = [
+      { field: 'id', header: 'ID', width: 80, sortable: true },
+      { field: 'name', header: 'Name', sortable: true, flex: 1 },
+      { field: 'email', header: 'Email', sortable: true, flex: 1 },
+      { field: 'department', header: 'Department', sortable: true, width: 140 },
+      { field: 'status', header: 'Status', sortable: true, width: 100 },
+      { field: 'salary', header: 'Salary', sortable: true, align: 'right', width: 120, type: 'number' },
+    ];
+
+    // ─── Basic Grid ─────────────────────────────
+    const basicGrid = document.getElementById('basic-grid');
+    basicGrid.columns = basicColumns;
+    basicGrid.data = largeData;
+
+    // ─── Sorting & Filtering ────────────────────
+    const filterGrid = document.getElementById('filter-grid');
+    filterGrid.columns = basicColumns.map(c => ({ ...c, filterable: true }));
+    filterGrid.data = smallData;
+    const sortLog = document.getElementById('sort-log');
+    filterGrid.addEventListener('sort-change', (e) => {
+      const model = e.detail.sortModel;
+      sortLog.textContent = model.length
+        ? `Sorted by: ${model.map(s => `${s.field} (${s.direction})`).join(', ')}`
+        : 'No sort applied';
+    });
+
+    // ─── Paginated Grid ─────────────────────────
+    const paginatedGrid = document.getElementById('paginated-grid');
+    paginatedGrid.columns = basicColumns;
+    paginatedGrid.data = smallData;
+
+    // ─── Selection Grid ─────────────────────────
+    const selectionGrid = document.getElementById('selection-grid');
+    selectionGrid.columns = basicColumns;
+    selectionGrid.data = smallData.slice(0, 20);
+    const selectionLog = document.getElementById('selection-log');
+    selectionGrid.addEventListener('selection-change', (e) => {
+      const rows = e.detail.selectedRows;
+      selectionLog.textContent = `Selected ${rows.length} row(s): ${rows.map(r => r.name).join(', ')}`;
+    });
+
+    // ─── Inline Editing Grid ────────────────────
+    const editGrid = document.getElementById('edit-grid');
+    editGrid.columns = basicColumns.map(c => ({ ...c, editable: c.field !== 'id' }));
+    editGrid.data = smallData.slice(0, 15);
+    const editLog = document.getElementById('edit-log');
+    editGrid.addEventListener('cell-edit', (e) => {
+      const { field, oldValue, newValue } = e.detail;
+      editLog.textContent = `Edited "${field}": ${oldValue} → ${newValue}`;
+    });
+
+    // ─── Pinned Columns Grid ────────────────────
+    const pinnedGrid = document.getElementById('pinned-grid');
+    pinnedGrid.columns = [
+      { field: 'name', header: 'Name', pinned: 'left', width: 180, sortable: true },
+      { field: 'email', header: 'Email', flex: 1, sortable: true, resizable: true },
+      { field: 'department', header: 'Department', width: 140, sortable: true, resizable: true },
+      { field: 'status', header: 'Status', width: 100, sortable: true, resizable: true },
+      { field: 'salary', header: 'Salary', width: 120, align: 'right', type: 'number', sortable: true, resizable: true },
+      { field: 'age', header: 'Age', width: 80, align: 'right', type: 'number', sortable: true, resizable: true },
+      { field: 'startDate', header: 'Start Date', width: 130, sortable: true, resizable: true },
+    ];
+    pinnedGrid.data = smallData.slice(0, 20);
+
+    // ─── Row Grouping Grid ──────────────────────
+    const groupGrid = document.getElementById('group-grid');
+    groupGrid.columns = [
+      { field: 'name', header: 'Name', flex: 1, sortable: true },
+      { field: 'department', header: 'Department', width: 140, sortable: true, rowGroup: true },
+      { field: 'status', header: 'Status', width: 100, sortable: true },
+      { field: 'salary', header: 'Salary', width: 120, align: 'right', type: 'number', sortable: true, aggFunc: 'sum' },
+    ];
+    groupGrid.data = smallData;
+
+    // ─── Quick Filter Grid ──────────────────────
+    const quickFilterGrid = document.getElementById('quick-filter-grid');
+    quickFilterGrid.columns = basicColumns;
+    quickFilterGrid.data = smallData;
+    const quickFilterInput = document.getElementById('quick-filter-input');
+    quickFilterInput.addEventListener('input', (e) => {
+      quickFilterGrid.quickFilterText = e.target.value;
+    });
+
+    // ─── Export Grid ────────────────────────────
+    const exportGrid = document.getElementById('export-grid');
+    exportGrid.columns = basicColumns;
+    exportGrid.data = smallData.slice(0, 20);
+    document.getElementById('export-csv').addEventListener('click', () => {
+      exportGrid.exportCsv({ fileName: 'data-grid-export.csv' });
+    });
+    document.getElementById('export-json').addEventListener('click', () => {
+      exportGrid.exportJson({ fileName: 'data-grid-export.json' });
+    });
+
+    // ─── Declarative Grid ───────────────────────
+    const declarativeGrid = document.getElementById('declarative-grid');
+    declarativeGrid.data = smallData.slice(0, 15);
+  </script>
+</body>
+</html>

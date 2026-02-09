@@ -34,6 +34,7 @@ import { register as registerBottomSheet } from '@duskmoon-dev/el-bottom-sheet';
 import { register as registerPopover } from '@duskmoon-dev/el-popover';
 // Data display elements
 import { register as registerTable } from '@duskmoon-dev/el-table';
+import { register as registerProDataGrid } from '@duskmoon-dev/el-pro-data-grid';
 
 registerButton();
 registerCard();
@@ -68,3 +69,4 @@ registerBottomSheet();
 registerPopover();
 // Data display elements
 registerTable();
+registerProDataGrid();

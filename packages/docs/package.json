@@ -42,7 +42,8 @@
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-bottom-sheet": "workspace:*",
     "@duskmoon-dev/el-popover": "workspace:*",
-    "@duskmoon-dev/el-table": "workspace:*"
+    "@duskmoon-dev/el-table": "workspace:*",
+    "@duskmoon-dev/el-pro-data-grid": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
