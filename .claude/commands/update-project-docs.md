@@ -2,6 +2,8 @@
 description: Update project documentation files in docs/ to reflect current codebase state.
 ---
 
+use skill `skill-creator` before this job
+
 ## User Input
 
 ```text
