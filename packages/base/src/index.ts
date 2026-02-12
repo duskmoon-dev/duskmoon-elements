@@ -1,5 +1,5 @@
 /**
- * @duskmoon-dev/el-core
+ * @duskmoon-dev/el-base
  *
  * Core utilities and base classes for DuskMoon custom elements
  */

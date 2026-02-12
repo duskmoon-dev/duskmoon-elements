@@ -19,7 +19,7 @@
  * @fires select - Fired when a menu item is selected (detail: { value: string })
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export type MenuPlacement =
   | 'top'

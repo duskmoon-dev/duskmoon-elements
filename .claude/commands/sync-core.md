@@ -1,203 +1,148 @@
 ---
-description: Analyze @duskmoon-dev/core package changes and create an update plan for element packages.
+description: Analyze @duskmoon-dev/core changes from duskmoonui repo, propagate to @duskmoon-dev/el-base, and generate update plan for duskmoon-elements packages.
 ---
 
-## User Input
+## Input
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding. If empty, analyze all element packages. If specified, analyze only the named element(s).
+If empty, analyze all element packages. If specified, analyze only named element(s).
+Supports flags: `--from=<tag>` `--to=<tag|HEAD>` for version range. Default: last consumed version → latest.
 
-## Goal
+## Constraints
 
-Compare the local `@duskmoon-dev/el-core` package with the published npm version (or a specified version), identify breaking changes, new features, and deprecations, then generate an actionable update plan for element packages.
+- **READ-ONLY** — output analysis only, no file modifications
+- **Scope** — `@duskmoon-dev/core` API surface → `@duskmoon-dev/el-base` → impact on `elements/` packages
+- Single report, no interactive prompts
 
-## Operating Constraints
+## Prerequisites
 
-**READ-ONLY ANALYSIS**: Do **not** modify any files automatically. Output a structured analysis report with an update plan. User must explicitly approve before any changes are applied.
+Read `.claude/skills/duskmoon-dev-core/SKILL.md` first — it contains the current `@duskmoon-dev/core` API surface, conventions, and known patterns. Use this as baseline context before diffing.
 
-**Scope**: This command focuses on `@duskmoon-dev/el-core` API surface changes and their impact on element packages in the `elements/` directory.
+## Steps
 
-## Execution Steps
+### 1. Resolve core package versions
 
-### 1. Determine Analysis Scope
-
-Parse user input to determine:
-- **Target elements**: If `$ARGUMENTS` specifies element name(s), analyze only those. Otherwise, analyze all elements in `elements/` directory.
-- **Version comparison**: Default to comparing local vs latest npm. User can specify version like `--from=0.3.0 --to=0.4.0`.
-
-### 2. Fetch Core Package Information
-
-**Local version:**
-```bash
-cat packages/core/package.json | jq -r '.version'
-```
-
-**Published version (latest):**
-```bash
-npm view @duskmoon-dev/el-core version
-```
-
-**Fetch published package types (if comparing to npm):**
-```bash
-npm pack @duskmoon-dev/el-core --pack-destination /tmp
-tar -xzf /tmp/duskmoon-dev-el-core-*.tgz -C /tmp
-```
-
-### 3. Analyze Core Package API Surface
-
-Extract and compare the following from `@duskmoon-dev/el-core`:
-
-**From TypeScript declarations (`dist/types/`):**
-
-| API Category | Items to Track |
-|--------------|----------------|
-| **BaseElement class** | Public methods, protected methods, static properties |
-| **Reactive properties system** | `properties` static definition structure, type converters |
-| **Style utilities** | `css`, `combineStyles`, `cssVars` function signatures |
-| **Theme variables** | CSS custom properties (`--dm-*`) |
-| **Type exports** | `PropertyDefinition`, `PropertyType`, etc. |
-
-**Change detection categories:**
-- **Breaking**: Removed exports, changed method signatures, renamed properties
-- **Deprecation**: Methods/properties marked with `@deprecated`
-- **Addition**: New exports, new methods, new options
-- **Internal**: Changes that don't affect public API
-
-### 4. Scan Element Packages for Usage
-
-For each target element package:
+The core package lives in a **separate repo**: `duskmoon-dev/duskmoonui`.
 
 ```bash
-# Find all TypeScript files
-find elements/${ELEMENT_NAME}/src -name "*.ts" -type f
+# Clone or update core repo as reference (shallow, temp dir)
+CORE_REF="/tmp/duskmoonui-ref"
+if [ -d "$CORE_REF" ]; then
+  git -C "$CORE_REF" fetch --tags --depth=50
+else
+  git clone --depth=50 https://github.com/duskmoon-dev/duskmoonui.git "$CORE_REF"
+fi
+
+# Determine version range
+# Dependency chain: @duskmoon-dev/core (duskmoonui) → @duskmoon-dev/el-base → elements/*
+# Check what version of core el-base currently consumes
+ELBASE_CORE_VER=$(jq -r '.dependencies["@duskmoon-dev/core"] // .devDependencies["@duskmoon-dev/core"]' packages/base/package.json 2>/dev/null | sed 's/[\^~]//')
+LATEST_VER=$(git -C "$CORE_REF" describe --tags --abbrev=0 2>/dev/null || echo "main")
+
+echo "el-base pins core@$ELBASE_CORE_VER, latest core is $LATEST_VER"
 ```
 
-Extract usage patterns:
-- Imports from `@duskmoon-dev/el-core`
-- `BaseElement` method calls (render, update, emit, query, etc.)
-- `static properties` definitions
-- Style attachment patterns (`attachStyles`, `css` template tag)
-- Theme variable usage (`--dm-*`)
+### 2. Extract API diff (two layers)
 
-### 5. Generate Impact Assessment
+**Layer 1: core changes** — Compare `@duskmoon-dev/core` between versions:
 
-For each element, create an impact matrix:
+```bash
+cd "$CORE_REF"
+git diff "v${ELBASE_CORE_VER}..${LATEST_VER}" --stat
+git diff "v${ELBASE_CORE_VER}..${LATEST_VER}" -- src/ types/ index.ts
+```
 
-| Element | Breaking Changes | Deprecations | New Features Available | Update Priority |
-|---------|------------------|--------------|------------------------|-----------------|
-| button  | 0                | 1            | 2                      | LOW             |
-| switch  | 1                | 0            | 2                      | HIGH            |
+**Layer 2: el-base exposure** — Determine which core changes `el-base` re-exports or wraps:
 
-**Priority levels:**
-- **CRITICAL**: Uses removed/renamed API - will not compile
-- **HIGH**: Uses deprecated API - works but should update
-- **MEDIUM**: Could benefit from new features
-- **LOW**: No changes needed
+```bash
+# Check what el-base exposes from core
+grep -rn "export.*from.*@duskmoon-dev/core" packages/base/src/
+# Check BaseElement class surface
+grep -rn "public\|protected\|static" packages/base/src/base-element.ts
+```
 
-### 6. Generate Update Plan
+Focus on:
+- Exported types, interfaces, classes (especially `BaseElement`)
+- Function signatures (`css`, `combineStyles`, `cssVars`, etc.)
+- CSS custom properties (`--dm-*`)
+- `properties` static definition structure and type converters
+- Removed/renamed exports (breaking)
+- `@deprecated` annotations
+- New exports/methods (additive)
 
-For each affected element, produce:
+Ignore internal implementation changes that don't affect the public API.
+
+### 3. Scan element packages for usage
+
+For each target element in `elements/`:
+
+```bash
+# Extract all imports from el-base (the base element class package)
+grep -rn "from.*@duskmoon-dev/el-base" elements/${ELEMENT}/src/
+# Find BaseElement method usage
+grep -rn "this\.\(render\|update\|emit\|query\|attachStyles\)" elements/${ELEMENT}/src/
+# Find theme variable usage
+grep -rn "\-\-dm-" elements/${ELEMENT}/src/
+# Find static properties definitions
+grep -rn "static.*properties" elements/${ELEMENT}/src/
+```
+
+### 4. Cross-reference and classify
+
+For each element, map changed APIs to actual usage sites. Classify:
+
+| Priority | Criteria |
+|----------|----------|
+| CRITICAL | Uses removed/renamed API — will not compile |
+| HIGH | Uses deprecated API — works now, breaks later |
+| MEDIUM | Could benefit from new features |
+| LOW | No relevant changes |
+
+### 5. Output report
 
 ```markdown
-## Update Plan: el-dm-{name}
+# Core Sync Analysis: v{FROM} → v{TO}
 
-### Breaking Changes (MUST FIX)
-- [ ] Change X: `oldMethod()` → `newMethod()`
-  - File: `src/el-dm-{name}.ts:L42`
-  - Before: `this.oldMethod()`
-  - After: `this.newMethod()`
+## Changes in @duskmoon-dev/core
 
-### Deprecation Warnings (SHOULD FIX)
-- [ ] Warning Y: `deprecatedProp` will be removed in v1.0
-  - File: `src/el-dm-{name}.ts:L78`
-  - Migration: Use `newProp` instead
+### Breaking
+- `oldExport` removed → use `newExport`
 
-### New Features (OPTIONAL)
-- [ ] Feature Z: New `attachStyles()` options for scoped styles
-  - Benefit: Better style encapsulation
-  - Usage: `this.attachStyles(styles, { scoped: true })`
+### Deprecated
+- `method()` deprecated, removal planned v{X}
+
+### New
+- `newFeature()` added — {one-line description}
+
+## Impact on @duskmoon-dev/el-base
+
+Which core changes affect el-base's public API (re-exports, BaseElement methods, style utilities).
+
+## Element Impact
+
+| Element | Priority | Breaking | Deprecated | New Available |
+|---------|----------|----------|------------|---------------|
+| button  | LOW      | 0        | 0          | 1             |
+
+## Update Plan
+
+### el-dm-{name} (CRITICAL)
+
+**Breaking:**
+- `src/el-dm-{name}.ts:42` — `this.oldMethod()` → `this.newMethod()`
+
+**Deprecated:**
+- `src/el-dm-{name}.ts:78` — `deprecatedProp` → `newProp`
+
+## Verification
+
+After applying updates, run:
+\`\`\`bash
+bun run build:all && bun run test
+\`\`\`
 ```
 
-### 7. Output Analysis Report
-
-Produce a Markdown report with the following structure:
-
-```markdown
-# Core Package Sync Analysis
-
-## Version Comparison
-| | Version | Date |
-|---|---------|------|
-| Local | 0.4.0 | 2026-01-13 |
-| npm (latest) | 0.4.0 | 2026-01-13 |
-
-## API Changes Summary
-
-### Breaking Changes
-(List all breaking changes with migration paths)
-
-### Deprecations
-(List all deprecations with timelines)
-
-### New Features
-(List new features with usage examples)
-
-## Element Impact Assessment
-
-(Impact matrix table)
-
-## Update Plans
-
-(Per-element update plans)
-
-## Recommended Actions
-
-1. **Immediate**: Fix breaking changes in [elements...]
-2. **Soon**: Address deprecations in [elements...]
-3. **Optional**: Adopt new features in [elements...]
-
-## Commands to Apply Updates
-
-To apply these updates, run:
-- For specific element: `/sync-core apply {element-name}`
-- For all affected: `/sync-core apply --all`
-```
-
-### 8. Offer to Apply Updates
-
-At the end of the report, ask:
-
-> Would you like me to apply the recommended updates?
-> - `yes` - Apply all updates
-> - `{element-name}` - Apply updates to specific element only
-> - `no` - Exit without changes
-
-**If user approves**, proceed to make the changes following the update plan.
-
-## Operating Principles
-
-### Analysis Guidelines
-
-- **Compare type signatures**: Focus on public API, not implementation details
-- **Track transitive dependencies**: If core changes affect utilities used by elements, flag them
-- **Preserve element behavior**: Updates should maintain existing functionality
-- **Minimal changes**: Only modify what's necessary for compatibility
-
-### Context Efficiency
-
-- **Lazy loading**: Only fetch npm package if actually comparing to published version
-- **Targeted scanning**: If specific elements named, skip others entirely
-- **Cache awareness**: Note if local and npm versions are identical (no changes needed)
-
-### Safety
-
-- **Never auto-apply breaking changes** without explicit user approval
-- **Generate reversible changes**: Each change should be independently revertible
-- **Test command**: Suggest running `bun run build:all && bun run test` after applying updates
-
-## Context
-
-$ARGUMENTS
+Keep the report concise. Only include sections with actual findings.

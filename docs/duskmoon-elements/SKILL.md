@@ -5,7 +5,7 @@ description: Use the DuskMoon Elements custom element library (`<el-dm-*>` web c
 
 # DuskMoon Elements
 
-31 custom element packages built on `@duskmoon-dev/el-core`. Each element is a standard Web Component with Shadow DOM.
+31 custom element packages built on `@duskmoon-dev/el-base`. Each element is a standard Web Component with Shadow DOM.
 
 ## Installation
 
@@ -145,10 +145,10 @@ el-dm-table::part(thead) {
 
 ## Theming
 
-Elements use CSS custom properties from `@duskmoon-dev/el-core`. Apply a preset theme:
+Elements use CSS custom properties from `@duskmoon-dev/el-base`. Apply a preset theme:
 
 ```typescript
-import { applyTheme } from '@duskmoon-dev/el-core';
+import { applyTheme } from '@duskmoon-dev/el-base';
 
 applyTheme(document.documentElement, 'moonlight'); // dark
 applyTheme(document.documentElement, 'sunshine');   // light

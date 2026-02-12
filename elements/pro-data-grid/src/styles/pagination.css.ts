@@ -1,7 +1,7 @@
 /**
  * Pagination bar styles.
  */
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const paginationStyles = css`
   .grid-pagination {

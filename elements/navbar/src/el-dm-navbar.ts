@@ -25,7 +25,7 @@
  * @fires menu-toggle - Fired when the mobile menu is toggled
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export type NavbarColor = 'surface' | 'primary' | 'secondary' | 'tertiary';
 

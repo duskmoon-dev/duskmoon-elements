@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
-      "@duskmoon-dev/el-core": ["./packages/core/src/index.ts"],
+      "@duskmoon-dev/el-base": ["./packages/base/src/index.ts"],
       "@duskmoon-dev/el-button": ["./elements/button/src/index.ts"],
       "@duskmoon-dev/el-card": ["./elements/card/src/index.ts"],
       "@duskmoon-dev/el-input": ["./elements/input/src/index.ts"],

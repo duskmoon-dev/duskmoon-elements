@@ -31,7 +31,7 @@ bun run playground        # http://localhost:4220
 ```
 duskmoon-elements/
 ├── packages/
-│   ├── core/             # @duskmoon-dev/el-core — base class, styles, utilities
+│   ├── core/             # @duskmoon-dev/el-base — base class, styles, utilities
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
 ├── elements/             # 31 individual element packages (@duskmoon-dev/el-*)
@@ -50,7 +50,7 @@ duskmoon-elements/
 The core package must build before elements because element packages use TypeScript project references to core:
 
 ```
-@duskmoon-dev/el-core  →  @duskmoon-dev/el-*  →  @duskmoon-dev/elements
+@duskmoon-dev/el-base  →  @duskmoon-dev/el-*  →  @duskmoon-dev/elements
 ```
 
 `bun run build:all` handles this automatically.
@@ -62,7 +62,7 @@ The core package must build before elements because element packages use TypeScr
 | Command | Description |
 |---------|-------------|
 | `bun run build:all` | Build core, then elements, then bundle (sequential) |
-| `bun run build:core` | Build only `@duskmoon-dev/el-core` |
+| `bun run build:base` | Build only `@duskmoon-dev/el-base` |
 | `bun run build:elements` | Build all 30 element packages |
 | `bun run build:bundle` | Build the `@duskmoon-dev/elements` bundle package |
 
@@ -91,7 +91,7 @@ Target a specific package with `--filter`:
 
 ```bash
 bun run --filter @duskmoon-dev/el-button test
-bun run --filter @duskmoon-dev/el-core build
+bun run --filter @duskmoon-dev/el-base build
 bun run --filter @duskmoon-dev/el-input lint:check
 ```
 
@@ -104,7 +104,7 @@ bun run --filter @duskmoon-dev/el-input lint:check
 
 ## Architecture
 
-### Core Package (`@duskmoon-dev/el-core`)
+### Core Package (`@duskmoon-dev/el-base`)
 
 The foundation for all custom elements. Zero runtime dependencies.
 
@@ -113,7 +113,7 @@ The foundation for all custom elements. Zero runtime dependencies.
 Abstract base class extending `HTMLElement`:
 
 ```typescript
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host { display: block; }
@@ -161,7 +161,7 @@ Key features:
 #### Style Utilities
 
 ```typescript
-import { css, combineStyles, cssVars, defaultTheme, resetStyles } from '@duskmoon-dev/el-core';
+import { css, combineStyles, cssVars, defaultTheme, resetStyles } from '@duskmoon-dev/el-base';
 
 // Create a CSSStyleSheet from a template literal
 const myStyles = css`
@@ -178,7 +178,7 @@ const vars = cssVars({ '--my-color': 'red', '--my-size': '16px' });
 #### Animation Utilities
 
 ```typescript
-import { animation, transition, durations, easings, animationStyles } from '@duskmoon-dev/el-core';
+import { animation, transition, durations, easings, animationStyles } from '@duskmoon-dev/el-base';
 
 // Generate animation shorthand
 animation('fadeIn');                          // "fadeIn 200ms ease both"
@@ -198,8 +198,8 @@ transition(['opacity', 'transform'], 'fast'); // "opacity 150ms ease, transform 
 Five built-in themes using oklch color system:
 
 ```typescript
-import { themes, applyTheme, sunshineTheme } from '@duskmoon-dev/el-core';
-import type { ThemeName } from '@duskmoon-dev/el-core';
+import { themes, applyTheme, sunshineTheme } from '@duskmoon-dev/el-base';
+import type { ThemeName } from '@duskmoon-dev/el-base';
 
 // Available themes: sunshine, moonlight, ocean, forest, rose
 applyTheme(element, 'moonlight');
@@ -213,7 +213,7 @@ applyTheme(element, '--color-primary: red; --color-surface: white;');
 Composable validator functions for form elements:
 
 ```typescript
-import { validate, validateAsync, validators } from '@duskmoon-dev/el-core';
+import { validate, validateAsync, validators } from '@duskmoon-dev/el-base';
 
 // Synchronous validation
 const result = validate('hello@example.com', [
@@ -251,7 +251,7 @@ const result = await validateAsync(
 Reusable behaviors that compose via the class expression pattern:
 
 ```typescript
-import { BaseElement, FocusableMixin, FormMixin, EventListenerMixin } from '@duskmoon-dev/el-core';
+import { BaseElement, FocusableMixin, FormMixin, EventListenerMixin } from '@duskmoon-dev/el-base';
 
 // Stack mixins — order doesn't matter
 class MyInput extends FormMixin(FocusableMixin(BaseElement)) {
@@ -276,7 +276,7 @@ class MyInput extends FormMixin(FocusableMixin(BaseElement)) {
 #### Performance Utilities
 
 ```typescript
-import { debounce, throttle, scheduleIdle } from '@duskmoon-dev/el-core';
+import { debounce, throttle, scheduleIdle } from '@duskmoon-dev/el-base';
 
 // Debounce — delays until no calls for `delay` ms
 const search = debounce((query: string) => { /* ... */ }, 300);
@@ -365,7 +365,7 @@ Create `elements/{name}/` with the standard file structure (see above).
 
 ```typescript
 // elements/example/src/el-dm-example.ts
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as exampleCSS } from '@duskmoon-dev/core/components/example';
 
 // Strip @layer wrapper for Shadow DOM compatibility
@@ -544,9 +544,9 @@ Releases are triggered manually via `.github/workflows/release.yml`:
 
 ## Troubleshooting
 
-### "Cannot find module '@duskmoon-dev/el-core'"
+### "Cannot find module '@duskmoon-dev/el-base'"
 
-Build core first: `bun run build:core`
+Build core first: `bun run build:base`
 
 ### Tests fail with "HTMLElement is not defined"
 
@@ -554,7 +554,7 @@ The `test-setup.ts` preload isn't running. Make sure you're running tests from t
 
 ### Type errors in element packages
 
-Element packages use TypeScript project references to core. Rebuild core first: `bun run build:core && bun run typecheck`
+Element packages use TypeScript project references to core. Rebuild core first: `bun run build:base && bun run typecheck`
 
 ### "@layer" styles not working in Shadow DOM
 

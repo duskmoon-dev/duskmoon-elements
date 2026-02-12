@@ -1,11 +1,11 @@
-# @duskmoon-dev/el-core
+# @duskmoon-dev/el-base
 
 Core utilities and base classes for DuskMoon custom elements.
 
 ## Installation
 
 ```bash
-bun add @duskmoon-dev/el-core
+bun add @duskmoon-dev/el-base
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ The `BaseElement` class provides a foundation for creating custom elements with:
 - Event emission helpers
 
 ```typescript
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {
@@ -59,7 +59,7 @@ customElements.define('my-greeting', MyGreeting);
 Creates a `CSSStyleSheet` from a template literal:
 
 ```typescript
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {
@@ -76,7 +76,7 @@ const styles = css`
 Combines multiple stylesheets:
 
 ```typescript
-import { combineStyles } from '@duskmoon-dev/el-core';
+import { combineStyles } from '@duskmoon-dev/el-base';
 
 const combinedStyles = combineStyles(baseStyles, themeStyles, componentStyles);
 ```
@@ -86,7 +86,7 @@ const combinedStyles = combineStyles(baseStyles, themeStyles, componentStyles);
 Creates CSS custom property declarations:
 
 ```typescript
-import { cssVars } from '@duskmoon-dev/el-core';
+import { cssVars } from '@duskmoon-dev/el-base';
 
 const vars = cssVars({
   'dm-primary': '#3b82f6',
@@ -100,7 +100,7 @@ const vars = cssVars({
 The package includes default CSS custom properties for theming. Import the theme stylesheet:
 
 ```typescript
-import { defaultTheme, resetStyles } from '@duskmoon-dev/el-core';
+import { defaultTheme, resetStyles } from '@duskmoon-dev/el-base';
 
 // Apply to shadow root
 this.shadowRoot.adoptedStyleSheets = [resetStyles, defaultTheme, componentStyles];
@@ -259,7 +259,7 @@ import type {
   FormElementProps,
   ValidatableProps,
   ValueChangeEventDetail,
-} from '@duskmoon-dev/el-core';
+} from '@duskmoon-dev/el-base';
 ```
 
 ## Creating Custom Elements
@@ -267,7 +267,7 @@ import type {
 Full example of a custom element:
 
 ```typescript
-import { BaseElement, css, defaultTheme, resetStyles } from '@duskmoon-dev/el-core';
+import { BaseElement, css, defaultTheme, resetStyles } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {

@@ -38,7 +38,7 @@ bun add @duskmoon-dev/el-button
 
 | Package | Description |
 |---------|-------------|
-| [@duskmoon-dev/el-core](./packages/core) | Base element class, CSS utilities, and theming |
+| [@duskmoon-dev/el-base](./packages/base) | Base element class, CSS utilities, and theming |
 | [@duskmoon-dev/elements](./packages/elements) | All elements bundled together |
 
 ### Input Components
@@ -193,7 +193,7 @@ Override CSS custom properties to customize the look:
 }
 ```
 
-See the [theming documentation](./packages/core/README.md) for all available CSS custom properties.
+See the [theming documentation](./packages/base/README.md) for all available CSS custom properties.
 
 ## Development
 
@@ -233,7 +233,7 @@ duskmoon-elements/
 │   ├── button/             # @duskmoon-dev/el-button
 │   └── ...                 # 30 element packages total
 ├── packages/
-│   ├── core/               # @duskmoon-dev/el-core
+│   ├── core/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)
 │   └── docs/               # Documentation site
 ├── playground/             # Interactive demo
@@ -243,7 +243,7 @@ duskmoon-elements/
 ### Creating a New Element
 
 ```typescript
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {

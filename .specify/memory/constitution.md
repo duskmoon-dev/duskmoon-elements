@@ -40,7 +40,7 @@ have stable browser support and avoid ecosystem churn.
 
 ### II. BaseElement Pattern
 
-Every custom element MUST extend the `BaseElement` class from `@duskmoon-dev/el-core`.
+Every custom element MUST extend the `BaseElement` class from `@duskmoon-dev/el-base`.
 
 - Elements MUST use the reactive properties system via static `properties` definition
 - Elements MUST implement the `render()` method for declarative templating
@@ -55,7 +55,7 @@ library predictable for consumers.
 Each element MUST be published as an independent, tree-shakable package.
 
 - Package naming: `@duskmoon-dev/el-<name>` for npm, `<el-dm-<name>>` for custom element tag
-- Elements MUST only depend on `@duskmoon-dev/el-core` (no cross-element dependencies)
+- Elements MUST only depend on `@duskmoon-dev/el-base` (no cross-element dependencies)
 - Each package MUST build to both ESM and CJS formats with TypeScript declarations
 - Packages MUST be independently installable and usable
 
@@ -132,11 +132,11 @@ Elements MUST support:
 
 ### Build Order
 
-The core package (`@duskmoon-dev/el-core`) MUST be built before any element packages due to
+The core package (`@duskmoon-dev/el-base`) MUST be built before any element packages due to
 TypeScript project references.
 
 ```bash
-bun run build:core   # First
+bun run build:base   # First
 bun run build:elements  # Second
 ```
 

@@ -61,10 +61,10 @@ elements/{name}/
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
-    "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-core --watch",
+    "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --watch",
     "clean": "del-cli dist",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
@@ -77,7 +77,7 @@ elements/{name}/
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-core": "workspace:*",
+    "@duskmoon-dev/el-base": "workspace:*",
     "@duskmoon-dev/core": "^1.1.1"
   },
   "devDependencies": {
@@ -108,7 +108,7 @@ elements/{name}/
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"],
-  "references": [{ "path": "../../packages/core" }]
+  "references": [{ "path": "../../packages/base" }]
 }
 ```
 
@@ -145,7 +145,7 @@ declare module '@duskmoon-dev/core/components/{name}' {
  * @fires change - Fired when value changes
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as {name}CSS } from '@duskmoon-dev/core/components/{name}';
 
 // Map attribute values to CSS classes
@@ -682,7 +682,7 @@ Before committing:
 ### Element Package
 - [ ] All 6 source files created in `elements/{name}/src/`
 - [ ] `package.json` has correct name and no `*.md` in format scripts
-- [ ] `tsconfig.json` references `../../packages/core`
+- [ ] `tsconfig.json` references `../../packages/base`
 - [ ] Types exported from `index.ts`
 
 ### Bundle Package (`packages/elements/`)

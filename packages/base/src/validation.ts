@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { validate, validators } from '@duskmoon-dev/el-core';
+ * import { validate, validators } from '@duskmoon-dev/el-base';
  *
  * const result = validate('hello@example.com', [
  *   validators.required('Email is required'),

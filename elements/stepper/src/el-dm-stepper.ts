@@ -23,7 +23,7 @@
  * @csspart connector - The connector line between steps
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export interface StepData {
   label: string;

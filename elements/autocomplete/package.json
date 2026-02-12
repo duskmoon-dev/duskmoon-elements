@@ -24,15 +24,15 @@
   ],
   "scripts": {
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --target browser --external @duskmoon-dev/el-core --external @duskmoon-dev/core",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --target browser --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --target browser --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@duskmoon-dev/core": "^1.7.0",
-    "@duskmoon-dev/el-core": "workspace:*"
+    "@duskmoon-dev/el-base": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

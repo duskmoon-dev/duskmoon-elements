@@ -2,7 +2,7 @@
  * Styles for row pinning, row drag, row numbers, full-width rows, animations.
  */
 
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const rowFeatureStyles = css`
   /* ─── Pinned Rows ────────────────────────────── */

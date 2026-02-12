@@ -49,7 +49,7 @@ The dev server will start and display a URL (typically `http://localhost:5173`).
 
 Changes to files in `packages/playground/` will trigger automatic page updates.
 
-Changes to element source files (in `elements/` or `packages/core/`) will trigger a full page reload.
+Changes to element source files (in `elements/` or `packages/base/`) will trigger a full page reload.
 
 ## Build
 
@@ -105,6 +105,6 @@ Check that port 5173 is not in use. Vite will suggest an alternative port if nee
 Ensure all packages are built first (TypeScript project references require built output):
 
 ```bash
-bun run build:core
+bun run build:base
 bun run build:elements
 ```

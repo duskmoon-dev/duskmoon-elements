@@ -125,7 +125,7 @@ button.variant = 'primary';
 
 ## Re-exported Utilities
 
-This package also re-exports utilities from `@duskmoon-dev/el-core`:
+This package also re-exports utilities from `@duskmoon-dev/el-base`:
 
 ```ts
 import {

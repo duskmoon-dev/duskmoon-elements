@@ -13,7 +13,7 @@
   },
   "include": ["**/*.ts"],
   "references": [
-    { "path": "../packages/core" },
+    { "path": "../packages/base" },
     { "path": "../elements/button" },
     { "path": "../elements/card" },
     { "path": "../elements/input" },

@@ -24,12 +24,21 @@ pnpm add @duskmoon-dev/core tailwindcss@^4.0.0
 
 ## Setup
 
-### CSS Import
+### Option A: CSS Import (Recommended)
 
 ```css
 @import "tailwindcss";
 @import "@duskmoon-dev/core";
 ```
+
+### Option B: Tailwind Plugin
+
+```css
+@import "tailwindcss";
+@plugin "@duskmoon-dev/core/plugin";
+```
+
+The `@plugin` approach registers MD3 color tokens into Tailwind's theme, enabling utility classes like `bg-primary`, `text-on-surface`, etc.
 
 ### Theme Configuration
 
@@ -65,6 +74,8 @@ Apply theme via `data-theme` attribute on HTML element:
 - `multi-select` - Multiple selection: `multi-select`, `multi-select-tag`
 - `tree-select` - Hierarchical dropdown: `tree-select`, `tree-select-node`
 - `form-group` - Form layout: `form-group`, `form-label`, `helper-text`, `fieldset`
+- `theme-controller` - Theme switching: `theme-controller` (inline switch), `theme-controller-dropdown`, `theme-controller-item`, `theme-controller-label`
+- `toggle-btn` - Toggle buttons: `toggle-btn`, `toggle-btn-active`, `toggle-group`, `toggle-segmented`, `toggle-chip`
 
 ### Data Display
 - `card` - Content containers: `card-body`, `card-title`
@@ -89,6 +100,7 @@ Apply theme via `data-theme` attribute on HTML element:
 - `navbar` - Top navigation: `navbar-surface-container-high`, `navbar-item`
 - `tabs` - Tab navigation: `tab`, `tab-active`
 - `drawer` - Side panels: `drawer-left`, `drawer-open`
+- `nested-menu` - Collapsible sidebar: `nested-menu`, `nested-menu-title`, `nested-menu-bordered`, `nested-menu-compact`
 - `bottom-nav` - Mobile navigation: `bottom-nav-item`
 - `stepper` - Multi-step: `stepper-step-active`, `stepper-step-completed`
 
@@ -184,6 +196,62 @@ Apply theme via `data-theme` attribute on HTML element:
       <button class="btn btn-filled">Confirm</button>
     </div>
   </div>
+</div>
+```
+
+### Nested Menu
+
+```html
+<ul class="nested-menu nested-menu-bordered">
+  <li class="nested-menu-title">Getting Started</li>
+  <li><a href="/install">Installation</a></li>
+  <li><a href="/config" class="active">Configuration</a></li>
+  <li>
+    <details open>
+      <summary>Components</summary>
+      <ul>
+        <li><a href="/button">Button</a></li>
+        <li><a href="/card">Card</a></li>
+      </ul>
+    </details>
+  </li>
+</ul>
+```
+
+### Theme Controller
+
+```html
+<!-- Inline switch mode -->
+<div class="theme-controller">
+  <input type="radio" name="theme" value="sunshine" class="theme-controller-item" checked />
+  <label class="theme-controller-label">Light</label>
+  <input type="radio" name="theme" value="moonlight" class="theme-controller-item" />
+  <label class="theme-controller-label">Dark</label>
+</div>
+
+<!-- Dropdown mode -->
+<details class="theme-controller-dropdown">
+  <summary class="theme-controller-trigger">Theme</summary>
+  <div class="theme-controller-menu">
+    <input type="radio" name="theme" value="sunshine" class="theme-controller-item" checked />
+    <label class="theme-controller-label">Sunshine</label>
+    <input type="radio" name="theme" value="moonlight" class="theme-controller-item" />
+    <label class="theme-controller-label">Moonlight</label>
+  </div>
+</details>
+```
+
+### Toggle Buttons
+
+```html
+<!-- Single toggle -->
+<button class="toggle-btn toggle-btn-active">Bold</button>
+
+<!-- Toggle group -->
+<div class="toggle-group">
+  <button class="toggle-btn toggle-btn-active">Left</button>
+  <button class="toggle-btn">Center</button>
+  <button class="toggle-btn">Right</button>
 </div>
 ```
 
@@ -319,6 +387,7 @@ All components available for individual import:
 | `@duskmoon-dev/core/components/modal` | Modal |
 | `@duskmoon-dev/core/components/multi-select` | Multi-Select |
 | `@duskmoon-dev/core/components/navigation` | Navigation (Navbar/Tabs/Menu) |
+| `@duskmoon-dev/core/components/nested-menu` | Nested Menu |
 | `@duskmoon-dev/core/components/otp-input` | OTP Input |
 | `@duskmoon-dev/core/components/pin-input` | PIN Input |
 | `@duskmoon-dev/core/components/popover` | Popover |
@@ -334,9 +403,11 @@ All components available for individual import:
 | `@duskmoon-dev/core/components/switch` | Switch |
 | `@duskmoon-dev/core/components/table` | Table |
 | `@duskmoon-dev/core/components/textarea` | Textarea |
+| `@duskmoon-dev/core/components/theme-controller` | Theme Controller |
 | `@duskmoon-dev/core/components/time-input` | Time Input |
 | `@duskmoon-dev/core/components/timeline` | Timeline |
 | `@duskmoon-dev/core/components/toast` | Toast |
+| `@duskmoon-dev/core/components/toggle` | Toggle |
 | `@duskmoon-dev/core/components/tooltip` | Tooltip |
 | `@duskmoon-dev/core/components/tree-select` | Tree Select |
 

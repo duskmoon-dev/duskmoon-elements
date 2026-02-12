@@ -27,7 +27,7 @@
  * @fires close - Fired when dialog closes
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
 import { css as dialogCSS } from '@duskmoon-dev/core/components/dialog';
 
 const SIZE_CLASSES: Record<string, string> = {
@@ -175,7 +175,7 @@ export class ElDmDialog extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(styles);
+    this.attachStyles([styles, animationStyles]);
   }
 
   private _handleBackdropClick(event: Event): void {

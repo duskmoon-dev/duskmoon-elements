@@ -21,7 +21,7 @@
  * @fires navigate - Fired when a breadcrumb link is clicked. Detail: { item, index }
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 /**
  * Represents a single breadcrumb item

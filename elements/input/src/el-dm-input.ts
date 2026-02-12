@@ -37,9 +37,9 @@
  * @fires dm-blur - Fired when input loses focus
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css, validate } from '@duskmoon-dev/el-base';
 import { css as inputCSS } from '@duskmoon-dev/core/components/input';
-import type { Size, ValidationState } from '@duskmoon-dev/el-core';
+import type { Size, ValidationState, Validator, ValidationResult } from '@duskmoon-dev/el-base';
 
 /**
  * Supported input types
@@ -279,6 +279,39 @@ export class ElDmInput extends BaseElement {
   /** Whether the input is focused */
   private _focused = false;
 
+  /** Registered validators */
+  private _validators: Validator[] = [];
+
+  /**
+   * Set the list of validators for this input.
+   * Validators are run in order; the first failure wins.
+   *
+   * @example
+   * ```ts
+   * import { validators } from '@duskmoon-dev/el-base';
+   * input.setValidators([
+   *   validators.required('Email is required'),
+   *   validators.email('Must be a valid email'),
+   * ]);
+   * ```
+   */
+  setValidators(rules: Validator[]): void {
+    this._validators = rules;
+  }
+
+  /**
+   * Run all registered validators against the current value.
+   * Updates `validationState` and `errorMessage` automatically.
+   *
+   * @returns The validation result
+   */
+  validate(): ValidationResult {
+    const result = validate(this.value ?? '', this._validators);
+    this.validationState = result.state as ValidationState;
+    this.errorMessage = result.message ?? '';
+    return result;
+  }
+
   constructor() {
     super();
     this.attachStyles(styles);
@@ -335,6 +368,9 @@ export class ElDmInput extends BaseElement {
    */
   private _handleBlur(): void {
     this._focused = false;
+    if (this._validators.length > 0) {
+      this.validate();
+    }
     this.update();
     this.emit('dm-blur');
   }

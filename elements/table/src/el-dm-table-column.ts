@@ -13,7 +13,7 @@
  * @attr {boolean} hidden - Whether column is hidden
  */
 
-import { BaseElement } from '@duskmoon-dev/el-core';
+import { BaseElement } from '@duskmoon-dev/el-base';
 import type { TableColumn } from './types.js';
 
 export class ElDmTableColumn extends BaseElement {

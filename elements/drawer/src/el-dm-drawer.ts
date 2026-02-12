@@ -26,7 +26,7 @@
  * @fires close - Fired when drawer closes
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
 
 export type DrawerPosition = 'left' | 'right';
 
@@ -177,7 +177,7 @@ export class ElDmDrawer extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(styles);
+    this.attachStyles([styles, animationStyles]);
   }
 
   private _handleBackdropClick(event: Event): void {

@@ -43,7 +43,7 @@ jobs:
           INPUT_VERSION="${{ inputs.version }}"
 
           # Get current version from core package
-          CURRENT_VERSION=$(jq -r '.version' packages/core/package.json)
+          CURRENT_VERSION=$(jq -r '.version' packages/base/package.json)
 
           # Parse current version
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
@@ -73,7 +73,7 @@ jobs:
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
           # Update core and bundle packages
-          for pkg in packages/core packages/elements; do
+          for pkg in packages/base packages/elements; do
             jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
             echo "Updated $pkg/package.json to $NEW_VERSION"
           done
@@ -102,10 +102,10 @@ jobs:
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
           # Publish core first (other packages depend on it)
-          echo "Publishing @duskmoon-dev/el-core..."
-          cd packages/core
-          if npm view @duskmoon-dev/el-core@$NEW_VERSION version >/dev/null 2>&1; then
-            echo "  @duskmoon-dev/el-core@$NEW_VERSION already published, skipping"
+          echo "Publishing @duskmoon-dev/el-base..."
+          cd packages/base
+          if npm view @duskmoon-dev/el-base@$NEW_VERSION version >/dev/null 2>&1; then
+            echo "  @duskmoon-dev/el-base@$NEW_VERSION already published, skipping"
           else
             bun publish --access public
           fi
@@ -188,7 +188,7 @@ jobs:
             ## Published Packages
 
             **Core:**
-            - @duskmoon-dev/el-core - Base element class with reactive properties, Shadow DOM, and theming utilities
+            - @duskmoon-dev/el-base - Base element class with reactive properties, Shadow DOM, and theming utilities
 
             **Elements:**
             ${{ steps.packages.outputs.elements }}
@@ -202,7 +202,7 @@ jobs:
             bun add @duskmoon-dev/elements
 
             # Or install individual packages
-            bun add @duskmoon-dev/el-core
+            bun add @duskmoon-dev/el-base
             bun add @duskmoon-dev/el-button
             ```
 
@@ -220,7 +220,7 @@ jobs:
           echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Core:**" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/el-core" >> $GITHUB_STEP_SUMMARY
+          echo "- @duskmoon-dev/el-base" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Elements:**" >> $GITHUB_STEP_SUMMARY
           for pkg in elements/*; do

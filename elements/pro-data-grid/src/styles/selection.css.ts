@@ -2,7 +2,7 @@
  * Cell selection and range styles.
  */
 
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const selectionStyles = css`
   /* ─── Cell Range Selection ───────────────────── */

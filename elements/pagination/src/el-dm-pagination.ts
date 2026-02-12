@@ -21,7 +21,7 @@
  * @fires change - Fired when the current page changes, detail: { page: number }
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export type PaginationSize = 'xs' | 'sm' | 'md' | 'lg';
 export type PaginationColor = 'primary' | 'secondary' | 'neutral';

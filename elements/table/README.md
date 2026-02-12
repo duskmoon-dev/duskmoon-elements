@@ -74,7 +74,7 @@ npm install @duskmoon-dev/el-table
 
 ## CSS Custom Properties
 
-The table uses CSS custom properties from `@duskmoon-dev/el-core` theme:
+The table uses CSS custom properties from `@duskmoon-dev/el-base` theme:
 
 - `--color-surface` - Table background
 - `--color-surface-variant` - Header/stripe background

@@ -316,6 +316,23 @@ describe('ElDmDialog', () => {
     });
   });
 
+  // ──────────────── Animation Styles ────────────────
+  describe('animation styles', () => {
+    test('has animationStyles stylesheet attached', () => {
+      const el = createDialog();
+      const sheets = el.shadowRoot?.adoptedStyleSheets ?? [];
+      // animationStyles is the second sheet (after component styles)
+      expect(sheets.length).toBeGreaterThanOrEqual(2);
+    });
+
+    test('animationStyles includes prefers-reduced-motion rule', () => {
+      const el = createDialog();
+      const sheets = el.shadowRoot?.adoptedStyleSheets ?? [];
+      const allCSS = sheets.map((s) => Array.from(s.cssRules).map((r) => r.cssText).join('\n')).join('\n');
+      expect(allCSS).toContain('prefers-reduced-motion');
+    });
+  });
+
   // ──────────────── Disconnected Callback ────────────────
   describe('cleanup', () => {
     test('disconnectedCallback restores body overflow', () => {

@@ -1,4 +1,4 @@
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const groupingStyles = css`
   /* ─── Group Panel (drop zone above grid) ──── */

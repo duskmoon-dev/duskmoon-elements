@@ -15,7 +15,7 @@
  * @fires change - Fired when expansion state changes
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {

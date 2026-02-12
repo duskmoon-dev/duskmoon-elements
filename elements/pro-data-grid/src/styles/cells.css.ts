@@ -1,7 +1,7 @@
 /**
  * Row and cell styles.
  */
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const cellStyles = css`
   .grid-row {

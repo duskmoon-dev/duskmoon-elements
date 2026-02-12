@@ -39,7 +39,7 @@
  * md.endStreaming();
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as markdownBodyCSS } from '@duskmoon-dev/core/components/markdown-body';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';

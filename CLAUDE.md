@@ -12,7 +12,7 @@ bun install
 bun run build:all
 
 # Build only core package
-bun run build:core
+bun run build:base
 
 # Build only element packages
 bun run build:elements
@@ -41,7 +41,7 @@ bun run release          # Actual publish
 
 ```bash
 bun run --filter @duskmoon-dev/el-button test
-bun run --filter @duskmoon-dev/el-core build
+bun run --filter @duskmoon-dev/el-base build
 ```
 
 ## Architecture
@@ -49,7 +49,7 @@ bun run --filter @duskmoon-dev/el-core build
 ### Monorepo Structure
 
 This is a Bun workspace monorepo with two package directories:
-- `packages/` - Core utilities (`@duskmoon-dev/el-core`)
+- `packages/` - Core utilities (`@duskmoon-dev/el-base`)
 - `elements/` - Individual custom element packages (`@duskmoon-dev/el-*`)
 
 ### Package Naming Convention
@@ -64,7 +64,7 @@ Each package builds to:
 - `dist/cjs/` - CommonJS
 - `dist/types/` - TypeScript declarations
 
-### Core Package (`@duskmoon-dev/el-core`)
+### Core Package (`@duskmoon-dev/el-base`)
 
 Provides the foundation for all custom elements:
 
@@ -85,7 +85,7 @@ Provides the foundation for all custom elements:
 Each element package follows this structure:
 
 ```typescript
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`...`;
 
@@ -117,7 +117,7 @@ Element packages reference the core package via TypeScript project references. T
 
 ### Workspace Dependencies
 
-Elements use `"@duskmoon-dev/el-core": "workspace:*"` which gets resolved to actual versions during `bun publish`.
+Elements use `"@duskmoon-dev/el-base": "workspace:*"` which gets resolved to actual versions during `bun publish`.
 
 ## Active Technologies
 - TypeScript (ES2022+ target) + Vite (build tool), existing element packages (@duskmoon-dev/el-*) (001-vite-playground)

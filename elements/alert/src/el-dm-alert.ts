@@ -25,7 +25,7 @@
  * @fires dismiss - Fired when alert is dismissed
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as alertCSS } from '@duskmoon-dev/core/components/alert';
 
 const TYPE_CLASSES: Record<string, string> = {

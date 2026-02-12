@@ -20,7 +20,7 @@
  * @csspart value - The value label
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as progressCSS } from '@duskmoon-dev/core/components/progress';
 
 const COLOR_CLASSES: Record<string, string> = {

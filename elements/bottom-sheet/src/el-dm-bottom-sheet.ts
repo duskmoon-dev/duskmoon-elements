@@ -25,7 +25,7 @@
  * @fires snap - Fired when sheet snaps to a point, detail contains { height, index }
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 const styles = css`
   :host {

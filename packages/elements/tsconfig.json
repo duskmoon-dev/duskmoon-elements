@@ -10,7 +10,7 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"],
   "references": [
-    { "path": "../core" },
+    { "path": "../base" },
     { "path": "../../elements/button" },
     { "path": "../../elements/card" },
     { "path": "../../elements/input" },

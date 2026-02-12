@@ -20,7 +20,7 @@
  * @csspart arrow - The tooltip arrow
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
 import { css as tooltipCSS } from '@duskmoon-dev/core/components/tooltip';
 
 const POSITION_CLASSES: Record<string, string> = {
@@ -167,7 +167,7 @@ export class ElDmTooltip extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(styles);
+    this.attachStyles([styles, animationStyles]);
   }
 
   private _show(): void {

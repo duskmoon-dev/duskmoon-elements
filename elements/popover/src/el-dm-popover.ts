@@ -23,7 +23,7 @@
  * @csspart arrow - The popover arrow
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
 
 export type PopoverPlacement =
   | 'top'
@@ -187,7 +187,7 @@ export class ElDmPopover extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(styles);
+    this.attachStyles([styles, animationStyles]);
     this._boundHandleClickOutside = this._handleClickOutside.bind(this);
     this._boundHandleKeyDown = this._handleKeyDown.bind(this);
     this._boundHandleScroll = this._handleScroll.bind(this);

@@ -23,7 +23,7 @@
  * @fires input - Fired during drag
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as sliderCSS } from '@duskmoon-dev/core/components/slider';
 
 export type SliderSize = 'sm' | 'md' | 'lg';

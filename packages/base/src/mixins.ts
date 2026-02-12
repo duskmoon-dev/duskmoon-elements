@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { BaseElement, FocusableMixin, FormMixin } from '@duskmoon-dev/el-core';
+ * import { BaseElement, FocusableMixin, FormMixin } from '@duskmoon-dev/el-base';
  *
  * class MyInput extends FormMixin(FocusableMixin(BaseElement)) {
  *   // Now has focus management + form association behaviors

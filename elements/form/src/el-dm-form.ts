@@ -17,7 +17,7 @@
  * @fires reset - Fired when the form is reset
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as formCSS } from '@duskmoon-dev/core/components/form';
 
 export type FormValidationState = 'default' | 'error' | 'success';

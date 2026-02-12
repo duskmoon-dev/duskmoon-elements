@@ -24,7 +24,7 @@
  * @fires click - Fired when button is clicked (native event)
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as buttonCSS } from '@duskmoon-dev/core/components/button';
 
 // Map of variant attribute values to CSS classes

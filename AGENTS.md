@@ -5,7 +5,7 @@ It reflects the current tooling, scripts, and style seen in the codebase.
 
 ## Repository layout
 
-- `packages/core` - BaseElement, CSS helpers, shared types.
+- `packages/base` - BaseElement, CSS helpers, shared types.
 - `packages/elements` - Bundle package that re-exports elements.
 - `elements/*` - Individual custom element packages (`@duskmoon-dev/el-*`).
 - `playground` - Vite playground for manual testing.
@@ -23,7 +23,7 @@ Run them from the repo root unless noted otherwise.
 ### Build
 
 - `bun run build:all` (core -> elements -> bundle)
-- `bun run build:core`
+- `bun run build:base`
 - `bun run build:elements`
 - `bun run build:bundle`
 - `bun run build` (all workspaces)
@@ -37,7 +37,7 @@ Run them from the repo root unless noted otherwise.
 ### Type checking
 
 - `bun run typecheck` (all workspaces)
-- `bun run --filter @duskmoon-dev/el-core typecheck`
+- `bun run --filter @duskmoon-dev/el-base typecheck`
 
 ### Lint and format
 
@@ -97,7 +97,7 @@ Run them from the repo root unless noted otherwise.
 
 ### Custom element patterns
 
-- Extend `BaseElement` from `@duskmoon-dev/el-core`.
+- Extend `BaseElement` from `@duskmoon-dev/el-base`.
 - Define `static properties` with `type`, `reflect`, `default`.
 - Call `super()` then `attachStyles()` in constructors.
 - Implement `render()` and return an HTML string template.
@@ -106,7 +106,7 @@ Run them from the repo root unless noted otherwise.
 
 ### Styling
 
-- Define component styles with `css` from `@duskmoon-dev/el-core`.
+- Define component styles with `css` from `@duskmoon-dev/el-base`.
 - Prefer CSS custom properties from the core theme.
 - When importing core styles, strip `@layer` wrappers if required.
 
@@ -126,8 +126,8 @@ Run them from the repo root unless noted otherwise.
 
 ### Project references
 
-- Element packages reference `@duskmoon-dev/el-core` via workspace.
-- Build `packages/core` before elements when doing manual builds.
+- Element packages reference `@duskmoon-dev/el-base` via workspace.
+- Build `packages/base` before elements when doing manual builds.
 
 ## No additional rules found
 

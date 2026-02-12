@@ -1,4 +1,4 @@
-import { BaseElement, css as cssTag } from '@duskmoon-dev/el-core';
+import { BaseElement, css as cssTag } from '@duskmoon-dev/el-base';
 import { css } from '@duskmoon-dev/core/components/datepicker';
 
 // Strip @layer components wrapper for Shadow DOM

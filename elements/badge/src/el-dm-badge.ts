@@ -17,7 +17,7 @@
  * @csspart badge - The badge container
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as badgeCSS } from '@duskmoon-dev/core/components/badge';
 
 const VARIANT_CLASSES: Record<string, string> = {

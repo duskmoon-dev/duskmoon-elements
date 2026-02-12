@@ -2,7 +2,7 @@
  * Styles for context menu, status bar, find bar, sparklines, tooltips.
  */
 
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const accessoryStyles = css`
   /* ─── Context Menu ───────────────────────────── */

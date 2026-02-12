@@ -25,7 +25,7 @@
  * @csspart pagination - Pagination container
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import type {
   TableColumn,
   TableRow,

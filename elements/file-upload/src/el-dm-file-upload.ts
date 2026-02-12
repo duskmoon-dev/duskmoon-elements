@@ -24,7 +24,7 @@
  * @fires remove - Fired when a file is removed
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as fileUploadCSS } from '@duskmoon-dev/core/components/file-upload';
 
 export type FileUploadSize = 'sm' | 'md' | 'lg';

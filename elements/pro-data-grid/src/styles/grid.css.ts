@@ -1,7 +1,7 @@
 /**
  * Core grid layout styles.
  */
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const gridStyles = css`
   :host {

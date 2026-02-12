@@ -30,9 +30,9 @@ docs/
 
 | File | Purpose | Key Sources of Truth |
 |------|---------|---------------------|
-| `docs/development.md` | Developer guide: setup, architecture, core API, element patterns, testing, code style | `packages/core/src/index.ts`, `package.json`, `bunfig.toml`, `tsconfig.json`, element source files |
-| `docs/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` custom elements: installation, registration, properties, events, slots, theming | Element source files, `packages/core/src/index.ts` |
-| `docs/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/core/src/index.ts`, `packages/core/src/*.ts` |
+| `docs/development.md` | Developer guide: setup, architecture, core API, element patterns, testing, code style | `packages/base/src/index.ts`, `package.json`, `bunfig.toml`, `tsconfig.json`, element source files |
+| `docs/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` custom elements: installation, registration, properties, events, slots, theming | Element source files, `packages/base/src/index.ts` |
+| `docs/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/base/src/index.ts`, `packages/base/src/*.ts` |
 | `docs/duskmoon-elements/references/element-catalog.md` | All element packages by category with tags and class names | `elements/` directory, each element's `src/index.ts` |
 
 ## Execution Steps
@@ -42,8 +42,8 @@ docs/
 Read and compare the following against each doc file:
 
 **For `docs/development.md`:**
-- `packages/core/src/index.ts` — All public exports (add any new ones, remove deleted ones)
-- `packages/core/src/*.ts` — API signatures for base-element, styles, animations, themes, validation, mixins, performance, and any new modules
+- `packages/base/src/index.ts` — All public exports (add any new ones, remove deleted ones)
+- `packages/base/src/*.ts` — API signatures for base-element, styles, animations, themes, validation, mixins, performance, and any new modules
 - `package.json` (root) — Scripts, workspaces, devDependencies
 - `bunfig.toml` — Test configuration
 - `tsconfig.json` — Compiler options
@@ -54,14 +54,14 @@ Read and compare the following against each doc file:
 
 **For `docs/duskmoon-elements/SKILL.md`:**
 - Element source files — Verify common properties, events, slots, CSS parts examples
-- `packages/core/src/index.ts` — Theme presets, registration patterns
+- `packages/base/src/index.ts` — Theme presets, registration patterns
 - Element count — Must match `elements/` directory listing
 
 **For `docs/duskmoon-elements/references/core-api.md`:**
-- `packages/core/src/index.ts` — All exports (values and types)
-- `packages/core/src/base-element.ts` — BaseElement methods
-- `packages/core/src/mixins.ts` — Mixin list
-- `packages/core/src/themes.ts` — Theme presets and CSS variables
+- `packages/base/src/index.ts` — All exports (values and types)
+- `packages/base/src/base-element.ts` — BaseElement methods
+- `packages/base/src/mixins.ts` — Mixin list
+- `packages/base/src/themes.ts` — Theme presets and CSS variables
 
 **For `docs/duskmoon-elements/references/element-catalog.md`:**
 - `elements/` directory listing — Package count and names
@@ -84,13 +84,13 @@ Edit each doc file to reflect the current state. Follow these rules:
 - **Keep structure**: Preserve the existing heading hierarchy and organization
 - **No aspirational content**: Only document what exists today, not planned features
 - **Test counts**: Update test/file counts if they appear in the docs
-- **New sections**: If a new core module was added (e.g., a new `packages/core/src/foo.ts`), add a corresponding section in the appropriate place
+- **New sections**: If a new core module was added (e.g., a new `packages/base/src/foo.ts`), add a corresponding section in the appropriate place
 - **SKILL.md**: Preserve YAML frontmatter — only update the body and reference files
 
 ### 4. Verify
 
 After updating, confirm:
-- All exports listed in `packages/core/src/index.ts` appear in `references/core-api.md`
+- All exports listed in `packages/base/src/index.ts` appear in `references/core-api.md`
 - All element packages in `elements/` appear in `references/element-catalog.md`
 - Element count in SKILL.md matches catalog
 - All scripts in root `package.json` are documented in `development.md`

@@ -22,7 +22,7 @@
  * @fires input - Fired when the switch is toggled
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export type SwitchSize = 'sm' | 'md' | 'lg';
 export type SwitchColor =

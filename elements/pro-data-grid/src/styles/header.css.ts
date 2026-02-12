@@ -1,7 +1,7 @@
 /**
  * Header row and header cell styles.
  */
-import { css } from '@duskmoon-dev/el-core';
+import { css } from '@duskmoon-dev/el-base';
 
 export const headerStyles = css`
   .grid-header {

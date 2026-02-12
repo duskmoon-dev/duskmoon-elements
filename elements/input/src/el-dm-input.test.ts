@@ -1,4 +1,5 @@
 import { expect, test, describe, beforeEach, afterEach } from 'bun:test';
+import { validators } from '@duskmoon-dev/el-base';
 import { ElDmInput, register } from './index';
 
 register();
@@ -432,5 +433,109 @@ describe('ElDmInput', () => {
     const el = createInput({ helperText: 'Help' });
     container.appendChild(el);
     expect(el.shadowRoot?.querySelector('[part="helper"]')).toBeDefined();
+  });
+
+  // --- Validation API ---
+  describe('validation API', () => {
+    test('has setValidators method', () => {
+      const el = createInput();
+      container.appendChild(el);
+      expect(typeof el.setValidators).toBe('function');
+    });
+
+    test('has validate method', () => {
+      const el = createInput();
+      container.appendChild(el);
+      expect(typeof el.validate).toBe('function');
+    });
+
+    test('validate returns valid when no validators set', () => {
+      const el = createInput({ value: 'hello' });
+      container.appendChild(el);
+      const result = el.validate();
+      expect(result.state).toBe('valid');
+      expect(result.message).toBeUndefined();
+    });
+
+    test('validate returns valid when all validators pass', () => {
+      const el = createInput({ value: 'hello@test.com' });
+      container.appendChild(el);
+      el.setValidators([
+        validators.required('Required'),
+        validators.email('Invalid email'),
+      ]);
+      const result = el.validate();
+      expect(result.state).toBe('valid');
+    });
+
+    test('validate returns invalid on first failure', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      el.setValidators([
+        validators.required('Email is required'),
+        validators.email('Invalid email'),
+      ]);
+      const result = el.validate();
+      expect(result.state).toBe('invalid');
+      expect(result.message).toBe('Email is required');
+    });
+
+    test('validate updates validationState property', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      el.setValidators([validators.required('Required')]);
+      el.validate();
+      expect(el.validationState).toBe('invalid');
+    });
+
+    test('validate updates errorMessage property', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      el.setValidators([validators.required('Field required')]);
+      el.validate();
+      expect(el.errorMessage).toBe('Field required');
+    });
+
+    test('validate clears error on valid result', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      el.setValidators([validators.required('Required')]);
+      el.validate();
+      expect(el.validationState).toBe('invalid');
+
+      el.value = 'filled';
+      el.validate();
+      expect(el.validationState).toBe('valid');
+      expect(el.errorMessage).toBe('');
+    });
+
+    test('auto-validates on blur when validators set', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      el.setValidators([validators.required('Required')]);
+      const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('blur'));
+      expect(el.validationState).toBe('invalid');
+      expect(el.errorMessage).toBe('Required');
+    });
+
+    test('does not auto-validate on blur without validators', () => {
+      const el = createInput({ value: '' });
+      container.appendChild(el);
+      const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('blur'));
+      // validationState should remain undefined (not set)
+      expect(el.validationState).not.toBe('invalid');
+    });
+
+    test('setValidators replaces previous validators', () => {
+      const el = createInput({ value: 'ab' });
+      container.appendChild(el);
+      el.setValidators([validators.minLength(5, 'Too short')]);
+      expect(el.validate().state).toBe('invalid');
+
+      el.setValidators([validators.minLength(1, 'Too short')]);
+      expect(el.validate().state).toBe('valid');
+    });
   });
 });

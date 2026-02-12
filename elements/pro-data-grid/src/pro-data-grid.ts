@@ -14,7 +14,7 @@
  * Phase 11: i18n, RTL, state persistence, advanced filter.
  */
 
-import { BaseElement } from '@duskmoon-dev/el-core';
+import { BaseElement } from '@duskmoon-dev/el-base';
 import { VirtualScroller } from './core/virtual-scroller.js';
 import { SortEngine } from './core/sort-engine.js';
 import { FilterEngine } from './core/filter-engine.js';

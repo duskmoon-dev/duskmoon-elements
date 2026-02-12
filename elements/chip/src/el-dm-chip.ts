@@ -24,7 +24,7 @@
  * @fires click - Fired when chip is clicked
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as chipCSS } from '@duskmoon-dev/core/components/chip';
 
 const VARIANT_CLASSES: Record<string, string> = {

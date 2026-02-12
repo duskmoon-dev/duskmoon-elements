@@ -24,7 +24,7 @@
  * @fires click - Fired when interactive card is clicked
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as cardCSS } from '@duskmoon-dev/core/components/card';
 
 /**

@@ -20,7 +20,7 @@
  * @fires change - Fired when selection changes, detail: { value, item }
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 /**
  * Navigation item structure

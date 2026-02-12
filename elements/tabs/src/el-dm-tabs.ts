@@ -19,7 +19,7 @@
  * @fires change - Fired when tab selection changes
  */
 
-import { BaseElement, css } from '@duskmoon-dev/el-core';
+import { BaseElement, css } from '@duskmoon-dev/el-base';
 
 export type TabsVariant = 'underline' | 'pills' | 'enclosed';
 export type TabsOrientation = 'horizontal' | 'vertical';

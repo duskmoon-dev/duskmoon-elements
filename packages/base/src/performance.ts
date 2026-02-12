@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { debounce, throttle, scheduleTask } from '@duskmoon-dev/el-core';
+ * import { debounce, throttle, scheduleTask } from '@duskmoon-dev/el-base';
  *
  * class MySearch extends BaseElement {
  *   #search = debounce((query: string) => {

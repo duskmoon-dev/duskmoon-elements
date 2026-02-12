@@ -191,7 +191,7 @@ DuskMoon Elements addresses these challenges by:
 
 ```
 @duskmoon-dev/
-├── el-core           # Base utilities, theming, BaseElement class
+├── el-base           # Base utilities, theming, BaseElement class
 ├── el-button         # Individual component packages
 ├── el-input          # (30 packages total)
 ├── ...

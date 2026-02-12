@@ -26,7 +26,7 @@ export {
   cssVars,
   defaultTheme,
   resetStyles,
-} from '@duskmoon-dev/el-core';
+} from '@duskmoon-dev/el-base';
 
 export type {
   PropertyDefinition,
@@ -41,7 +41,7 @@ export type {
   ValidatableProps,
   ValueChangeEventDetail,
   AttributeConverter,
-} from '@duskmoon-dev/el-core';
+} from '@duskmoon-dev/el-base';
 
 // Import elements and register functions
 import { ElDmButton, register as registerButton } from '@duskmoon-dev/el-button';

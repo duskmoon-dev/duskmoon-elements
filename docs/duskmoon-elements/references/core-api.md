@@ -1,6 +1,6 @@
 # Core Package API
 
-`@duskmoon-dev/el-core` — foundation for all custom elements. Zero runtime dependencies.
+`@duskmoon-dev/el-base` — foundation for all custom elements. Zero runtime dependencies.
 
 ## Exports
 
@@ -40,7 +40,7 @@
 ## Style Utilities
 
 ```typescript
-import { css, combineStyles, cssVars } from '@duskmoon-dev/el-core';
+import { css, combineStyles, cssVars } from '@duskmoon-dev/el-base';
 
 const styles = css`:host { display: block; }`;
 const combined = combineStyles(resetStyles, defaultTheme, styles);
@@ -52,7 +52,7 @@ const vars = cssVars({ '--my-color': 'red' });
 Five built-in themes using oklch color system: `sunshine`, `moonlight`, `ocean`, `forest`, `rose`.
 
 ```typescript
-import { applyTheme } from '@duskmoon-dev/el-core';
+import { applyTheme } from '@duskmoon-dev/el-base';
 applyTheme(element, 'moonlight');
 applyTheme(element, '--color-primary: red;'); // custom CSS string
 ```
@@ -88,7 +88,7 @@ applyTheme(element, '--color-primary: red;'); // custom CSS string
 ## Validation
 
 ```typescript
-import { validate, validators } from '@duskmoon-dev/el-core';
+import { validate, validators } from '@duskmoon-dev/el-base';
 
 const result = validate('hello@example.com', [
   validators.required('Email is required'),
@@ -102,7 +102,7 @@ Available: `required`, `minLength`, `maxLength`, `pattern`, `email`, `range`, `c
 ## Performance Utilities
 
 ```typescript
-import { debounce, throttle, scheduleIdle } from '@duskmoon-dev/el-core';
+import { debounce, throttle, scheduleIdle } from '@duskmoon-dev/el-base';
 
 const search = debounce((q: string) => { /* ... */ }, 300);
 const onScroll = throttle(() => { /* ... */ }, 100);
