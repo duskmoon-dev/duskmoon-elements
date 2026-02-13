@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+// Read nested-menu CSS at build time (Vite can't resolve the 'style' export condition)
+const nestedMenuCss = readFileSync(
+  resolve(process.cwd(), '../../node_modules/@duskmoon-dev/core/dist/components/nested-menu.css'),
+  'utf-8',
+);
+
+const docs = await getCollection('docs', ({ data }) => !data.draft);
+
+// Group docs by section
+const sections: Record<string, typeof docs> = {};
+docs.forEach((doc) => {
+  const section = doc.data.section;
+  if (!sections[section]) {
+    sections[section] = [];
+  }
+  sections[section].push(doc);
+});
+
+// Sort each section by order
+Object.keys(sections).forEach((section) => {
+  sections[section].sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+});
+
+// Define section order and display names
+const sectionConfig: Record<string, { order: number; label: string }> = {
+  'getting-started': { order: 1, label: 'Getting Started' },
+  'theming': { order: 2, label: 'Theming' },
+  'input': { order: 10, label: 'Input' },
+  'feedback': { order: 20, label: 'Feedback' },
+  'navigation': { order: 30, label: 'Navigation' },
+  'surfaces': { order: 40, label: 'Surfaces' },
+  'data-display': { order: 50, label: 'Data Display' },
+  'components': { order: 60, label: 'Components' },
+  'api': { order: 70, label: 'API' },
+};
+
+const sortedSections = Object.keys(sections).sort((a, b) => {
+  return (sectionConfig[a]?.order || 999) - (sectionConfig[b]?.order || 999);
+});
+
+function isActive(slug: string): boolean {
+  const href = `/duskmoon-elements/docs/${slug}`;
+  return currentPath === href || currentPath === `${href}/`;
+}
+---
+
+<Fragment set:html={`<style>${nestedMenuCss}</style>`} />
+
+<nav aria-label="Documentation navigation">
+  <ul class="nested-menu nested-menu-compact">
+    {sortedSections.map((section) => (
+      <Fragment>
+        <li class="nested-menu-title">{sectionConfig[section]?.label || section}</li>
+        {sections[section].map((doc) => (
+          <li>
+            <a
+              href={`/duskmoon-elements/docs/${doc.slug}`}
+              aria-current={isActive(doc.slug) ? 'page' : undefined}
+            >
+              {doc.data.title}
+            </a>
+          </li>
+        ))}
+      </Fragment>
+    ))}
+  </ul>
+</nav>

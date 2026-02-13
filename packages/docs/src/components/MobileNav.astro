@@ -1,45 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import ThemeToggle from './ThemeToggle.astro';
+import DocsSidebar from './DocsSidebar.astro';
 
 interface Props {
   currentPath?: string;
 }
 
 const { currentPath = '' } = Astro.props;
-
-const docs = await getCollection('docs', ({ data }) => !data.draft);
-
-// Group docs by section
-const sections: Record<string, typeof docs> = {};
-docs.forEach((doc) => {
-  const section = doc.data.section;
-  if (!sections[section]) {
-    sections[section] = [];
-  }
-  sections[section].push(doc);
-});
-
-// Sort each section by order
-Object.keys(sections).forEach((section) => {
-  sections[section].sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
-});
-
-// Define section order and display names
-const sectionConfig: Record<string, { order: number; label: string }> = {
-  'getting-started': { order: 1, label: 'Getting Started' },
-  'theming': { order: 2, label: 'Theming' },
-  'components': { order: 3, label: 'Components' },
-  'api': { order: 4, label: 'API' },
-};
-
-const sortedSections = Object.keys(sections).sort((a, b) => {
-  return (sectionConfig[a]?.order || 999) - (sectionConfig[b]?.order || 999);
-});
-
-function isActive(slug: string): boolean {
-  return currentPath === `/docs/${slug}` || currentPath === `/docs/${slug}/`;
-}
 ---
 
 <div class="mobile-nav-wrapper">
@@ -61,26 +28,9 @@ function isActive(slug: string): boolean {
       <ThemeToggle />
     </div>
 
-    <nav class="mobile-nav" aria-label="Mobile documentation navigation">
-      {sortedSections.map((section) => (
-        <div class="nav-section">
-          <h3 class="nav-section-title">{sectionConfig[section]?.label || section}</h3>
-          <ul class="nav-list">
-            {sections[section].map((doc) => (
-              <li class="nav-item">
-                <a
-                  href={`/duskmoon-elements/docs/${doc.slug}`}
-                  class:list={['nav-link', { active: isActive(doc.slug) }]}
-                  aria-current={isActive(doc.slug) ? 'page' : undefined}
-                >
-                  {doc.data.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </nav>
+    <div class="mobile-nav-body">
+      <DocsSidebar currentPath={currentPath} />
+    </div>
   </div>
 
   <div class="mobile-nav-backdrop" aria-hidden="true"></div>
@@ -157,6 +107,10 @@ function isActive(slug: string): boolean {
     color: var(--color-on-surface);
   }
 
+  .mobile-nav-body {
+    padding: 0.5rem 0;
+  }
+
   .mobile-nav-backdrop {
     position: fixed;
     top: 0;
@@ -173,57 +127,6 @@ function isActive(slug: string): boolean {
   .mobile-nav-backdrop.visible {
     opacity: 1;
     visibility: visible;
-  }
-
-  .mobile-nav {
-    padding: 1rem 0;
-  }
-
-  .nav-section {
-    margin-bottom: 1.5rem;
-  }
-
-  .nav-section-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-on-surface);
-    opacity: 0.6;
-    margin: 0 0 0.5rem 0;
-    padding: 0 1rem;
-  }
-
-  .nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .nav-item {
-    margin: 0;
-  }
-
-  .nav-link {
-    display: block;
-    padding: 0.75rem 1rem;
-    color: var(--color-on-surface);
-    text-decoration: none;
-    font-size: 1rem;
-    border-left: 3px solid transparent;
-    transition: all 0.15s ease;
-  }
-
-  .nav-link:hover {
-    background-color: var(--color-surface-container);
-    color: var(--color-primary);
-  }
-
-  .nav-link.active {
-    background-color: var(--color-primary-container);
-    color: var(--color-primary);
-    border-left-color: var(--color-primary);
-    font-weight: 500;
   }
 </style>
 
