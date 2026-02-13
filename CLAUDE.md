@@ -119,6 +119,47 @@ Element packages reference the core package via TypeScript project references. T
 
 Elements use `"@duskmoon-dev/el-base": "workspace:*"` which gets resolved to actual versions during `bun publish`.
 
+## Theme System
+
+### How core themes work
+
+`@duskmoon-dev/core` themes use `[data-theme="<name>"]` selectors on the `<html>` element. Each theme CSS file also contains a `:root { ... }` fallback block that acts as the default when no `data-theme` is set. Dark themes additionally provide `@media (prefers-color-scheme: dark) { :root:not([data-theme]) { ... } }` for automatic system-preference detection.
+
+### CSS cascade ordering rule
+
+**When importing multiple core themes, the last-imported theme's `:root` fallback wins the cascade** because `:root` and `[data-theme="<name>"]` have equal specificity (0,1,0). This means:
+
+- Import the "default fallback" theme **first** (e.g., sunshine)
+- Import themes that should override it **after** (e.g., moonlight)
+
+```css
+/* CORRECT — moonlight's [data-theme] rule comes after sunshine's :root fallback */
+@import '@duskmoon-dev/core/themes/sunshine';
+@import '@duskmoon-dev/core/themes/moonlight';
+
+/* WRONG — sunshine's :root overwrites moonlight's [data-theme="moonlight"] */
+@import '@duskmoon-dev/core/themes/moonlight';
+@import '@duskmoon-dev/core/themes/sunshine';
+```
+
+### Docs site theme modes
+
+The docs site (`packages/docs/`) supports three modes:
+
+| Mode | `data-theme` attr | localStorage | Behavior |
+|------|-------------------|--------------|----------|
+| Auto | _(removed)_ | _(cleared)_ | CSS `@media (prefers-color-scheme)` in core themes handles it |
+| Moonlight | `"moonlight"` | `"moonlight"` | Explicit dark theme |
+| Sunshine | `"sunshine"` | `"sunshine"` | Explicit light theme |
+
+### Theme-controller CSS import workaround
+
+Vite cannot resolve `@duskmoon-dev/core/components/theme-controller` via CSS `@import` because the package exports map has mixed conditions (`style` + `import` + `default`). The workaround is to read the CSS file at build time in Astro frontmatter using `readFileSync` and inject it via `<Fragment set:html>`.
+
+## @duskmoon-dev/core (upstream dependency)
+
+`@duskmoon-dev/core` lives in `duskmoon-dev/duskmoonui` — it is our own package. If core has bugs or missing features, file a GitHub issue on `duskmoon-dev/duskmoonui` with the label `internal request`. Never use `bun patch` or other local workarounds.
+
 ## Active Technologies
 - TypeScript (ES2022+ target) + Vite (build tool), existing element packages (@duskmoon-dev/el-*) (001-vite-playground)
 - N/A (static site, no persistent storage) (001-vite-playground)

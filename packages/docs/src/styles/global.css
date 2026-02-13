@@ -1,6 +1,11 @@
-/* Import theme styles - synced from @duskmoon-dev/core */
-@import './moonlight.css';
-@import './sunshine.css';
+/* Import themes from @duskmoon-dev/core
+ * IMPORTANT: sunshine must be imported BEFORE moonlight so that moonlight's
+ * [data-theme="moonlight"] rule wins over sunshine's :root fallback in the cascade
+ * (both have specificity 0,1,0 — last one wins). */
+@import '@duskmoon-dev/core/themes/sunshine';
+@import '@duskmoon-dev/core/themes/moonlight';
+
+/* Theme-controller CSS is imported via JS in ThemeToggle.astro */
 
 /* Base styles */
 *,
@@ -22,15 +27,6 @@ body {
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Theme-specific overrides */
-[data-theme='moonlight'] {
-  color-scheme: dark;
-}
-
-[data-theme='sunshine'] {
-  color-scheme: light;
 }
 
 /* Typography */
@@ -70,6 +66,8 @@ pre {
 }
 
 /* Shiki dual theme support - override inline styles */
+
+/* Light theme (sunshine) */
 [data-theme='sunshine'] pre.astro-code {
   background-color: var(--shiki-light-bg, #fff) !important;
   color: var(--shiki-light, inherit);
@@ -79,6 +77,7 @@ pre {
   color: var(--shiki-light, inherit);
 }
 
+/* Dark theme (moonlight) */
 [data-theme='moonlight'] pre.astro-code {
   background-color: var(--shiki-dark-bg, #24292e) !important;
   color: var(--shiki-dark, inherit);
@@ -86,6 +85,27 @@ pre {
 
 [data-theme='moonlight'] pre.astro-code span {
   color: var(--shiki-dark, inherit);
+}
+
+/* Auto (no data-theme) — use prefers-color-scheme */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) pre.astro-code {
+    background-color: var(--shiki-light-bg, #fff) !important;
+    color: var(--shiki-light, inherit);
+  }
+  :root:not([data-theme]) pre.astro-code span {
+    color: var(--shiki-light, inherit);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) pre.astro-code {
+    background-color: var(--shiki-dark-bg, #24292e) !important;
+    color: var(--shiki-dark, inherit);
+  }
+  :root:not([data-theme]) pre.astro-code span {
+    color: var(--shiki-dark, inherit);
+  }
 }
 
 code {

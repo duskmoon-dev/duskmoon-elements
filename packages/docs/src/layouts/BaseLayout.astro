@@ -11,7 +11,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="moonlight">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,10 +35,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script is:inline>
       // Initialize theme before render to prevent flash
       (function() {
-        const stored = localStorage.getItem('duskmoon-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored || (prefersDark ? 'moonlight' : 'sunshine');
-        document.documentElement.dataset.theme = theme;
+        var stored = localStorage.getItem('duskmoon-theme');
+        if (stored === 'moonlight' || stored === 'sunshine') {
+          document.documentElement.dataset.theme = stored;
+        }
+        // 'auto' or no stored value: leave data-theme unset so CSS
+        // @media (prefers-color-scheme) in the core themes handles it
       })();
     </script>
   </head>

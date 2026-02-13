@@ -1,80 +1,107 @@
 ---
-// ThemeToggle - switches between moonlight (dark) and sunshine (light) themes
+// ThemeToggle - dropdown theme controller using @duskmoon-dev/core theme-controller styles
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Read theme-controller CSS at build time (Vite can't resolve the 'style' export condition)
+// Walk up from cwd (packages/docs/) to find the root node_modules
+const themeControllerCss = readFileSync(
+  resolve(process.cwd(), '../../node_modules/@duskmoon-dev/core/dist/components/theme-controller.css'),
+  'utf-8',
+);
+
+const themes = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'moonlight', label: 'Moonlight' },
+  { value: 'sunshine', label: 'Sunshine' },
+];
 ---
 
-<button
-  class="theme-toggle"
-  type="button"
-  aria-label="Toggle theme"
-  title="Toggle theme"
->
-  <span class="icon sun-icon" aria-hidden="true">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/>
-      <line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/>
-      <line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    </svg>
-  </span>
-  <span class="icon moon-icon" aria-hidden="true">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-  </span>
-</button>
+<!-- Inject theme-controller CSS from core -->
+<Fragment set:html={`<style>${themeControllerCss}</style>`} />
 
-<style>
-  .theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: none;
-    border-radius: 8px;
-    background-color: transparent;
-    color: var(--color-on-surface);
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .theme-toggle:hover {
-    background-color: var(--color-surface-container, rgba(0, 0, 0, 0.1));
-  }
-
-  .icon {
-    display: none;
-  }
-
-  /* Show sun icon in dark mode (to switch to light) */
-  :global([data-theme='moonlight']) .sun-icon {
-    display: block;
-  }
-
-  /* Show moon icon in light mode (to switch to dark) */
-  :global([data-theme='sunshine']) .moon-icon {
-    display: block;
-  }
-</style>
+<details class="theme-controller-dropdown theme-controller-dropdown-sm theme-controller-dropdown-end">
+  <summary class="theme-controller-trigger">
+    <span class="current-theme-label">Theme</span>
+  </summary>
+  <div class="theme-controller-menu">
+    {themes.map(({ value, label }) => (
+      <Fragment>
+        <input
+          type="radio"
+          name="theme"
+          value={value}
+          class="theme-controller-item"
+          id={`theme-${value}`}
+        />
+        <label for={`theme-${value}`} class="theme-controller-label">{label}</label>
+      </Fragment>
+    ))}
+  </div>
+</details>
 
 <script>
-  // Use event delegation on body to handle theme toggle clicks
-  // This ensures it works even with Astro page transitions
-  document.body.addEventListener('click', (e) => {
-    const button = (e.target as Element).closest('.theme-toggle');
-    if (!button) return;
+  const KNOWN_VALUES = ['auto', 'moonlight', 'sunshine'];
+  const LABELS: Record<string, string> = {
+    auto: 'Auto',
+    moonlight: 'Moonlight',
+    sunshine: 'Sunshine',
+  };
 
-    const html = document.documentElement;
-    const currentTheme = html.dataset.theme || 'moonlight';
-    const newTheme = currentTheme === 'moonlight' ? 'sunshine' : 'moonlight';
+  /** Resolve the effective theme for 'auto' based on system preference */
+  function resolveAutoTheme(): string {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'moonlight' : 'sunshine';
+  }
 
-    html.dataset.theme = newTheme;
-    localStorage.setItem('duskmoon-theme', newTheme);
+  function initThemeController() {
+    const stored = localStorage.getItem('duskmoon-theme') || 'auto';
+    const selected = KNOWN_VALUES.includes(stored) ? stored : 'auto';
+
+    // Apply the theme
+    if (selected === 'auto') {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = selected;
+    }
+
+    // Check the matching radio
+    const radio = document.querySelector<HTMLInputElement>(
+      `input[name="theme"][value="${selected}"]`
+    );
+    if (radio) radio.checked = true;
+
+    // Update trigger label
+    document.querySelectorAll<HTMLElement>('.current-theme-label').forEach((el) => {
+      el.textContent = LABELS[selected] || 'Theme';
+    });
+  }
+
+  // Handle radio changes via event delegation
+  document.body.addEventListener('change', (e) => {
+    const radio = e.target as HTMLInputElement;
+    if (radio.name !== 'theme' || !KNOWN_VALUES.includes(radio.value)) return;
+
+    const selected = radio.value;
+
+    if (selected === 'auto') {
+      delete document.documentElement.dataset.theme;
+      localStorage.removeItem('duskmoon-theme');
+    } else {
+      document.documentElement.dataset.theme = selected;
+      localStorage.setItem('duskmoon-theme', selected);
+    }
+
+    // Update all trigger labels
+    document.querySelectorAll<HTMLElement>('.current-theme-label').forEach((el) => {
+      el.textContent = LABELS[selected] || 'Theme';
+    });
+
+    // Close the dropdown
+    const details = radio.closest('details');
+    if (details) details.open = false;
   });
+
+  // Init on load and on Astro page transitions
+  initThemeController();
+  document.addEventListener('astro:after-swap', initThemeController);
 </script>
