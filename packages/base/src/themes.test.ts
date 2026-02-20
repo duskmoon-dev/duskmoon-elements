@@ -62,6 +62,8 @@ describe('Theme presets', () => {
       expect(theme).toContain('--shadow-sm:');
       expect(theme).toContain('--shadow-md:');
       expect(theme).toContain('--shadow-lg:');
+      expect(theme).toContain('--shadow-xl:');
+      expect(theme).toContain('--shadow-2xl:');
     });
 
     test('defines focus ring', () => {
