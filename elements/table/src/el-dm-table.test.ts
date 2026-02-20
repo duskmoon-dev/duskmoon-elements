@@ -48,7 +48,7 @@ describe('ElDmTable', () => {
     ] as TableRow[];
     container.appendChild(el);
 
-    const headers = el.shadowRoot?.querySelectorAll('.table-th');
+    const headers = el.shadowRoot?.querySelectorAll('.table-header-cell');
     const rows = el.shadowRoot?.querySelectorAll('.table-row');
     expect(headers?.length).toBeGreaterThanOrEqual(2);
     expect(rows?.length).toBe(2);

@@ -6,6 +6,7 @@
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import type { Size, ValidationState } from '@duskmoon-dev/el-base';
+import { css as cascaderCSS } from '@duskmoon-dev/core/components/cascader';
 
 // Icons with explicit dimensions for proper rendering
 const chevronDownIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
@@ -59,67 +60,41 @@ interface SearchResult {
   pathValues: string[];
 }
 
-// Styles
+// Strip @layer wrapper from core CSS for Shadow DOM usage
+const coreStyles = cascaderCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
+// Styles: core CSS + element-specific overrides
 const styles = css`
   :host {
     display: inline-block;
     width: 100%;
   }
 
+  ${coreStyles}
+
+  /* Override: block display for full-width behavior */
   .cascader {
-    position: relative;
-    width: 100%;
+    display: block;
   }
 
-  /* Trigger Button */
+  /* Override: trigger sizing & gap */
   .cascader-trigger {
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
-    width: 100%;
     min-height: 2.75rem;
     padding: 0.5rem 0.75rem;
-    font-size: var(--font-size-md, 1rem);
-    line-height: 1.5;
-    color: var(--color-on-surface);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-outline);
-    border-radius: var(--radius-md, 0.5rem);
-    cursor: pointer;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
-  .cascader-trigger:hover:not(:disabled) {
-    border-color: var(--color-on-surface-variant);
-  }
-
-  .cascader-trigger:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 15%, transparent);
-  }
-
-  .cascader-trigger:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    background-color: var(--color-surface-container);
-  }
-
-  /* Value Display */
+  /* Override: value display as block text */
   .cascader-value {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: block;
     text-align: left;
   }
 
   .cascader-placeholder {
-    color: var(--color-on-surface-variant);
     opacity: 0.7;
   }
 
-  /* Tags Container (for multiple mode) */
+  /* Tags (not in core) */
   .cascader-tags {
     display: flex;
     flex-wrap: wrap;
@@ -179,81 +154,20 @@ const styles = css`
     color: var(--color-on-surface-variant);
   }
 
-  /* Icons */
-  .cascader-arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    color: var(--color-on-surface-variant);
-    transition: transform 150ms ease;
-  }
-
-  .cascader-arrow svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-  }
-
-  .cascader.open .cascader-arrow {
-    transform: rotate(180deg);
-  }
-
-  .cascader-clear {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    color: var(--color-on-surface-variant);
-    background-color: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 150ms ease;
-  }
-
+  /* Override: arrow/clear SVG sizing */
+  .cascader-arrow svg,
   .cascader-clear svg {
-    width: 14px;
-    height: 14px;
     display: block;
   }
 
-  .cascader-clear:hover {
-    background-color: var(--color-surface-container-high);
-  }
-
-  /* Dropdown - uses Popover API (top-layer requires position: fixed) */
+  /* Override: dropdown uses Popover API (top-layer requires position: fixed) */
   .cascader-dropdown {
     position: fixed;
-    margin: 0;
-    padding: 0;
-    border: 1px solid var(--color-outline-variant);
-    border-radius: var(--radius-md, 0.5rem);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
-    overflow: hidden;
-    display: none;
     flex-direction: column;
     z-index: 1000;
   }
 
-  .cascader-dropdown:popover-open {
-    display: flex;
-  }
-
-  /* Search */
-  .cascader-search {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--color-outline-variant);
-  }
-
+  /* Search icon (not in core) */
   .cascader-search-icon {
     display: inline-flex;
     align-items: center;
@@ -270,86 +184,16 @@ const styles = css`
     display: block;
   }
 
-  .cascader-search-input {
-    flex: 1;
-    padding: 0.375rem 0.5rem;
-    font-size: var(--font-size-sm, 0.875rem);
-    color: var(--color-on-surface);
-    background-color: var(--color-surface-container);
-    border: none;
-    border-radius: var(--radius-sm, 0.25rem);
-    outline: none;
-  }
-
-  .cascader-search-input:focus {
-    background-color: var(--color-surface-container-high);
-  }
-
-  .cascader-search-input::placeholder {
-    color: var(--color-on-surface-variant);
-    opacity: 0.7;
-  }
-
-  /* Panels Container */
+  /* Override: panel max-height */
   .cascader-panels {
-    display: flex;
     max-height: 18rem;
   }
 
-  /* Panel */
   .cascader-panel {
-    display: flex;
-    flex-direction: column;
-    min-width: 10rem;
-    max-width: 14rem;
     max-height: 18rem;
-    overflow-y: auto;
-    border-right: 1px solid var(--color-outline-variant);
   }
 
-  .cascader-panel:last-child {
-    border-right: none;
-  }
-
-  .cascader-panel-options {
-    padding: 0.25rem;
-  }
-
-  /* Option */
-  .cascader-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: var(--font-size-sm, 0.875rem);
-    color: var(--color-on-surface);
-    background-color: transparent;
-    border: none;
-    border-radius: var(--radius-sm, 0.25rem);
-    cursor: pointer;
-    text-align: left;
-    transition: background-color 150ms ease;
-  }
-
-  .cascader-option:hover:not(.disabled) {
-    background-color: var(--color-surface-container);
-  }
-
-  .cascader-option.active {
-    background-color: var(--color-surface-container-high);
-  }
-
-  .cascader-option.selected {
-    background-color: var(--color-primary-container, #e8def8);
-    color: var(--color-on-primary-container, #1d1b20);
-  }
-
-  .cascader-option.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
+  /* Checkbox (not in core) */
   .cascader-option-checkbox {
     display: flex;
     align-items: center;
@@ -362,27 +206,13 @@ const styles = css`
     flex-shrink: 0;
   }
 
-  .cascader-option.selected .cascader-option-checkbox {
+  .cascader-option-selected .cascader-option-checkbox {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
     color: var(--color-on-primary, white);
   }
 
-  .cascader-option-label {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .cascader-option-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-on-surface-variant);
-    flex-shrink: 0;
-  }
-
+  /* Loading spinner (not in core) */
   .cascader-option-loading {
     display: flex;
     align-items: center;
@@ -399,7 +229,7 @@ const styles = css`
     to { transform: rotate(360deg); }
   }
 
-  /* Search Results */
+  /* Search results (not in core) */
   .cascader-search-results {
     padding: 0.25rem;
     max-height: 18rem;
@@ -443,15 +273,7 @@ const styles = css`
     margin: 0 0.25rem;
   }
 
-  /* Empty State */
-  .cascader-empty {
-    padding: 1.5rem;
-    text-align: center;
-    color: var(--color-on-surface-variant);
-    font-size: var(--font-size-sm, 0.875rem);
-  }
-
-  /* Size Variants */
+  /* Size variants via :host (override core's container-class approach) */
   :host([size="sm"]) .cascader-trigger {
     min-height: 2.25rem;
     padding: 0.375rem 0.5rem;
@@ -466,7 +288,7 @@ const styles = css`
     border-radius: var(--radius-lg, 0.625rem);
   }
 
-  /* Validation States */
+  /* Validation states via :host (override core's container-class approach) */
   :host([validation-state="invalid"]) .cascader-trigger {
     border-color: var(--color-error);
   }
@@ -480,7 +302,7 @@ const styles = css`
     border-color: var(--color-success);
   }
 
-  /* Disabled State */
+  /* Disabled state via :host */
   :host([disabled]) {
     pointer-events: none;
   }
@@ -1047,7 +869,7 @@ export class ElDmCascader extends BaseElement {
   // Rendering
   protected render(): string {
     return `
-      <div class="cascader ${this._isOpen ? 'open' : ''}">
+      <div class="cascader ${this._isOpen ? 'cascader-open' : ''}">
         ${this._renderTrigger()}
         ${this._renderDropdown()}
       </div>
@@ -1157,9 +979,9 @@ export class ElDmCascader extends BaseElement {
 
         const classes = [
           'cascader-option',
-          isActive ? 'active' : '',
-          isSelected ? 'selected' : '',
-          option.disabled ? 'disabled' : '',
+          isActive ? 'cascader-option-active' : '',
+          isSelected ? 'cascader-option-selected' : '',
+          option.disabled ? 'cascader-option-disabled' : '',
         ].filter(Boolean).join(' ');
 
         return `
@@ -1182,7 +1004,7 @@ export class ElDmCascader extends BaseElement {
 
     return `
       <div class="cascader-panel">
-        <div class="cascader-panel-options">${optionsHtml}</div>
+        <div class="cascader-options">${optionsHtml}</div>
       </div>
     `;
   }

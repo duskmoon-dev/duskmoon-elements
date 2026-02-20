@@ -3,6 +3,7 @@
  *
  * A side navigation drawer/sidebar component for displaying navigation or content panels.
  * Supports left/right positioning, modal mode with backdrop, and smooth slide animations.
+ * Uses styles from @duskmoon-dev/core for consistent theming.
  *
  * @element el-dm-drawer
  *
@@ -27,8 +28,12 @@
  */
 
 import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
+import { css as drawerCSS } from '@duskmoon-dev/core/components/drawer';
 
 export type DrawerPosition = 'left' | 'right';
+
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = drawerCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {
@@ -39,6 +44,10 @@ const styles = css`
     display: none !important;
   }
 
+  /* Import core drawer styles */
+  ${coreStyles}
+
+  /* Web component specific: wrapper for positioning context */
   .drawer-wrapper {
     position: fixed;
     inset: 0;
@@ -50,103 +59,12 @@ const styles = css`
     pointer-events: auto;
   }
 
-  .drawer-backdrop {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 300ms ease,
-      visibility 300ms ease;
-  }
-
-  .drawer-wrapper.open .drawer-backdrop {
-    opacity: 1;
-    visibility: visible;
-  }
-
+  /* Override core's fixed positioning — our wrapper handles it */
   .drawer {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
     width: var(--drawer-width, 280px);
-    max-width: 100vw;
-    background-color: var(--color-surface);
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
     pointer-events: auto;
-  }
-
-  .drawer-left {
-    left: 0;
-    border-right: 1px solid var(--color-outline);
-    transform: translateX(-100%);
-  }
-
-  .drawer-right {
-    right: 0;
-    border-left: 1px solid var(--color-outline);
-    transform: translateX(100%);
-  }
-
-  .drawer-wrapper.open .drawer-left,
-  .drawer-wrapper.open .drawer-right {
-    transform: translateX(0);
-  }
-
-  .drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--color-outline);
-    flex-shrink: 0;
-  }
-
-  .drawer-body {
-    flex: 1;
-    padding: 1rem 1.5rem;
-    overflow-y: auto;
-  }
-
-  .drawer-footer {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--color-outline);
-    flex-shrink: 0;
-  }
-
-  .drawer-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    background: transparent;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    color: var(--color-on-surface);
-    opacity: 0.7;
-    transition:
-      opacity 150ms ease,
-      background-color 150ms ease;
-  }
-
-  .drawer-close:hover {
-    opacity: 1;
-    background-color: var(--color-surface-variant);
-  }
-
-  .drawer-close:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
   }
 
   /* Non-modal drawer positioning */
@@ -319,13 +237,14 @@ export class ElDmDrawer extends BaseElement {
 
   render(): string {
     const positionClass = this.position === 'right' ? 'drawer-right' : 'drawer-left';
+    const openClass = this.open ? 'drawer-open' : '';
     const widthStyle = this.width ? `--drawer-width: ${this.width}` : '';
 
     return `
       <div class="drawer-wrapper ${this.open ? 'open' : ''}" part="wrapper">
-        ${this.modal ? '<div class="drawer-backdrop" part="backdrop"></div>' : ''}
+        ${this.modal ? `<div class="drawer-backdrop ${this.open ? 'drawer-backdrop-show' : ''}" part="backdrop"></div>` : ''}
         <div
-          class="drawer ${positionClass}"
+          class="drawer ${positionClass} ${openClass}"
           role="dialog"
           aria-modal="${this.modal ? 'true' : 'false'}"
           style="${widthStyle}"

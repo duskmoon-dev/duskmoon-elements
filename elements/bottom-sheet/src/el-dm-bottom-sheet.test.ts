@@ -31,7 +31,7 @@ describe('ElDmBottomSheet', () => {
   test('creates a shadow root with bottom sheet', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const sheet = el.shadowRoot?.querySelector('.bottom-sheet');
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
     expect(sheet).toBeDefined();
   });
 
@@ -42,17 +42,17 @@ describe('ElDmBottomSheet', () => {
     expect(dialog).toBeDefined();
   });
 
-  test('has drag handle', () => {
+  test('has drag handle bar', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const handle = el.shadowRoot?.querySelector('.bottom-sheet-handle');
+    const handle = el.shadowRoot?.querySelector('.bottomsheet-bar');
     expect(handle).toBeDefined();
   });
 
   test('has handle area', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const area = el.shadowRoot?.querySelector('.bottom-sheet-handle-area');
+    const area = el.shadowRoot?.querySelector('.bottomsheet-handle');
     expect(area).toBeDefined();
   });
 
@@ -73,21 +73,21 @@ describe('ElDmBottomSheet', () => {
   test('has content area', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const content = el.shadowRoot?.querySelector('.bottom-sheet-content');
+    const content = el.shadowRoot?.querySelector('.bottomsheet-content');
     expect(content).toBeDefined();
   });
 
   test('has header section', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const header = el.shadowRoot?.querySelector('.bottom-sheet-header');
+    const header = el.shadowRoot?.querySelector('.bottomsheet-header');
     expect(header).toBeDefined();
   });
 
   test('has wrapper', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const wrapper = el.shadowRoot?.querySelector('.bottom-sheet-wrapper');
+    const wrapper = el.shadowRoot?.querySelector('.bottomsheet-wrapper');
     expect(wrapper).toBeDefined();
   });
 
@@ -120,50 +120,71 @@ describe('ElDmBottomSheet', () => {
   test('wrapper has open class when open', () => {
     const el = createBottomSheet({ open: true });
     container.appendChild(el);
-    const wrapper = el.shadowRoot?.querySelector('.bottom-sheet-wrapper');
+    const wrapper = el.shadowRoot?.querySelector('.bottomsheet-wrapper');
     expect(wrapper?.classList.contains('open')).toBe(true);
   });
 
   test('wrapper does not have open class when closed', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const wrapper = el.shadowRoot?.querySelector('.bottom-sheet-wrapper');
+    const wrapper = el.shadowRoot?.querySelector('.bottomsheet-wrapper');
     expect(wrapper?.classList.contains('open')).toBe(false);
+  });
+
+  test('sheet has show class when open', () => {
+    const el = createBottomSheet({ open: true });
+    container.appendChild(el);
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
+    expect(sheet?.classList.contains('show')).toBe(true);
+  });
+
+  test('sheet does not have show class when closed', () => {
+    const el = createBottomSheet();
+    container.appendChild(el);
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
+    expect(sheet?.classList.contains('show')).toBe(false);
   });
 
   // --- Modal ---
   test('renders backdrop in modal mode', () => {
     const el = createBottomSheet({ modal: true });
     container.appendChild(el);
-    const backdrop = el.shadowRoot?.querySelector('.bottom-sheet-backdrop');
+    const backdrop = el.shadowRoot?.querySelector('.bottomsheet-backdrop');
     expect(backdrop).toBeDefined();
   });
 
   test('no backdrop in non-modal mode', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const backdrop = el.shadowRoot?.querySelector('.bottom-sheet-backdrop');
+    const backdrop = el.shadowRoot?.querySelector('.bottomsheet-backdrop');
     expect(backdrop).toBeNull();
+  });
+
+  test('backdrop has show class when open', () => {
+    const el = createBottomSheet({ modal: true, open: true });
+    container.appendChild(el);
+    const backdrop = el.shadowRoot?.querySelector('.bottomsheet-backdrop');
+    expect(backdrop?.classList.contains('show')).toBe(true);
   });
 
   test('aria-modal is true when modal', () => {
     const el = createBottomSheet({ modal: true });
     container.appendChild(el);
-    const sheet = el.shadowRoot?.querySelector('.bottom-sheet');
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
     expect(sheet?.getAttribute('aria-modal')).toBe('true');
   });
 
   test('aria-modal is false when not modal', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const sheet = el.shadowRoot?.querySelector('.bottom-sheet');
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
     expect(sheet?.getAttribute('aria-modal')).toBe('false');
   });
 
   test('sheet has tabindex -1 for focus management', () => {
     const el = createBottomSheet();
     container.appendChild(el);
-    const sheet = el.shadowRoot?.querySelector('.bottom-sheet');
+    const sheet = el.shadowRoot?.querySelector('.bottomsheet');
     expect(sheet?.getAttribute('tabindex')).toBe('-1');
   });
 

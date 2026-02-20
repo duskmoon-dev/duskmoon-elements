@@ -30,7 +30,7 @@ describe('ElDmPopover', () => {
   test('creates a shadow root with popover', () => {
     const el = createPopover();
     container.appendChild(el);
-    const panel = el.shadowRoot?.querySelector('.popover-panel');
+    const panel = el.shadowRoot?.querySelector('.popover-content');
     expect(panel).toBeDefined();
   });
 
@@ -62,11 +62,11 @@ describe('ElDmPopover', () => {
     expect(wrapper).toBeDefined();
   });
 
-  test('has popover content wrapper', () => {
+  test('has popover body wrapper', () => {
     const el = createPopover();
     container.appendChild(el);
-    const content = el.shadowRoot?.querySelector('.popover-content');
-    expect(content).toBeDefined();
+    const body = el.shadowRoot?.querySelector('.popover-body');
+    expect(body).toBeDefined();
   });
 
   // --- Arrow ---
@@ -136,14 +136,14 @@ describe('ElDmPopover', () => {
   test('panel has data-placement attribute', () => {
     const el = createPopover({ placement: 'top-start' } as Partial<ElDmPopover>);
     container.appendChild(el);
-    const panel = el.shadowRoot?.querySelector('.popover-panel');
+    const panel = el.shadowRoot?.querySelector('.popover-content');
     expect(panel?.getAttribute('data-placement')).toBe('top-start');
   });
 
   test('aria-modal is false', () => {
     const el = createPopover();
     container.appendChild(el);
-    const panel = el.shadowRoot?.querySelector('.popover-panel');
+    const panel = el.shadowRoot?.querySelector('.popover-content');
     expect(panel?.getAttribute('aria-modal')).toBe('false');
   });
 
@@ -151,8 +151,8 @@ describe('ElDmPopover', () => {
   test('panel is not visible by default', () => {
     const el = createPopover();
     container.appendChild(el);
-    const panel = el.shadowRoot?.querySelector('.popover-panel');
-    expect(panel?.classList.contains('visible')).toBe(false);
+    const panel = el.shadowRoot?.querySelector('.popover-content');
+    expect(panel?.classList.contains('show')).toBe(false);
   });
 
   // --- Public methods ---

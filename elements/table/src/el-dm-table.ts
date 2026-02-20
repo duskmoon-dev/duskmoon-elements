@@ -2,6 +2,7 @@
  * DuskMoon Table Element
  *
  * A full-featured data table with sorting, pagination, and row selection.
+ * Uses styles from @duskmoon-dev/core for consistent theming.
  *
  * @element el-dm-table
  *
@@ -26,6 +27,7 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as tableCSS } from '@duskmoon-dev/core/components/table';
 import type {
   TableColumn,
   TableRow,
@@ -49,6 +51,9 @@ const ICONS = {
   chevronLast: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 18 6-6-6-6"/><path d="M17 6v12"/></svg>`,
 };
 
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = tableCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
 const styles = css`
   :host {
     display: block;
@@ -58,6 +63,9 @@ const styles = css`
   :host([hidden]) {
     display: none !important;
   }
+
+  /* Import core table styles */
+  ${coreStyles}
 
   /* Main wrapper */
   .table-wrapper {
@@ -98,40 +106,27 @@ const styles = css`
     z-index: 1;
   }
 
-  /* Base table */
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    background-color: var(--color-surface, #ffffff);
-  }
-
-  /* Header styles */
-  .table-th {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: var(--color-on-surface, #1a1a1a);
-    background-color: var(--color-surface-container, #f5f5f5);
-    border-bottom: 2px solid var(--color-outline, #e0e0e0);
+  /* Web component specific: header nowrap */
+  .table-header-cell {
     white-space: nowrap;
   }
 
-  .table-th.sortable {
+  /* Sortable header cells */
+  .table-header-cell.table-sortable {
     cursor: pointer;
     user-select: none;
   }
 
-  .table-th.sortable:hover {
+  .table-header-cell.table-sortable:hover {
     background-color: var(--color-surface-container-high, #ebebeb);
   }
 
-  .table-th.sortable:focus-visible {
+  .table-header-cell.table-sortable:focus-visible {
     outline: 2px solid var(--color-primary, #6366f1);
     outline-offset: -2px;
   }
 
-  .table-th.sorted {
+  .table-header-cell.sorted {
     color: var(--color-primary, #6366f1);
   }
 
@@ -149,15 +144,8 @@ const styles = css`
     flex-shrink: 0;
   }
 
-  .table-th.sorted .sort-icon {
+  .table-header-cell.sorted .sort-icon {
     opacity: 1;
-  }
-
-  /* Cell styles */
-  .table-td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-outline-variant, #e8e8e8);
-    color: var(--color-on-surface, #1a1a1a);
   }
 
   /* Row styles */
@@ -169,11 +157,11 @@ const styles = css`
     background-color: var(--color-surface-container, #f5f5f5);
   }
 
-  .table-row.selected {
+  .table-row.table-row-selected {
     background-color: color-mix(in srgb, var(--color-primary, #6366f1) 15%, transparent);
   }
 
-  :host([hoverable]) .table-row.selected:hover {
+  :host([hoverable]) .table-row.table-row-selected:hover {
     background-color: color-mix(in srgb, var(--color-primary, #6366f1) 20%, transparent);
   }
 
@@ -196,19 +184,19 @@ const styles = css`
     background-color: var(--color-surface-container-low, #fafafa);
   }
 
-  :host([striped]) .table tbody tr.selected:nth-child(even) {
+  :host([striped]) .table tbody tr.table-row-selected:nth-child(even) {
     background-color: color-mix(in srgb, var(--color-primary, #6366f1) 15%, transparent);
   }
 
   /* Bordered variant */
-  :host([bordered]) .table-td,
-  :host([bordered]) .table-th {
+  :host([bordered]) .table-cell,
+  :host([bordered]) .table-header-cell {
     border: 1px solid var(--color-outline, #e0e0e0);
   }
 
   /* Compact variant */
-  :host([compact]) .table-th,
-  :host([compact]) .table-td {
+  :host([compact]) .table-header-cell,
+  :host([compact]) .table-cell {
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
   }
@@ -435,7 +423,7 @@ export class ElDmTable extends BaseElement {
 
   private _attachEventListeners(): void {
     // Sort handlers
-    this.shadowRoot?.querySelectorAll('.table-th.sortable').forEach((th) => {
+    this.shadowRoot?.querySelectorAll('.table-header-cell.table-sortable').forEach((th) => {
       th.addEventListener('click', this._handleHeaderClick);
       th.addEventListener('keydown', this._handleHeaderKeydown);
     });
@@ -777,7 +765,7 @@ export class ElDmTable extends BaseElement {
 
     return `
       <th
-        class="table-th ${sortable ? 'sortable' : ''} ${isSorted ? 'sorted' : ''}"
+        class="table-header-cell ${sortable ? 'table-sortable' : ''} ${isSorted ? 'sorted' : ''}"
         part="th"
         data-column="${column.key}"
         style="text-align: ${column.align || 'left'}; ${column.width ? `width: ${column.width};` : ''}"
@@ -794,14 +782,14 @@ export class ElDmTable extends BaseElement {
 
   private _renderSelectAllCell(): string {
     if (this.selectionMode !== 'multiple') {
-      return '<th class="table-th select-cell" part="th"></th>';
+      return '<th class="table-header-cell select-cell" part="th"></th>';
     }
 
     const isAllSelected = this._isAllSelected();
     const isSomeSelected = this._isSomeSelected();
 
     return `
-      <th class="table-th select-cell" part="th">
+      <th class="table-header-cell select-cell" part="th">
         <input
           type="checkbox"
           class="select-all"
@@ -818,7 +806,7 @@ export class ElDmTable extends BaseElement {
     const inputType = this.selectionMode === 'single' ? 'radio' : 'checkbox';
 
     return `
-      <td class="table-td select-cell" part="td">
+      <td class="table-cell select-cell" part="td">
         <input
           type="${inputType}"
           class="row-select"
@@ -837,7 +825,7 @@ export class ElDmTable extends BaseElement {
 
     return `
       <tr
-        class="table-row ${isSelected ? 'selected' : ''}"
+        class="table-row ${isSelected ? 'table-row-selected' : ''}"
         part="row"
         data-row-id="${row.id}"
         data-row-index="${index}"
@@ -848,7 +836,7 @@ export class ElDmTable extends BaseElement {
           .map(
             (col) => `
           <td
-            class="table-td"
+            class="table-cell"
             part="td"
             style="text-align: ${col.align || 'left'};"
           >

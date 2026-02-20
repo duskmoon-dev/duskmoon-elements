@@ -58,7 +58,7 @@ describe('ElDmBottomNavigation', () => {
   test('renders items from data', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const items = el.shadowRoot?.querySelectorAll('.nav-item');
+    const items = el.shadowRoot?.querySelectorAll('.bottom-nav-item');
     expect(items?.length).toBe(3);
   });
 
@@ -72,7 +72,7 @@ describe('ElDmBottomNavigation', () => {
   test('renders labels', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const labels = el.shadowRoot?.querySelectorAll('.nav-label');
+    const labels = el.shadowRoot?.querySelectorAll('.bottom-nav-label');
     expect(labels?.[0]?.textContent).toBe('Home');
     expect(labels?.[1]?.textContent).toBe('Search');
   });
@@ -80,7 +80,7 @@ describe('ElDmBottomNavigation', () => {
   test('renders icons', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const icons = el.shadowRoot?.querySelectorAll('.nav-icon');
+    const icons = el.shadowRoot?.querySelectorAll('.bottom-nav-icon');
     expect(icons?.length).toBe(3);
   });
 
@@ -88,7 +88,7 @@ describe('ElDmBottomNavigation', () => {
     const items: BottomNavigationItem[] = [{ value: 'test', label: 'Test' }];
     const el = createBottomNav({ items });
     container.appendChild(el);
-    const icons = el.shadowRoot?.querySelectorAll('.nav-icon');
+    const icons = el.shadowRoot?.querySelectorAll('.bottom-nav-icon');
     expect(icons?.length).toBe(0);
   });
 
@@ -142,7 +142,7 @@ describe('ElDmBottomNavigation', () => {
   test('items have role="tab"', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const items = el.shadowRoot?.querySelectorAll('.nav-item');
+    const items = el.shadowRoot?.querySelectorAll('.bottom-nav-item');
     items?.forEach(item => {
       expect(item.getAttribute('role')).toBe('tab');
     });
@@ -159,7 +159,7 @@ describe('ElDmBottomNavigation', () => {
   test('items have tabindex', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const items = el.shadowRoot?.querySelectorAll('.nav-item');
+    const items = el.shadowRoot?.querySelectorAll('.bottom-nav-item');
     items?.forEach(item => {
       expect(item.getAttribute('tabindex')).toBe('0');
     });
@@ -195,7 +195,7 @@ describe('ElDmBottomNavigation', () => {
     ];
     const el = createBottomNav({ items });
     container.appendChild(el);
-    const link = el.shadowRoot?.querySelector('a.nav-item');
+    const link = el.shadowRoot?.querySelector('a.bottom-nav-item');
     expect(link).toBeDefined();
     expect(link?.getAttribute('href')).toBe('/home');
   });
@@ -203,22 +203,22 @@ describe('ElDmBottomNavigation', () => {
   test('item without href renders as button', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const btn = el.shadowRoot?.querySelector('button.nav-item');
+    const btn = el.shadowRoot?.querySelector('button.bottom-nav-item');
     expect(btn).toBeDefined();
   });
 
   test('button items have type="button"', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const btn = el.shadowRoot?.querySelector('button.nav-item');
+    const btn = el.shadowRoot?.querySelector('button.bottom-nav-item');
     expect(btn?.getAttribute('type')).toBe('button');
   });
 
   // --- Item wrapper ---
-  test('items are wrapped in nav-item-wrapper', () => {
+  test('items are wrapped in bottom-nav-item-wrapper', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
-    const wrappers = el.shadowRoot?.querySelectorAll('.nav-item-wrapper');
+    const wrappers = el.shadowRoot?.querySelectorAll('.bottom-nav-item-wrapper');
     expect(wrappers?.length).toBe(3);
   });
 

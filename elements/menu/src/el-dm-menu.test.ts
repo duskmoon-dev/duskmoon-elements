@@ -40,7 +40,7 @@ describe('ElDmMenu', () => {
   test('creates a shadow root with menu container', () => {
     const el = createMenu();
     container.appendChild(el);
-    const menu = el.shadowRoot?.querySelector('.menu-container');
+    const menu = el.shadowRoot?.querySelector('.menu');
     expect(menu).toBeDefined();
   });
 
@@ -96,28 +96,28 @@ describe('ElDmMenu', () => {
   test('applies bottom-start placement class', () => {
     const el = createMenu();
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('placement-bottom-start')).toBe(true);
   });
 
   test('applies top placement class', () => {
     const el = createMenu({ placement: 'top' });
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('placement-top')).toBe(true);
   });
 
   test('applies left placement class', () => {
     const el = createMenu({ placement: 'left' });
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('placement-left')).toBe(true);
   });
 
   test('applies right placement class', () => {
     const el = createMenu({ placement: 'right' });
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('placement-right')).toBe(true);
   });
 
@@ -125,28 +125,28 @@ describe('ElDmMenu', () => {
   test('menu is hidden when closed', () => {
     const el = createMenu();
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('visible')).toBe(false);
   });
 
   test('menu is visible when open', () => {
     const el = createMenu({ open: true });
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.classList.contains('visible')).toBe(true);
   });
 
   test('aria-hidden is true when closed', () => {
     const el = createMenu();
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.getAttribute('aria-hidden')).toBe('true');
   });
 
   test('aria-hidden is false when open', () => {
     const el = createMenu({ open: true });
     container.appendChild(el);
-    const menuContainer = el.shadowRoot?.querySelector('.menu-container');
+    const menuContainer = el.shadowRoot?.querySelector('.menu');
     expect(menuContainer?.getAttribute('aria-hidden')).toBe('false');
   });
 

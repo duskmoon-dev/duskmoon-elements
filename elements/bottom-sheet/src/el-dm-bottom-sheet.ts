@@ -16,7 +16,8 @@
  *
  * @csspart sheet - The sheet container
  * @csspart backdrop - The backdrop overlay (modal mode)
- * @csspart handle - The drag handle
+ * @csspart handle - The drag handle bar
+ * @csspart handle-area - The drag handle touch area
  * @csspart content - The content wrapper
  * @csspart header - The header section
  *
@@ -26,6 +27,10 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as bottomsheetCSS } from '@duskmoon-dev/core/components/bottomsheet';
+
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = bottomsheetCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {
@@ -36,70 +41,43 @@ const styles = css`
     display: none !important;
   }
 
-  .bottom-sheet-wrapper {
+  /* Import core bottomsheet styles */
+  ${coreStyles}
+
+  /* Wrapper for fixed overlay with pointer-events control */
+  .bottomsheet-wrapper {
     position: fixed;
     inset: 0;
     z-index: 1000;
     pointer-events: none;
   }
 
-  .bottom-sheet-wrapper.open {
+  .bottomsheet-wrapper.open {
     pointer-events: auto;
   }
 
-  .bottom-sheet-backdrop {
+  /* Override core's fixed positioning since sheet is inside a fixed wrapper */
+  .bottomsheet {
     position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 300ms ease;
-  }
-
-  .bottom-sheet-wrapper.open .bottom-sheet-backdrop {
-    opacity: 1;
-  }
-
-  .bottom-sheet {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    max-height: 100vh;
-    max-height: 100dvh;
-    background-color: var(--color-surface);
-    border-radius: 1rem 1rem 0 0;
-    box-shadow: 0 -4px 20px rgb(0 0 0 / 0.15);
-    transform: translateY(100%);
-    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
-    touch-action: none;
-    will-change: transform;
+    z-index: auto;
     pointer-events: auto;
   }
 
-  .bottom-sheet-wrapper.open .bottom-sheet {
-    transform: translateY(0);
+  /* Override core's fixed positioning on backdrop */
+  .bottomsheet-backdrop {
+    position: absolute;
   }
 
-  .bottom-sheet.dragging {
+  .bottomsheet.dragging {
     transition: none;
   }
 
-  .bottom-sheet-handle-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 0;
-    cursor: grab;
-    touch-action: none;
+  /* We render an explicit handle bar div; hide core's ::before pseudo-element */
+  .bottomsheet-handle::before {
+    display: none;
   }
 
-  .bottom-sheet-handle-area:active {
-    cursor: grabbing;
-  }
-
-  .bottom-sheet-handle {
+  .bottomsheet-bar {
     width: 2.5rem;
     height: 0.25rem;
     background-color: var(--color-outline);
@@ -107,38 +85,31 @@ const styles = css`
     transition: background-color 150ms ease;
   }
 
-  .bottom-sheet-handle-area:hover .bottom-sheet-handle {
+  .bottomsheet-handle:hover .bottomsheet-bar {
     background-color: var(--color-outline-variant, var(--color-outline));
   }
 
-  .bottom-sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem 0.75rem;
+  .bottomsheet-header {
     border-bottom: 1px solid var(--color-outline);
   }
 
-  .bottom-sheet-header:empty {
+  .bottomsheet-header:empty {
     display: none;
   }
 
-  .bottom-sheet-content {
-    flex: 1;
+  .bottomsheet-content {
     padding: 1rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
   }
 
   /* Focus trap indicator for modal */
-  .bottom-sheet:focus-visible {
+  .bottomsheet:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: -2px;
   }
 
   /* Safe area padding for notched devices */
   @supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .bottom-sheet-content {
+    .bottomsheet-content {
       padding-bottom: calc(1rem + env(safe-area-inset-bottom));
     }
   }
@@ -222,7 +193,7 @@ export class ElDmBottomSheet extends BaseElement {
   };
 
   private _trapFocus(event: KeyboardEvent): void {
-    const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+    const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
     if (!sheet) return;
 
     this._focusableElements = Array.from(
@@ -255,7 +226,7 @@ export class ElDmBottomSheet extends BaseElement {
     this._startY = touch.clientY;
     this._isDragging = true;
 
-    const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+    const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
     if (sheet) {
       this._sheetHeight = sheet.getBoundingClientRect().height;
       sheet.classList.add('dragging');
@@ -271,7 +242,7 @@ export class ElDmBottomSheet extends BaseElement {
 
     if (deltaY > 0) {
       event.preventDefault();
-      const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+      const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
       if (sheet) {
         sheet.style.transform = `translateY(${deltaY}px)`;
       }
@@ -283,7 +254,7 @@ export class ElDmBottomSheet extends BaseElement {
 
     this._isDragging = false;
     const deltaY = this._currentY - this._startY;
-    const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+    const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
 
     if (sheet) {
       sheet.classList.remove('dragging');
@@ -306,7 +277,7 @@ export class ElDmBottomSheet extends BaseElement {
     this._startY = event.clientY;
     this._isDragging = true;
 
-    const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+    const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
     if (sheet) {
       this._sheetHeight = sheet.getBoundingClientRect().height;
       sheet.classList.add('dragging');
@@ -323,7 +294,7 @@ export class ElDmBottomSheet extends BaseElement {
     const deltaY = this._currentY - this._startY;
 
     if (deltaY > 0) {
-      const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+      const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
       if (sheet) {
         sheet.style.transform = `translateY(${deltaY}px)`;
       }
@@ -335,7 +306,7 @@ export class ElDmBottomSheet extends BaseElement {
 
     this._isDragging = false;
     const deltaY = this._currentY - this._startY;
-    const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+    const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
 
     if (sheet) {
       sheet.classList.remove('dragging');
@@ -375,7 +346,7 @@ export class ElDmBottomSheet extends BaseElement {
       this._currentSnapIndex = nearestIndex;
       const snapHeight = this._parsedSnapPoints[nearestIndex];
 
-      const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+      const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
       if (sheet) {
         sheet.style.height = `${snapHeight}vh`;
       }
@@ -396,7 +367,7 @@ export class ElDmBottomSheet extends BaseElement {
 
     if (this._parsedSnapPoints.length > 0) {
       this._currentSnapIndex = this._parsedSnapPoints.length - 1;
-      const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+      const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
       if (sheet) {
         sheet.style.height = `${this._parsedSnapPoints[this._currentSnapIndex]}vh`;
       }
@@ -406,7 +377,7 @@ export class ElDmBottomSheet extends BaseElement {
 
     if (this.modal) {
       requestAnimationFrame(() => {
-        const sheet = this.shadowRoot?.querySelector('.bottom-sheet') as HTMLElement;
+        const sheet = this.shadowRoot?.querySelector('.bottomsheet') as HTMLElement;
         sheet?.focus();
       });
     }
@@ -435,22 +406,22 @@ export class ElDmBottomSheet extends BaseElement {
 
   render(): string {
     return `
-      <div class="bottom-sheet-wrapper ${this.open ? 'open' : ''}" part="wrapper">
-        ${this.modal ? '<div class="bottom-sheet-backdrop" part="backdrop"></div>' : ''}
+      <div class="bottomsheet-wrapper ${this.open ? 'open' : ''}" part="wrapper">
+        ${this.modal ? `<div class="bottomsheet-backdrop ${this.open ? 'show' : ''}" part="backdrop"></div>` : ''}
         <div
-          class="bottom-sheet"
+          class="bottomsheet ${this.open ? 'show' : ''}"
           role="dialog"
           aria-modal="${this.modal ? 'true' : 'false'}"
           tabindex="-1"
           part="sheet"
         >
-          <div class="bottom-sheet-handle-area" part="handle-area">
-            <div class="bottom-sheet-handle" part="handle"></div>
+          <div class="bottomsheet-handle" part="handle-area">
+            <div class="bottomsheet-bar" part="handle"></div>
           </div>
-          <div class="bottom-sheet-header" part="header">
+          <div class="bottomsheet-header" part="header">
             <slot name="header"></slot>
           </div>
-          <div class="bottom-sheet-content" part="content">
+          <div class="bottomsheet-content" part="content">
             <slot></slot>
           </div>
         </div>
@@ -461,10 +432,10 @@ export class ElDmBottomSheet extends BaseElement {
   update(): void {
     super.update();
 
-    const backdrop = this.shadowRoot?.querySelector('.bottom-sheet-backdrop');
+    const backdrop = this.shadowRoot?.querySelector('.bottomsheet-backdrop');
     backdrop?.addEventListener('click', this._handleBackdropClick);
 
-    const handleArea = this.shadowRoot?.querySelector('.bottom-sheet-handle-area');
+    const handleArea = this.shadowRoot?.querySelector('.bottomsheet-handle');
     handleArea?.addEventListener('touchstart', this._handleTouchStart as EventListener, {
       passive: false,
     });

@@ -22,6 +22,7 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as navigationCSS } from '@duskmoon-dev/core/components/navigation';
 
 /**
  * Represents a single breadcrumb item
@@ -43,6 +44,9 @@ export interface NavigateEventDetail {
   index: number;
 }
 
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = navigationCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
 const styles = css`
   :host {
     display: block;
@@ -52,57 +56,46 @@ const styles = css`
     display: none !important;
   }
 
+  /* Import core navigation styles */
+  ${coreStyles}
+
   .breadcrumbs-nav {
     font-family: inherit;
   }
 
-  .breadcrumbs-list {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    list-style: none;
-    margin: 0;
+  /* Override core .breadcrumbs padding since we manage our own layout */
+  .breadcrumbs {
     padding: 0;
   }
 
-  .breadcrumbs-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .breadcrumbs-link {
+  /* Override core .breadcrumb-link with our custom colors */
+  .breadcrumb-link {
     color: var(--color-primary);
-    text-decoration: none;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    transition: color 150ms ease;
-    cursor: pointer;
   }
 
-  .breadcrumbs-link:hover {
+  .breadcrumb-link:hover {
     color: var(--color-primary-dark, var(--color-primary));
-    text-decoration: underline;
   }
 
-  .breadcrumbs-link:focus {
+  .breadcrumb-link:focus {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: 2px;
   }
 
-  .breadcrumbs-current {
+  .breadcrumb-item-active {
     color: var(--color-on-surface);
     font-size: 0.875rem;
     line-height: 1.25rem;
-    font-weight: 500;
   }
 
-  .breadcrumbs-separator {
-    color: var(--color-on-surface-variant, var(--color-outline));
-    font-size: 0.875rem;
-    user-select: none;
+  /* Hide core's separator ::before — we render separator text explicitly */
+  .breadcrumb-separator::before {
+    display: none;
+  }
+
+  .breadcrumb-separator {
+    opacity: 1;
   }
 
   /* Hide slotted separator template */
@@ -179,9 +172,9 @@ export class ElDmBreadcrumbs extends BaseElement {
         if (isLast) {
           // Last item is current page - not clickable
           return `
-            <li class="breadcrumbs-item" part="item">
+            <li class="breadcrumb-item" part="item">
               <span
-                class="breadcrumbs-current"
+                class="breadcrumb-item-active"
                 part="current"
                 aria-current="page"
               >${escapedLabel}</span>
@@ -191,14 +184,14 @@ export class ElDmBreadcrumbs extends BaseElement {
 
         // Regular breadcrumb link
         return `
-          <li class="breadcrumbs-item" part="item">
+          <li class="breadcrumb-item" part="item">
             <a
-              class="breadcrumbs-link"
+              class="breadcrumb-link"
               part="link"
               href="${item.href || '#'}"
               data-index="${index}"
             >${escapedLabel}</a>
-            <span class="breadcrumbs-separator" part="separator" aria-hidden="true">${separatorHtml}</span>
+            <span class="breadcrumb-separator" part="separator" aria-hidden="true">${separatorHtml}</span>
           </li>
         `;
       })
@@ -206,7 +199,7 @@ export class ElDmBreadcrumbs extends BaseElement {
 
     return `
       <nav class="breadcrumbs-nav" part="nav" aria-label="Breadcrumb">
-        <ol class="breadcrumbs-list" part="list">
+        <ol class="breadcrumbs" part="list">
           ${itemsHtml}
         </ol>
         <slot name="separator"></slot>
@@ -218,7 +211,7 @@ export class ElDmBreadcrumbs extends BaseElement {
     super.update();
 
     // Attach click handlers to all breadcrumb links
-    const links = this.shadowRoot?.querySelectorAll('.breadcrumbs-link');
+    const links = this.shadowRoot?.querySelectorAll('.breadcrumb-link');
     links?.forEach((link) => {
       const index = parseInt(link.getAttribute('data-index') || '0', 10);
       const item = this.items[index];

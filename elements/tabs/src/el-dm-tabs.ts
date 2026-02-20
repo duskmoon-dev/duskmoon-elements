@@ -20,9 +20,13 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as navigationCSS } from '@duskmoon-dev/core/components/navigation';
 
 export type TabsVariant = 'underline' | 'pills' | 'enclosed';
 export type TabsOrientation = 'horizontal' | 'vertical';
+
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = navigationCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {
@@ -39,35 +43,37 @@ const styles = css`
     gap: 1rem;
   }
 
-  .tablist {
-    display: flex;
+  /* Import core navigation styles */
+  ${coreStyles}
+
+  /* Override core .tabs for our custom behavior */
+  .tabs {
     position: relative;
-    gap: 0.25rem;
-    border-bottom: 1px solid var(--color-outline);
+    flex-wrap: nowrap;
   }
 
-  :host([variant='pills']) .tablist {
+  :host([variant='pills']) .tabs {
     border-bottom: none;
     gap: 0.5rem;
   }
 
-  :host([variant='enclosed']) .tablist {
+  :host([variant='enclosed']) .tabs {
     border-bottom: 1px solid var(--color-outline);
     gap: 0;
   }
 
-  :host([orientation='vertical']) .tablist {
+  :host([orientation='vertical']) .tabs {
     flex-direction: column;
     border-bottom: none;
     border-right: 1px solid var(--color-outline);
     padding-right: 0.5rem;
   }
 
-  :host([orientation='vertical'][variant='pills']) .tablist {
+  :host([orientation='vertical'][variant='pills']) .tabs {
     border-right: none;
   }
 
-  :host([orientation='vertical'][variant='enclosed']) .tablist {
+  :host([orientation='vertical'][variant='enclosed']) .tabs {
     border-right: 1px solid var(--color-outline);
     padding-right: 0;
   }
@@ -284,17 +290,17 @@ export class ElDmTabs extends BaseElement {
       return;
     }
 
-    const tablist = this.shadowRoot?.querySelector('.tablist');
-    if (!tablist) return;
+    const tabsEl = this.shadowRoot?.querySelector('.tabs');
+    if (!tabsEl) return;
 
-    const tablistRect = tablist.getBoundingClientRect();
+    const tabsRect = tabsEl.getBoundingClientRect();
     const tabRect = activeTab.getBoundingClientRect();
 
     if (this.orientation === 'vertical') {
-      const top = tabRect.top - tablistRect.top;
+      const top = tabRect.top - tabsRect.top;
       this._indicatorStyle = `top: ${top}px; height: ${tabRect.height}px;`;
     } else {
-      const left = tabRect.left - tablistRect.left;
+      const left = tabRect.left - tabsRect.left;
       this._indicatorStyle = `left: ${left}px; width: ${tabRect.width}px;`;
     }
 
@@ -308,7 +314,7 @@ export class ElDmTabs extends BaseElement {
 
     return `
       <div
-        class="tablist"
+        class="tabs"
         role="tablist"
         part="tablist"
         aria-orientation="${this.orientation || 'horizontal'}"

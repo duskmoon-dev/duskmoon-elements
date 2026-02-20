@@ -61,21 +61,21 @@ describe('ElDmStepper', () => {
   test('renders steps from data', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step');
+    const steps = el.shadowRoot?.querySelectorAll('.stepper-step');
     expect(steps?.length).toBe(3);
   });
 
   test('renders no steps with empty array', () => {
     const el = createStepper({ steps: [] });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step');
+    const steps = el.shadowRoot?.querySelectorAll('.stepper-step');
     expect(steps?.length).toBe(0);
   });
 
   test('renders labels', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
-    const labels = el.shadowRoot?.querySelectorAll('.step-label');
+    const labels = el.shadowRoot?.querySelectorAll('.stepper-step-label');
     expect(labels?.[0]?.textContent).toBe('Step 1');
     expect(labels?.[1]?.textContent).toBe('Step 2');
   });
@@ -83,7 +83,7 @@ describe('ElDmStepper', () => {
   test('renders descriptions', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
-    const descriptions = el.shadowRoot?.querySelectorAll('.step-description');
+    const descriptions = el.shadowRoot?.querySelectorAll('.stepper-step-description');
     expect(descriptions?.length).toBe(2);
     expect(descriptions?.[0]?.textContent).toBe('First step');
   });
@@ -91,7 +91,7 @@ describe('ElDmStepper', () => {
   test('renders connectors between steps', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
-    const connectors = el.shadowRoot?.querySelectorAll('.connector');
+    const connectors = el.shadowRoot?.querySelectorAll('.stepper-step-connector');
     expect(connectors?.length).toBe(3);
   });
 
@@ -145,56 +145,58 @@ describe('ElDmStepper', () => {
   });
 
   // --- Orientation classes ---
-  test('applies horizontal orientation class', () => {
+  test('horizontal orientation has no vertical class', () => {
     const el = createStepper();
     container.appendChild(el);
     const stepper = el.shadowRoot?.querySelector('.stepper');
-    expect(stepper?.classList.contains('stepper--horizontal')).toBe(true);
+    expect(stepper?.classList.contains('stepper-vertical')).toBe(false);
   });
 
   test('applies vertical orientation class', () => {
     const el = createStepper({ orientation: 'vertical' });
     container.appendChild(el);
     const stepper = el.shadowRoot?.querySelector('.stepper');
-    expect(stepper?.classList.contains('stepper--vertical')).toBe(true);
+    expect(stepper?.classList.contains('stepper-vertical')).toBe(true);
   });
 
   // --- Step state classes ---
-  test('marks current step', () => {
+  test('marks current step as active', () => {
     const el = createStepper({ steps: sampleSteps, current: 1 });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step');
-    expect(steps?.[1]?.classList.contains('step--current')).toBe(true);
+    const steps = el.shadowRoot?.querySelectorAll('.stepper-step');
+    expect(steps?.[1]?.classList.contains('stepper-step-active')).toBe(true);
   });
 
   test('marks completed steps', () => {
     const el = createStepper({ steps: sampleSteps, current: 2 });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step');
-    expect(steps?.[0]?.classList.contains('step--completed')).toBe(true);
-    expect(steps?.[1]?.classList.contains('step--completed')).toBe(true);
+    const steps = el.shadowRoot?.querySelectorAll('.stepper-step');
+    expect(steps?.[0]?.classList.contains('stepper-step-completed')).toBe(true);
+    expect(steps?.[1]?.classList.contains('stepper-step-completed')).toBe(true);
   });
 
-  test('marks upcoming steps', () => {
+  test('upcoming steps have no active or completed class', () => {
     const el = createStepper({ steps: sampleSteps, current: 0 });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step');
-    expect(steps?.[1]?.classList.contains('step--upcoming')).toBe(true);
-    expect(steps?.[2]?.classList.contains('step--upcoming')).toBe(true);
+    const steps = el.shadowRoot?.querySelectorAll('.stepper-step');
+    expect(steps?.[1]?.classList.contains('stepper-step-active')).toBe(false);
+    expect(steps?.[1]?.classList.contains('stepper-step-completed')).toBe(false);
+    expect(steps?.[2]?.classList.contains('stepper-step-active')).toBe(false);
+    expect(steps?.[2]?.classList.contains('stepper-step-completed')).toBe(false);
   });
 
   // --- Step indicators ---
   test('current step shows number', () => {
     const el = createStepper({ steps: sampleSteps, current: 0 });
     container.appendChild(el);
-    const indicator = el.shadowRoot?.querySelector('.step--current .step-indicator');
+    const indicator = el.shadowRoot?.querySelector('.stepper-step-active .stepper-step-icon');
     expect(indicator?.textContent?.trim()).toContain('1');
   });
 
   test('completed step shows checkmark SVG', () => {
     const el = createStepper({ steps: sampleSteps, current: 2 });
     container.appendChild(el);
-    const indicator = el.shadowRoot?.querySelector('.step--completed .step-indicator');
+    const indicator = el.shadowRoot?.querySelector('.stepper-step-completed .stepper-step-icon');
     expect(indicator?.innerHTML).toContain('svg');
   });
 
@@ -217,24 +219,24 @@ describe('ElDmStepper', () => {
     ];
     const el = createStepper({ steps: stepsWithIcon, current: 1 });
     container.appendChild(el);
-    const icon = el.shadowRoot?.querySelector('.step--completed .step-icon');
+    const icon = el.shadowRoot?.querySelector('.stepper-step-completed .step-icon');
     expect(icon).toBeDefined();
     expect(icon?.textContent).toBe('✓');
   });
 
   // --- Clickable ---
-  test('clickable steps have clickable class', () => {
+  test('clickable stepper has stepper-clickable class on container', () => {
     const el = createStepper({ steps: sampleSteps, clickable: true });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step--clickable');
-    expect(steps?.length).toBe(3);
+    const stepper = el.shadowRoot?.querySelector('.stepper');
+    expect(stepper?.classList.contains('stepper-clickable')).toBe(true);
   });
 
-  test('non-clickable steps do not have clickable class', () => {
+  test('non-clickable stepper does not have clickable class', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
-    const steps = el.shadowRoot?.querySelectorAll('.step--clickable');
-    expect(steps?.length).toBe(0);
+    const stepper = el.shadowRoot?.querySelector('.stepper');
+    expect(stepper?.classList.contains('stepper-clickable')).toBe(false);
   });
 
   test('steps have data-step-index', () => {
@@ -247,11 +249,25 @@ describe('ElDmStepper', () => {
   });
 
   // --- Color ---
-  test('stepper has color CSS variable', () => {
+  test('custom color stepper has color CSS variable', () => {
     const el = createStepper({ color: 'success' });
     container.appendChild(el);
     const stepper = el.shadowRoot?.querySelector('.stepper') as HTMLElement;
     expect(stepper?.getAttribute('style')).toContain('--stepper-color');
+  });
+
+  test('primary color does not set inline style', () => {
+    const el = createStepper({ color: 'primary' });
+    container.appendChild(el);
+    const stepper = el.shadowRoot?.querySelector('.stepper') as HTMLElement;
+    expect(stepper?.hasAttribute('style')).toBe(false);
+  });
+
+  test('secondary color uses core variant class', () => {
+    const el = createStepper({ color: 'secondary' });
+    container.appendChild(el);
+    const stepper = el.shadowRoot?.querySelector('.stepper');
+    expect(stepper?.classList.contains('stepper-secondary')).toBe(true);
   });
 
   // --- CSS Parts ---
@@ -271,12 +287,6 @@ describe('ElDmStepper', () => {
     const el = createStepper({ steps: sampleSteps });
     container.appendChild(el);
     expect(el.shadowRoot?.querySelectorAll('[part="indicator"]')?.length).toBe(3);
-  });
-
-  test('has content parts', () => {
-    const el = createStepper({ steps: sampleSteps });
-    container.appendChild(el);
-    expect(el.shadowRoot?.querySelectorAll('[part="content"]')?.length).toBe(3);
   });
 
   test('has label parts', () => {
@@ -314,34 +324,34 @@ describe('ElDmStep', () => {
   test('creates shadow root with indicator', () => {
     const step = createStep({ label: 'Test' });
     container.appendChild(step);
-    expect(step.shadowRoot?.querySelector('.step-indicator')).toBeDefined();
+    expect(step.shadowRoot?.querySelector('.stepper-step-icon')).toBeDefined();
   });
 
   test('renders label', () => {
     const step = createStep({ label: 'My Step' });
     container.appendChild(step);
-    const label = step.shadowRoot?.querySelector('.step-label');
+    const label = step.shadowRoot?.querySelector('.stepper-step-label');
     expect(label?.textContent).toBe('My Step');
   });
 
   test('renders description', () => {
     const step = createStep({ label: 'Test', description: 'A description' });
     container.appendChild(step);
-    const desc = step.shadowRoot?.querySelector('.step-description');
+    const desc = step.shadowRoot?.querySelector('.stepper-step-description');
     expect(desc?.textContent).toBe('A description');
   });
 
   test('no description when not set', () => {
     const step = createStep({ label: 'Test' });
     container.appendChild(step);
-    const desc = step.shadowRoot?.querySelector('.step-description');
+    const desc = step.shadowRoot?.querySelector('.stepper-step-description');
     expect(desc).toBeNull();
   });
 
   test('no label when not set', () => {
     const step = createStep();
     container.appendChild(step);
-    const label = step.shadowRoot?.querySelector('.step-label');
+    const label = step.shadowRoot?.querySelector('.stepper-step-label');
     expect(label).toBeNull();
   });
 
@@ -368,28 +378,28 @@ describe('ElDmStep', () => {
   test('shows step number for upcoming step', () => {
     const step = createStep({ stepNumber: 3 });
     container.appendChild(step);
-    const indicator = step.shadowRoot?.querySelector('.step-indicator');
+    const indicator = step.shadowRoot?.querySelector('.stepper-step-icon');
     expect(indicator?.textContent).toContain('3');
   });
 
   test('shows checkmark for completed step without icon', () => {
     const step = createStep({ status: 'completed' });
     container.appendChild(step);
-    const indicator = step.shadowRoot?.querySelector('.step-indicator');
+    const indicator = step.shadowRoot?.querySelector('.stepper-step-icon');
     expect(indicator?.innerHTML).toContain('svg');
   });
 
   test('shows icon when set', () => {
     const step = createStep({ icon: '📋' });
     container.appendChild(step);
-    const indicator = step.shadowRoot?.querySelector('.step-indicator');
+    const indicator = step.shadowRoot?.querySelector('.stepper-step-icon');
     expect(indicator?.textContent).toContain('📋');
   });
 
   test('shows icon instead of checkmark for completed with icon', () => {
     const step = createStep({ status: 'completed', icon: '★' });
     container.appendChild(step);
-    const indicator = step.shadowRoot?.querySelector('.step-indicator');
+    const indicator = step.shadowRoot?.querySelector('.stepper-step-icon');
     expect(indicator?.textContent).toContain('★');
     expect(indicator?.innerHTML).not.toContain('<svg');
   });

@@ -2,7 +2,7 @@
  * DuskMoon Stepper Element
  *
  * A multi-step progress indicator/wizard component.
- * Uses custom CSS with theme variables for consistent theming.
+ * Uses styles from @duskmoon-dev/core for consistent theming.
  *
  * @element el-dm-stepper
  *
@@ -17,13 +17,13 @@
  * @csspart stepper - The stepper container
  * @csspart step - Individual step wrapper
  * @csspart indicator - The step number/icon circle
- * @csspart content - The step label and description wrapper
  * @csspart label - The step label text
  * @csspart description - The step description text
  * @csspart connector - The connector line between steps
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as stepperCSS } from '@duskmoon-dev/core/components/stepper';
 
 export interface StepData {
   label: string;
@@ -51,6 +51,9 @@ const COLOR_MAP: Record<string, string> = {
   info: 'var(--color-info)',
 };
 
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = stepperCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
 const styles = css`
   :host {
     display: block;
@@ -61,189 +64,38 @@ const styles = css`
     display: none !important;
   }
 
-  .stepper {
-    display: flex;
-    gap: 0;
+  /* Import core stepper styles */
+  ${coreStyles}
+
+  /* Web component specific: custom color variants via --stepper-color */
+  .stepper-custom-color .stepper-step-active .stepper-step-icon {
+    background-color: var(--stepper-color);
+    border-color: var(--stepper-color);
+    color: #fff;
   }
 
-  .stepper--horizontal {
-    flex-direction: row;
-    align-items: flex-start;
+  .stepper-custom-color .stepper-step-completed .stepper-step-icon {
+    background-color: var(--stepper-color);
+    border-color: var(--stepper-color);
+    color: #fff;
   }
 
-  .stepper--vertical {
-    flex-direction: column;
+  .stepper-custom-color .stepper-step-completed .stepper-step-connector {
+    background-color: var(--stepper-color);
   }
 
-  .step {
-    display: flex;
-    position: relative;
-    flex: 1;
+  .stepper-custom-color .stepper-step-active .stepper-step-label {
+    color: var(--stepper-color);
   }
 
-  .stepper--horizontal .step {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .stepper--vertical .step {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .step-header {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .stepper--horizontal .step-header {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .stepper--vertical .step-header {
-    flex-direction: row;
-    min-height: 4rem;
-  }
-
-  .step-indicator-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-
-  .stepper--horizontal .step-indicator-wrapper {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .step-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    font-size: 0.875rem;
-    font-weight: 600;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-    background-color: var(--color-surface-variant, #e0e0e0);
-    color: var(--color-on-surface-variant, #666);
-    border: 2px solid transparent;
-  }
-
-  .step--clickable .step-indicator {
-    cursor: pointer;
-  }
-
-  .step--clickable .step-indicator:hover {
-    transform: scale(1.1);
-  }
-
-  .step--completed .step-indicator {
-    background-color: var(--stepper-color, var(--color-primary));
-    color: var(--color-on-primary, #fff);
-  }
-
-  .step--current .step-indicator {
-    background-color: var(--color-surface, #fff);
-    color: var(--stepper-color, var(--color-primary));
-    border-color: var(--stepper-color, var(--color-primary));
-  }
-
-  .step--upcoming .step-indicator {
-    background-color: var(--color-surface-variant, #e0e0e0);
-    color: var(--color-on-surface-variant, #666);
-  }
-
-  .step-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 0.5rem 0;
-  }
-
-  .stepper--horizontal .step-content {
-    align-items: center;
-    padding: 0.5rem 0.5rem 0;
-  }
-
-  .stepper--vertical .step-content {
-    padding-left: 0.75rem;
-    padding-top: 0.25rem;
-  }
-
-  .step-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-on-surface, #1a1a1a);
-    transition: color 0.2s ease;
-  }
-
-  .step--clickable .step-label {
-    cursor: pointer;
-  }
-
-  .step--upcoming .step-label {
-    color: var(--color-on-surface-variant, #666);
-  }
-
-  .step--current .step-label {
-    color: var(--stepper-color, var(--color-primary));
-    font-weight: 600;
-  }
-
-  .step-description {
-    font-size: 0.75rem;
-    color: var(--color-on-surface-variant, #666);
-  }
-
-  /* Connector lines */
-  .connector {
-    position: absolute;
-    background-color: var(--color-surface-variant, #e0e0e0);
-    transition: background-color 0.2s ease;
-  }
-
-  .step--completed .connector {
-    background-color: var(--stepper-color, var(--color-primary));
-  }
-
-  .stepper--horizontal .connector {
-    height: 2px;
-    top: 1rem;
-    left: calc(50% + 1rem + 0.25rem);
-    right: calc(-50% + 1rem + 0.25rem);
-  }
-
-  .stepper--horizontal .step:last-child .connector {
-    display: none;
-  }
-
-  .stepper--vertical .connector {
-    width: 2px;
-    left: calc(1rem - 1px);
-    top: 2.5rem;
-    bottom: 0.5rem;
-  }
-
-  .stepper--vertical .step:last-child .connector {
-    display: none;
+  .stepper-custom-color.stepper-clickable .stepper-step-button:hover .stepper-step-icon {
+    border-color: var(--stepper-color);
   }
 
   /* Icon support */
   .step-icon {
     font-size: 1rem;
     line-height: 1;
-  }
-
-  /* Completed checkmark */
-  .step--completed .step-indicator::after {
-    content: '';
   }
 `;
 
@@ -298,6 +150,12 @@ export class ElDmStepper extends BaseElement {
     return 'upcoming';
   }
 
+  private _getStepStateClass(state: string): string {
+    if (state === 'completed') return 'stepper-step-completed';
+    if (state === 'current') return 'stepper-step-active';
+    return '';
+  }
+
   private _renderStepIndicator(step: StepData, index: number, state: string): string {
     if (state === 'completed') {
       return step.icon
@@ -310,33 +168,54 @@ export class ElDmStepper extends BaseElement {
     return `${index + 1}`;
   }
 
+  private _getContainerClasses(): string {
+    const classes = ['stepper'];
+
+    if (this.orientation === 'vertical') {
+      classes.push('stepper-vertical');
+    }
+
+    if (this.clickable) {
+      classes.push('stepper-clickable');
+    }
+
+    // Core has built-in secondary/tertiary variants
+    if (this.color === 'secondary') {
+      classes.push('stepper-secondary');
+    } else if (this.color === 'tertiary') {
+      classes.push('stepper-tertiary');
+    } else if (this.color !== 'primary') {
+      // success, warning, error, info use custom color variable
+      classes.push('stepper-custom-color');
+    }
+
+    return classes.join(' ');
+  }
+
   render(): string {
     const stepsArray = Array.isArray(this.steps) ? this.steps : [];
     const colorValue = COLOR_MAP[this.color] || COLOR_MAP.primary;
+    const containerClasses = this._getContainerClasses();
+    const needsCustomColor = !['primary', 'secondary', 'tertiary'].includes(this.color);
 
     const stepsHtml = stepsArray
       .map((step, index) => {
         const state = this._getStepState(index);
-        const stateClass = `step--${state}`;
-        const clickableClass = this.clickable ? 'step--clickable' : '';
+        const stateClass = this._getStepStateClass(state);
 
         return `
           <div
-            class="step ${stateClass} ${clickableClass}"
+            class="stepper-step ${stateClass}"
             data-step-index="${index}"
             part="step"
           >
-            <div class="step-header">
-              <div class="step-indicator-wrapper">
-                <div class="step-indicator" part="indicator">
-                  ${this._renderStepIndicator(step, index, state)}
-                </div>
-                <div class="connector" part="connector"></div>
+            <div class="stepper-step-connector" part="connector"></div>
+            <div class="stepper-step-button">
+              <div class="stepper-step-icon" part="indicator">
+                ${this._renderStepIndicator(step, index, state)}
               </div>
-              <div class="step-content" part="content">
-                <span class="step-label" part="label">${step.label}</span>
-                ${step.description ? `<span class="step-description" part="description">${step.description}</span>` : ''}
-              </div>
+              <span class="stepper-step-label" part="label">${step.label}</span>
+              ${step.description ? `<span class="stepper-step-description" part="description">${step.description}</span>` : ''}
             </div>
           </div>
         `;
@@ -345,8 +224,8 @@ export class ElDmStepper extends BaseElement {
 
     return `
       <div
-        class="stepper stepper--${this.orientation}"
-        style="--stepper-color: ${colorValue}"
+        class="${containerClasses}"
+        ${needsCustomColor ? `style="--stepper-color: ${colorValue}"` : ''}
         role="navigation"
         aria-label="Progress steps"
         part="stepper"
@@ -392,6 +271,9 @@ const stepStyles = css`
     display: none !important;
   }
 
+  /* Import core stepper styles */
+  ${coreStyles}
+
   :host([orientation='horizontal']) {
     flex-direction: column;
     align-items: center;
@@ -403,31 +285,26 @@ const stepStyles = css`
     align-items: flex-start;
   }
 
-  .step-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    font-size: 0.875rem;
-    font-weight: 600;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-    background-color: var(--color-surface-variant, #e0e0e0);
-    color: var(--color-on-surface-variant, #666);
-    border: 2px solid transparent;
-  }
-
-  :host([status='completed']) .step-indicator {
+  /* Override icon colors based on host status attribute */
+  :host([status='completed']) .stepper-step-icon {
     background-color: var(--step-color, var(--color-primary));
+    border-color: var(--step-color, var(--color-primary));
     color: var(--color-on-primary, #fff);
   }
 
-  :host([status='current']) .step-indicator {
+  :host([status='current']) .stepper-step-icon {
     background-color: var(--color-surface, #fff);
     color: var(--step-color, var(--color-primary));
     border-color: var(--step-color, var(--color-primary));
+  }
+
+  :host([status='current']) .stepper-step-label {
+    color: var(--step-color, var(--color-primary));
+    font-weight: 600;
+  }
+
+  :host([status='upcoming']) .stepper-step-label {
+    color: var(--color-on-surface-variant, #666);
   }
 
   .step-content {
@@ -435,26 +312,6 @@ const stepStyles = css`
     flex-direction: column;
     gap: 0.25rem;
     padding: 0.5rem;
-  }
-
-  .step-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-on-surface, #1a1a1a);
-  }
-
-  :host([status='current']) .step-label {
-    color: var(--step-color, var(--color-primary));
-    font-weight: 600;
-  }
-
-  :host([status='upcoming']) .step-label {
-    color: var(--color-on-surface-variant, #666);
-  }
-
-  .step-description {
-    font-size: 0.75rem;
-    color: var(--color-on-surface-variant, #666);
   }
 
   ::slotted(*) {
@@ -500,12 +357,12 @@ export class ElDmStep extends BaseElement {
     const colorValue = COLOR_MAP[this.color] || COLOR_MAP.primary;
 
     return `
-      <div class="step-indicator" style="--step-color: ${colorValue}" part="indicator">
+      <div class="stepper-step-icon" style="--step-color: ${colorValue}" part="indicator">
         <slot name="icon">${this._renderIndicator()}</slot>
       </div>
       <div class="step-content" part="content">
-        ${this.label ? `<span class="step-label" part="label">${this.label}</span>` : ''}
-        ${this.description ? `<span class="step-description" part="description">${this.description}</span>` : ''}
+        ${this.label ? `<span class="stepper-step-label" part="label">${this.label}</span>` : ''}
+        ${this.description ? `<span class="stepper-step-description" part="description">${this.description}</span>` : ''}
         <slot></slot>
       </div>
     `;

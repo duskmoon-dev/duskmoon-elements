@@ -21,6 +21,7 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as bottomNavCSS } from '@duskmoon-dev/core/components/bottom-navigation';
 
 /**
  * Navigation item structure
@@ -37,6 +38,9 @@ export interface BottomNavigationItem {
   /** Optional href for link behavior */
   href?: string;
 }
+
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = bottomNavCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {
@@ -69,36 +73,27 @@ const styles = css`
     position: sticky;
   }
 
+  /* Import core bottom-navigation styles */
+  ${coreStyles}
+
+  /* Override core's fixed positioning — :host handles it */
   .bottom-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    position: static;
     height: var(--bottom-nav-height);
+    min-height: auto;
     background: var(--bottom-nav-bg);
     border-top: 1px solid var(--bottom-nav-border);
     box-shadow: var(--bottom-nav-shadow);
-    padding: 0;
-    margin: 0;
-    /* Safe area for iOS devices */
-    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  /* Override core item styles with our custom properties */
+  .bottom-nav-item {
     gap: 2px;
     padding: 6px 12px;
     min-width: 0;
     max-width: 168px;
     height: 100%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
     color: var(--bottom-nav-text);
-    text-decoration: none;
     transition:
       color 0.2s ease,
       transform 0.1s ease;
@@ -106,32 +101,32 @@ const styles = css`
     user-select: none;
   }
 
-  .nav-item:focus {
+  .bottom-nav-item:focus {
     outline: none;
   }
 
-  .nav-item:focus-visible {
+  .bottom-nav-item:focus-visible {
     outline: 2px solid var(--bottom-nav-text-active);
     outline-offset: -2px;
     border-radius: 4px;
   }
 
-  .nav-item:active:not([disabled]) {
+  .bottom-nav-item:active:not([disabled]) {
     transform: scale(0.95);
   }
 
-  .nav-item[aria-selected='true'],
-  .nav-item.active {
+  .bottom-nav-item[aria-selected='true'],
+  .bottom-nav-item.active {
     color: var(--bottom-nav-text-active);
   }
 
-  .nav-item[disabled] {
+  .bottom-nav-item[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  .nav-icon {
+  .bottom-nav-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,14 +135,14 @@ const styles = css`
     flex-shrink: 0;
   }
 
-  .nav-icon ::slotted(*),
-  .nav-icon svg,
-  .nav-icon img {
+  .bottom-nav-icon ::slotted(*),
+  .bottom-nav-icon svg,
+  .bottom-nav-icon img {
     width: 100%;
     height: 100%;
   }
 
-  .nav-label {
+  .bottom-nav-label {
     font-size: var(--bottom-nav-label-size);
     font-weight: 500;
     line-height: 1.2;
@@ -159,11 +154,11 @@ const styles = css`
 
   /* Hide labels on very small screens */
   @media (max-width: 320px) {
-    .nav-label {
+    .bottom-nav-label {
       display: none;
     }
 
-    .nav-icon {
+    .bottom-nav-icon {
       width: 28px;
       height: 28px;
     }
@@ -187,7 +182,7 @@ const styles = css`
   }
 
   /* Badge indicator for items */
-  .nav-item-badge {
+  .bottom-nav-badge {
     position: absolute;
     top: 4px;
     right: calc(50% - 18px);
@@ -197,7 +192,7 @@ const styles = css`
     border-radius: 50%;
   }
 
-  .nav-item-wrapper {
+  .bottom-nav-item-wrapper {
     position: relative;
     flex: 1;
     display: flex;
@@ -272,9 +267,9 @@ export class ElDmBottomNavigation extends BaseElement {
    */
   private _handleKeydown(event: KeyboardEvent): void {
     const target = event.target as HTMLElement;
-    if (!target.classList.contains('nav-item')) return;
+    if (!target.classList.contains('bottom-nav-item')) return;
 
-    const items = Array.from(this.shadowRoot.querySelectorAll('.nav-item:not([disabled])'));
+    const items = Array.from(this.shadowRoot.querySelectorAll('.bottom-nav-item:not([disabled])'));
     const currentIndex = items.indexOf(target);
 
     let nextIndex = -1;
@@ -321,9 +316,9 @@ export class ElDmBottomNavigation extends BaseElement {
     const typeAttr = Tag === 'button' ? 'type="button"' : '';
 
     return `
-      <div class="nav-item-wrapper">
+      <div class="bottom-nav-item-wrapper">
         <${Tag}
-          class="nav-item"
+          class="bottom-nav-item"
           part="item"
           role="tab"
           tabindex="${item.disabled ? '-1' : '0'}"
@@ -336,13 +331,13 @@ export class ElDmBottomNavigation extends BaseElement {
           ${
             item.icon
               ? `
-            <span class="nav-icon" part="icon">
+            <span class="bottom-nav-icon" part="icon">
               ${item.icon}
             </span>
           `
               : ''
           }
-          <span class="nav-label" part="label">${item.label}</span>
+          <span class="bottom-nav-label" part="label">${item.label}</span>
         </${Tag}>
       </div>
     `;

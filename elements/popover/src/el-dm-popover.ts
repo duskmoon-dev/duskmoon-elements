@@ -24,6 +24,7 @@
  */
 
 import { BaseElement, css, animationStyles } from '@duskmoon-dev/el-base';
+import { css as popoverCSS } from '@duskmoon-dev/core/components/popover';
 
 export type PopoverPlacement =
   | 'top'
@@ -41,6 +42,9 @@ export type PopoverPlacement =
 
 export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'manual';
 
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = popoverCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
 const styles = css`
   :host {
     display: inline-block;
@@ -51,115 +55,85 @@ const styles = css`
     display: none !important;
   }
 
+  /* Import core popover styles */
+  ${coreStyles}
+
   .popover-trigger {
     display: inline-flex;
   }
 
-  .popover-panel {
+  /* Override core's position: absolute for JS-based positioning */
+  .popover-content {
     position: fixed;
-    z-index: 1000;
     min-width: 8rem;
-    max-width: 20rem;
-    padding: 0.75rem 1rem;
-    background-color: var(--color-surface, #ffffff);
-    border: 1px solid var(--color-outline, #e0e0e0);
-    border-radius: 0.5rem;
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1);
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.95);
-    transition:
-      opacity 150ms ease,
-      visibility 150ms ease,
-      transform 150ms ease;
     pointer-events: none;
     font-family: inherit;
   }
 
-  .popover-panel.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
+  .popover-content.show {
     pointer-events: auto;
   }
 
-  .popover-arrow {
-    position: absolute;
-    width: 0.75rem;
-    height: 0.75rem;
-    background-color: var(--color-surface, #ffffff);
-    border: 1px solid var(--color-outline, #e0e0e0);
-    transform: rotate(45deg);
-  }
-
-  /* Arrow positioning based on popover placement */
-  .popover-panel[data-placement^='top'] .popover-arrow {
+  /* Arrow positioning based on popover placement (data-attribute based) */
+  .popover-content[data-placement^='top'] .popover-arrow {
     bottom: -0.4375rem;
     border-top: none;
     border-left: none;
   }
 
-  .popover-panel[data-placement^='bottom'] .popover-arrow {
+  .popover-content[data-placement^='bottom'] .popover-arrow {
     top: -0.4375rem;
     border-bottom: none;
     border-right: none;
   }
 
-  .popover-panel[data-placement^='left'] .popover-arrow {
+  .popover-content[data-placement^='left'] .popover-arrow {
     right: -0.4375rem;
     border-top: none;
     border-left: none;
   }
 
-  .popover-panel[data-placement^='right'] .popover-arrow {
+  .popover-content[data-placement^='right'] .popover-arrow {
     left: -0.4375rem;
     border-bottom: none;
     border-right: none;
   }
 
   /* Center aligned arrows */
-  .popover-panel[data-placement='top'] .popover-arrow,
-  .popover-panel[data-placement='bottom'] .popover-arrow {
+  .popover-content[data-placement='top'] .popover-arrow,
+  .popover-content[data-placement='bottom'] .popover-arrow {
     left: 50%;
     transform: translateX(-50%) rotate(45deg);
   }
 
-  .popover-panel[data-placement='left'] .popover-arrow,
-  .popover-panel[data-placement='right'] .popover-arrow {
+  .popover-content[data-placement='left'] .popover-arrow,
+  .popover-content[data-placement='right'] .popover-arrow {
     top: 50%;
     transform: translateY(-50%) rotate(45deg);
   }
 
   /* Start aligned arrows */
-  .popover-panel[data-placement='top-start'] .popover-arrow,
-  .popover-panel[data-placement='bottom-start'] .popover-arrow {
+  .popover-content[data-placement='top-start'] .popover-arrow,
+  .popover-content[data-placement='bottom-start'] .popover-arrow {
     left: 1rem;
   }
 
-  .popover-panel[data-placement='left-start'] .popover-arrow,
-  .popover-panel[data-placement='right-start'] .popover-arrow {
+  .popover-content[data-placement='left-start'] .popover-arrow,
+  .popover-content[data-placement='right-start'] .popover-arrow {
     top: 1rem;
   }
 
   /* End aligned arrows */
-  .popover-panel[data-placement='top-end'] .popover-arrow,
-  .popover-panel[data-placement='bottom-end'] .popover-arrow {
+  .popover-content[data-placement='top-end'] .popover-arrow,
+  .popover-content[data-placement='bottom-end'] .popover-arrow {
     right: 1rem;
     left: auto;
   }
 
-  .popover-panel[data-placement='left-end'] .popover-arrow,
-  .popover-panel[data-placement='right-end'] .popover-arrow {
+  .popover-content[data-placement='left-end'] .popover-arrow,
+  .popover-content[data-placement='right-end'] .popover-arrow {
     bottom: 1rem;
     top: auto;
-  }
-
-  .popover-content {
-    color: var(--color-on-surface, #1f1f1f);
-    font-size: 0.875rem;
-    line-height: 1.5;
   }
 `;
 
@@ -241,9 +215,9 @@ export class ElDmPopover extends BaseElement {
   }
 
   private _setVisible(visible: boolean): void {
-    const panel = this.shadowRoot?.querySelector('.popover-panel');
+    const panel = this.shadowRoot?.querySelector('.popover-content');
     if (panel) {
-      panel.classList.toggle('visible', visible);
+      panel.classList.toggle('show', visible);
     }
   }
 
@@ -393,7 +367,7 @@ export class ElDmPopover extends BaseElement {
 
   private _updatePosition(): void {
     const triggerEl = this._getTriggerElement();
-    const panel = this.shadowRoot?.querySelector('.popover-panel') as HTMLElement | null;
+    const panel = this.shadowRoot?.querySelector('.popover-content') as HTMLElement | null;
 
     if (!triggerEl || !panel) return;
 
@@ -546,14 +520,14 @@ export class ElDmPopover extends BaseElement {
         <slot name="trigger"></slot>
       </div>
       <div
-        class="popover-panel"
+        class="popover-content"
         part="popover"
         role="dialog"
         aria-modal="false"
         data-placement="${this.placement}"
       >
         ${this.arrow ? '<div class="popover-arrow" part="arrow"></div>' : ''}
-        <div class="popover-content" part="content">
+        <div class="popover-body" part="content">
           <slot></slot>
         </div>
       </div>

@@ -44,7 +44,7 @@ describe('ElDmBreadcrumbs', () => {
   test('has ordered list', () => {
     const el = createBreadcrumbs();
     container.appendChild(el);
-    const ol = el.shadowRoot?.querySelector('ol.breadcrumbs-list');
+    const ol = el.shadowRoot?.querySelector('ol.breadcrumbs');
     expect(ol).toBeDefined();
   });
 
@@ -58,14 +58,14 @@ describe('ElDmBreadcrumbs', () => {
   test('renders breadcrumb items from data', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const items = el.shadowRoot?.querySelectorAll('.breadcrumbs-item');
+    const items = el.shadowRoot?.querySelectorAll('.breadcrumb-item');
     expect(items?.length).toBe(3);
   });
 
   test('renders nothing when items is empty', () => {
     const el = createBreadcrumbs({ items: [] });
     container.appendChild(el);
-    const items = el.shadowRoot?.querySelectorAll('.breadcrumbs-item');
+    const items = el.shadowRoot?.querySelectorAll('.breadcrumb-item');
     expect(items?.length).toBe(0);
   });
 
@@ -73,14 +73,14 @@ describe('ElDmBreadcrumbs', () => {
   test('non-last items are rendered as links', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const links = el.shadowRoot?.querySelectorAll('.breadcrumbs-link');
+    const links = el.shadowRoot?.querySelectorAll('.breadcrumb-link');
     expect(links?.length).toBe(2);
   });
 
   test('last item is rendered as current', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const current = el.shadowRoot?.querySelector('.breadcrumbs-current');
+    const current = el.shadowRoot?.querySelector('.breadcrumb-item-active');
     expect(current).toBeDefined();
     expect(current?.textContent).toBe('Current');
   });
@@ -88,14 +88,14 @@ describe('ElDmBreadcrumbs', () => {
   test('last item has aria-current="page"', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const current = el.shadowRoot?.querySelector('.breadcrumbs-current');
+    const current = el.shadowRoot?.querySelector('.breadcrumb-item-active');
     expect(current?.getAttribute('aria-current')).toBe('page');
   });
 
   test('links have correct href', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const links = el.shadowRoot?.querySelectorAll('.breadcrumbs-link');
+    const links = el.shadowRoot?.querySelectorAll('.breadcrumb-link');
     expect(links?.[0]?.getAttribute('href')).toBe('/');
     expect(links?.[1]?.getAttribute('href')).toBe('/products');
   });
@@ -103,7 +103,7 @@ describe('ElDmBreadcrumbs', () => {
   test('links have data-index attribute', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const links = el.shadowRoot?.querySelectorAll('.breadcrumbs-link');
+    const links = el.shadowRoot?.querySelectorAll('.breadcrumb-link');
     expect(links?.[0]?.getAttribute('data-index')).toBe('0');
     expect(links?.[1]?.getAttribute('data-index')).toBe('1');
   });
@@ -111,7 +111,7 @@ describe('ElDmBreadcrumbs', () => {
   test('items without href default to #', () => {
     const el = createBreadcrumbs({ items: [{ label: 'No href' }, { label: 'Last' }] });
     container.appendChild(el);
-    const link = el.shadowRoot?.querySelector('.breadcrumbs-link');
+    const link = el.shadowRoot?.querySelector('.breadcrumb-link');
     expect(link?.getAttribute('href')).toBe('#');
   });
 
@@ -131,21 +131,21 @@ describe('ElDmBreadcrumbs', () => {
   test('separator is rendered between items', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const separators = el.shadowRoot?.querySelectorAll('.breadcrumbs-separator');
+    const separators = el.shadowRoot?.querySelectorAll('.breadcrumb-separator');
     expect(separators?.length).toBe(2);
   });
 
   test('separator has aria-hidden', () => {
     const el = createBreadcrumbs({ items: sampleItems });
     container.appendChild(el);
-    const separator = el.shadowRoot?.querySelector('.breadcrumbs-separator');
+    const separator = el.shadowRoot?.querySelector('.breadcrumb-separator');
     expect(separator?.getAttribute('aria-hidden')).toBe('true');
   });
 
   test('custom separator text is rendered', () => {
     const el = createBreadcrumbs({ items: sampleItems, separator: '>' });
     container.appendChild(el);
-    const separator = el.shadowRoot?.querySelector('.breadcrumbs-separator');
+    const separator = el.shadowRoot?.querySelector('.breadcrumb-separator');
     expect(separator?.textContent).toContain('>');
   });
 
@@ -161,10 +161,10 @@ describe('ElDmBreadcrumbs', () => {
   test('single item is rendered as current', () => {
     const el = createBreadcrumbs({ items: [{ label: 'Only' }] });
     container.appendChild(el);
-    const current = el.shadowRoot?.querySelector('.breadcrumbs-current');
+    const current = el.shadowRoot?.querySelector('.breadcrumb-item-active');
     expect(current).toBeDefined();
     expect(current?.textContent).toBe('Only');
-    const links = el.shadowRoot?.querySelectorAll('.breadcrumbs-link');
+    const links = el.shadowRoot?.querySelectorAll('.breadcrumb-link');
     expect(links?.length).toBe(0);
   });
 

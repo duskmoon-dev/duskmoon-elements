@@ -243,17 +243,17 @@ describe('ElDmAccordionItem', () => {
     expect(slot).toBeDefined();
   });
 
-  test('has chevron icon', () => {
+  test('has expand icon', () => {
     const el = createAccordionItem();
     container.appendChild(el);
-    const chevron = el.shadowRoot?.querySelector('.chevron');
-    expect(chevron).toBeDefined();
+    const expand = el.shadowRoot?.querySelector('.accordion-expand');
+    expect(expand).toBeDefined();
   });
 
   test('has content region', () => {
     const el = createAccordionItem();
     container.appendChild(el);
-    const content = el.shadowRoot?.querySelector('.accordion-content');
+    const content = el.shadowRoot?.querySelector('.accordion-body-inner');
     expect(content).toBeDefined();
   });
 
@@ -281,6 +281,20 @@ describe('ElDmAccordionItem', () => {
     container.appendChild(el);
     const header = el.shadowRoot?.querySelector('.accordion-header');
     expect(header?.hasAttribute('disabled')).toBe(true);
+  });
+
+  test('accordion-item has open class when open', () => {
+    const el = createAccordionItem({ open: true });
+    container.appendChild(el);
+    const item = el.shadowRoot?.querySelector('.accordion-item');
+    expect(item?.classList.contains('open')).toBe(true);
+  });
+
+  test('accordion-item has no open class when closed', () => {
+    const el = createAccordionItem();
+    container.appendChild(el);
+    const item = el.shadowRoot?.querySelector('.accordion-item');
+    expect(item?.classList.contains('open')).toBe(false);
   });
 
   // --- Accessibility ---
@@ -315,14 +329,14 @@ describe('ElDmAccordionItem', () => {
   test('content has aria-hidden true when closed', () => {
     const el = createAccordionItem();
     container.appendChild(el);
-    const content = el.shadowRoot?.querySelector('.accordion-content');
+    const content = el.shadowRoot?.querySelector('.accordion-body-inner');
     expect(content?.getAttribute('aria-hidden')).toBe('true');
   });
 
   test('content has aria-hidden false when open', () => {
     const el = createAccordionItem({ open: true });
     container.appendChild(el);
-    const content = el.shadowRoot?.querySelector('.accordion-content');
+    const content = el.shadowRoot?.querySelector('.accordion-body-inner');
     expect(content?.getAttribute('aria-hidden')).toBe('false');
   });
 
@@ -411,7 +425,7 @@ describe('ElDmAccordionItem', () => {
     expect(el.shadowRoot?.querySelector('[part="header"]')).toBeDefined();
   });
 
-  test('has icon part on chevron', () => {
+  test('has icon part on expand icon', () => {
     const el = createAccordionItem();
     container.appendChild(el);
     expect(el.shadowRoot?.querySelector('[part="icon"]')).toBeDefined();

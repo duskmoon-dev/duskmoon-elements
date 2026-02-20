@@ -41,33 +41,17 @@ describe('ElDmSwitch', () => {
     expect(input).toBeDefined();
   });
 
-  test('renders track and thumb', () => {
+  test('renders checkbox input with switch class', () => {
     const el = createSwitch();
     container.appendChild(el);
-    const track = el.shadowRoot?.querySelector('.switch-track');
-    const thumb = el.shadowRoot?.querySelector('.switch-thumb');
-    expect(track).toBeDefined();
-    expect(thumb).toBeDefined();
-  });
-
-  test('renders hidden checkbox input', () => {
-    const el = createSwitch();
-    container.appendChild(el);
-    const input = el.shadowRoot?.querySelector('input[type="checkbox"]');
+    const input = el.shadowRoot?.querySelector('input[type="checkbox"].switch');
     expect(input).toBeDefined();
   });
 
-  test('input has switch-input class', () => {
+  test('wraps everything in a switch-label', () => {
     const el = createSwitch();
     container.appendChild(el);
-    const input = el.shadowRoot?.querySelector('input.switch-input');
-    expect(input).toBeDefined();
-  });
-
-  test('wraps everything in a label', () => {
-    const el = createSwitch();
-    container.appendChild(el);
-    const label = el.shadowRoot?.querySelector('label.switch');
+    const label = el.shadowRoot?.querySelector('label.switch-label');
     expect(label).toBeDefined();
   });
 
@@ -199,29 +183,29 @@ describe('ElDmSwitch', () => {
   test('renders label when provided', () => {
     const el = createSwitch({ label: 'Toggle me' });
     container.appendChild(el);
-    const label = el.shadowRoot?.querySelector('.switch-label');
+    const label = el.shadowRoot?.querySelector('[part="label"]');
     expect(label?.textContent).toContain('Toggle me');
   });
 
   test('no label element when label not provided', () => {
     const el = createSwitch();
     container.appendChild(el);
-    const label = el.shadowRoot?.querySelector('.switch-label');
+    const label = el.shadowRoot?.querySelector('[part="label"]');
     expect(label).toBeNull();
   });
 
   test('label has left class when labelPosition is left', () => {
     const el = createSwitch({ label: 'Test', labelPosition: 'left' });
     container.appendChild(el);
-    const label = el.shadowRoot?.querySelector('.switch-label');
-    expect(label?.classList.contains('switch-label-left')).toBe(true);
+    const label = el.shadowRoot?.querySelector('[part="label"]');
+    expect(label?.classList.contains('switch-text-left')).toBe(true);
   });
 
   test('label has no left class when labelPosition is right', () => {
     const el = createSwitch({ label: 'Test', labelPosition: 'right' });
     container.appendChild(el);
-    const label = el.shadowRoot?.querySelector('.switch-label');
-    expect(label?.classList.contains('switch-label-left')).toBe(false);
+    const label = el.shadowRoot?.querySelector('[part="label"]');
+    expect(label?.classList.contains('switch-text-left')).toBe(false);
   });
 
   // --- Accessibility ---
@@ -279,18 +263,6 @@ describe('ElDmSwitch', () => {
     const el = createSwitch();
     container.appendChild(el);
     expect(el.shadowRoot?.querySelector('[part="switch"]')).toBeDefined();
-  });
-
-  test('has track part', () => {
-    const el = createSwitch();
-    container.appendChild(el);
-    expect(el.shadowRoot?.querySelector('[part="track"]')).toBeDefined();
-  });
-
-  test('has thumb part', () => {
-    const el = createSwitch();
-    container.appendChild(el);
-    expect(el.shadowRoot?.querySelector('[part="thumb"]')).toBeDefined();
   });
 
   test('has label part when label provided', () => {

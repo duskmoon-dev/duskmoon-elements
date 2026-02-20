@@ -2,7 +2,7 @@
  * DuskMoon Navbar Element
  *
  * A primary navigation bar/header component with responsive design.
- * Uses custom styles with theme variables for consistent theming.
+ * Uses styles from @duskmoon-dev/core for consistent theming.
  *
  * @element el-dm-navbar
  *
@@ -26,8 +26,12 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as navigationCSS } from '@duskmoon-dev/core/components/navigation';
 
 export type NavbarColor = 'surface' | 'primary' | 'secondary' | 'tertiary';
+
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = navigationCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {
@@ -47,15 +51,14 @@ const styles = css`
     z-index: 100;
   }
 
+  /* Import core navigation styles */
+  ${coreStyles}
+
+  /* Web component specific adjustments */
   .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 4rem;
-    padding: 0 1.5rem;
-    background-color: var(--color-surface);
-    color: var(--color-on-surface);
     font-family: inherit;
+    justify-content: space-between;
+    padding: 0 1.5rem;
     transition:
       background-color 200ms ease,
       box-shadow 200ms ease;
@@ -94,25 +97,9 @@ const styles = css`
     gap: 1rem;
   }
 
-  .navbar-start {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
   .navbar-center {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     flex: 1;
     justify-content: center;
-  }
-
-  .navbar-end {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
   }
 
   /* Hamburger button */

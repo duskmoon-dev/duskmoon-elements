@@ -20,6 +20,7 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
+import { css as navigationCSS } from '@duskmoon-dev/core/components/navigation';
 
 export type MenuPlacement =
   | 'top'
@@ -31,6 +32,9 @@ export type MenuPlacement =
   | 'bottom-start'
   | 'bottom-end';
 
+// Strip @layer wrapper for Shadow DOM compatibility
+const coreStyles = navigationCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
 const menuStyles = css`
   :host {
     display: inline-block;
@@ -41,7 +45,11 @@ const menuStyles = css`
     display: none !important;
   }
 
-  .menu-container {
+  /* Import core navigation styles */
+  ${coreStyles}
+
+  /* Override core .menu for dropdown behavior */
+  .menu {
     position: absolute;
     z-index: 1000;
     min-width: 160px;
@@ -62,9 +70,12 @@ const menuStyles = css`
       visibility 150ms ease,
       transform 150ms ease;
     font-family: inherit;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
   }
 
-  .menu-container.visible {
+  .menu.visible {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
@@ -315,12 +326,12 @@ export class ElDmMenu extends BaseElement {
   }
 
   private _updatePosition(): void {
-    const menuContainer = this.shadowRoot?.querySelector('.menu-container') as HTMLElement;
-    if (!menuContainer) return;
+    const menuEl = this.shadowRoot?.querySelector('.menu') as HTMLElement;
+    if (!menuEl) return;
 
     // Check if menu would go off screen and flip if necessary
     requestAnimationFrame(() => {
-      const rect = menuContainer.getBoundingClientRect();
+      const rect = menuEl.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
 
@@ -342,7 +353,7 @@ export class ElDmMenu extends BaseElement {
 
       // Update class if flipped
       if (finalPlacement !== this.placement) {
-        menuContainer.className = `menu-container placement-${finalPlacement}${this.open ? ' visible' : ''}`;
+        menuEl.className = `menu placement-${finalPlacement}${this.open ? ' visible' : ''}`;
       }
     });
   }
@@ -397,9 +408,9 @@ export class ElDmMenu extends BaseElement {
 
   update(): void {
     super.update?.();
-    const menuContainer = this.shadowRoot?.querySelector('.menu-container');
-    if (menuContainer) {
-      menuContainer.classList.toggle('visible', this.open);
+    const menuEl = this.shadowRoot?.querySelector('.menu');
+    if (menuEl) {
+      menuEl.classList.toggle('visible', this.open);
       if (this.open) {
         this._updatePosition();
       }
@@ -412,7 +423,7 @@ export class ElDmMenu extends BaseElement {
     return `
       <slot name="trigger"></slot>
       <div
-        class="menu-container ${placementClass}${this.open ? ' visible' : ''}"
+        class="menu ${placementClass}${this.open ? ' visible' : ''}"
         part="menu"
         role="menu"
         aria-hidden="${!this.open}"
