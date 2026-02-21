@@ -56,8 +56,16 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Code blocks - theme-appropriate background */
+/* Code block theme variables */
+:root {
+  --code-bg: var(--color-surface-container);
+  --code-header-bg: var(--color-surface-container-high);
+  --code-border: var(--color-outline-variant);
+}
+
+/* Code blocks */
 pre {
+  background: var(--code-bg);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
@@ -65,47 +73,28 @@ pre {
   line-height: 1.7;
 }
 
-/* Shiki dual theme support - override inline styles */
-
-/* Light theme (sunshine) */
-[data-theme='sunshine'] pre.astro-code {
-  background-color: var(--shiki-light-bg, #fff) !important;
-  color: var(--shiki-light, inherit);
+/* Shiki dual-theme colors — defaultColor: false means we pick via CSS */
+pre.astro-code,
+pre.astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: transparent !important;
 }
 
-[data-theme='sunshine'] pre.astro-code span {
-  color: var(--shiki-light, inherit);
-}
-
-/* Dark theme (moonlight) */
-[data-theme='moonlight'] pre.astro-code {
-  background-color: var(--shiki-dark-bg, #24292e) !important;
-  color: var(--shiki-dark, inherit);
-}
-
+[data-theme='moonlight'] pre.astro-code,
 [data-theme='moonlight'] pre.astro-code span {
-  color: var(--shiki-dark, inherit);
-}
-
-/* Auto (no data-theme) — use prefers-color-scheme */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) pre.astro-code {
-    background-color: var(--shiki-light-bg, #fff) !important;
-    color: var(--shiki-light, inherit);
-  }
-  :root:not([data-theme]) pre.astro-code span {
-    color: var(--shiki-light, inherit);
-  }
+  color: var(--shiki-dark) !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) pre.astro-code {
-    background-color: var(--shiki-dark-bg, #24292e) !important;
-    color: var(--shiki-dark, inherit);
-  }
+  :root:not([data-theme]) pre.astro-code,
   :root:not([data-theme]) pre.astro-code span {
-    color: var(--shiki-dark, inherit);
+    color: var(--shiki-dark) !important;
   }
+}
+
+/* Code block background */
+pre.astro-code {
+  background-color: var(--code-bg) !important;
 }
 
 code {
