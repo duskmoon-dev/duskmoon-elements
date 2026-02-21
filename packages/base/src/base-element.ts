@@ -82,6 +82,13 @@ export abstract class BaseElement extends HTMLElement {
   private _isConnected = false;
 
   /**
+   * Property values set before element upgrade (e.g. by inline scripts
+   * that run before customElements.define). Restored in connectedCallback
+   * so they survive subclass constructor overwrites.
+   */
+  private _preUpgradeValues?: Map<string, unknown>;
+
+  /**
    * Queue of pending property updates
    */
   private _pendingUpdate = false;
@@ -111,6 +118,20 @@ export abstract class BaseElement extends HTMLElement {
     const properties = ctor.properties;
 
     for (const [name, def] of Object.entries(properties)) {
+      // Capture any value set before element upgrade (e.g. by inline scripts
+      // that run before customElements.define). The plain instance property
+      // must be deleted so the reactive accessor below takes effect.
+      // Values are stored in _preUpgradeValues and restored in
+      // connectedCallback — after the subclass constructor finishes.
+      if (Object.prototype.hasOwnProperty.call(this, name)) {
+        const preValue = (this as Record<string, unknown>)[name];
+        delete (this as Record<string, unknown>)[name];
+        if (preValue !== undefined) {
+          if (!this._preUpgradeValues) this._preUpgradeValues = new Map();
+          this._preUpgradeValues.set(name, preValue);
+        }
+      }
+
       // Set default value
       if (def.default !== undefined) {
         this._propertyValues.set(name, def.default);
@@ -229,6 +250,17 @@ export abstract class BaseElement extends HTMLElement {
    */
   connectedCallback(): void {
     this._isConnected = true;
+
+    // Restore any property values set before element upgrade.
+    // Done here (not in constructor) so subclass constructor defaults
+    // don't overwrite them.
+    if (this._preUpgradeValues) {
+      for (const [name, value] of this._preUpgradeValues) {
+        (this as Record<string, unknown>)[name] = value;
+      }
+      this._preUpgradeValues = undefined;
+    }
+
     this.update();
   }
 
