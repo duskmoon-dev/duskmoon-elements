@@ -187,6 +187,10 @@ export class ElDmMarkdown extends BaseElement {
     streaming: { type: Boolean, reflect: true },
   };
 
+  static override get observedAttributes(): string[] {
+    return [...super.observedAttributes, 'content'];
+  }
+
   /** URL to fetch markdown content from */
   declare src: string;
 
@@ -297,6 +301,13 @@ export class ElDmMarkdown extends BaseElement {
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (name === 'content' && oldValue !== newValue) {
+      // Unescape \n and \t in attribute values since HTML attributes
+      // treat them as literal characters, not control characters.
+      this.content = (newValue ?? '').replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+      return;
+    }
 
     if (name === 'theme' && oldValue !== newValue) {
       this._updateTheme();
