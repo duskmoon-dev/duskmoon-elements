@@ -73,6 +73,40 @@ describe('ElDmForm', () => {
     expect(el.getAttribute('validation-state')).toBe('success');
   });
 
+  // --- Gap property ---
+  test('defaults gap to 1rem', () => {
+    const el = createForm();
+    container.appendChild(el);
+    expect(el.gap).toBe('1rem');
+  });
+
+  test('reflects custom gap to attribute', () => {
+    const el = createForm({ gap: '2rem' } as Partial<ElDmForm>);
+    container.appendChild(el);
+    expect(el.getAttribute('gap')).toBe('2rem');
+  });
+
+  test('applies gap as CSS variable on form element', () => {
+    const el = createForm({ gap: '1.5rem' } as Partial<ElDmForm>);
+    container.appendChild(el);
+    const form = el.shadowRoot?.querySelector('form');
+    expect(form?.getAttribute('style')).toContain('--form-gap: 1.5rem');
+  });
+
+  test('updates CSS variable when gap changes', () => {
+    const el = createForm();
+    container.appendChild(el);
+    el.gap = '0.5rem';
+    // Wait for microtask batched update
+    return new Promise<void>((resolve) => {
+      queueMicrotask(() => {
+        const form = el.shadowRoot?.querySelector('form');
+        expect(form?.getAttribute('style')).toContain('--form-gap: 0.5rem');
+        resolve();
+      });
+    });
+  });
+
   // --- Public methods ---
   test('has submit method', () => {
     const el = createForm();

@@ -48,6 +48,7 @@ import '@duskmoon-dev/el-form/register';
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `validation-state` | `'default' \| 'error' \| 'success'` | `'default'` | Validation state of the form |
+| `gap` | `string` | `'1rem'` | Gap between form fields (any CSS length) |
 | `disabled` | `boolean` | `false` | Disables the entire form |
 
 ## Validation States
@@ -84,6 +85,40 @@ import '@duskmoon-dev/el-form/register';
   <el-dm-input label="Disabled Input" placeholder="Cannot edit"></el-dm-input>
   <el-dm-button type="submit" disabled>Submit</el-dm-button>
 </el-dm-form>
+```
+
+## Gap
+
+Control the spacing between form fields with the `gap` attribute.
+
+<ComponentDemo title="Compact Gap (0.5rem)">
+  <el-dm-form gap="0.5rem">
+    <el-dm-input label="Email" placeholder="Enter email"></el-dm-input>
+    <el-dm-input label="Password" type="password" placeholder="Enter password"></el-dm-input>
+    <el-dm-button type="submit">Submit</el-dm-button>
+  </el-dm-form>
+</ComponentDemo>
+
+<ComponentDemo title="Default Gap (1rem)">
+  <el-dm-form gap="1rem">
+    <el-dm-input label="Email" placeholder="Enter email"></el-dm-input>
+    <el-dm-input label="Password" type="password" placeholder="Enter password"></el-dm-input>
+    <el-dm-button type="submit">Submit</el-dm-button>
+  </el-dm-form>
+</ComponentDemo>
+
+<ComponentDemo title="Spacious Gap (2rem)">
+  <el-dm-form gap="2rem">
+    <el-dm-input label="Email" placeholder="Enter email"></el-dm-input>
+    <el-dm-input label="Password" type="password" placeholder="Enter password"></el-dm-input>
+    <el-dm-button type="submit">Submit</el-dm-button>
+  </el-dm-form>
+</ComponentDemo>
+
+```html
+<el-dm-form gap="0.5rem">...</el-dm-form>
+<el-dm-form gap="1rem">...</el-dm-form>
+<el-dm-form gap="2rem">...</el-dm-form>
 ```
 
 ## Events

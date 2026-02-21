@@ -7,6 +7,7 @@
  * @element el-dm-form
  *
  * @attr {string} validation-state - Validation state: default, error, success
+ * @attr {string} gap - Gap between form fields (CSS length, default '1rem')
  * @attr {boolean} disabled - Whether the form is disabled
  *
  * @slot - Default slot for form content
@@ -38,6 +39,9 @@ const styles = css`
 
   /* Web component specific adjustments */
   .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--form-gap, 1rem);
     font-family: inherit;
   }
 
@@ -51,7 +55,7 @@ const styles = css`
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
   }
 
   .form-control.error .label-text,
@@ -108,10 +112,12 @@ export class ElDmForm extends BaseElement {
       attribute: 'validation-state',
       default: 'default',
     },
+    gap: { type: String, reflect: true, default: '1rem' },
     disabled: { type: Boolean, reflect: true },
   };
 
   declare validationState: FormValidationState;
+  declare gap: string;
   declare disabled: boolean;
 
   constructor() {
@@ -133,7 +139,7 @@ export class ElDmForm extends BaseElement {
 
   render(): string {
     return `
-      <form class="form" part="form">
+      <form class="form" part="form" style="--form-gap: ${this.gap}">
         <slot></slot>
       </form>
     `;
