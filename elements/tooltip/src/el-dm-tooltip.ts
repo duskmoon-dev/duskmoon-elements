@@ -30,8 +30,19 @@ const POSITION_CLASSES: Record<string, string> = {
   right: 'tooltip-right',
 };
 
+const COLOR_CLASSES: Record<string, string> = {
+  primary: 'tooltip-primary',
+  secondary: 'tooltip-secondary',
+  accent: 'tooltip-accent',
+  info: 'tooltip-info',
+  success: 'tooltip-success',
+  warning: 'tooltip-warning',
+  error: 'tooltip-error',
+};
+
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 export type TooltipTrigger = 'hover' | 'click' | 'focus';
+export type TooltipColor = 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = tooltipCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
@@ -143,6 +154,61 @@ const styles = css`
     border-right-color: var(--color-inverse-surface, #1f1f1f);
     border-left: 0;
   }
+
+  /* Color variants */
+  .tooltip-primary { background-color: var(--color-primary); color: var(--color-on-primary); }
+  .tooltip-primary .tooltip-arrow { border-color: var(--color-primary); }
+  .tooltip-secondary { background-color: var(--color-secondary); color: var(--color-on-secondary); }
+  .tooltip-secondary .tooltip-arrow { border-color: var(--color-secondary); }
+  .tooltip-accent { background-color: var(--color-tertiary); color: var(--color-on-tertiary); }
+  .tooltip-accent .tooltip-arrow { border-color: var(--color-tertiary); }
+  .tooltip-info { background-color: var(--color-info); color: #fff; }
+  .tooltip-info .tooltip-arrow { border-color: var(--color-info); }
+  .tooltip-success { background-color: var(--color-success); color: #fff; }
+  .tooltip-success .tooltip-arrow { border-color: var(--color-success); }
+  .tooltip-warning { background-color: var(--color-warning); color: #000; }
+  .tooltip-warning .tooltip-arrow { border-color: var(--color-warning); }
+  .tooltip-error { background-color: var(--color-error); color: #fff; }
+  .tooltip-error .tooltip-arrow { border-color: var(--color-error); }
+
+  /* Arrow color inheritance for colored variants — reset transparent borders */
+  .tooltip-primary .tooltip-arrow,
+  .tooltip-secondary .tooltip-arrow,
+  .tooltip-accent .tooltip-arrow,
+  .tooltip-info .tooltip-arrow,
+  .tooltip-success .tooltip-arrow,
+  .tooltip-warning .tooltip-arrow,
+  .tooltip-error .tooltip-arrow {
+    border-color: transparent;
+  }
+  .tooltip-primary.tooltip-top .tooltip-arrow { border-top-color: var(--color-primary); }
+  .tooltip-primary.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-primary); }
+  .tooltip-primary.tooltip-left .tooltip-arrow { border-left-color: var(--color-primary); }
+  .tooltip-primary.tooltip-right .tooltip-arrow { border-right-color: var(--color-primary); }
+  .tooltip-secondary.tooltip-top .tooltip-arrow { border-top-color: var(--color-secondary); }
+  .tooltip-secondary.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-secondary); }
+  .tooltip-secondary.tooltip-left .tooltip-arrow { border-left-color: var(--color-secondary); }
+  .tooltip-secondary.tooltip-right .tooltip-arrow { border-right-color: var(--color-secondary); }
+  .tooltip-accent.tooltip-top .tooltip-arrow { border-top-color: var(--color-tertiary); }
+  .tooltip-accent.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-tertiary); }
+  .tooltip-accent.tooltip-left .tooltip-arrow { border-left-color: var(--color-tertiary); }
+  .tooltip-accent.tooltip-right .tooltip-arrow { border-right-color: var(--color-tertiary); }
+  .tooltip-info.tooltip-top .tooltip-arrow { border-top-color: var(--color-info); }
+  .tooltip-info.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-info); }
+  .tooltip-info.tooltip-left .tooltip-arrow { border-left-color: var(--color-info); }
+  .tooltip-info.tooltip-right .tooltip-arrow { border-right-color: var(--color-info); }
+  .tooltip-success.tooltip-top .tooltip-arrow { border-top-color: var(--color-success); }
+  .tooltip-success.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-success); }
+  .tooltip-success.tooltip-left .tooltip-arrow { border-left-color: var(--color-success); }
+  .tooltip-success.tooltip-right .tooltip-arrow { border-right-color: var(--color-success); }
+  .tooltip-warning.tooltip-top .tooltip-arrow { border-top-color: var(--color-warning); }
+  .tooltip-warning.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-warning); }
+  .tooltip-warning.tooltip-left .tooltip-arrow { border-left-color: var(--color-warning); }
+  .tooltip-warning.tooltip-right .tooltip-arrow { border-right-color: var(--color-warning); }
+  .tooltip-error.tooltip-top .tooltip-arrow { border-top-color: var(--color-error); }
+  .tooltip-error.tooltip-bottom .tooltip-arrow { border-bottom-color: var(--color-error); }
+  .tooltip-error.tooltip-left .tooltip-arrow { border-left-color: var(--color-error); }
+  .tooltip-error.tooltip-right .tooltip-arrow { border-right-color: var(--color-error); }
 `;
 
 export class ElDmTooltip extends BaseElement {
@@ -153,6 +219,8 @@ export class ElDmTooltip extends BaseElement {
     delay: { type: Number, reflect: true, default: 0 },
     arrow: { type: Boolean, reflect: true, default: true },
     disabled: { type: Boolean, reflect: true },
+    color: { type: String, reflect: true },
+    open: { type: Boolean, reflect: true },
   };
 
   declare content: string;
@@ -161,6 +229,8 @@ export class ElDmTooltip extends BaseElement {
   declare delay: number;
   declare arrow: boolean;
   declare disabled: boolean;
+  declare color: TooltipColor;
+  declare open: boolean;
 
   private _showTimeout: number | null = null;
   private _isVisible = false;
@@ -215,12 +285,28 @@ export class ElDmTooltip extends BaseElement {
       classes.push('tooltip-top');
     }
 
+    if (this.color && COLOR_CLASSES[this.color]) {
+      classes.push(COLOR_CLASSES[this.color]);
+    }
+
     return classes.join(' ');
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     this._setupListeners();
+    // Sync initial open state
+    if (this.open) {
+      this._setVisible(true);
+    }
+  }
+
+  update(): void {
+    super.update();
+    // Sync open prop with visibility
+    if (this.open) {
+      this._setVisible(true);
+    }
   }
 
   disconnectedCallback(): void {
