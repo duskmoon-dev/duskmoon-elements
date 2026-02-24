@@ -189,6 +189,7 @@ export class ElDmPopover extends BaseElement {
     this._addGlobalListeners();
     this._updatePosition();
     this._setVisible(true);
+    this._updateTriggerAria(true);
     this.emit('open');
   }
 
@@ -200,7 +201,21 @@ export class ElDmPopover extends BaseElement {
     this.open = false;
     this._removeGlobalListeners();
     this._setVisible(false);
+    this._updateTriggerAria(false);
     this.emit('close');
+  }
+
+  /**
+   * Update ARIA attributes on the trigger element
+   */
+  private _updateTriggerAria(expanded: boolean): void {
+    const triggerEl = this._getTriggerElement();
+    if (triggerEl) {
+      triggerEl.setAttribute('aria-expanded', String(expanded));
+      if (!triggerEl.hasAttribute('aria-haspopup')) {
+        triggerEl.setAttribute('aria-haspopup', 'dialog');
+      }
+    }
   }
 
   /**
@@ -242,6 +257,9 @@ export class ElDmPopover extends BaseElement {
 
     // Remove any existing listeners first
     this._detachTriggerEvents(triggerEl);
+
+    // Set initial ARIA attributes on trigger
+    this._updateTriggerAria(this.open);
 
     if (this.trigger === 'click') {
       triggerEl.addEventListener('click', this._handleTriggerClick);
