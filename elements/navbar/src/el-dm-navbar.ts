@@ -220,6 +220,10 @@ export class ElDmNavbar extends BaseElement {
     fixed: { type: Boolean, reflect: true },
     elevated: { type: Boolean, reflect: true },
     color: { type: String, reflect: true },
+    navLabel: { type: String, reflect: true, attribute: 'nav-label' },
+    startClass: { type: String, reflect: true, attribute: 'start-class' },
+    centerClass: { type: String, reflect: true, attribute: 'center-class' },
+    endClass: { type: String, reflect: true, attribute: 'end-class' },
   };
 
   /** Whether the navbar is fixed to the top */
@@ -230,6 +234,18 @@ export class ElDmNavbar extends BaseElement {
 
   /** Navbar color variant */
   declare color: NavbarColor;
+
+  /** Accessible label for the navigation landmark */
+  declare navLabel: string;
+
+  /** CSS class(es) to add to the start section */
+  declare startClass: string;
+
+  /** CSS class(es) to add to the center section */
+  declare centerClass: string;
+
+  /** CSS class(es) to add to the end section */
+  declare endClass: string;
 
   /** Internal state for mobile menu */
   private _mobileMenuOpen = false;
@@ -329,15 +345,15 @@ export class ElDmNavbar extends BaseElement {
       : 'navbar-mobile-menu';
 
     return `
-      <nav class="${navbarClasses}" part="navbar" role="navigation">
+      <nav class="${navbarClasses}" part="navbar" role="navigation"${this.navLabel ? ` aria-label="${this.navLabel}"` : ''}>
         <div class="navbar-content" part="content">
-          <div class="navbar-start" part="start">
+          <div class="navbar-start${this.startClass ? ` ${this.startClass}` : ''}" part="start">
             <slot name="start"></slot>
           </div>
-          <div class="navbar-center" part="center">
+          <div class="navbar-center${this.centerClass ? ` ${this.centerClass}` : ''}" part="center">
             <slot></slot>
           </div>
-          <div class="navbar-end" part="end">
+          <div class="navbar-end${this.endClass ? ` ${this.endClass}` : ''}" part="end">
             <slot name="end"></slot>
             <button
               class="${hamburgerClasses}"
