@@ -89,13 +89,13 @@ const styles = css`
 
   .popover-content[data-placement^='left'] .popover-arrow {
     right: -0.4375rem;
-    border-top: none;
+    border-bottom: none;
     border-left: none;
   }
 
   .popover-content[data-placement^='right'] .popover-arrow {
     left: -0.4375rem;
-    border-bottom: none;
+    border-top: none;
     border-right: none;
   }
 
