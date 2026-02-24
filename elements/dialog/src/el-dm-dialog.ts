@@ -9,6 +9,7 @@
  * @attr {boolean} open - Whether the dialog is open
  * @attr {string} size - Dialog size: sm, md, lg, xl, full
  * @attr {boolean} dismissible - Whether clicking backdrop closes dialog
+ * @attr {boolean} no-dismiss - Prevents closing via backdrop click or Escape key
  * @attr {boolean} no-backdrop - Hide the backdrop
  *
  * @slot - Default slot for dialog content
@@ -165,12 +166,14 @@ export class ElDmDialog extends BaseElement {
     open: { type: Boolean, reflect: true },
     size: { type: String, reflect: true },
     dismissible: { type: Boolean, reflect: true, default: true },
+    noDismiss: { type: Boolean, reflect: true, attribute: 'no-dismiss' },
     noBackdrop: { type: Boolean, reflect: true, attribute: 'no-backdrop' },
   };
 
   declare open: boolean;
   declare size: DialogSize;
   declare dismissible: boolean;
+  declare noDismiss: boolean;
   declare noBackdrop: boolean;
 
   constructor() {
@@ -178,14 +181,18 @@ export class ElDmDialog extends BaseElement {
     this.attachStyles([styles, animationStyles]);
   }
 
+  private _canDismiss(): boolean {
+    return this.dismissible && !this.noDismiss;
+  }
+
   private _handleBackdropClick(event: Event): void {
-    if (this.dismissible && event.target === event.currentTarget) {
+    if (this._canDismiss() && event.target === event.currentTarget) {
       this.close();
     }
   }
 
   private _handleKeyDown = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && this.dismissible) {
+    if (event.key === 'Escape' && this._canDismiss()) {
       this.close();
     }
   };
@@ -235,7 +242,7 @@ export class ElDmDialog extends BaseElement {
         <div class="${dialogClasses}" role="dialog" aria-modal="true" part="dialog">
           <div class="dialog-header" part="header">
             <slot name="header"></slot>
-            ${this.dismissible ? '<button class="dialog-close" part="close" aria-label="Close">✕</button>' : ''}
+            ${this._canDismiss() ? '<button class="dialog-close" part="close" aria-label="Close">✕</button>' : ''}
           </div>
           <div class="dialog-body" part="body">
             <slot></slot>
