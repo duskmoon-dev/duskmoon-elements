@@ -140,8 +140,11 @@ export class ElDmBadge extends BaseElement {
   render(): string {
     const badgeClasses = this._getBadgeClasses();
 
+    const ariaLabel = this.getAttribute('aria-label');
+    const ariaLabelAttr = ariaLabel ? ` aria-label="${ariaLabel}"` : '';
+
     return `
-      <span class="${badgeClasses}" part="badge">
+      <span class="${badgeClasses}" part="badge" role="status"${ariaLabelAttr}>
         ${this.dot ? '' : '<slot></slot>'}
       </span>
     `;
