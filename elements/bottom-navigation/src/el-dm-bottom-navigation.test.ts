@@ -143,7 +143,7 @@ describe('ElDmBottomNavigation', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
     const items = el.shadowRoot?.querySelectorAll('.bottom-nav-item');
-    items?.forEach(item => {
+    items?.forEach((item) => {
       expect(item.getAttribute('role')).toBe('tab');
     });
   });
@@ -160,7 +160,7 @@ describe('ElDmBottomNavigation', () => {
     const el = createBottomNav({ items: sampleItems });
     container.appendChild(el);
     const items = el.shadowRoot?.querySelectorAll('.bottom-nav-item');
-    items?.forEach(item => {
+    items?.forEach((item) => {
       expect(item.getAttribute('tabindex')).toBe('0');
     });
   });
@@ -190,9 +190,7 @@ describe('ElDmBottomNavigation', () => {
 
   // --- Link items ---
   test('item with href renders as anchor', () => {
-    const items: BottomNavigationItem[] = [
-      { value: 'home', label: 'Home', href: '/home' },
-    ];
+    const items: BottomNavigationItem[] = [{ value: 'home', label: 'Home', href: '/home' }];
     const el = createBottomNav({ items });
     container.appendChild(el);
     const link = el.shadowRoot?.querySelector('a.bottom-nav-item');

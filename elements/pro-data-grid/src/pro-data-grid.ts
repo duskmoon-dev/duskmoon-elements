@@ -1120,9 +1120,10 @@ export class ElDmProDataGrid extends BaseElement {
       this.#renderRows();
 
       const onMouseMove = (me: MouseEvent) => {
-        const moveTarget = this.shadowRoot.elementFromPoint(me.clientX, me.clientY) as
-          | HTMLElement
-          | null;
+        const moveTarget = this.shadowRoot.elementFromPoint(
+          me.clientX,
+          me.clientY,
+        ) as HTMLElement | null;
         const moveCell = moveTarget?.closest?.('[data-grid-cell]') as HTMLElement | null;
         if (!moveCell) return;
         const moveRow = Number(moveCell.dataset.rowIndex);
@@ -1498,11 +1499,7 @@ export class ElDmProDataGrid extends BaseElement {
     `;
   }
 
-  #renderDetailRow(
-    row: Row,
-    _rowIndex: number,
-    columns: ColumnStateInternal[],
-  ): string {
+  #renderDetailRow(row: Row, _rowIndex: number, columns: ColumnStateInternal[]): string {
     const totalWidth = columns.reduce((sum, col) => sum + col.width, 0) + 40;
     const rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
     const rowId = String(row[rowKey] ?? '');

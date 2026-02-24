@@ -15,11 +15,7 @@ function createKeyboardEvent(key: string): KeyboardEvent {
 }
 
 // Helper to create mouse events with clientX
-function createMouseEvent(
-  type: string,
-  clientX: number,
-  options: EventInit = {},
-): MouseEvent {
+function createMouseEvent(type: string, clientX: number, options: EventInit = {}): MouseEvent {
   const event = new Event(type, {
     bubbles: true,
     ...options,
@@ -80,9 +76,7 @@ describe('ElDmSlider', () => {
 
     test('renders filled track', () => {
       const el = createSlider({ value: 50 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled).toBeDefined();
       expect(filled.style.width).toBe('50%');
     });
@@ -186,14 +180,7 @@ describe('ElDmSlider', () => {
 
   // ──────────────── Color Classes ────────────────
   describe('colors', () => {
-    const colors = [
-      'secondary',
-      'tertiary',
-      'success',
-      'warning',
-      'error',
-      'info',
-    ] as const;
+    const colors = ['secondary', 'tertiary', 'success', 'warning', 'error', 'info'] as const;
 
     for (const color of colors) {
       test(`applies ${color} color class`, () => {
@@ -229,41 +216,31 @@ describe('ElDmSlider', () => {
   describe('percentage calculation', () => {
     test('0% at min value', () => {
       const el = createSlider({ min: 0, max: 100, value: 0 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('0%');
     });
 
     test('100% at max value', () => {
       const el = createSlider({ min: 0, max: 100, value: 100 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('100%');
     });
 
     test('50% at midpoint', () => {
       const el = createSlider({ min: 0, max: 200, value: 100 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('50%');
     });
 
     test('handles custom min/max ranges', () => {
       const el = createSlider({ min: 10, max: 110, value: 60 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('50%');
     });
 
     test('handles zero range gracefully', () => {
       const el = createSlider({ min: 50, max: 50, value: 50 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('0%');
     });
   });
@@ -272,91 +249,91 @@ describe('ElDmSlider', () => {
   describe('keyboard interaction', () => {
     test('ArrowRight increments by step', () => {
       const el = createSlider({ value: 50, step: 1 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
       expect(el.value).toBe(51);
     });
 
     test('ArrowUp increments by step', () => {
       const el = createSlider({ value: 50, step: 5 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowUp'));
       expect(el.value).toBe(55);
     });
 
     test('ArrowLeft decrements by step', () => {
       const el = createSlider({ value: 50, step: 1 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowLeft'));
       expect(el.value).toBe(49);
     });
 
     test('ArrowDown decrements by step', () => {
       const el = createSlider({ value: 50, step: 10 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowDown'));
       expect(el.value).toBe(40);
     });
 
     test('does not go below min', () => {
       const el = createSlider({ value: 0, min: 0, step: 1 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowLeft'));
       expect(el.value).toBe(0);
     });
 
     test('does not go above max', () => {
       const el = createSlider({ value: 100, max: 100, step: 1 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
       expect(el.value).toBe(100);
     });
 
     test('Home sets to min', () => {
       const el = createSlider({ value: 75, min: 10 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('Home'));
       expect(el.value).toBe(10);
     });
 
     test('End sets to max', () => {
       const el = createSlider({ value: 25, max: 200 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('End'));
       expect(el.value).toBe(200);
     });
 
     test('PageUp increments by 10% of range', () => {
       const el = createSlider({ value: 50, min: 0, max: 100 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('PageUp'));
       expect(el.value).toBe(60);
     });
 
     test('PageDown decrements by 10% of range', () => {
       const el = createSlider({ value: 50, min: 0, max: 100 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('PageDown'));
       expect(el.value).toBe(40);
     });
 
     test('ignores keyboard when disabled', () => {
       const el = createSlider({ value: 50, disabled: true });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
       expect(el.value).toBe(50);
     });
 
     test('ignores unrelated keys', () => {
       const el = createSlider({ value: 50 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('Enter'));
       expect(el.value).toBe(50);
     });
 
     test('emits input event on keyboard change', () => {
       const el = createSlider({ value: 50 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       let inputFired = false;
       el.addEventListener('input', () => {
         inputFired = true;
@@ -367,7 +344,7 @@ describe('ElDmSlider', () => {
 
     test('emits change event on keyboard change', () => {
       const el = createSlider({ value: 50 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       let changeFired = false;
       el.addEventListener('change', () => {
         changeFired = true;
@@ -378,7 +355,7 @@ describe('ElDmSlider', () => {
 
     test('does not emit events when value unchanged (at boundary)', () => {
       const el = createSlider({ value: 100, max: 100 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       let eventFired = false;
       el.addEventListener('input', () => {
         eventFired = true;
@@ -392,7 +369,7 @@ describe('ElDmSlider', () => {
   describe('track click', () => {
     test('updates value on track click', () => {
       const el = createSlider({ min: 0, max: 100, value: 0 });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       // Mock getBoundingClientRect for happy-dom
       track.getBoundingClientRect = () =>
@@ -414,7 +391,7 @@ describe('ElDmSlider', () => {
 
     test('snaps to nearest step on track click', () => {
       const el = createSlider({ min: 0, max: 100, value: 0, step: 10 });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -436,7 +413,7 @@ describe('ElDmSlider', () => {
 
     test('clamps to min/max on track click', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -458,7 +435,7 @@ describe('ElDmSlider', () => {
 
     test('emits input and change events on track click', () => {
       const el = createSlider({ min: 0, max: 100, value: 0 });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -494,7 +471,7 @@ describe('ElDmSlider', () => {
         value: 50,
         disabled: true,
       });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -515,7 +492,7 @@ describe('ElDmSlider', () => {
 
     test('does not emit events when click lands on current value', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -544,8 +521,8 @@ describe('ElDmSlider', () => {
   describe('thumb drag', () => {
     test('starts drag on mousedown', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const thumb = el.shadowRoot?.querySelector('.slider-thumb')!;
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const thumb = el.shadowRoot!.querySelector('.slider-thumb')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -569,8 +546,8 @@ describe('ElDmSlider', () => {
 
     test('emits input during drag', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const thumb = el.shadowRoot?.querySelector('.slider-thumb')!;
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const thumb = el.shadowRoot!.querySelector('.slider-thumb')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -600,8 +577,8 @@ describe('ElDmSlider', () => {
 
     test('emits change on mouseup after drag', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const thumb = el.shadowRoot?.querySelector('.slider-thumb')!;
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const thumb = el.shadowRoot!.querySelector('.slider-thumb')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -630,8 +607,8 @@ describe('ElDmSlider', () => {
 
     test('stops tracking after mouseup', () => {
       const el = createSlider({ min: 0, max: 100, value: 50 });
-      const thumb = el.shadowRoot?.querySelector('.slider-thumb')!;
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const thumb = el.shadowRoot!.querySelector('.slider-thumb')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -662,8 +639,8 @@ describe('ElDmSlider', () => {
         value: 50,
         disabled: true,
       });
-      const thumb = el.shadowRoot?.querySelector('.slider-thumb')!;
-      const track = el.shadowRoot?.querySelector('.slider-track')!;
+      const thumb = el.shadowRoot!.querySelector('.slider-thumb')!;
+      const track = el.shadowRoot!.querySelector('.slider-track')!;
 
       track.getBoundingClientRect = () =>
         ({
@@ -688,35 +665,29 @@ describe('ElDmSlider', () => {
   describe('UI update', () => {
     test('updates filled track width on value change', () => {
       const el = createSlider({ value: 0 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('0%');
 
       // Change via keyboard
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('End'));
 
-      const updatedFilled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const updatedFilled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(updatedFilled.style.width).toBe('100%');
     });
 
     test('updates thumb position on value change', () => {
       const el = createSlider({ value: 0 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('End'));
 
-      const thumb = el.shadowRoot?.querySelector(
-        '.slider-thumb',
-      ) as HTMLElement;
+      const thumb = el.shadowRoot?.querySelector('.slider-thumb') as HTMLElement;
       expect(thumb.style.left).toBe('100%');
     });
 
     test('updates thumb label text on value change', () => {
       const el = createSlider({ value: 0, showValue: true });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
 
       const label = el.shadowRoot?.querySelector('.slider-thumb-label');
@@ -728,7 +699,7 @@ describe('ElDmSlider', () => {
   describe('event detail', () => {
     test('input event contains value in detail', () => {
       const el = createSlider({ value: 50 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
 
       let detail: { value: number } | null = null;
       el.addEventListener('input', ((e: CustomEvent) => {
@@ -741,7 +712,7 @@ describe('ElDmSlider', () => {
 
     test('change event contains value in detail', () => {
       const el = createSlider({ value: 50 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
 
       let detail: { value: number } | null = null;
       el.addEventListener('change', ((e: CustomEvent) => {
@@ -757,22 +728,20 @@ describe('ElDmSlider', () => {
   describe('edge cases', () => {
     test('handles step larger than range gracefully', () => {
       const el = createSlider({ min: 0, max: 5, value: 3, step: 10 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
       expect(el.value).toBe(5);
     });
 
     test('handles negative range', () => {
       const el = createSlider({ min: -100, max: 100, value: 0 });
-      const filled = el.shadowRoot?.querySelector(
-        '.slider-track-filled',
-      ) as HTMLElement;
+      const filled = el.shadowRoot?.querySelector('.slider-track-filled') as HTMLElement;
       expect(filled.style.width).toBe('50%');
     });
 
     test('handles decimal step values', () => {
       const el = createSlider({ min: 0, max: 1, value: 0.5, step: 0.1 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       slider.dispatchEvent(createKeyboardEvent('ArrowRight'));
       // Floating point: round to reasonable precision
       expect(Math.abs(el.value - 0.6)).toBeLessThan(0.01);
@@ -780,7 +749,7 @@ describe('ElDmSlider', () => {
 
     test('Home when already at min does not emit', () => {
       const el = createSlider({ value: 0, min: 0 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       let eventFired = false;
       el.addEventListener('change', () => {
         eventFired = true;
@@ -791,7 +760,7 @@ describe('ElDmSlider', () => {
 
     test('End when already at max does not emit', () => {
       const el = createSlider({ value: 100, max: 100 });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       let eventFired = false;
       el.addEventListener('change', () => {
         eventFired = true;
@@ -810,7 +779,7 @@ describe('ElDmSlider', () => {
 
     test('blocks all keyboard interaction', () => {
       const el = createSlider({ value: 50, disabled: true });
-      const slider = el.shadowRoot?.querySelector('.slider')!;
+      const slider = el.shadowRoot!.querySelector('.slider')!;
       for (const key of [
         'ArrowRight',
         'ArrowLeft',

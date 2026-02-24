@@ -125,7 +125,9 @@ describe('ElDmAccordion', () => {
     const el = createAccordion();
     container.appendChild(el);
     let detail: { value: string; openItems: string[] } | null = null;
-    el.addEventListener('change', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('change', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     el.setOpenItems(['a']);
     expect(detail).toEqual({ value: 'a', openItems: ['a'] });
   });
@@ -359,7 +361,9 @@ describe('ElDmAccordionItem', () => {
     const el = createAccordionItem({ value: 'test' });
     container.appendChild(el);
     let detail: { itemId: string; open: boolean } | null = null;
-    el.addEventListener('accordion-item-toggle', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('accordion-item-toggle', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     const header = el.shadowRoot?.querySelector('.accordion-header') as HTMLElement;
     header?.click();
     expect(detail).toEqual({ itemId: 'test', open: true });
@@ -369,7 +373,9 @@ describe('ElDmAccordionItem', () => {
     const el = createAccordionItem({ value: 'test', open: true });
     container.appendChild(el);
     let detail: { itemId: string; open: boolean } | null = null;
-    el.addEventListener('accordion-item-toggle', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('accordion-item-toggle', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     const header = el.shadowRoot?.querySelector('.accordion-header') as HTMLElement;
     header?.click();
     expect(detail).toEqual({ itemId: 'test', open: false });
@@ -379,7 +385,9 @@ describe('ElDmAccordionItem', () => {
     const el = createAccordionItem({ value: 'test', disabled: true });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('accordion-item-toggle', () => { fired = true; });
+    el.addEventListener('accordion-item-toggle', () => {
+      fired = true;
+    });
     const header = el.shadowRoot?.querySelector('.accordion-header') as HTMLElement;
     header?.click();
     expect(fired).toBe(false);
@@ -389,7 +397,9 @@ describe('ElDmAccordionItem', () => {
     const el = createAccordionItem({ value: 'test' });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('accordion-item-toggle', () => { fired = true; });
+    el.addEventListener('accordion-item-toggle', () => {
+      fired = true;
+    });
     el.toggle();
     expect(fired).toBe(true);
   });
@@ -398,7 +408,9 @@ describe('ElDmAccordionItem', () => {
     const el = createAccordionItem({ value: 'test', disabled: true });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('accordion-item-toggle', () => { fired = true; });
+    el.addEventListener('accordion-item-toggle', () => {
+      fired = true;
+    });
     el.toggle();
     expect(fired).toBe(false);
   });

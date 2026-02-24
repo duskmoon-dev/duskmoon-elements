@@ -187,14 +187,20 @@ describe('ElDmInput', () => {
 
   // --- Error message ---
   test('shows error message when invalid', () => {
-    const el = createInput({ validationState: 'invalid', errorMessage: 'Required field' } as Partial<ElDmInput>);
+    const el = createInput({
+      validationState: 'invalid',
+      errorMessage: 'Required field',
+    } as Partial<ElDmInput>);
     container.appendChild(el);
     const error = el.shadowRoot?.querySelector('.error');
     expect(error?.textContent?.trim()).toBe('Required field');
   });
 
   test('error has role alert', () => {
-    const el = createInput({ validationState: 'invalid', errorMessage: 'Error!' } as Partial<ElDmInput>);
+    const el = createInput({
+      validationState: 'invalid',
+      errorMessage: 'Error!',
+    } as Partial<ElDmInput>);
     container.appendChild(el);
     const error = el.shadowRoot?.querySelector('[role="alert"]');
     expect(error).toBeDefined();
@@ -216,7 +222,11 @@ describe('ElDmInput', () => {
   });
 
   test('helper hidden when invalid', () => {
-    const el = createInput({ helperText: 'Help', validationState: 'invalid', errorMessage: 'Err' } as Partial<ElDmInput>);
+    const el = createInput({
+      helperText: 'Help',
+      validationState: 'invalid',
+      errorMessage: 'Err',
+    } as Partial<ElDmInput>);
     container.appendChild(el);
     const helper = el.shadowRoot?.querySelector('.helper');
     expect(helper).toBeNull();
@@ -238,7 +248,10 @@ describe('ElDmInput', () => {
   });
 
   test('aria-describedby points to error when invalid', () => {
-    const el = createInput({ validationState: 'invalid', errorMessage: 'Err' } as Partial<ElDmInput>);
+    const el = createInput({
+      validationState: 'invalid',
+      errorMessage: 'Err',
+    } as Partial<ElDmInput>);
     container.appendChild(el);
     const input = el.shadowRoot?.querySelector('input');
     expect(input?.getAttribute('aria-describedby')).toBe('error');
@@ -312,7 +325,9 @@ describe('ElDmInput', () => {
     const el = createInput();
     container.appendChild(el);
     let detail: { value: string } | null = null;
-    el.addEventListener('dm-input', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('dm-input', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
     input.value = 'test';
     input.dispatchEvent(new Event('input'));
@@ -323,7 +338,9 @@ describe('ElDmInput', () => {
     const el = createInput();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('dm-change', () => { fired = true; });
+    el.addEventListener('dm-change', () => {
+      fired = true;
+    });
     const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
     input.dispatchEvent(new Event('change'));
     expect(fired).toBe(true);
@@ -333,7 +350,9 @@ describe('ElDmInput', () => {
     const el = createInput();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('dm-focus', () => { fired = true; });
+    el.addEventListener('dm-focus', () => {
+      fired = true;
+    });
     const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
     input.dispatchEvent(new Event('focus'));
     expect(fired).toBe(true);
@@ -343,7 +362,9 @@ describe('ElDmInput', () => {
     const el = createInput();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('dm-blur', () => { fired = true; });
+    el.addEventListener('dm-blur', () => {
+      fired = true;
+    });
     const input = el.shadowRoot?.querySelector('input') as HTMLInputElement;
     input.dispatchEvent(new Event('blur'));
     expect(fired).toBe(true);
@@ -424,7 +445,10 @@ describe('ElDmInput', () => {
   });
 
   test('has error part when invalid', () => {
-    const el = createInput({ validationState: 'invalid', errorMessage: 'Err' } as Partial<ElDmInput>);
+    const el = createInput({
+      validationState: 'invalid',
+      errorMessage: 'Err',
+    } as Partial<ElDmInput>);
     container.appendChild(el);
     expect(el.shadowRoot?.querySelector('[part="error"]')).toBeDefined();
   });
@@ -460,10 +484,7 @@ describe('ElDmInput', () => {
     test('validate returns valid when all validators pass', () => {
       const el = createInput({ value: 'hello@test.com' });
       container.appendChild(el);
-      el.setValidators([
-        validators.required('Required'),
-        validators.email('Invalid email'),
-      ]);
+      el.setValidators([validators.required('Required'), validators.email('Invalid email')]);
       const result = el.validate();
       expect(result.state).toBe('valid');
     });

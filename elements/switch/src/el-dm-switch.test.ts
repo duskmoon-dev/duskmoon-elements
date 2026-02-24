@@ -242,7 +242,9 @@ describe('ElDmSwitch', () => {
     const el = createSwitch();
     container.appendChild(el);
     let detail: { value: boolean } | null = null;
-    el.addEventListener('change', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('change', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     const input = el.shadowRoot?.querySelector('input');
     input?.dispatchEvent(new Event('change'));
     expect(detail).toBeDefined();
@@ -252,7 +254,9 @@ describe('ElDmSwitch', () => {
     const el = createSwitch();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('input', () => { fired = true; });
+    el.addEventListener('input', () => {
+      fired = true;
+    });
     const input = el.shadowRoot?.querySelector('input');
     input?.dispatchEvent(new Event('change'));
     expect(fired).toBe(true);

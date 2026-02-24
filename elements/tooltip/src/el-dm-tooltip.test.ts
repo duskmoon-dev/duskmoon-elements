@@ -33,16 +33,12 @@ describe('ElDmTooltip', () => {
   describe('rendering', () => {
     test('creates a shadow root with tooltip wrapper', () => {
       const el = createTooltip();
-      expect(
-        el.shadowRoot?.querySelector('.tooltip-wrapper'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.tooltip-wrapper')).toBeDefined();
     });
 
     test('has role tooltip', () => {
       const el = createTooltip();
-      expect(
-        el.shadowRoot?.querySelector('[role="tooltip"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('[role="tooltip"]')).toBeDefined();
     });
 
     test('renders tooltip content text', () => {
@@ -53,9 +49,7 @@ describe('ElDmTooltip', () => {
 
     test('has default slot for trigger content', () => {
       const el = createTooltip();
-      expect(
-        el.shadowRoot?.querySelector('slot:not([name])'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot:not([name])')).toBeDefined();
     });
   });
 
@@ -123,9 +117,7 @@ describe('ElDmTooltip', () => {
   describe('arrow', () => {
     test('shows arrow by default', () => {
       const el = createTooltip({ content: 'test' });
-      expect(
-        el.shadowRoot?.querySelector('.tooltip-arrow'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.tooltip-arrow')).toBeDefined();
     });
 
     test('hides arrow when arrow is false', () => {

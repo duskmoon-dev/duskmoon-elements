@@ -228,7 +228,9 @@ describe('ElDmNavbar', () => {
     const el = createNavbar();
     container.appendChild(el);
     let detail: { open: boolean } | null = null;
-    el.addEventListener('menu-toggle', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('menu-toggle', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     el.openMobileMenu();
     expect(detail).toEqual({ open: true });
     el.closeMobileMenu();
@@ -239,7 +241,9 @@ describe('ElDmNavbar', () => {
     container.appendChild(el);
     el.openMobileMenu();
     let detail: { open: boolean } | null = null;
-    el.addEventListener('menu-toggle', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('menu-toggle', ((e: CustomEvent) => {
+      detail = e.detail;
+    }) as EventListener);
     el.closeMobileMenu();
     expect(detail).toEqual({ open: false });
   });
@@ -248,7 +252,9 @@ describe('ElDmNavbar', () => {
     const el = createNavbar();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('menu-toggle', () => { fired = true; });
+    el.addEventListener('menu-toggle', () => {
+      fired = true;
+    });
     el.closeMobileMenu();
     expect(fired).toBe(false);
   });
@@ -258,7 +264,9 @@ describe('ElDmNavbar', () => {
     container.appendChild(el);
     el.openMobileMenu();
     let fired = false;
-    el.addEventListener('menu-toggle', () => { fired = true; });
+    el.addEventListener('menu-toggle', () => {
+      fired = true;
+    });
     el.openMobileMenu();
     expect(fired).toBe(false);
     el.closeMobileMenu();

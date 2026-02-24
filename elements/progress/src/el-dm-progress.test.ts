@@ -15,9 +15,7 @@ describe('ElDmProgress', () => {
     container.remove();
   });
 
-  function createProgress(
-    attrs: Record<string, unknown> = {},
-  ): ElDmProgress {
+  function createProgress(attrs: Record<string, unknown> = {}): ElDmProgress {
     const el = document.createElement('el-dm-progress') as ElDmProgress;
     for (const [key, val] of Object.entries(attrs)) {
       if (key === 'showValue') {
@@ -39,9 +37,7 @@ describe('ElDmProgress', () => {
   describe('rendering', () => {
     test('creates a shadow root with progressbar role', () => {
       const el = createProgress();
-      expect(
-        el.shadowRoot?.querySelector('[role="progressbar"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('[role="progressbar"]')).toBeDefined();
     });
 
     test('renders progress bar', () => {
@@ -51,9 +47,7 @@ describe('ElDmProgress', () => {
 
     test('exposes progress part', () => {
       const el = createProgress();
-      expect(
-        el.shadowRoot?.querySelector('[part="progress"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('[part="progress"]')).toBeDefined();
     });
 
     test('exposes bar part', () => {
@@ -141,49 +135,37 @@ describe('ElDmProgress', () => {
   describe('percentage calculation', () => {
     test('0% at value 0', () => {
       const el = createProgress({ value: 0 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('0%');
     });
 
     test('100% at max value', () => {
       const el = createProgress({ value: 100 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('100%');
     });
 
     test('75% at value 75', () => {
       const el = createProgress({ value: 75 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('75%');
     });
 
     test('handles custom max', () => {
       const el = createProgress({ value: 50, max: 200 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('25%');
     });
 
     test('clamps value above max to 100%', () => {
       const el = createProgress({ value: 150, max: 100 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('100%');
     });
 
     test('clamps negative value to 0%', () => {
       const el = createProgress({ value: -10 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('0%');
     });
   });
@@ -236,16 +218,12 @@ describe('ElDmProgress', () => {
     test('applies indeterminate class', () => {
       const el = createProgress({ indeterminate: true });
       const progress = el.shadowRoot?.querySelector('.progress');
-      expect(progress?.classList.contains('progress-indeterminate')).toBe(
-        true,
-      );
+      expect(progress?.classList.contains('progress-indeterminate')).toBe(true);
     });
 
     test('uses 50% width for indeterminate bar', () => {
       const el = createProgress({ indeterminate: true, value: 75 });
-      const bar = el.shadowRoot?.querySelector(
-        '.progress-bar',
-      ) as HTMLElement;
+      const bar = el.shadowRoot?.querySelector('.progress-bar') as HTMLElement;
       expect(bar.style.width).toBe('50%');
     });
 
@@ -255,9 +233,7 @@ describe('ElDmProgress', () => {
         showValue: true,
         value: 50,
       });
-      expect(
-        el.shadowRoot?.querySelector('.progress-value'),
-      ).toBeNull();
+      expect(el.shadowRoot?.querySelector('.progress-value')).toBeNull();
     });
   });
 
@@ -293,9 +269,7 @@ describe('ElDmProgress', () => {
 
     test('does not show value label by default', () => {
       const el = createProgress({ value: 42 });
-      expect(
-        el.shadowRoot?.querySelector('.progress-value'),
-      ).toBeNull();
+      expect(el.shadowRoot?.querySelector('.progress-value')).toBeNull();
     });
 
     test('rounds percentage in value label', () => {

@@ -121,9 +121,7 @@ describe('ElDmTable', () => {
 
   test('sorts data by column in descending order', () => {
     const el = document.createElement('el-dm-table') as ElDmTable;
-    el.columns = [
-      { key: 'age', label: 'Age', sortable: true },
-    ] as TableColumn[];
+    el.columns = [{ key: 'age', label: 'Age', sortable: true }] as TableColumn[];
     el.data = [
       { id: 1, name: 'Charlie', age: 35 },
       { id: 2, name: 'Alice', age: 30 },
@@ -163,7 +161,7 @@ describe('ElDmTable', () => {
     el.columns = [{ key: 'name', label: 'Name', sortable: true }] as TableColumn[];
     container.appendChild(el);
 
-    let sortDetail: any = null;
+    let sortDetail: Record<string, unknown> | null = null;
     el.addEventListener('sort', ((e: CustomEvent) => {
       sortDetail = e.detail;
     }) as EventListener);
@@ -258,7 +256,7 @@ describe('ElDmTable', () => {
     el.pageSize = 10;
     container.appendChild(el);
 
-    let pageDetail: any = null;
+    let pageDetail: Record<string, unknown> | null = null;
     el.addEventListener('page-change', ((e: CustomEvent) => {
       pageDetail = e.detail;
     }) as EventListener);
@@ -383,7 +381,7 @@ describe('ElDmTable', () => {
     el.selectionMode = 'multiple';
     container.appendChild(el);
 
-    let selectionDetail: any = null;
+    let selectionDetail: Record<string, unknown> | null = null;
     el.addEventListener('select', ((e: CustomEvent) => {
       selectionDetail = e.detail;
     }) as EventListener);

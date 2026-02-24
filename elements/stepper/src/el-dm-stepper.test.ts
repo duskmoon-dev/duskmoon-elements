@@ -201,10 +201,7 @@ describe('ElDmStepper', () => {
   });
 
   test('step with icon shows icon', () => {
-    const stepsWithIcon: StepData[] = [
-      { label: 'Step 1', icon: '🏠' },
-      { label: 'Step 2' },
-    ];
+    const stepsWithIcon: StepData[] = [{ label: 'Step 1', icon: '🏠' }, { label: 'Step 2' }];
     const el = createStepper({ steps: stepsWithIcon, current: 1 });
     container.appendChild(el);
     const icon = el.shadowRoot?.querySelector('.step-icon');
@@ -213,10 +210,7 @@ describe('ElDmStepper', () => {
   });
 
   test('completed step with icon shows icon instead of checkmark', () => {
-    const stepsWithIcon: StepData[] = [
-      { label: 'Step 1', icon: '✓' },
-      { label: 'Step 2' },
-    ];
+    const stepsWithIcon: StepData[] = [{ label: 'Step 1', icon: '✓' }, { label: 'Step 2' }];
     const el = createStepper({ steps: stepsWithIcon, current: 1 });
     container.appendChild(el);
     const icon = el.shadowRoot?.querySelector('.stepper-step-completed .step-icon');

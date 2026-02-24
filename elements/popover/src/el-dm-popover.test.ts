@@ -210,7 +210,9 @@ describe('ElDmPopover', () => {
     const el = createPopover();
     container.appendChild(el);
     let count = 0;
-    el.addEventListener('open', () => { count++; });
+    el.addEventListener('open', () => {
+      count++;
+    });
     el.show();
     el.show();
     expect(count).toBe(1);
@@ -222,7 +224,9 @@ describe('ElDmPopover', () => {
     container.appendChild(el);
     el.show();
     let count = 0;
-    el.addEventListener('close', () => { count++; });
+    el.addEventListener('close', () => {
+      count++;
+    });
     el.hide();
     el.hide();
     expect(count).toBe(1);
@@ -233,7 +237,9 @@ describe('ElDmPopover', () => {
     const el = createPopover();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('open', () => { fired = true; });
+    el.addEventListener('open', () => {
+      fired = true;
+    });
     el.show();
     expect(fired).toBe(true);
     el.hide();
@@ -244,7 +250,9 @@ describe('ElDmPopover', () => {
     container.appendChild(el);
     el.show();
     let fired = false;
-    el.addEventListener('close', () => { fired = true; });
+    el.addEventListener('close', () => {
+      fired = true;
+    });
     el.hide();
     expect(fired).toBe(true);
   });

@@ -62,22 +62,14 @@ describe('ElDmDialog', () => {
 
     test('has header, body, and footer slots', () => {
       const el = createDialog();
-      expect(
-        el.shadowRoot?.querySelector('slot[name="header"]'),
-      ).toBeDefined();
-      expect(
-        el.shadowRoot?.querySelector('slot:not([name])'),
-      ).toBeDefined();
-      expect(
-        el.shadowRoot?.querySelector('slot[name="footer"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot[name="header"]')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot:not([name])')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot[name="footer"]')).toBeDefined();
     });
 
     test('renders wrapper element', () => {
       const el = createDialog();
-      expect(
-        el.shadowRoot?.querySelector('.dialog-wrapper'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-wrapper')).toBeDefined();
     });
   });
 
@@ -107,8 +99,7 @@ describe('ElDmDialog', () => {
       test(`applies ${size} size class`, () => {
         const el = createDialog({ size });
         const dialog = el.shadowRoot?.querySelector('.dialog');
-        const expectedClass =
-          size === 'full' ? 'dialog-fullscreen' : `dialog-${size}`;
+        const expectedClass = size === 'full' ? 'dialog-fullscreen' : `dialog-${size}`;
         expect(dialog?.classList.contains(expectedClass)).toBe(true);
       });
     }
@@ -125,16 +116,12 @@ describe('ElDmDialog', () => {
   describe('backdrop', () => {
     test('shows backdrop by default', () => {
       const el = createDialog();
-      expect(
-        el.shadowRoot?.querySelector('.dialog-backdrop'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-backdrop')).toBeDefined();
     });
 
     test('hides backdrop when no-backdrop is set', () => {
       const el = createDialog({ noBackdrop: true });
-      expect(
-        el.shadowRoot?.querySelector('.dialog-backdrop'),
-      ).toBeNull();
+      expect(el.shadowRoot?.querySelector('.dialog-backdrop')).toBeNull();
     });
   });
 
@@ -142,9 +129,7 @@ describe('ElDmDialog', () => {
   describe('close button', () => {
     test('shows close button when dismissible', () => {
       const el = createDialog({ dismissible: true });
-      expect(
-        el.shadowRoot?.querySelector('.dialog-close'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-close')).toBeDefined();
     });
 
     test('does not show close button when not dismissible', () => {
@@ -310,9 +295,7 @@ describe('ElDmDialog', () => {
 
     test('exposes backdrop part', () => {
       const el = createDialog();
-      expect(
-        el.shadowRoot?.querySelector('[part="backdrop"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('[part="backdrop"]')).toBeDefined();
     });
   });
 
@@ -328,7 +311,13 @@ describe('ElDmDialog', () => {
     test('animationStyles includes prefers-reduced-motion rule', () => {
       const el = createDialog();
       const sheets = el.shadowRoot?.adoptedStyleSheets ?? [];
-      const allCSS = sheets.map((s) => Array.from(s.cssRules).map((r) => r.cssText).join('\n')).join('\n');
+      const allCSS = sheets
+        .map((s) =>
+          Array.from(s.cssRules)
+            .map((r) => r.cssText)
+            .join('\n'),
+        )
+        .join('\n');
       expect(allCSS).toContain('prefers-reduced-motion');
     });
   });

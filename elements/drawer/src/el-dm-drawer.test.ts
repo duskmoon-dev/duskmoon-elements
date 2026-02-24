@@ -160,7 +160,9 @@ describe('ElDmDrawer', () => {
     const el = createDrawer();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('open', () => { fired = true; });
+    el.addEventListener('open', () => {
+      fired = true;
+    });
     el.show();
     expect(fired).toBe(true);
     el.hide();
@@ -171,7 +173,9 @@ describe('ElDmDrawer', () => {
     container.appendChild(el);
     el.show();
     let fired = false;
-    el.addEventListener('close', () => { fired = true; });
+    el.addEventListener('close', () => {
+      fired = true;
+    });
     el.hide();
     expect(fired).toBe(true);
   });

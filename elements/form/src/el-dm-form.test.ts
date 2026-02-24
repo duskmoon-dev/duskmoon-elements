@@ -124,7 +124,9 @@ describe('ElDmForm', () => {
     const el = createForm();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('reset', () => { fired = true; });
+    el.addEventListener('reset', () => {
+      fired = true;
+    });
     el.reset();
     expect(fired).toBe(true);
   });
@@ -133,7 +135,9 @@ describe('ElDmForm', () => {
     const el = createForm({ disabled: true });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('reset', () => { fired = true; });
+    el.addEventListener('reset', () => {
+      fired = true;
+    });
     el.reset();
     expect(fired).toBe(false);
   });
@@ -143,7 +147,9 @@ describe('ElDmForm', () => {
     const el = createForm();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('submit', () => { fired = true; });
+    el.addEventListener('submit', () => {
+      fired = true;
+    });
     const form = el.shadowRoot?.querySelector('form');
     form?.dispatchEvent(new Event('submit'));
     expect(fired).toBe(true);
@@ -153,7 +159,9 @@ describe('ElDmForm', () => {
     const el = createForm();
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('reset', () => { fired = true; });
+    el.addEventListener('reset', () => {
+      fired = true;
+    });
     const form = el.shadowRoot?.querySelector('form');
     form?.dispatchEvent(new Event('reset'));
     expect(fired).toBe(true);
@@ -163,7 +171,9 @@ describe('ElDmForm', () => {
     const el = createForm({ disabled: true });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('submit', () => { fired = true; });
+    el.addEventListener('submit', () => {
+      fired = true;
+    });
     const form = el.shadowRoot?.querySelector('form');
     form?.dispatchEvent(new Event('submit'));
     expect(fired).toBe(false);
@@ -173,7 +183,9 @@ describe('ElDmForm', () => {
     const el = createForm({ disabled: true });
     container.appendChild(el);
     let fired = false;
-    el.addEventListener('reset', () => { fired = true; });
+    el.addEventListener('reset', () => {
+      fired = true;
+    });
     const form = el.shadowRoot?.querySelector('form');
     form?.dispatchEvent(new Event('reset'));
     expect(fired).toBe(false);

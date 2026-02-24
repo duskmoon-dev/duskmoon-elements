@@ -162,7 +162,7 @@ describe('ElDmTabs', () => {
     el.appendChild(tab2);
     container.appendChild(el);
 
-    let changeDetail: any = null;
+    let changeDetail: Record<string, unknown> | null = null;
     el.addEventListener('change', ((e: CustomEvent) => {
       changeDetail = e.detail;
     }) as EventListener);

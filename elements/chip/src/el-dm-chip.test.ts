@@ -51,9 +51,7 @@ describe('ElDmChip', () => {
     test('has icon and default slots', () => {
       const el = createChip();
       expect(el.shadowRoot?.querySelector('slot[name="icon"]')).toBeDefined();
-      expect(
-        el.shadowRoot?.querySelector('slot:not([name])'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot:not([name])')).toBeDefined();
     });
 
     test('exposes chip part', () => {
@@ -189,9 +187,7 @@ describe('ElDmChip', () => {
   describe('deletable', () => {
     test('shows delete button when deletable', () => {
       const el = createChip({ deletable: true });
-      expect(
-        el.shadowRoot?.querySelector('.chip-delete'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.chip-delete')).toBeDefined();
     });
 
     test('does not show delete button by default', () => {
@@ -201,9 +197,7 @@ describe('ElDmChip', () => {
 
     test('exposes delete part when deletable', () => {
       const el = createChip({ deletable: true });
-      expect(
-        el.shadowRoot?.querySelector('[part="delete"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('[part="delete"]')).toBeDefined();
     });
 
     test('delete button contains SVG icon', () => {
@@ -276,9 +270,7 @@ describe('ElDmChip', () => {
       el.addEventListener('click', () => {
         clicked = true;
       });
-      el.shadowRoot
-        ?.querySelector('.chip')
-        ?.dispatchEvent(new Event('click'));
+      el.shadowRoot?.querySelector('.chip')?.dispatchEvent(new Event('click'));
       expect(clicked).toBe(false);
     });
   });

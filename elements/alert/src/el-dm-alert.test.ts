@@ -48,12 +48,8 @@ describe('ElDmAlert', () => {
     test('has icon, default, and actions slots', () => {
       const el = createAlert();
       expect(el.shadowRoot?.querySelector('slot[name="icon"]')).toBeDefined();
-      expect(
-        el.shadowRoot?.querySelector('slot:not([name])'),
-      ).toBeDefined();
-      expect(
-        el.shadowRoot?.querySelector('slot[name="actions"]'),
-      ).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot:not([name])')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('slot[name="actions"]')).toBeDefined();
     });
 
     test('exposes alert part', () => {

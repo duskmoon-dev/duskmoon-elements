@@ -112,7 +112,7 @@ describe('ElDmPagination', () => {
     const el = createPagination({ total: 5, current: 1 });
     container.appendChild(el);
     const pages = el.shadowRoot?.querySelectorAll('[data-page]');
-    const nonActive = Array.from(pages || []).find(p => p.getAttribute('data-page') !== '1');
+    const nonActive = Array.from(pages || []).find((p) => p.getAttribute('data-page') !== '1');
     expect(nonActive?.getAttribute('aria-current')).toBe('false');
   });
 
@@ -196,17 +196,25 @@ describe('ElDmPagination', () => {
   test('nav buttons have aria-labels', () => {
     const el = createPagination({ total: 10 });
     container.appendChild(el);
-    expect(el.shadowRoot?.querySelector('[data-action="first"]')?.getAttribute('aria-label')).toBe('Go to first page');
-    expect(el.shadowRoot?.querySelector('[data-action="prev"]')?.getAttribute('aria-label')).toBe('Go to previous page');
-    expect(el.shadowRoot?.querySelector('[data-action="next"]')?.getAttribute('aria-label')).toBe('Go to next page');
-    expect(el.shadowRoot?.querySelector('[data-action="last"]')?.getAttribute('aria-label')).toBe('Go to last page');
+    expect(el.shadowRoot?.querySelector('[data-action="first"]')?.getAttribute('aria-label')).toBe(
+      'Go to first page',
+    );
+    expect(el.shadowRoot?.querySelector('[data-action="prev"]')?.getAttribute('aria-label')).toBe(
+      'Go to previous page',
+    );
+    expect(el.shadowRoot?.querySelector('[data-action="next"]')?.getAttribute('aria-label')).toBe(
+      'Go to next page',
+    );
+    expect(el.shadowRoot?.querySelector('[data-action="last"]')?.getAttribute('aria-label')).toBe(
+      'Go to last page',
+    );
   });
 
   test('nav buttons contain SVG icons', () => {
     const el = createPagination({ total: 10 });
     container.appendChild(el);
     const navBtns = el.shadowRoot?.querySelectorAll('.nav-btn');
-    navBtns?.forEach(btn => {
+    navBtns?.forEach((btn) => {
       const svg = btn.querySelector('svg');
       expect(svg).toBeDefined();
     });
