@@ -8,12 +8,14 @@
  *
  * @attr {number} value - Current progress value (0-100)
  * @attr {number} max - Maximum value (default: 100)
- * @attr {string} color - Progress bar color: primary, secondary, tertiary, success, warning, error, info
- * @attr {string} size - Progress bar size: sm, md, lg
+ * @attr {string} color - Progress bar color: primary, secondary, tertiary, accent, success, warning, error, info
+ * @attr {string} size - Progress bar size: xs, sm, md, lg
  * @attr {boolean} indeterminate - Whether to show indeterminate animation
  * @attr {boolean} striped - Whether to show striped pattern
  * @attr {boolean} animated - Whether to animate the stripes
  * @attr {boolean} show-value - Whether to show the value label
+ *
+ * @slot label - Custom label content (overrides default percentage display)
  *
  * @csspart progress - The progress container
  * @csspart bar - The progress bar
@@ -27,6 +29,7 @@ const COLOR_CLASSES: Record<string, string> = {
   primary: 'progress-primary',
   secondary: 'progress-secondary',
   tertiary: 'progress-tertiary',
+  accent: 'progress-accent',
   success: 'progress-success',
   warning: 'progress-warning',
   error: 'progress-error',
@@ -34,6 +37,7 @@ const COLOR_CLASSES: Record<string, string> = {
 };
 
 const SIZE_CLASSES: Record<string, string> = {
+  xs: 'progress-xs',
   sm: 'progress-sm',
   md: '',
   lg: 'progress-lg',
@@ -43,11 +47,12 @@ export type ProgressColor =
   | 'primary'
   | 'secondary'
   | 'tertiary'
+  | 'accent'
   | 'success'
   | 'warning'
   | 'error'
   | 'info';
-export type ProgressSize = 'sm' | 'md' | 'lg';
+export type ProgressSize = 'xs' | 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = progressCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
@@ -72,6 +77,10 @@ const styles = css`
     border-radius: 9999px;
     overflow: hidden;
     font-family: inherit;
+  }
+
+  .progress-xs {
+    height: 0.125rem;
   }
 
   .progress-sm {
@@ -115,6 +124,10 @@ const styles = css`
 
   .progress-info .progress-bar {
     background-color: var(--color-info);
+  }
+
+  .progress-accent .progress-bar {
+    background-color: var(--color-accent);
   }
 
   .progress-striped .progress-bar {
@@ -248,7 +261,7 @@ export class ElDmProgress extends BaseElement {
           style="width: ${this.indeterminate ? '50' : percentage}%"
           part="bar"
         ></div>
-        ${this.showValue && !this.indeterminate ? `<span class="progress-value" part="value">${Math.round(percentage)}%</span>` : ''}
+        ${this.showValue && !this.indeterminate ? `<span class="progress-value" part="value"><slot name="label">${Math.round(percentage)}%</slot></span>` : ''}
       </div>
     `;
   }
