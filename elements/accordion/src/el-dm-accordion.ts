@@ -237,6 +237,7 @@ export class ElDmAccordionItem extends BaseElement {
           class="accordion-header"
           part="header"
           type="button"
+          id="trigger-${this.value || 'item'}"
           aria-expanded="${this.open ? 'true' : 'false'}"
           aria-controls="content-${this.value || 'item'}"
           ${this.disabled ? 'disabled' : ''}
@@ -253,6 +254,7 @@ export class ElDmAccordionItem extends BaseElement {
               part="content"
               id="content-${this.value || 'item'}"
               role="region"
+              aria-labelledby="trigger-${this.value || 'item'}"
               aria-hidden="${this.open ? 'false' : 'true'}"
             >
               <slot></slot>
