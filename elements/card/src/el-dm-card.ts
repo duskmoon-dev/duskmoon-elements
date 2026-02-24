@@ -212,7 +212,7 @@ export class ElDmCard extends BaseElement {
     const cardClasses = this._getCardClasses();
 
     return `
-      <div class="${cardClasses}" part="card">
+      <div class="${cardClasses}" part="card"${!this.interactive ? ' role="article"' : ''}>
         <div class="card-image" part="media">
           <slot name="media"></slot>
         </div>
