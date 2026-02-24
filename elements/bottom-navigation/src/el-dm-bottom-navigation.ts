@@ -212,6 +212,7 @@ export class ElDmBottomNavigation extends BaseElement {
     value: { type: String, reflect: true },
     color: { type: String, reflect: true, default: 'primary' },
     position: { type: String, reflect: true, default: 'fixed' },
+    navLabel: { type: String, reflect: true, attribute: 'nav-label', default: 'Bottom navigation' },
   };
 
   /** Array of navigation items */
@@ -225,6 +226,9 @@ export class ElDmBottomNavigation extends BaseElement {
 
   /** Position of the navigation bar */
   declare position: 'fixed' | 'static' | 'sticky';
+
+  /** Accessible label for the navigation landmark */
+  declare navLabel: string;
 
   constructor() {
     super();
@@ -347,7 +351,7 @@ export class ElDmBottomNavigation extends BaseElement {
     const hasItems = this.items && this.items.length > 0;
 
     return `
-      <nav class="bottom-nav" part="container" role="tablist" aria-label="Bottom navigation">
+      <nav class="bottom-nav" part="container" role="tablist" aria-label="${this.navLabel || 'Bottom navigation'}">
         ${hasItems ? this.items.map((item) => this._renderItem(item)).join('') : '<slot></slot>'}
       </nav>
     `;
