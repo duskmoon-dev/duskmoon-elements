@@ -1,5 +1,5 @@
 ---
-description: Update project documentation files in docs/ to reflect current codebase state.
+description: Update project documentation files in docs/ and skills/ to reflect current codebase state.
 ---
 
 ## User Input
@@ -8,22 +8,22 @@ description: Update project documentation files in docs/ to reflect current code
 $ARGUMENTS
 ```
 
-If the user specifies file names (e.g., `development`, `SKILL`), update only those files. If empty, update all files in `docs/`.
+If the user specifies file names (e.g., `development`, `SKILL`), update only those files. If empty, update all files in `docs/` and `skills/duskmoon-elements/`.
 
 ## Goal
 
-Bring the documentation in `docs/` up to date with the current state of the codebase. Documentation must accurately reflect the actual code, exports, commands, scripts, and project structure — not aspirational or outdated content.
+Bring the documentation in `docs/` and `skills/duskmoon-elements/` up to date with the current state of the codebase. Documentation must accurately reflect the actual code, exports, commands, scripts, and project structure — not aspirational or outdated content.
 
 ## Directory Structure
 
 ```
 docs/
-├── development.md                          # Developer guide
-└── duskmoon-elements/                      # Skill: using DuskMoon Elements
-    ├── SKILL.md                            # Main skill file (YAML frontmatter)
-    └── references/
-        ├── core-api.md                     # Core package exports, CSS variables
-        └── element-catalog.md              # All element packages by category
+└── development.md                          # Developer guide
+skills/duskmoon-elements/           # Skill: using DuskMoon Elements
+├── SKILL.md                                # Main skill file (YAML frontmatter)
+└── references/
+    ├── core-api.md                         # Core package exports, CSS variables
+    └── element-catalog.md                  # All element packages by category
 ```
 
 ## Documentation Files
@@ -31,9 +31,9 @@ docs/
 | File | Purpose | Key Sources of Truth |
 |------|---------|---------------------|
 | `docs/development.md` | Developer guide: setup, architecture, core API, element patterns, testing, code style | `packages/base/src/index.ts`, `package.json`, `bunfig.toml`, `tsconfig.json`, element source files |
-| `docs/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` custom elements: installation, registration, properties, events, slots, theming | Element source files, `packages/base/src/index.ts` |
-| `docs/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/base/src/index.ts`, `packages/base/src/*.ts` |
-| `docs/duskmoon-elements/references/element-catalog.md` | All element packages by category with tags and class names | `elements/` directory, each element's `src/index.ts` |
+| `skills/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` custom elements: installation, registration, properties, events, slots, theming | Element source files, `packages/base/src/index.ts` |
+| `skills/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/base/src/index.ts`, `packages/base/src/*.ts` |
+| `skills/duskmoon-elements/references/element-catalog.md` | All element packages by category with tags and class names | `elements/` directory, each element's `src/index.ts` |
 
 ## Execution Steps
 
@@ -52,18 +52,18 @@ Read and compare the following against each doc file:
 - `.github/workflows/` — CI/CD pipeline steps
 - Run `bun run test 2>&1 | tail -5` to get current test count
 
-**For `docs/duskmoon-elements/SKILL.md`:**
+**For `skills/duskmoon-elements/SKILL.md`:**
 - Element source files — Verify common properties, events, slots, CSS parts examples
 - `packages/base/src/index.ts` — Theme presets, registration patterns
 - Element count — Must match `elements/` directory listing
 
-**For `docs/duskmoon-elements/references/core-api.md`:**
+**For `skills/duskmoon-elements/references/core-api.md`:**
 - `packages/base/src/index.ts` — All exports (values and types)
 - `packages/base/src/base-element.ts` — BaseElement methods
 - `packages/base/src/mixins.ts` — Mixin list
 - `packages/base/src/themes.ts` — Theme presets and CSS variables
 
-**For `docs/duskmoon-elements/references/element-catalog.md`:**
+**For `skills/duskmoon-elements/references/element-catalog.md`:**
 - `elements/` directory listing — Package count and names
 - Each element's `src/index.ts` — Exported classes and register functions
 - Category counts must add up to total package count
@@ -90,8 +90,8 @@ Edit each doc file to reflect the current state. Follow these rules:
 ### 4. Verify
 
 After updating, confirm:
-- All exports listed in `packages/base/src/index.ts` appear in `references/core-api.md`
-- All element packages in `elements/` appear in `references/element-catalog.md`
+- All exports listed in `packages/base/src/index.ts` appear in `skills/duskmoon-elements/references/core-api.md`
+- All element packages in `elements/` appear in `skills/duskmoon-elements/references/element-catalog.md`
 - Element count in SKILL.md matches catalog
 - All scripts in root `package.json` are documented in `development.md`
 - No file paths reference non-existent files
@@ -107,13 +107,13 @@ After completing updates, print a summary:
 ### docs/development.md
 - [list of changes made, or "No changes needed"]
 
-### docs/duskmoon-elements/SKILL.md
+### skills/duskmoon-elements/SKILL.md
 - [list of changes made, or "No changes needed"]
 
-### docs/duskmoon-elements/references/core-api.md
+### skills/duskmoon-elements/references/core-api.md
 - [list of changes made, or "No changes needed"]
 
-### docs/duskmoon-elements/references/element-catalog.md
+### skills/duskmoon-elements/references/element-catalog.md
 - [list of changes made, or "No changes needed"]
 ```
 
