@@ -1,6 +1,6 @@
 # Fix Internal Request Issues
 
-Find all open GitHub issues labeled `internal request`, then fix each one in an isolated git worktree and open a PR.
+Find all open GitHub issues labeled `internal request` (excluding those labeled `unable to resolve`), then fix each one in an isolated git worktree and open a PR.
 
 ## Execution Flow
 
@@ -15,7 +15,9 @@ labels: ["internal request"]
 state: open
 ```
 
-If no issues are found, report "No open internal request issues" and stop.
+Filter out any issues that also have the label `unable to resolve` — these have been triaged as unresolvable and should be skipped.
+
+If no actionable issues remain, report "No open internal request issues" and stop.
 
 Print a summary table of all found issues (number, title, labels).
 
@@ -93,13 +95,31 @@ After processing all issues, output a summary:
 Internal Request Issues Processed:
   #19 — Missing cascader export → PR #XX (fix/issue-19)
   #20 — Button hover broken   → PR #XX (fix/issue-20)
+  #21 — Add light DOM mode    → labeled "unable to resolve" (architecture decision needed)
 
 Created PRs: 2
-Skipped: 0
+Unable to resolve: 1
 Failed: 0
 ```
 
-If any issue could not be fixed automatically (too complex, unclear requirements), report it as skipped with a reason.
+If any issue could not be fixed automatically (too complex, unclear requirements, architecture decision needed), label it and comment:
+
+1. Ensure the label `unable to resolve` exists. If it doesn't, create it first:
+```bash
+gh label create "unable to resolve" --color "e4e669" --description "Cannot be resolved automatically — needs human decision"
+```
+
+2. Add the label to the issue:
+```bash
+gh issue edit {number} --add-label "unable to resolve"
+```
+
+3. Add a comment explaining why:
+```bash
+gh issue comment {number} --body "**Unable to resolve automatically.**
+
+Reason: {detailed explanation of why this cannot be fixed automatically, e.g. requires architecture decisions, unclear requirements, etc.}"
+```
 
 ## Important Notes
 
