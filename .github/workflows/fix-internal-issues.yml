@@ -3,6 +3,7 @@ name: Fix Internal Issues
 on:
   issues:
     types: [labeled]
+  workflow_dispatch:
 
 jobs:
   fix-issues:
