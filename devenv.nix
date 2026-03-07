@@ -5,8 +5,7 @@ let
   pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
 in
 {
-  env.GREET = "Duskmoon UI";
-  env.GREET2 = "Custom Elements";
+  env.GREET = "Duskmoon Elements";
   env.NODE_ENV = "development";
 
   packages = [
@@ -32,7 +31,6 @@ in
 
   scripts.hello.exec = ''
     figlet -w 120 $GREET | lolcat
-    figlet -w 120 $GREET2 | lolcat
   '';
 
   enterShell = ''
