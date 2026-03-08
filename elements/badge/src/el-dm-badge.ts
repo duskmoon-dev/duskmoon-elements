@@ -7,7 +7,7 @@
  * @element el-dm-badge
  *
  * @attr {string} variant - Badge variant: filled, outlined, soft
- * @attr {string} color - Badge color: primary, secondary, tertiary, success, warning, error, info
+ * @attr {string} color - Badge color: primary, secondary, tertiary, success, warning, error, info, ghost
  * @attr {string} size - Badge size: sm, md, lg
  * @attr {boolean} pill - Whether to use pill (rounded) shape
  * @attr {boolean} dot - Show as a dot indicator only
@@ -34,6 +34,7 @@ const COLOR_CLASSES: Record<string, string> = {
   warning: 'badge-warning',
   error: 'badge-error',
   info: 'badge-info',
+  ghost: 'badge-ghost',
 };
 
 const SIZE_CLASSES: Record<string, string> = {
@@ -50,7 +51,8 @@ export type BadgeColor =
   | 'success'
   | 'warning'
   | 'error'
-  | 'info';
+  | 'info'
+  | 'ghost';
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility
@@ -88,6 +90,12 @@ const styles = css`
   .badge-dot.badge-lg {
     width: 0.625rem;
     height: 0.625rem;
+  }
+
+  .badge-ghost {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: inherit;
   }
 `;
 
