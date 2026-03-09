@@ -226,11 +226,11 @@ export const elementStyles = css`
     white-space: nowrap;
   }
 
-  .status-bar-count.warning {
+  .status-bar-count .warning {
     color: var(--md-color-warning);
   }
 
-  .status-bar-count.error {
+  .status-bar-count .error {
     color: var(--md-color-error);
   }
 
