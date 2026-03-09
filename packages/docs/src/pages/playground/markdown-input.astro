@@ -1,0 +1,564 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
+---
+
+<BaseLayout
+  title="Markdown Input Playground"
+  description="Interactive playground for the Markdown Input component"
+>
+  <div class="playground-container">
+    <header class="playground-header">
+      <div class="header-content">
+        <a href="/duskmoon-elements/" class="logo">DuskMoon Elements</a>
+        <h1 class="playground-title">Markdown Input Playground</h1>
+        <div class="header-actions">
+          <ThemeToggle />
+          <a
+            href="/duskmoon-elements/docs/components/markdown-input"
+            class="btn-link"
+          >
+            Documentation
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="playground-main">
+      <div class="playground-grid">
+        <!-- Settings Panel -->
+        <div class="settings-panel">
+          <h2>Settings</h2>
+
+          <div class="setting-group">
+            <label for="theme-select">Theme:</label>
+            <select id="theme-select">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+
+          <div class="setting-group">
+            <label for="max-words-input">Max Words (optional):</label>
+            <input
+              type="number"
+              id="max-words-input"
+              placeholder="e.g., 500"
+              min="0"
+            />
+          </div>
+
+          <div class="setting-group">
+            <label for="upload-url-input">Upload URL (optional):</label>
+            <input
+              type="text"
+              id="upload-url-input"
+              placeholder="e.g., /api/uploads"
+            />
+          </div>
+
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="disabled-toggle" />
+              Disabled
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <button id="reset-btn" class="btn-secondary">Reset</button>
+          </div>
+
+          <h3>Quick Actions</h3>
+          <div class="action-group">
+            <button id="insert-heading-btn">Insert # Heading</button>
+            <button id="insert-bold-btn">Insert **Bold**</button>
+            <button id="insert-code-btn">Insert `code`</button>
+            <button id="clear-btn">Clear All</button>
+          </div>
+
+          <h3>API Testing</h3>
+          <div class="action-group">
+            <button id="get-value-btn">Get Value</button>
+            <button id="get-suggestions-btn">Show Suggestions</button>
+          </div>
+
+          <div id="api-output" class="api-output"></div>
+        </div>
+
+        <!-- Editor Panel -->
+        <div class="editor-panel">
+          <div id="editor-wrapper">
+            <el-dm-markdown-input
+              id="playground-editor"
+              placeholder="Write markdown here… Try typing @ or # to test autocomplete!"
+            ></el-dm-markdown-input>
+          </div>
+
+          <div class="editor-info">
+            <h3>Events Log</h3>
+            <div id="events-log" class="events-log"></div>
+            <button id="clear-log-btn" class="btn-small">Clear Log</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .playground-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-surface);
+    }
+
+    .playground-header {
+      border-bottom: 1px solid var(--color-outline);
+      background-color: var(--color-surface-container);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .logo {
+      text-decoration: none;
+      color: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .playground-title {
+      margin: 0;
+      flex: 1;
+      font-size: 1.5rem;
+      color: var(--color-on-surface);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-link {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      text-decoration: none;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .btn-link:hover {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .playground-main {
+      flex: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem 1rem;
+    }
+
+    .playground-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      height: 100%;
+    }
+
+    .settings-panel {
+      background-color: var(--color-surface-container);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+    }
+
+    .settings-panel h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+      color: var(--color-on-surface);
+    }
+
+    .settings-panel h3 {
+      margin: 0.5rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .setting-group label {
+      font-size: 0.875rem;
+      color: var(--color-on-surface);
+      font-weight: 500;
+    }
+
+    .setting-group input[type="text"],
+    .setting-group input[type="number"],
+    .setting-group select {
+      padding: 0.5rem;
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      background-color: var(--color-surface);
+      color: var(--color-on-surface);
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+
+    .setting-group input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .action-group button {
+      padding: 0.5rem;
+      border: 1px solid var(--color-outline);
+      background-color: var(--color-surface);
+      color: var(--color-on-surface);
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 150ms;
+      font-weight: 500;
+    }
+
+    .action-group button:hover {
+      background-color: var(--color-surface-container-high);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn-secondary {
+      padding: 0.5rem 1rem;
+      background-color: var(--color-surface);
+      color: var(--color-on-surface);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 150ms;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--color-surface-container-high);
+      border-color: var(--color-primary);
+    }
+
+    .btn-small {
+      padding: 0.375rem 0.75rem;
+      background-color: var(--color-surface);
+      color: var(--color-on-surface);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 150ms;
+    }
+
+    .btn-small:hover {
+      background-color: var(--color-surface-container-high);
+    }
+
+    .api-output {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--color-on-surface);
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #editor-wrapper {
+      flex: 1;
+      min-height: 500px;
+      border: 1px solid var(--color-outline);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    #playground-editor {
+      width: 100%;
+      height: 100%;
+    }
+
+    .editor-info {
+      background-color: var(--color-surface-container);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .editor-info h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.875rem;
+      color: var(--color-on-surface);
+    }
+
+    .events-log {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--color-on-surface-variant);
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-entry {
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--color-outline-variant);
+    }
+
+    .event-entry:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 1024px) {
+      .playground-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .settings-panel {
+        position: static;
+      }
+
+      #editor-wrapper {
+        min-height: 400px;
+      }
+    }
+  </style>
+
+  <script>
+    import { register } from '@duskmoon-dev/el-markdown-input';
+
+    // Register the component
+    register();
+
+    const editor = document.getElementById('playground-editor') as any;
+    const themeSelect = document.getElementById('theme-select') as HTMLSelectElement;
+    const maxWordsInput = document.getElementById('max-words-input') as HTMLInputElement;
+    const uploadUrlInput = document.getElementById('upload-url-input') as HTMLInputElement;
+    const disabledToggle = document.getElementById('disabled-toggle') as HTMLInputElement;
+    const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+    const eventLog = document.getElementById('events-log') as HTMLElement;
+    const apiOutput = document.getElementById('api-output') as HTMLElement;
+
+    // Event logging
+    const logEvent = (event: string, detail: any) => {
+      const timestamp = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'event-entry';
+      entry.textContent = `[${timestamp}] ${event}: ${JSON.stringify(detail).substring(0, 60)}`;
+      eventLog.insertBefore(entry, eventLog.firstChild);
+
+      // Keep only last 20 entries
+      while (eventLog.children.length > 20) {
+        eventLog.removeChild(eventLog.lastChild!);
+      }
+    };
+
+    // Theme switching
+    themeSelect.addEventListener('change', (e) => {
+      const isDark = (e.target as HTMLSelectElement).value === 'dark';
+      if (isDark) {
+        editor.setAttribute('dark', '');
+      } else {
+        editor.removeAttribute('dark');
+      }
+    });
+
+    // Max words
+    maxWordsInput.addEventListener('change', (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      if (value) {
+        editor.setAttribute('max-words', value);
+      } else {
+        editor.removeAttribute('max-words');
+      }
+    });
+
+    // Upload URL
+    uploadUrlInput.addEventListener('change', (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      if (value) {
+        editor.setAttribute('upload-url', value);
+      } else {
+        editor.removeAttribute('upload-url');
+      }
+    });
+
+    // Disabled toggle
+    disabledToggle.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).checked) {
+        editor.setAttribute('disabled', '');
+      } else {
+        editor.removeAttribute('disabled');
+      }
+    });
+
+    // Reset button
+    resetBtn.addEventListener('click', () => {
+      themeSelect.value = 'light';
+      maxWordsInput.value = '';
+      uploadUrlInput.value = '';
+      disabledToggle.checked = false;
+      editor.removeAttribute('dark');
+      editor.removeAttribute('max-words');
+      editor.removeAttribute('upload-url');
+      editor.removeAttribute('disabled');
+      editor.setValue('');
+    });
+
+    // Quick action buttons
+    document.getElementById('insert-heading-btn')?.addEventListener('click', () => {
+      editor.insertText('# Heading\n');
+    });
+
+    document.getElementById('insert-bold-btn')?.addEventListener('click', () => {
+      editor.insertText('**bold text**');
+    });
+
+    document.getElementById('insert-code-btn')?.addEventListener('click', () => {
+      editor.insertText('`code`');
+    });
+
+    document.getElementById('clear-btn')?.addEventListener('click', () => {
+      editor.setValue('');
+    });
+
+    document.getElementById('get-value-btn')?.addEventListener('click', () => {
+      const value = editor.getValue();
+      apiOutput.textContent = `getValue():\n${value || '(empty)'}`;
+    });
+
+    document.getElementById('get-suggestions-btn')?.addEventListener('click', () => {
+      const suggestions = [
+        { id: '@alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
+        { id: '@bob', label: 'Bob Johnson', subtitle: 'bob@example.com' },
+        { id: '#bug', label: 'Bug Report' },
+        { id: '#feature', label: 'Feature Request' },
+      ];
+      editor.setSuggestions(suggestions);
+      apiOutput.textContent = `setSuggestions() called with ${suggestions.length} items`;
+    });
+
+    document.getElementById('clear-log-btn')?.addEventListener('click', () => {
+      eventLog.innerHTML = '';
+    });
+
+    // Event listeners
+    editor.addEventListener('change', (e: CustomEvent) => {
+      logEvent('change', e.detail);
+    });
+
+    editor.addEventListener('upload-start', (e: CustomEvent) => {
+      logEvent('upload-start', { filename: e.detail.file.name });
+    });
+
+    editor.addEventListener('upload-done', (e: CustomEvent) => {
+      logEvent('upload-done', { filename: e.detail.file.name, url: e.detail.url });
+    });
+
+    editor.addEventListener('upload-error', (e: CustomEvent) => {
+      logEvent('upload-error', { error: e.detail.error });
+    });
+
+    editor.addEventListener('mention-query', (e: CustomEvent) => {
+      logEvent('mention-query', { query: e.detail.query });
+      // Auto-resolve with sample data
+      const users = [
+        { id: '@alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
+        { id: '@bob', label: 'Bob Johnson', subtitle: 'bob@example.com' },
+        { id: '@charlie', label: 'Charlie Brown', subtitle: 'charlie@example.com' },
+      ];
+      const filtered = users.filter(u =>
+        u.label.toLowerCase().includes(e.detail.query.toLowerCase())
+      );
+      e.detail.resolve(filtered);
+    });
+
+    editor.addEventListener('reference-query', (e: CustomEvent) => {
+      logEvent('reference-query', { query: e.detail.query });
+      // Auto-resolve with sample data
+      const refs = [
+        { id: '#bug', label: 'Bug Report' },
+        { id: '#feature', label: 'Feature Request' },
+        { id: '#docs', label: 'Documentation' },
+        { id: '#question', label: 'Question' },
+      ];
+      const filtered = refs.filter(r =>
+        r.label.toLowerCase().includes(e.detail.query.toLowerCase())
+      );
+      e.detail.resolve(filtered);
+    });
+
+    // Initialize with sample content
+    editor.setValue(`# Markdown Input Playground
+
+Type \`@\` to mention users or \`#\` to reference items!
+
+## Features
+
+- **Write/Preview tabs** with syntax highlighting
+- **File upload** via drag-and-drop or paste
+- **Autocomplete** for @mentions and #references
+- **Live word count** with optional limits
+- **Form integration** for native submission
+
+Try these:
+- Type @ to test mentions
+- Type # to test references
+- Drag and drop an image to test upload
+- Use Ctrl+Shift+P to toggle preview`);
+  </script>
+</BaseLayout>

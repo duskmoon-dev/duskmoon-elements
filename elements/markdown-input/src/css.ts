@@ -1,0 +1,365 @@
+import { css } from '@duskmoon-dev/el-base';
+
+/**
+ * Shadow DOM stylesheet for el-dm-markdown-input.
+ *
+ * Exposes --md-* custom properties as the external theming API.
+ * Each --md-* variable falls back to the corresponding --color-* token
+ * from @duskmoon-dev/core so the element automatically adopts the
+ * active design-system theme without any consumer configuration.
+ */
+export const elementStyles = css`
+  /* ── Custom property defaults with design-system fallbacks ─────────── */
+  :host {
+    --md-border: var(--color-outline, #d0d7de);
+    --md-border-focus: var(--color-primary, #0969da);
+    --md-bg: var(--color-surface, #ffffff);
+    --md-bg-toolbar: var(--color-surface-variant, #f6f8fa);
+    --md-bg-hover: var(--color-surface-container, #eaeef2);
+    --md-text: var(--color-on-surface, #1f2328);
+    --md-text-muted: var(--color-on-surface-variant, #656d76);
+    --md-accent: var(--color-primary, #0969da);
+    --md-radius: 6px;
+    --md-upload-bar: var(--color-primary, #0969da);
+    --md-color-warning: var(--color-warning, #d97706);
+    --md-color-error: var(--color-error, #dc2626);
+
+    display: block;
+    position: relative; /* establishes containing block for the ac-dropdown portal */
+    font-family: inherit;
+  }
+
+  :host([hidden]) {
+    display: none !important;
+  }
+
+  /* Dark-mode overrides (activated by [dark] attribute on host) */
+  :host([dark]) {
+    --md-border: #30363d;
+    --md-border-focus: #58a6ff;
+    --md-bg: #0d1117;
+    --md-bg-toolbar: #161b22;
+    --md-bg-hover: #21262d;
+    --md-text: #e6edf3;
+    --md-text-muted: #8b949e;
+    --md-accent: #58a6ff;
+    --md-upload-bar: #58a6ff;
+    --md-color-warning: #f59e0b;
+    --md-color-error: #fca5a5;
+  }
+
+  /* ── Editor chrome ──────────────────────────────────────────────────── */
+  .editor {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--md-border);
+    border-radius: var(--md-radius);
+    background: var(--md-bg);
+    color: var(--md-text);
+    overflow: hidden;
+  }
+
+  .editor:focus-within {
+    border-color: var(--md-border-focus);
+    outline: 2px solid var(--md-border-focus);
+    outline-offset: -1px;
+  }
+
+  /* ── Toolbar / tab bar ──────────────────────────────────────────────── */
+  .toolbar {
+    display: flex;
+    gap: 0;
+    background: var(--md-bg-toolbar);
+    border-bottom: 1px solid var(--md-border);
+    padding: 0 0.5rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.875rem;
+    border: none;
+    background: transparent;
+    color: var(--md-text-muted);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition:
+      color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .tab-btn:hover {
+    color: var(--md-text);
+    background: var(--md-bg-hover);
+  }
+
+  .tab-btn[aria-selected='true'] {
+    color: var(--md-text);
+    border-bottom-color: var(--md-accent);
+  }
+
+  .tab-btn:focus-visible {
+    outline: 2px solid var(--md-accent);
+    outline-offset: -2px;
+    border-radius: 3px;
+  }
+
+  /* ── Write area (backdrop + textarea overlay) ───────────────────────── */
+  .write-area {
+    position: relative;
+    min-height: 12rem;
+    flex: 1;
+  }
+
+  /*
+   * Backdrop: renders syntax-highlighted HTML behind the transparent textarea.
+   * Must share IDENTICAL font metrics with the textarea to stay pixel-aligned.
+   */
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /*
+     * Use overflow: auto (not overflow: hidden) so the backdrop reserves
+     * the same scrollbar gutter as the textarea when content overflows.
+     * Without this, the textarea scrollbar narrows its text area but the
+     * backdrop stays full-width — lines wrap at different points — causing
+     * the cursor to appear misaligned with the highlighted text.
+     */
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
+    border: none;
+    background: transparent;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    padding: 0.75rem;
+    color: var(--md-text);
+  }
+
+  .backdrop::-webkit-scrollbar {
+    display: none; /* Chrome / Safari */
+  }
+
+  .backdrop-content {
+    display: block;
+    /* Prism token colours are injected via a separate <style id="prism-theme"> */
+  }
+
+  textarea {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 12rem;
+    border: none;
+    outline: none;
+    resize: vertical;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--md-text);
+    box-sizing: border-box;
+
+    /* MUST match .backdrop exactly */
+    font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    padding: 0.75rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  textarea::placeholder {
+    color: var(--md-text-muted);
+  }
+
+  textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* ── Preview panel ──────────────────────────────────────────────────── */
+  .preview-body {
+    padding: 0.75rem;
+    min-height: 12rem;
+    overflow-y: auto;
+    color: var(--md-text);
+    /* .markdown-body styles come from @duskmoon-dev/core via the element */
+  }
+
+  /* ── Status bar ─────────────────────────────────────────────────────── */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.375rem 0.75rem;
+    border-top: 1px solid var(--md-border);
+    background: var(--md-bg-toolbar);
+    font-size: 0.75rem;
+    color: var(--md-text-muted);
+    gap: 0.5rem;
+  }
+
+  .attach-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--md-text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition:
+      color 150ms ease,
+      background 150ms ease;
+  }
+
+  .attach-btn:hover {
+    color: var(--md-text);
+    background: var(--md-bg-hover);
+  }
+
+  .attach-btn:focus-visible {
+    outline: 2px solid var(--md-accent);
+    outline-offset: 1px;
+  }
+
+  .status-bar-count {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .status-bar-count .warning {
+    color: var(--md-color-warning);
+  }
+
+  .status-bar-count .error {
+    color: var(--md-color-error);
+  }
+
+  .file-input {
+    display: none;
+  }
+
+  /* ── Autocomplete dropdown ──────────────────────────────────────────── */
+  /*
+   * The dropdown is a direct child of :host (outside .editor) so it is not
+   * clipped by .editor's overflow: hidden. :host has position: relative which
+   * establishes the containing block for this absolute positioning.
+   */
+  .ac-dropdown {
+    position: absolute;
+    z-index: 100;
+    left: 0.75rem;
+    /* Align to bottom of the editor chrome; the editor fills 100% of :host height */
+    bottom: calc(var(--md-status-bar-height, 2rem) + 4px);
+    min-width: 16rem;
+    max-width: 28rem;
+    max-height: 16rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: var(--md-bg);
+    border: 1px solid var(--md-border);
+    border-radius: var(--md-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ac-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: background 100ms ease;
+  }
+
+  .ac-item:hover,
+  .ac-item[aria-selected='true'] {
+    background: var(--md-bg-hover);
+  }
+
+  .ac-item-label {
+    font-size: 0.875rem;
+    color: var(--md-text);
+    font-weight: 500;
+  }
+
+  .ac-item-subtitle {
+    font-size: 0.75rem;
+    color: var(--md-text-muted);
+    margin-top: 1px;
+  }
+
+  /* ── Upload progress rows ───────────────────────────────────────────── */
+  .upload-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-top: 1px solid var(--md-border);
+    background: var(--md-bg-toolbar);
+    font-size: 0.75rem;
+    color: var(--md-text-muted);
+  }
+
+  .upload-filename {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .upload-bar-track {
+    width: 6rem;
+    height: 3px;
+    background: var(--md-border);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .upload-bar {
+    height: 100%;
+    background: var(--md-upload-bar);
+    border-radius: 2px;
+    transition: width 150ms ease;
+  }
+
+  .upload-error-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-top: 1px solid var(--md-border);
+    background: oklch(97% 0.02 25);
+    color: var(--md-color-error);
+    font-size: 0.75rem;
+  }
+
+  :host([dark]) .upload-error-row {
+    background: oklch(20% 0.03 25);
+  }
+
+  .upload-error-msg {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;
