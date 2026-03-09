@@ -118,6 +118,7 @@ describe('ElDmBadge', () => {
       'warning',
       'error',
       'info',
+      'ghost',
     ] as const;
 
     for (const color of colors) {
