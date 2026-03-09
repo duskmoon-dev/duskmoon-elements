@@ -336,13 +336,12 @@ export const elementStyles = css`
     padding: 0.375rem 0.75rem;
     border-top: 1px solid var(--md-border);
     background: oklch(97% 0.02 25);
-    color: #dc2626;
+    color: var(--md-color-error);
     font-size: 0.75rem;
   }
 
   :host([dark]) .upload-error-row {
     background: oklch(20% 0.03 25);
-    color: #fca5a5;
   }
 
   .upload-error-msg {
