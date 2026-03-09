@@ -108,6 +108,8 @@ export class ElDmMarkdownInput extends BaseElement {
 
   constructor() {
     super();
+    // attachInternals() must be called in the constructor per HTML spec
+    this.#internals = this.attachInternals();
     this.attachStyles([elementStyles, markdownBodySheet]);
   }
 
@@ -117,7 +119,6 @@ export class ElDmMarkdownInput extends BaseElement {
 
   connectedCallback(): void {
     super.connectedCallback(); // triggers initial update() → render()
-    this.#internals = this.attachInternals();
 
     // Set initial form value from the reactive `value` property
     const initial = (this as unknown as { value: string }).value ?? '';
@@ -169,13 +170,14 @@ export class ElDmMarkdownInput extends BaseElement {
     if (!ta) return;
 
     // Sync simple attributes
-    const placeholder = (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
+    const placeholder =
+      (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
     ta.placeholder = placeholder;
     ta.disabled = !!(this as unknown as { disabled: boolean }).disabled;
 
     // Sync value if the reactive prop was updated externally (e.g. attributeChangedCallback)
     const propVal = (this as unknown as { value: string }).value ?? '';
-    if (propVal !== '' && propVal !== ta.value) {
+    if (propVal !== ta.value) {
       ta.value = propVal;
       this.#syncFormValue();
       this.#scheduleHighlight();
@@ -218,6 +220,9 @@ export class ElDmMarkdownInput extends BaseElement {
           </div>
           <textarea
             aria-label="Markdown editor"
+            aria-haspopup="listbox"
+            aria-autocomplete="list"
+            aria-controls="ac-dropdown"
             placeholder="${ph}"
             ${disabled ? 'disabled' : ''}
             spellcheck="false"
@@ -250,9 +255,9 @@ export class ElDmMarkdownInput extends BaseElement {
           >
         </div>
 
-        <ul class="ac-dropdown" role="listbox" aria-label="Suggestions" hidden></ul>
         <div class="upload-list"></div>
       </div>
+      <ul id="ac-dropdown" class="ac-dropdown" role="listbox" aria-label="Suggestions" hidden></ul>
     `;
   }
 
@@ -291,6 +296,16 @@ export class ElDmMarkdownInput extends BaseElement {
         this.#backdrop.scrollTop = ta.scrollTop;
         this.#backdrop.scrollLeft = ta.scrollLeft;
       }
+    });
+
+    // ── Close dropdown when focus leaves the textarea ──────────────
+    ta.addEventListener('blur', () => {
+      // Delay to allow pointer events on dropdown items to fire first
+      setTimeout(() => {
+        if (!this.shadowRoot?.activeElement) {
+          this.#closeDropdown();
+        }
+      }, 150);
     });
 
     // ── Tab key for autocomplete (prevent default only when dropdown open) ──
@@ -462,9 +477,15 @@ export class ElDmMarkdownInput extends BaseElement {
     html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     // Step 4: Markdown transformations
-    // Images before links
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    // Images before links — sanitize URLs to block javascript: and other unsafe protocols
+    html = html.replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      (_, alt, url) => `<img src="${sanitizeUrl(url)}" alt="${alt}">`,
+    );
+    html = html.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (_, text, url) => `<a href="${sanitizeUrl(url)}">${text}</a>`,
+    );
 
     // Headings
     html = html
@@ -493,10 +514,20 @@ export class ElDmMarkdownInput extends BaseElement {
     // Strikethrough
     html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
 
-    // Lists (simple single-level)
-    html = html.replace(/^[ \t]*[-*+] (.+)$/gm, '<li>$1</li>');
-    html = html.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
-    html = html.replace(/^[ \t]*\d+\. (.+)$/gm, '<li>$1</li>');
+    // Lists (single-level)
+    // Tag items with a type marker to distinguish ul from ol, then group consecutive runs
+    html = html.replace(/^[ \t]*[-*+] (.+)$/gm, '<li data-list="ul">$1</li>');
+    html = html.replace(/^[ \t]*\d+\. (.+)$/gm, '<li data-list="ol">$1</li>');
+    // Group consecutive unordered items into <ul>
+    html = html.replace(
+      /(<li data-list="ul">[^\n]*<\/li>(?:\n<li data-list="ul">[^\n]*<\/li>)*)/g,
+      (match) => '<ul>' + match.replace(/ data-list="ul"/g, '') + '</ul>',
+    );
+    // Group consecutive ordered items into <ol>
+    html = html.replace(
+      /(<li data-list="ol">[^\n]*<\/li>(?:\n<li data-list="ol">[^\n]*<\/li>)*)/g,
+      (match) => '<ol>' + match.replace(/ data-list="ol"/g, '') + '</ol>',
+    );
 
     // Paragraphs
     const lines = html.split('\n\n');
@@ -504,7 +535,7 @@ export class ElDmMarkdownInput extends BaseElement {
       .map((block) => {
         const t = block.trim();
         if (!t) return '';
-        if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre)/.test(t) || t.startsWith(CB_PH)) return t;
+        if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img)/.test(t) || t.startsWith(CB_PH)) return t;
         return `<p>${t.replace(/\n/g, '<br>')}</p>`;
       })
       .filter(Boolean)
@@ -696,10 +727,17 @@ export class ElDmMarkdownInput extends BaseElement {
     if (!this.#acDropdown) return;
     if (this.#acSuggestions.length === 0) {
       this.#acDropdown.hidden = true;
+      this.#textarea?.removeAttribute('aria-activedescendant');
       return;
     }
     this.#acDropdown.innerHTML = renderDropdown(this.#acSuggestions, this.#acSelectedIndex);
     this.#acDropdown.hidden = false;
+    // Update aria-activedescendant so screen readers announce the highlighted item
+    if (this.#acSelectedIndex >= 0) {
+      this.#textarea?.setAttribute('aria-activedescendant', `ac-item-${this.#acSelectedIndex}`);
+    } else {
+      this.#textarea?.removeAttribute('aria-activedescendant');
+    }
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -761,11 +799,9 @@ export class ElDmMarkdownInput extends BaseElement {
     ta.value = ta.value.slice(0, start) + str + ta.value.slice(end);
     const newPos = start + str.length;
     ta.setSelectionRange(newPos, newPos);
+    // Dispatch 'input' — the textarea's input listener handles syncFormValue(),
+    // emit('change'), scheduleHighlight(), scheduleStatusUpdate(), and autocomplete
     ta.dispatchEvent(new Event('input', { bubbles: true }));
-    this.#syncFormValue();
-    this.emit('change', { value: ta.value });
-    this.#scheduleHighlight();
-    this.#scheduleStatusUpdate();
   }
 
   /**
@@ -779,7 +815,26 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 }
 
+/**
+ * Sanitize a URL for use in rendered HTML (preview tab).
+ * Only allows https://, http://, relative paths, and anchor fragments.
+ * Rejects javascript:, data:, vbscript:, and other unsafe protocols.
+ */
+function sanitizeUrl(url: string): string {
+  const trimmed = url.trim();
+  // Has no protocol → relative URL, safe
+  if (!/^[a-z][a-z\d+\-.]*:/i.test(trimmed)) return trimmed;
+  // Allow http and https only
+  if (/^https?:/i.test(trimmed)) return trimmed;
+  // All other protocols (javascript:, data:, vbscript:, …) → neutralise
+  return '#';
+}
+
 /** HTML-escape a string for safe insertion into innerHTML. */
 function escapeHtmlStr(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

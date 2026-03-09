@@ -91,7 +91,7 @@ export function renderDropdown(suggestions: Suggestion[], selectedIndex: number)
       const subtitle = s.subtitle
         ? `<span class="ac-item-subtitle">${escapeHtml(s.subtitle)}</span>`
         : '';
-      return `<li class="ac-item" role="option" data-ac-index="${i}"${selected}>
+      return `<li id="ac-item-${i}" class="ac-item" role="option" data-ac-index="${i}"${selected}>
         <span class="ac-item-label">${escapeHtml(s.label)}</span>${subtitle}
       </li>`;
     })

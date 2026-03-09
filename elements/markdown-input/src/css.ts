@@ -21,8 +21,11 @@ export const elementStyles = css`
     --md-accent: var(--color-primary, #0969da);
     --md-radius: 6px;
     --md-upload-bar: var(--color-primary, #0969da);
+    --md-color-warning: var(--color-warning, #d97706);
+    --md-color-error: var(--color-error, #dc2626);
 
     display: block;
+    position: relative; /* establishes containing block for the ac-dropdown portal */
     font-family: inherit;
   }
 
@@ -41,6 +44,8 @@ export const elementStyles = css`
     --md-text-muted: #8b949e;
     --md-accent: #58a6ff;
     --md-upload-bar: #58a6ff;
+    --md-color-warning: #f59e0b;
+    --md-color-error: #fca5a5;
   }
 
   /* ── Editor chrome ──────────────────────────────────────────────────── */
@@ -80,7 +85,9 @@ export const elementStyles = css`
     cursor: pointer;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
-    transition: color 150ms ease, border-color 150ms ease;
+    transition:
+      color 150ms ease,
+      border-color 150ms ease;
   }
 
   .tab-btn:hover {
@@ -199,7 +206,9 @@ export const elementStyles = css`
     font-size: 0.75rem;
     cursor: pointer;
     border-radius: 4px;
-    transition: color 150ms ease, background 150ms ease;
+    transition:
+      color 150ms ease,
+      background 150ms ease;
   }
 
   .attach-btn:hover {
@@ -218,11 +227,11 @@ export const elementStyles = css`
   }
 
   .status-bar-count.warning {
-    color: #d97706;
+    color: var(--md-color-warning);
   }
 
   .status-bar-count.error {
-    color: #dc2626;
+    color: var(--md-color-error);
   }
 
   .file-input {
@@ -230,11 +239,17 @@ export const elementStyles = css`
   }
 
   /* ── Autocomplete dropdown ──────────────────────────────────────────── */
+  /*
+   * The dropdown is a direct child of :host (outside .editor) so it is not
+   * clipped by .editor's overflow: hidden. :host has position: relative which
+   * establishes the containing block for this absolute positioning.
+   */
   .ac-dropdown {
     position: absolute;
-    z-index: 10;
+    z-index: 100;
     left: 0.75rem;
-    bottom: calc(100% + 4px);
+    /* Align to bottom of the editor chrome; the editor fills 100% of :host height */
+    bottom: calc(var(--md-status-bar-height, 2rem) + 4px);
     min-width: 16rem;
     max-width: 28rem;
     max-height: 16rem;
