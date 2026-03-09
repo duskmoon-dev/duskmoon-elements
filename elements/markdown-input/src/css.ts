@@ -132,9 +132,14 @@ export const elementStyles = css`
     scrollbar-width: none; /* Firefox */
     border: none;
     background: transparent;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    /*
+     * Do NOT put white-space: pre-wrap here. The backdrop div contains a
+     * backdrop-content child, and the HTML template has whitespace text
+     * nodes (newline + indent) between them. With pre-wrap on the parent
+     * those text nodes render as a visible leading newline, shifting all
+     * content down by one line and misaligning the cursor vertically.
+     * pre-wrap lives on .backdrop-content instead.
+     */
 
     font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.875rem;
@@ -149,6 +154,9 @@ export const elementStyles = css`
 
   .backdrop-content {
     display: block;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     /* Prism token colours are injected via a separate <style id="prism-theme"> */
   }
 
