@@ -1,0 +1,405 @@
+---
+title: Markdown Input
+description: Full-featured markdown editor with syntax highlighting, file upload, and autocomplete
+order: 18
+section: input
+component: "@duskmoon-dev/el-markdown-input"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+
+# Markdown Input
+
+The Markdown Input component provides a full-featured markdown editor with syntax highlighting, file upload, autocomplete, and a live status bar.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-markdown-input
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-markdown-input';
+register();
+```
+
+```html
+<form method="post">
+  <el-dm-markdown-input
+    name="content"
+    placeholder="Write markdown…"
+  ></el-dm-markdown-input>
+  <button type="submit">Save</button>
+</form>
+```
+
+## Features
+
+The Markdown Input component offers:
+
+- **Write/Preview tabs** — Switch between syntax-highlighted editor and rendered preview
+- **Syntax highlighting** — Backdrop technique with Prism.js for markdown and code blocks
+- **File upload** — Drag-and-drop, clipboard paste, or file picker
+- **Autocomplete** — `@mention` and `#reference` with keyboard navigation
+- **Status bar** — Live word and character count with optional max-words cap
+- **Form participation** — Native `<form>` submission via ElementInternals
+- **Phoenix LiveView** — First-class hook integration for LiveView apps
+- **Theming** — CSS custom properties with light/dark mode support
+
+## Live Demo
+
+<ComponentDemo title="Markdown Input Editor">
+  <el-dm-markdown-input
+    style="width: 100%; height: 400px; border: 1px solid var(--color-outline);"
+    placeholder="Try writing some markdown…"
+  ></el-dm-markdown-input>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `name` | `string` | `''` | Form field name for submission |
+| `value` | `string` | `''` | Current markdown content |
+| `placeholder` | `string` | `'Write markdown…'` | Textarea placeholder text |
+| `disabled` | `boolean` | `false` | Disables editing |
+| `upload-url` | `string` | `undefined` | POST endpoint for file uploads |
+| `max-words` | `number` | `undefined` | Optional soft word count cap |
+| `dark` | `boolean` | `false` | Use dark theme variant |
+
+## Public API
+
+### Methods
+
+```typescript
+getValue(): string
+// Get the current markdown content
+
+setValue(str: string): void
+// Set the markdown content
+
+insertText(str: string): void
+// Insert text at the current cursor position
+
+setSuggestions(list: Suggestion[]): void
+// Set autocomplete suggestions for dropdown
+```
+
+### Types
+
+```typescript
+type Suggestion = {
+  id: string
+  label: string
+  subtitle?: string
+}
+```
+
+## Events
+
+All events bubble and are composed.
+
+| Event | Detail | When |
+|-------|--------|------|
+| `change` | `{ value: string }` | On every input change |
+| `upload-start` | `{ file: File }` | File accepted for upload |
+| `upload-done` | `{ file: File, url: string, markdown: string }` | Upload completed |
+| `upload-error` | `{ file: File, error: string }` | Upload failed |
+| `mention-query` | `{ trigger: "@", query: string, resolve: fn }` | User typed `@word` |
+| `reference-query` | `{ trigger: "#", query: string, resolve: fn }` | User typed `#word` |
+
+## Basic Examples
+
+### Simple Editor
+
+```html
+<el-dm-markdown-input placeholder="Write your post…"></el-dm-markdown-input>
+```
+
+### With Form
+
+```html
+<form method="post" action="/posts">
+  <el-dm-markdown-input
+    name="content"
+    value="# Hello"
+    placeholder="Write markdown…"
+  ></el-dm-markdown-input>
+  <button type="submit">Publish</button>
+</form>
+```
+
+### With File Upload
+
+```html
+<el-dm-markdown-input
+  upload-url="/api/uploads"
+  placeholder="Write markdown or paste images…"
+></el-dm-markdown-input>
+
+<script>
+  const editor = document.querySelector('el-dm-markdown-input');
+  editor.addEventListener('upload-error', (e) => {
+    console.error(`Upload failed: ${e.detail.error}`);
+  });
+</script>
+```
+
+### With Autocomplete
+
+<ComponentDemo title="Markdown Input with Autocomplete">
+  <el-dm-markdown-input
+    style="width: 100%; height: 300px; border: 1px solid var(--color-outline);"
+    placeholder="Type @ to mention users…"
+  ></el-dm-markdown-input>
+</ComponentDemo>
+
+```javascript
+const editor = document.querySelector('el-dm-markdown-input');
+
+// Handle @mention queries
+editor.addEventListener('mention-query', async (e) => {
+  const users = [
+    { id: '@alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
+    { id: '@bob', label: 'Bob Jones', subtitle: 'bob@example.com' },
+    { id: '@charlie', label: 'Charlie Brown', subtitle: 'charlie@example.com' }
+  ];
+
+  const filtered = users.filter(u =>
+    u.label.toLowerCase().includes(e.detail.query.toLowerCase())
+  );
+
+  e.detail.resolve(filtered);
+});
+
+// Handle #reference queries
+editor.addEventListener('reference-query', async (e) => {
+  const refs = [
+    { id: '#bug', label: 'Bug Report' },
+    { id: '#feature', label: 'Feature Request' },
+    { id: '#docs', label: 'Documentation' }
+  ];
+
+  const filtered = refs.filter(r =>
+    r.label.toLowerCase().includes(e.detail.query.toLowerCase())
+  );
+
+  e.detail.resolve(filtered);
+});
+```
+
+## Status Bar
+
+The status bar displays word and character counts:
+
+```html
+<el-dm-markdown-input max-words="500"></el-dm-markdown-input>
+```
+
+When `max-words` is set:
+- Shows current word count relative to cap (e.g., "142 / 500 words")
+- Status turns amber at 90% of cap
+- Status turns red at 100% of cap
+
+Word count algorithm: `text.trim().split(/\s+/).filter(Boolean).length`
+
+## File Upload
+
+### Accepting Files
+
+Configure the `upload-url` attribute to enable file uploads:
+
+```html
+<el-dm-markdown-input upload-url="/api/uploads"></el-dm-markdown-input>
+```
+
+The endpoint must:
+- Accept `POST multipart/form-data` with field name `file`
+- Respond with JSON: `{ "url": "https://cdn.example.com/file.png" }`
+
+### Accepted File Types
+
+- Images: `image/*`
+- Documents: `.pdf`, `.txt`, `.md`, `.csv`, `.json`
+- Archives: `.zip`
+
+### Upload Methods
+
+Users can upload files via:
+- **Drag and drop** onto the write area
+- **Clipboard paste** of images
+- **File picker** button in the status bar
+
+## Autocomplete
+
+### Trigger Detection
+
+The editor automatically detects `@` and `#` triggers:
+
+```javascript
+// Fires when user types @word
+editor.addEventListener('mention-query', (e) => {
+  // e.detail.query contains the text after @
+  // Call e.detail.resolve(suggestions) to show dropdown
+});
+
+// Fires when user types #word
+editor.addEventListener('reference-query', (e) => {
+  // e.detail.query contains the text after #
+  // Call e.detail.resolve(suggestions) to show dropdown
+});
+```
+
+### Dropdown Navigation
+
+Keyboard shortcuts in the dropdown:
+- `↑` / `↓` — Navigate suggestions
+- `Enter` / `Tab` — Confirm selection
+- `Escape` — Close dropdown
+- `Click` — Confirm with mouse
+
+## Phoenix LiveView
+
+### Setup
+
+In your Phoenix app.js:
+
+```javascript
+import { MarkdownInputHook, register } from '@duskmoon-dev/el-markdown-input';
+register();
+
+let liveSocket = new LiveSocket('/live', Socket, {
+  hooks: { MarkdownInput: MarkdownInputHook }
+});
+```
+
+### Template
+
+```heex
+<.form :let={f} for={@changeset} phx-change="validate" phx-submit="save">
+  <el-dm-markdown-input
+    id="content-input"
+    name="post[content]"
+    data-value={@post.content}
+    phx-hook="MarkdownInput"
+  />
+  <button type="submit">Save Post</button>
+</.form>
+```
+
+### Handler
+
+```elixir
+def handle_event("content_changed", %{"value" => value}, socket) do
+  # Handle content changes from the editor
+  {:noreply, assign(socket, content: value)}
+end
+
+def handle_event("upload_file", %{"name" => filename}, socket) do
+  # Optional: handle server-side file uploads
+  {:noreply, socket}
+end
+```
+
+## CSS Custom Properties
+
+Customize the editor appearance with CSS custom properties:
+
+```css
+el-dm-markdown-input {
+  --md-border: #d0d7de;
+  --md-border-focus: #0969da;
+  --md-bg: #ffffff;
+  --md-bg-toolbar: #f6f8fa;
+  --md-bg-hover: #eaeef2;
+  --md-text: #1f2328;
+  --md-text-muted: #656d76;
+  --md-accent: #0969da;
+  --md-radius: 6px;
+  --md-upload-bar: #0969da;
+}
+
+/* Dark mode */
+el-dm-markdown-input[dark] {
+  --md-border: #30363d;
+  --md-border-focus: #58a6ff;
+  --md-bg: #0d1117;
+  --md-bg-toolbar: #161b22;
+  --md-bg-hover: #262c36;
+  --md-text: #c9d1d9;
+  --md-text-muted: #8b949e;
+  --md-accent: #58a6ff;
+}
+```
+
+| Property | Default (Light) | Default (Dark) | Purpose |
+|----------|-----------------|----------------|---------|
+| `--md-border` | `#d0d7de` | `#30363d` | Editor border color |
+| `--md-border-focus` | `#0969da` | `#58a6ff` | Focus ring color |
+| `--md-bg` | `#ffffff` | `#0d1117` | Editor background |
+| `--md-bg-toolbar` | `#f6f8fa` | `#161b22` | Toolbar background |
+| `--md-bg-hover` | `#eaeef2` | `#262c36` | Hover state background |
+| `--md-text` | `#1f2328` | `#c9d1d9` | Primary text color |
+| `--md-text-muted` | `#656d76` | `#8b949e` | Muted text color |
+| `--md-accent` | `#0969da` | `#58a6ff` | Active tab color |
+| `--md-radius` | `6px` | `6px` | Border radius |
+| `--md-upload-bar` | `#0969da` | `#58a6ff` | Upload progress bar color |
+
+## Dark Mode
+
+Enable dark mode by adding the `dark` attribute:
+
+```html
+<el-dm-markdown-input dark></el-dm-markdown-input>
+```
+
+Or use the `[dark]` CSS selector:
+
+```css
+el-dm-markdown-input[dark] {
+  /* Dark mode overrides */
+}
+```
+
+The component uses DuskMoon Moonlight theme colors by default in dark mode.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Shift+P` / `Cmd+Shift+P` | Toggle Preview tab |
+| `↑` / `↓` (in dropdown) | Navigate autocomplete |
+| `Enter` / `Tab` (in dropdown) | Confirm autocomplete |
+| `Escape` (in dropdown) | Close dropdown |
+
+## Accessibility
+
+- Full keyboard navigation throughout the editor
+- ARIA labels for tab buttons and controls
+- Semantic HTML structure in shadow DOM
+- Clear focus indicators on all interactive elements
+- Form field labeling support via `name` attribute
+- Screen reader announcements for upload progress
+- Autocomplete dropdown is keyboard accessible
+
+## Integration with @duskmoon-dev/core
+
+The preview tab uses the `markdown-body` styles from `@duskmoon-dev/core/components/markdown-body`, so the rendered markdown automatically respects your theme configuration.
+
+## Browser Support
+
+| Browser | Version |
+|---------|---------|
+| Chrome/Edge | 111+ |
+| Firefox | 113+ |
+| Safari | 16.4+ |
+
+Required APIs:
+- Custom Elements v1
+- Shadow DOM v1
+- ElementInternals
+- Fetch API
+- FormData API
