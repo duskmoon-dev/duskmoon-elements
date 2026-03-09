@@ -1,0 +1,109 @@
+/**
+ * Prism.js CDN loader + backdrop highlight utilities.
+ *
+ * Prism is loaded lazily as a UMD script from cdnjs. A module-level Promise
+ * caches the load so multiple elements on the same page share one request.
+ * If the CDN is unavailable the element degrades gracefully — text entry and
+ * form submission continue to work, just without syntax colouring.
+ */
+
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Prism?: any;
+  }
+}
+
+const PRISM_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0';
+const PRISM_CORE_URL = `${PRISM_BASE}/prism.min.js`;
+const PRISM_AUTOLOADER_URL = `${PRISM_BASE}/plugins/autoloader/prism-autoloader.min.js`;
+const PRISM_THEME_DARK_URL = `${PRISM_BASE}/themes/prism-tomorrow.min.css`;
+const PRISM_THEME_LIGHT_URL = `${PRISM_BASE}/themes/prism-coy.min.css`;
+
+/** Cached load promise — shared across all instances on the page. */
+let _prismReady: Promise<void> | null = null;
+
+/** Inject a script tag into document.head and resolve when loaded. */
+function _loadScript(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = () => resolve(); // resolve even on error (graceful degrade)
+    document.head.appendChild(script);
+  });
+}
+
+/**
+ * Ensure Prism is loaded and ready. Returns a cached Promise after the first call.
+ * Safe to call multiple times — only one network request is ever made.
+ */
+export function ensurePrism(): Promise<void> {
+  if (window.Prism) return Promise.resolve();
+  if (_prismReady) return _prismReady;
+
+  _prismReady = _loadScript(PRISM_CORE_URL).then(() => {
+    if (!window.Prism) return;
+    // Configure autoloader before loading it
+    window.Prism.manual = true;
+    return _loadScript(PRISM_AUTOLOADER_URL).then(() => {
+      if (window.Prism?.plugins?.autoloader) {
+        window.Prism.plugins.autoloader.languages_path = `${PRISM_BASE}/components/`;
+      }
+    });
+  });
+
+  return _prismReady;
+}
+
+/**
+ * Escape HTML special characters in the given text.
+ * Escapes & first to prevent double-escaping.
+ */
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/**
+ * Highlight markdown text using Prism and return an HTML string.
+ * If Prism is not available, returns the HTML-escaped text unchanged.
+ *
+ * Appends a non-breaking space to prevent the backdrop div from collapsing
+ * when the textarea value ends with a newline.
+ */
+export function highlightMarkdown(text: string): string {
+  const escaped = escapeHtml(text);
+
+  if (!window.Prism?.languages?.markdown) {
+    // Prism not ready yet — return escaped plain text
+    return escaped + '\u00a0';
+  }
+
+  try {
+    const highlighted = window.Prism.highlight(text, window.Prism.languages.markdown, 'markdown');
+    return highlighted + '\u00a0';
+  } catch {
+    return escaped + '\u00a0';
+  }
+}
+
+/**
+ * Inject or update a Prism syntax theme inside the given shadow root.
+ * Uses a <style id="prism-theme"> element with an @import so the browser
+ * caches the CDN stylesheet normally.
+ */
+export function applyPrismTheme(shadowRoot: ShadowRoot, dark: boolean): void {
+  const themeUrl = dark ? PRISM_THEME_DARK_URL : PRISM_THEME_LIGHT_URL;
+  let styleEl = shadowRoot.getElementById('prism-theme') as HTMLStyleElement | null;
+
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'prism-theme';
+    shadowRoot.appendChild(styleEl);
+  }
+
+  const expected = `@import url("${themeUrl}");`;
+  if (styleEl.textContent !== expected) {
+    styleEl.textContent = expected;
+  }
+}

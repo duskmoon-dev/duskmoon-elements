@@ -165,6 +165,8 @@ Vite cannot resolve `@duskmoon-dev/core/components/theme-controller` via CSS `@i
 - N/A (static site, no persistent storage) (001-vite-playground)
 - TypeScript (ES2022+ target), Astro 5.x + Astro, @duskmoon-dev/core, @duskmoon-dev/el-* packages (001-astro-docs)
 - N/A (static site generation) (001-astro-docs)
+- TypeScript (ES2022+ target, `strict: true`) + `@duskmoon-dev/el-base` (BaseElement, css tag), `@duskmoon-dev/core` (markdown-body styles), Prism.js v1.29.0 (CDN, not bundled) (001-el-markdown-input)
+- N/A — element holds in-memory state only (001-el-markdown-input)
 
 ## Recent Changes
 - 001-vite-playground: Added TypeScript (ES2022+ target) + Vite (build tool), existing element packages (@duskmoon-dev/el-*)
