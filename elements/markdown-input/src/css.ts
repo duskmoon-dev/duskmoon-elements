@@ -121,7 +121,15 @@ export const elementStyles = css`
     position: absolute;
     inset: 0;
     pointer-events: none;
-    overflow: hidden;
+    /*
+     * Use overflow: auto (not overflow: hidden) so the backdrop reserves
+     * the same scrollbar gutter as the textarea when content overflows.
+     * Without this, the textarea scrollbar narrows its text area but the
+     * backdrop stays full-width — lines wrap at different points — causing
+     * the cursor to appear misaligned with the highlighted text.
+     */
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
     border: none;
     background: transparent;
     white-space: pre-wrap;
@@ -133,6 +141,10 @@ export const elementStyles = css`
     line-height: 1.6;
     padding: 0.75rem;
     color: var(--md-text);
+  }
+
+  .backdrop::-webkit-scrollbar {
+    display: none; /* Chrome / Safari */
   }
 
   .backdrop-content {
