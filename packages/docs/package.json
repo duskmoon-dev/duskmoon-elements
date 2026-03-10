@@ -30,6 +30,7 @@
     "@duskmoon-dev/el-form": "workspace:*",
     "@duskmoon-dev/el-input": "workspace:*",
     "@duskmoon-dev/el-markdown": "workspace:*",
+    "@duskmoon-dev/el-markdown-input": "workspace:*",
     "@duskmoon-dev/el-menu": "workspace:*",
     "@duskmoon-dev/el-navbar": "workspace:*",
     "@duskmoon-dev/el-pagination": "workspace:*",
