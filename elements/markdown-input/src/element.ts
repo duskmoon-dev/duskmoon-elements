@@ -183,9 +183,8 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#scheduleHighlight();
     }
 
-    // Update Prism theme when dark attribute changes
-    const dark = !!(this as unknown as { dark: boolean }).dark;
-    applyPrismTheme(this.shadowRoot, dark);
+    // Update Prism theme when dark attribute (or page theme) changes
+    applyPrismTheme(this.shadowRoot, this.#isDark());
 
     // Re-render status bar (maxWords may have changed)
     this.#updateStatusBarNow();
@@ -394,8 +393,20 @@ export class ElDmMarkdownInput extends BaseElement {
   // Highlight (Write tab backdrop)
   // ════════════════════════════════════════════════════════════════════
 
+  /**
+   * Resolve whether the editor should use a dark Prism theme.
+   * Checks (in order): explicit [dark] attribute → page data-theme →
+   * prefers-color-scheme media query.
+   */
+  #isDark(): boolean {
+    if ((this as unknown as { dark: boolean }).dark) return true;
+    const pageTheme = document.documentElement.dataset.theme;
+    if (pageTheme === 'moonlight') return true;
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+  }
+
   #initHighlight(): void {
-    const dark = !!(this as unknown as { dark: boolean }).dark;
+    const dark = this.#isDark();
     applyPrismTheme(this.shadowRoot, dark);
     ensurePrism().then(() => {
       // Highlight immediately once Prism is ready
@@ -515,12 +526,22 @@ export class ElDmMarkdownInput extends BaseElement {
     html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
 
     // Lists (single-level)
-    // Tag items with a type marker to distinguish ul from ol, then group consecutive runs
+    // Task list items must be matched BEFORE regular lists so `- [ ] text`
+    // is not captured as `<li>[ ] text</li>`.
+    html = html.replace(
+      /^[ \t]*[-*+] \[[xX]\] (.+)$/gm,
+      '<li data-list="ul" class="task-item task-done"><input type="checkbox" checked disabled> $1</li>',
+    );
+    html = html.replace(
+      /^[ \t]*[-*+] \[ \] (.+)$/gm,
+      '<li data-list="ul" class="task-item"><input type="checkbox" disabled> $1</li>',
+    );
+    // Tag remaining items with a type marker to distinguish ul from ol, then group
     html = html.replace(/^[ \t]*[-*+] (.+)$/gm, '<li data-list="ul">$1</li>');
     html = html.replace(/^[ \t]*\d+\. (.+)$/gm, '<li data-list="ol">$1</li>');
-    // Group consecutive unordered items into <ul>
+    // Group consecutive unordered items into <ul> — [^>]* allows extra attributes (e.g. class)
     html = html.replace(
-      /(<li data-list="ul">[^\n]*<\/li>(?:\n<li data-list="ul">[^\n]*<\/li>)*)/g,
+      /(<li data-list="ul"[^>]*>[^\n]*<\/li>(?:\n<li data-list="ul"[^>]*>[^\n]*<\/li>)*)/g,
       (match) => '<ul>' + match.replace(/ data-list="ul"/g, '') + '</ul>',
     );
     // Group consecutive ordered items into <ol>
