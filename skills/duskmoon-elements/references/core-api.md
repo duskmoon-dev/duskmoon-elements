@@ -70,9 +70,9 @@ applyTheme(element, '--color-primary: red;'); // custom CSS string
 
 ### Surfaces
 - `--color-surface`, `--color-on-surface`
-- `--color-surface-dim`, `--color-surface-bright`
-- `--color-surface-container-lowest` / `-low` / (default) / `-high` / `-highest`
-- `--color-on-surface-variant`
+- `--color-surface-container`, `--color-surface-container-low`, `--color-surface-container-high`
+- `--color-surface-variant`, `--color-on-surface-variant`
+- `--color-inverse-surface`, `--color-inverse-on-surface`
 - `--color-outline`, `--color-outline-variant`
 
 ### Layout
@@ -83,7 +83,6 @@ applyTheme(element, '--color-primary: red;'); // custom CSS string
 ### Typography
 - `--font-family`, `--font-size-*`, `--font-weight-*`
 
-**Important:** Use `--color-surface-container` NOT `--color-surface-variant` (doesn't exist in theme).
 
 ## Validation
 
