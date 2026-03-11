@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-stepper",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
