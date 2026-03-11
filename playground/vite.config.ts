@@ -41,6 +41,13 @@ const pageData = {
     description:
       'Markdown renderer with GitHub Flavored Markdown support, syntax highlighting, and customizable themes.',
   },
+  '/markdown-input.html': {
+    title: 'Markdown Input',
+    name: 'Markdown Input',
+    tag: 'el-dm-markdown-input',
+    description:
+      'Markdown editor with syntax-highlighted write mode, preview, file upload, autocomplete, and word count.',
+  },
   '/select.html': {
     title: 'Select',
     name: 'Select',
@@ -90,6 +97,7 @@ export default defineConfig({
         cascader: resolve(__dirname, 'cascader.html'),
         input: resolve(__dirname, 'input.html'),
         markdown: resolve(__dirname, 'markdown.html'),
+        'markdown-input': resolve(__dirname, 'markdown-input.html'),
         select: resolve(__dirname, 'select.html'),
         'pro-data-grid': resolve(__dirname, 'pro-data-grid.html'),
       },
