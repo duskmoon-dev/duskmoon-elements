@@ -15,6 +15,7 @@
  * @attr {string}  value        Initial markdown content
  * @attr {string}  placeholder  Textarea placeholder (default: "Write markdown…")
  * @attr {boolean} disabled     Disables editing
+ * @attr {boolean} readonly     Makes the editor read-only (value still submitted)
  * @attr {string}  upload-url   POST endpoint for file uploads
  * @attr {number}  max-words    Soft word cap shown in status bar
  * @attr {boolean} dark         Activates dark Prism theme + dark CSS variable defaults
@@ -56,6 +57,7 @@ export class ElDmMarkdownInput extends BaseElement {
     value: { type: String, default: '' },
     placeholder: { type: String, reflect: true, default: 'Write markdown\u2026' },
     disabled: { type: Boolean, reflect: true },
+    readonly: { type: Boolean, reflect: true },
     uploadUrl: { type: String, reflect: true, attribute: 'upload-url' },
     maxWords: { type: Number, reflect: true, attribute: 'max-words' },
     dark: { type: Boolean, reflect: true },
@@ -65,6 +67,7 @@ export class ElDmMarkdownInput extends BaseElement {
   declare value: string;
   declare placeholder: string;
   declare disabled: boolean;
+  declare readonly: boolean;
   declare uploadUrl: string | undefined;
   declare maxWords: number | undefined;
   declare dark: boolean;
@@ -174,6 +177,12 @@ export class ElDmMarkdownInput extends BaseElement {
       (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
     ta.placeholder = placeholder;
     ta.disabled = !!(this as unknown as { disabled: boolean }).disabled;
+    ta.readOnly = !!(this as unknown as { readonly: boolean }).readonly;
+
+    const attachBtn = this.shadowRoot.querySelector<HTMLButtonElement>('.attach-btn');
+    if (attachBtn) {
+      attachBtn.disabled = ta.disabled || ta.readOnly;
+    }
 
     // Sync value if the reactive prop was updated externally (e.g. attributeChangedCallback)
     const propVal = (this as unknown as { value: string }).value ?? '';
@@ -194,6 +203,7 @@ export class ElDmMarkdownInput extends BaseElement {
   protected override render(): string {
     const ph = (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
     const disabled = !!(this as unknown as { disabled: boolean }).disabled;
+    const readonly = !!(this as unknown as { readonly: boolean }).readonly;
 
     return `
       <div class="editor">
@@ -225,6 +235,7 @@ export class ElDmMarkdownInput extends BaseElement {
             aria-controls="ac-dropdown"
             placeholder="${ph}"
             ${disabled ? 'disabled' : ''}
+            ${readonly ? 'readonly' : ''}
             spellcheck="false"
             autocomplete="off"
             autocorrect="off"
@@ -241,7 +252,7 @@ export class ElDmMarkdownInput extends BaseElement {
         ></div>
 
         <div class="status-bar">
-          <button class="attach-btn" type="button" aria-label="Attach files">
+          <button class="attach-btn" type="button" aria-label="Attach files" ${disabled || readonly ? 'disabled' : ''}>
             &#128206; Attach files
           </button>
           <span class="status-bar-count" aria-live="polite"></span>
@@ -333,6 +344,7 @@ export class ElDmMarkdownInput extends BaseElement {
       writeArea.addEventListener('drop', (e) => {
         e.preventDefault();
         writeArea.style.opacity = '';
+        if ((this as unknown as { readonly: boolean }).readonly) return;
         const files = Array.from(e.dataTransfer?.files ?? []).filter(isAcceptedType);
         files.forEach((f) => this.#startUpload(f));
       });
@@ -340,6 +352,7 @@ export class ElDmMarkdownInput extends BaseElement {
 
     // ── Clipboard paste (images only) ─────────────────────────────
     ta.addEventListener('paste', (e) => {
+      if ((this as unknown as { readonly: boolean }).readonly) return;
       const imageFiles = Array.from(e.clipboardData?.files ?? []).filter((f) =>
         f.type.startsWith('image/'),
       );
