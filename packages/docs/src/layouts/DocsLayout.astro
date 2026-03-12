@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { title, description, currentPath = Astro.url.pathname } = Astro.props;
+const isCssArt = currentPath.includes('/docs/css-art');
 ---
 
 <BaseLayout title={title} description={description}>
@@ -25,6 +26,20 @@ const { title, description, currentPath = Astro.url.pathname } = Astro.props;
         <a href="/duskmoon-elements/" class="logo">
           <span class="logo-text">DuskMoon Elements</span>
         </a>
+        <nav class="header-nav">
+          <a
+            href="/duskmoon-elements/docs/components"
+            class:list={['header-nav-link', { active: !isCssArt }]}
+          >
+            Components
+          </a>
+          <a
+            href="/duskmoon-elements/docs/css-art/"
+            class:list={['header-nav-link', { active: isCssArt }]}
+          >
+            CSS Art
+          </a>
+        </nav>
         <div class="header-actions">
           <div class="desktop-only">
             <ThemeToggle />
@@ -82,6 +97,36 @@ const { title, description, currentPath = Astro.url.pathname } = Astro.props;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0.75rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .header-nav-link {
+    padding: 0.375rem 0.875rem;
+    border-radius: 6px;
+    color: var(--color-on-surface);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+
+  .header-nav-link:hover {
+    opacity: 1;
+    background-color: color-mix(in srgb, var(--color-on-surface) 8%, transparent);
+  }
+
+  .header-nav-link.active {
+    opacity: 1;
+    color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
   }
 
   .logo {
