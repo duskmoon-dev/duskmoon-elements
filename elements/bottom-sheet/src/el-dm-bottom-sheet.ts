@@ -133,6 +133,7 @@ export class ElDmBottomSheet extends BaseElement {
   declare persistent: boolean;
   declare snapPoints: string;
 
+  private _hasRendered = false;
   private _startY = 0;
   private _currentY = 0;
   private _sheetHeight = 0;
@@ -405,11 +406,13 @@ export class ElDmBottomSheet extends BaseElement {
   }
 
   render(): string {
+    // Open state is NOT baked into the template — update() manages classes so
+    // CSS transitions can fire on existing DOM nodes rather than recreated ones.
     return `
-      <div class="bottomsheet-wrapper ${this.open ? 'open' : ''}" part="wrapper">
-        ${this.modal ? `<div class="bottomsheet-backdrop ${this.open ? 'show' : ''}" part="backdrop"></div>` : ''}
+      <div class="bottomsheet-wrapper" part="wrapper">
+        ${this.modal ? `<div class="bottomsheet-backdrop" part="backdrop"></div>` : ''}
         <div
-          class="bottomsheet ${this.open ? 'show' : ''}"
+          class="bottomsheet"
           role="dialog"
           aria-modal="${this.modal ? 'true' : 'false'}"
           tabindex="-1"
@@ -429,9 +432,35 @@ export class ElDmBottomSheet extends BaseElement {
     `;
   }
 
-  update(): void {
-    super.update();
+  protected update(): void {
+    if (!this._hasRendered) {
+      // First render: set up the static DOM structure once.
+      super.update();
+      this._hasRendered = true;
+      this._attachListeners();
+    }
 
+    // Toggle open/close via class manipulation so the CSS translateY transition fires.
+    const wrapper = this.shadowRoot.querySelector('.bottomsheet-wrapper');
+    const sheet = this.shadowRoot.querySelector('.bottomsheet');
+    const backdrop = this.shadowRoot.querySelector('.bottomsheet-backdrop');
+
+    if (this.open) {
+      wrapper?.classList.add('open');
+      // One rAF lets the browser paint the closed state first so the
+      // transition has a "before" frame to animate from.
+      requestAnimationFrame(() => {
+        sheet?.classList.add('show');
+        backdrop?.classList.add('show');
+      });
+    } else {
+      wrapper?.classList.remove('open');
+      sheet?.classList.remove('show');
+      backdrop?.classList.remove('show');
+    }
+  }
+
+  private _attachListeners(): void {
     const backdrop = this.shadowRoot?.querySelector('.bottomsheet-backdrop');
     backdrop?.addEventListener('click', this._handleBackdropClick);
 

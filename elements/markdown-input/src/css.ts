@@ -133,11 +133,12 @@ export const elementStyles = css`
     border: none;
     background: transparent;
     /*
-     * Do NOT put white-space: pre-wrap here — the template HTML has a
-     * whitespace text node (newline + indent) between .backdrop and
-     * .backdrop-content. With pre-wrap on the parent that renders as a
-     * visible leading blank line, shifting content down by one line and
-     * misaligning the cursor vertically. pre-wrap lives on .backdrop-content.
+     * Do NOT put white-space: pre-wrap here. The backdrop div contains a
+     * backdrop-content child, and the HTML template has whitespace text
+     * nodes (newline + indent) between them. With pre-wrap on the parent
+     * those text nodes render as a visible leading newline, shifting all
+     * content down by one line and misaligning the cursor vertically.
+     * pre-wrap lives on .backdrop-content instead.
      */
 
     font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
@@ -198,35 +199,6 @@ export const elementStyles = css`
     overflow-y: auto;
     color: var(--md-text);
     /* .markdown-body styles come from @duskmoon-dev/core via the element */
-  }
-
-  /* Code blocks in preview use theme vars so they adapt to moonlight/sunshine */
-  .preview-body pre {
-    background: var(--md-bg-toolbar) !important;
-    border: 1px solid var(--md-border) !important;
-    border-radius: var(--md-radius);
-    padding: 1rem;
-    overflow-x: auto;
-  }
-
-  .preview-body pre code {
-    background: transparent !important;
-    padding: 0;
-    font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 0.875rem;
-    color: var(--md-text) !important;
-  }
-
-  /* Task list items */
-  .preview-body li.task-item {
-    list-style: none;
-    margin-left: -1.25rem;
-  }
-
-  .preview-body li.task-item input[type='checkbox'] {
-    margin-right: 0.4em;
-    vertical-align: -1px;
-    accent-color: var(--md-accent);
   }
 
   /* ── Status bar ─────────────────────────────────────────────────────── */

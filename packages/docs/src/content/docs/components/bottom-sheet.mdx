@@ -26,7 +26,7 @@ import '@duskmoon-dev/el-bottom-sheet/register';
 ```
 
 ```html
-<el-dm-bottom-sheet id="my-sheet" modal>
+<el-dm-bottom-sheet id="my-sheet">
   <span slot="header">Sheet Title</span>
   <p>Sheet content goes here.</p>
 </el-dm-bottom-sheet>
@@ -38,7 +38,7 @@ import '@duskmoon-dev/el-bottom-sheet/register';
 
 <ComponentDemo title="Bottom Sheet Demo">
   <el-dm-button onclick="document.getElementById('demo-sheet').show()" variant="primary">Open Bottom Sheet</el-dm-button>
-  <el-dm-bottom-sheet id="demo-sheet" modal>
+  <el-dm-bottom-sheet id="demo-sheet">
     <span slot="header">Example Bottom Sheet</span>
     <p>This is a bottom sheet component. You can drag the handle to dismiss it or click outside.</p>
     <p>It works great on mobile devices with touch gestures!</p>
@@ -52,7 +52,7 @@ Configure multiple height snap points:
 
 <ComponentDemo title="Snap Points">
   <el-dm-button onclick="document.getElementById('snap-sheet').show()">Open with Snap Points</el-dm-button>
-  <el-dm-bottom-sheet id="snap-sheet" modal snap-points="25%,50%,100%">
+  <el-dm-bottom-sheet id="snap-sheet" snap-points="25%,50%,100%">
     <span slot="header">Snap Points Demo</span>
     <p>Drag this sheet to snap to 25%, 50%, or 100% of the viewport height.</p>
     <p>Try swiping up and down to see the snap behavior.</p>
@@ -64,11 +64,11 @@ Configure multiple height snap points:
 Prevent dismissal via swipe or backdrop click:
 
 <ComponentDemo title="Persistent Sheet">
-  <el-dm-button onclick="document.getElementById('persistent-sheet').show()">Open Persistent Sheet</el-dm-button>
-  <el-dm-bottom-sheet id="persistent-sheet" modal persistent>
+  <el-dm-button onclick="document.getElementById('demo-persistent-sheet').show()">Open Persistent Sheet</el-dm-button>
+  <el-dm-bottom-sheet id="demo-persistent-sheet" persistent>
     <span slot="header">Persistent Sheet</span>
     <p>This sheet cannot be dismissed by clicking outside or swiping down.</p>
-    <el-dm-button onclick="document.getElementById('persistent-sheet').hide()" style="margin-top: 1rem;">Close Button Required</el-dm-button>
+    <el-dm-button onclick="document.getElementById('demo-persistent-sheet').hide()" style="margin-top: 1rem;">Close Button Required</el-dm-button>
   </el-dm-bottom-sheet>
 </ComponentDemo>
 
