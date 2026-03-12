@@ -31,10 +31,10 @@ bun run playground        # http://localhost:4220
 ```
 duskmoon-elements/
 ├── packages/
-│   ├── core/             # @duskmoon-dev/el-base — base class, styles, utilities
+│   ├── base/             # @duskmoon-dev/el-base — base class, styles, utilities
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
-├── elements/             # 31 individual element packages (@duskmoon-dev/el-*)
+├── elements/             # 32 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/
 │   ├── card/
 │   ├── input/

@@ -1,11 +1,11 @@
 ---
 name: duskmoon-elements
-description: Use the DuskMoon Elements custom element library (`<el-dm-*>` web components). Use when building web pages or apps with DuskMoon elements, registering elements, setting properties/attributes, listening to events, using slots, applying themes, or styling with CSS custom properties. Covers all 31 element packages including button, card, input, dialog, table, tabs, pro-data-grid, and more.
+description: Use the DuskMoon Elements custom element library (`<el-dm-*>` web components). Use when building web pages or apps with DuskMoon elements, registering elements, setting properties/attributes, listening to events, using slots, applying themes, or styling with CSS custom properties. Covers all 32 element packages including button, card, input, dialog, table, tabs, markdown-input, pro-data-grid, and more.
 ---
 
 # DuskMoon Elements
 
-31 custom element packages built on `@duskmoon-dev/el-base`. Each element is a standard Web Component with Shadow DOM.
+32 custom element packages built on `@duskmoon-dev/el-base`. Each element is a standard Web Component with Shadow DOM.
 
 ## Installation
 
@@ -182,5 +182,5 @@ el.size = 'lg';
 
 ## References
 
-- [Element catalog](references/element-catalog.md) — all 31 packages by category with class names
+- [Element catalog](references/element-catalog.md) — all 32 packages by category with class names
 - [Core API](references/core-api.md) — BaseElement API, mixins, style utilities, CSS variables, themes, validation

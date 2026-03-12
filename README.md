@@ -12,7 +12,7 @@ A comprehensive collection of customizable web components built with vanilla Typ
 - **Accessible**: Built with accessibility in mind
 - **TypeScript**: Full TypeScript support with type definitions
 - **Tree-shakable**: Import only what you need
-- **Dual Theme**: Includes moonlight (dark) and sunshine (light) themes
+- **5 Built-in Themes**: sunshine, moonlight, ocean, forest, rose
 
 ## Quick Start
 
@@ -95,6 +95,8 @@ bun add @duskmoon-dev/el-button
 |---------|---------|-------------|
 | [@duskmoon-dev/el-table](./elements/table) | `<el-dm-table>` | Data table with sorting |
 | [@duskmoon-dev/el-markdown](./elements/markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
+| [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
+| [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
 
 ## Usage Examples
 
@@ -158,16 +160,19 @@ bun add @duskmoon-dev/el-button
 
 ## Theming
 
-DuskMoon Elements includes two built-in themes:
+DuskMoon Elements includes five built-in themes:
 
-- **Moonlight** (dark theme)
 - **Sunshine** (light theme)
+- **Moonlight** (dark theme)
+- **Ocean** (blue/teal palette)
+- **Forest** (earthy greens)
+- **Rose** (soft pinks)
 
 Set the theme on the root element:
 
 ```html
 <html data-theme="moonlight">
-  <!-- or data-theme="sunshine" -->
+  <!-- sunshine | moonlight | ocean | forest | rose -->
 </html>
 ```
 
@@ -231,9 +236,9 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 30 element packages total
+│   └── ...                 # 32 element packages total
 ├── packages/
-│   ├── core/               # @duskmoon-dev/el-base
+│   ├── base/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)
 │   └── docs/               # Documentation site
 ├── playground/             # Interactive demo

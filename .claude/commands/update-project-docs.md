@@ -1,5 +1,5 @@
 ---
-description: Update project documentation files in docs/ and skills/ to reflect current codebase state.
+description: Update project documentation files in docs/, skills/, and README.md to reflect current codebase state.
 ---
 
 ## User Input
@@ -8,15 +8,16 @@ description: Update project documentation files in docs/ and skills/ to reflect 
 $ARGUMENTS
 ```
 
-If the user specifies file names (e.g., `development`, `SKILL`), update only those files. If empty, update all files in `docs/` and `skills/duskmoon-elements/`.
+If the user specifies file names (e.g., `development`, `SKILL`, `readme`), update only those files. If empty, update all files in `docs/`, `skills/duskmoon-elements/`, and `README.md`.
 
 ## Goal
 
-Bring the documentation in `docs/` and `skills/duskmoon-elements/` up to date with the current state of the codebase. Documentation must accurately reflect the actual code, exports, commands, scripts, and project structure — not aspirational or outdated content.
+Bring the documentation in `docs/`, `skills/duskmoon-elements/`, and `README.md` up to date with the current state of the codebase. Documentation must accurately reflect the actual code, exports, commands, scripts, and project structure — not aspirational or outdated content.
 
 ## Directory Structure
 
 ```
+README.md                                   # Project overview, package list, theming, quick start
 docs/
 └── development.md                          # Developer guide
 skills/duskmoon-elements/           # Skill: using DuskMoon Elements
@@ -30,6 +31,7 @@ skills/duskmoon-elements/           # Skill: using DuskMoon Elements
 
 | File | Purpose | Key Sources of Truth |
 |------|---------|---------------------|
+| `README.md` | Project overview: features, quick start, package list by category, theming, project structure | `elements/` directory, `packages/base/src/themes.ts`, `package.json` |
 | `docs/development.md` | Developer guide: setup, architecture, core API, element patterns, testing, code style | `packages/base/src/index.ts`, `package.json`, `bunfig.toml`, `tsconfig.json`, element source files |
 | `skills/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` custom elements: installation, registration, properties, events, slots, theming | Element source files, `packages/base/src/index.ts` |
 | `skills/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/base/src/index.ts`, `packages/base/src/*.ts` |
@@ -68,6 +70,12 @@ Read and compare the following against each doc file:
 - Each element's `src/index.ts` — Exported classes and register functions
 - Category counts must add up to total package count
 
+**For `README.md`:**
+- `elements/` directory listing — All packages present in each category table; no missing or extra entries
+- `packages/base/src/themes.ts` — Theme names and descriptions in the Theming section
+- `packages/` directory listing — Package directory names in Project Structure
+- Element count in Project Structure comment (`# N element packages total`)
+
 ### 2. Identify Differences
 
 For each doc file, list:
@@ -91,11 +99,12 @@ Edit each doc file to reflect the current state. Follow these rules:
 
 After updating, confirm:
 - All exports listed in `packages/base/src/index.ts` appear in `skills/duskmoon-elements/references/core-api.md`
-- All element packages in `elements/` appear in `skills/duskmoon-elements/references/element-catalog.md`
+- All element packages in `elements/` appear in both `skills/duskmoon-elements/references/element-catalog.md` and `README.md`
 - Element count in SKILL.md matches catalog
 - All scripts in root `package.json` are documented in `development.md`
 - No file paths reference non-existent files
 - Code examples use current API signatures
+- Theme names in README.md match the exports in `packages/base/src/themes.ts`
 
 ## Output
 
@@ -103,6 +112,9 @@ After completing updates, print a summary:
 
 ```
 ## Documentation Update Summary
+
+### README.md
+- [list of changes made, or "No changes needed"]
 
 ### docs/development.md
 - [list of changes made, or "No changes needed"]
