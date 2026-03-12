@@ -86,6 +86,18 @@ jobs:
             fi
           done
 
+          # Update all CSS art packages
+          for pkg in css-arts/*; do
+            if [ -f "$pkg/package.json" ]; then
+              jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
+              echo "Updated $pkg/package.json to $NEW_VERSION"
+            fi
+          done
+
+          # Update CSS arts bundle
+          jq --arg v "$NEW_VERSION" '.version = $v' packages/css-arts/package.json > tmp.json && mv tmp.json packages/css-arts/package.json
+          echo "Updated packages/css-arts/package.json to $NEW_VERSION"
+
       - name: Build all packages
         run: bun run build:all
 
@@ -114,11 +126,11 @@ jobs:
           # Publish all element packages
           for pkg in elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              PKG_NAME=$(basename "$pkg")
-              echo "Publishing @duskmoon-dev/el-$PKG_NAME..."
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              echo "Publishing $FULL_PKG_NAME..."
               cd "$pkg"
-              if npm view @duskmoon-dev/el-$PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
-                echo "  @duskmoon-dev/el-$PKG_NAME@$NEW_VERSION already published, skipping"
+              if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
+                echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
               else
                 bun publish --access public
               fi
@@ -126,11 +138,35 @@ jobs:
             fi
           done
 
-          # Publish bundle package last (depends on all elements)
+          # Publish all CSS art packages
+          for pkg in css-arts/*; do
+            if [ -f "$pkg/package.json" ]; then
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              echo "Publishing $FULL_PKG_NAME..."
+              cd "$pkg"
+              if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
+                echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
+              else
+                bun publish --access public
+              fi
+              cd ../..
+            fi
+          done
+
+          # Publish bundle packages last (depend on all elements/arts)
           echo "Publishing @duskmoon-dev/elements..."
           cd packages/elements
           if npm view @duskmoon-dev/elements@$NEW_VERSION version >/dev/null 2>&1; then
             echo "  @duskmoon-dev/elements@$NEW_VERSION already published, skipping"
+          else
+            bun publish --access public
+          fi
+          cd ../..
+
+          echo "Publishing @duskmoon-dev/css-arts..."
+          cd packages/css-arts
+          if npm view @duskmoon-dev/css-arts@$NEW_VERSION version >/dev/null 2>&1; then
+            echo "  @duskmoon-dev/css-arts@$NEW_VERSION already published, skipping"
           else
             bun publish --access public
           fi
@@ -167,12 +203,24 @@ jobs:
           ELEMENTS=""
           for pkg in elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              PKG_NAME=$(basename "$pkg")
-              ELEMENTS="$ELEMENTS- @duskmoon-dev/el-$PKG_NAME\n"
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              ELEMENTS="$ELEMENTS- $FULL_PKG_NAME\n"
             fi
           done
           echo "elements<<EOF" >> $GITHUB_OUTPUT
           echo -e "$ELEMENTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Build CSS art packages list for release notes
+          CSS_ARTS=""
+          for pkg in css-arts/*; do
+            if [ -f "$pkg/package.json" ]; then
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              CSS_ARTS="$CSS_ARTS- $FULL_PKG_NAME\n"
+            fi
+          done
+          echo "css_arts<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$CSS_ARTS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
@@ -192,18 +240,24 @@ jobs:
 
             **Elements:**
             ${{ steps.packages.outputs.elements }}
-            **Bundle:**
+            **Bundles:**
             - @duskmoon-dev/elements - All DuskMoon elements in one bundle with auto-registration support
+            - @duskmoon-dev/css-arts - All CSS art elements in one bundle
 
+            **CSS Art Elements:**
+            ${{ steps.packages.outputs.css_arts }}
             ## Installation
 
             ```bash
-            # Install the bundle (includes all elements)
+            # Install the elements bundle
             bun add @duskmoon-dev/elements
 
+            # Install the CSS art bundle
+            bun add @duskmoon-dev/css-arts
+
             # Or install individual packages
-            bun add @duskmoon-dev/el-base
             bun add @duskmoon-dev/el-button
+            bun add @duskmoon-dev/el-art-moon
             ```
 
             ## What's Changed
@@ -225,10 +279,19 @@ jobs:
           echo "**Elements:**" >> $GITHUB_STEP_SUMMARY
           for pkg in elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              PKG_NAME=$(basename "$pkg")
-              echo "- @duskmoon-dev/el-$PKG_NAME" >> $GITHUB_STEP_SUMMARY
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              echo "- $FULL_PKG_NAME" >> $GITHUB_STEP_SUMMARY
             fi
           done
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Bundle:**" >> $GITHUB_STEP_SUMMARY
+          echo "**CSS Art Elements:**" >> $GITHUB_STEP_SUMMARY
+          for pkg in css-arts/*; do
+            if [ -f "$pkg/package.json" ]; then
+              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
+              echo "- $FULL_PKG_NAME" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Bundles:**" >> $GITHUB_STEP_SUMMARY
           echo "- @duskmoon-dev/elements" >> $GITHUB_STEP_SUMMARY
+          echo "- @duskmoon-dev/css-arts" >> $GITHUB_STEP_SUMMARY
