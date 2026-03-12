@@ -12,7 +12,18 @@
     "@duskmoon-dev/el-button": "workspace:*",
     "@duskmoon-dev/el-card": "workspace:*",
     "@duskmoon-dev/el-input": "workspace:*",
-    "@duskmoon-dev/el-markdown": "workspace:*"
+    "@duskmoon-dev/el-markdown": "workspace:*",
+    "@duskmoon-dev/el-art-moon": "workspace:*",
+    "@duskmoon-dev/el-art-sun": "workspace:*",
+    "@duskmoon-dev/el-art-atom": "workspace:*",
+    "@duskmoon-dev/el-art-eclipse": "workspace:*",
+    "@duskmoon-dev/el-art-mountain": "workspace:*",
+    "@duskmoon-dev/el-art-plasma-ball": "workspace:*",
+    "@duskmoon-dev/el-art-cat-stargazer": "workspace:*",
+    "@duskmoon-dev/el-art-color-spin": "workspace:*",
+    "@duskmoon-dev/el-art-synthwave-starfield": "workspace:*",
+    "@duskmoon-dev/el-art-circular-gallery": "workspace:*",
+    "@duskmoon-dev/el-art-snow": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.0.0",

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Variants</h2>
+    <div class="demo-row">
+      <span class="demo-label">Day:</span>
+      <el-dm-art-sun></el-dm-art-sun>
+      <span class="demo-label">Sunset:</span>
+      <el-dm-art-sun variant="sunset"></el-dm-art-sun>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Rays</h2>
+    <div class="demo-row">
+      <el-dm-art-sun rays></el-dm-art-sun>
+      <el-dm-art-sun variant="sunset" rays></el-dm-art-sun>
+    </div>
+  </section>
+
+  <section>
+    <h2>Animated Pulse</h2>
+    <div class="demo-row">
+      <el-dm-art-sun rays pulse></el-dm-art-sun>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-sun size="sm"></el-dm-art-sun>
+      <el-dm-art-sun></el-dm-art-sun>
+      <el-dm-art-sun size="lg"></el-dm-art-sun>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/sun/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

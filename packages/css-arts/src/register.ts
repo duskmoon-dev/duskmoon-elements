@@ -1,0 +1,11 @@
+import '@duskmoon-dev/el-art-moon/register';
+import '@duskmoon-dev/el-art-sun/register';
+import '@duskmoon-dev/el-art-atom/register';
+import '@duskmoon-dev/el-art-eclipse/register';
+import '@duskmoon-dev/el-art-mountain/register';
+import '@duskmoon-dev/el-art-plasma-ball/register';
+import '@duskmoon-dev/el-art-cat-stargazer/register';
+import '@duskmoon-dev/el-art-color-spin/register';
+import '@duskmoon-dev/el-art-synthwave-starfield/register';
+import '@duskmoon-dev/el-art-circular-gallery/register';
+import '@duskmoon-dev/el-art-snow/register';

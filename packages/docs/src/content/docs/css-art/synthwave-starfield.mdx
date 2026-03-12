@@ -1,0 +1,47 @@
+---
+title: Synthwave Starfield
+description: Pure CSS retro synthwave starfield with grid and stars
+order: 9
+section: css-art
+component: "@duskmoon-dev/el-art-synthwave-starfield"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Synthwave Starfield
+
+A pure CSS retro synthwave scene with a perspective grid, animated stars, and neon gradient sky — a nostalgic 80s aesthetic.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-synthwave-starfield
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-synthwave-starfield/register';
+```
+
+```html
+<el-dm-art-synthwave-starfield></el-dm-art-synthwave-starfield>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-synthwave-starfield></el-dm-art-synthwave-starfield>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-synthwave-starfield size="sm"></el-dm-art-synthwave-starfield>
+  <el-dm-art-synthwave-starfield></el-dm-art-synthwave-starfield>
+  <el-dm-art-synthwave-starfield size="lg"></el-dm-art-synthwave-starfield>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the starfield scene |

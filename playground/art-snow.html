@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Static</h2>
+    <div class="demo-row">
+      <el-dm-art-snow count="20"></el-dm-art-snow>
+    </div>
+  </section>
+
+  <section>
+    <h2>Falling Animation</h2>
+    <div class="demo-row">
+      <el-dm-art-snow count="20" fall></el-dm-art-snow>
+    </div>
+  </section>
+
+  <section>
+    <h2>Unicode Snowflakes</h2>
+    <div class="demo-row">
+      <el-dm-art-snow count="15" unicode fall></el-dm-art-snow>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dense Snow</h2>
+    <div class="demo-row">
+      <el-dm-art-snow count="60" fall></el-dm-art-snow>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/snow/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

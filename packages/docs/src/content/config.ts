@@ -6,7 +6,7 @@ const docsCollection = defineCollection({
     title: z.string(),
     description: z.string(),
     order: z.number().optional().default(999),
-    section: z.enum(['getting-started', 'theming', 'input', 'feedback', 'navigation', 'surfaces', 'data-display', 'api']),
+    section: z.enum(['getting-started', 'theming', 'input', 'feedback', 'navigation', 'surfaces', 'data-display', 'api', 'css-art']),
     component: z.string().optional(),
     draft: z.boolean().optional().default(false),
   }),

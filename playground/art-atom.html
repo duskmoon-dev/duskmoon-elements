@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default</h2>
+    <div class="demo-row">
+      <el-dm-art-atom></el-dm-art-atom>
+    </div>
+  </section>
+
+  <section>
+    <h2>With Glow</h2>
+    <div class="demo-row">
+      <el-dm-art-atom glow></el-dm-art-atom>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-atom size="sm"></el-dm-art-atom>
+      <el-dm-art-atom></el-dm-art-atom>
+      <el-dm-art-atom size="lg"></el-dm-art-atom>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/atom/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+---
+title: Moon
+description: Pure CSS moon art with full and crescent variants
+order: 1
+section: css-art
+component: "@duskmoon-dev/el-art-moon"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Moon
+
+A pure CSS moon illustration with full and crescent variants, optional glow effect, and size options.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-moon
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-moon/register';
+```
+
+```html
+<el-dm-art-moon></el-dm-art-moon>
+```
+
+## Live Demo
+
+<ComponentDemo title="Variants">
+  <el-dm-art-moon></el-dm-art-moon>
+  <el-dm-art-moon variant="crescent"></el-dm-art-moon>
+</ComponentDemo>
+
+<ComponentDemo title="Glow">
+  <el-dm-art-moon glow></el-dm-art-moon>
+  <el-dm-art-moon variant="crescent" glow></el-dm-art-moon>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-moon size="sm"></el-dm-art-moon>
+  <el-dm-art-moon></el-dm-art-moon>
+  <el-dm-art-moon size="lg"></el-dm-art-moon>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `variant` | `'full' \| 'crescent'` | `'full'` | Moon shape variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the moon |
+| `glow` | `boolean` | `false` | Adds a soft glow effect |

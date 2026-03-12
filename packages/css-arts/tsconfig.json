@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
+  "references": [
+    { "path": "../base" },
+    { "path": "../../css-arts/moon" },
+    { "path": "../../css-arts/sun" },
+    { "path": "../../css-arts/atom" },
+    { "path": "../../css-arts/eclipse" },
+    { "path": "../../css-arts/mountain" },
+    { "path": "../../css-arts/plasma-ball" },
+    { "path": "../../css-arts/cat-stargazer" },
+    { "path": "../../css-arts/color-spin" },
+    { "path": "../../css-arts/synthwave-starfield" },
+    { "path": "../../css-arts/circular-gallery" },
+    { "path": "../../css-arts/snow" }
+  ]
+}

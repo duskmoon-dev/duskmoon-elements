@@ -1,0 +1,47 @@
+---
+title: Color Spin
+description: Pure CSS spinning color wheel animation
+order: 8
+section: css-art
+component: "@duskmoon-dev/el-art-color-spin"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Color Spin
+
+A pure CSS animated color wheel with four spinning segments that create a mesmerizing rotation effect.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-color-spin
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-color-spin/register';
+```
+
+```html
+<el-dm-art-color-spin></el-dm-art-color-spin>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-color-spin></el-dm-art-color-spin>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-color-spin size="sm"></el-dm-art-color-spin>
+  <el-dm-art-color-spin></el-dm-art-color-spin>
+  <el-dm-art-color-spin size="lg"></el-dm-art-color-spin>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the color wheel |

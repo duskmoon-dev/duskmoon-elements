@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default (Off)</h2>
+    <div class="demo-row">
+      <el-dm-art-plasma-ball></el-dm-art-plasma-ball>
+    </div>
+  </section>
+
+  <section>
+    <h2>Active (On)</h2>
+    <div class="demo-row">
+      <el-dm-art-plasma-ball on></el-dm-art-plasma-ball>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-plasma-ball size="sm" on></el-dm-art-plasma-ball>
+      <el-dm-art-plasma-ball on></el-dm-art-plasma-ball>
+      <el-dm-art-plasma-ball size="lg" on></el-dm-art-plasma-ball>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/plasma-ball/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

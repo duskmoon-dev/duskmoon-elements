@@ -36,6 +36,18 @@ import { register as registerPopover } from '@duskmoon-dev/el-popover';
 // Data display elements
 import { register as registerTable } from '@duskmoon-dev/el-table';
 import { register as registerProDataGrid } from '@duskmoon-dev/el-pro-data-grid';
+// CSS Art elements
+import { register as registerArtMoon } from '@duskmoon-dev/el-art-moon';
+import { register as registerArtSun } from '@duskmoon-dev/el-art-sun';
+import { register as registerArtAtom } from '@duskmoon-dev/el-art-atom';
+import { register as registerArtEclipse } from '@duskmoon-dev/el-art-eclipse';
+import { register as registerArtMountain } from '@duskmoon-dev/el-art-mountain';
+import { register as registerArtPlasmaBall } from '@duskmoon-dev/el-art-plasma-ball';
+import { register as registerArtCatStargazer } from '@duskmoon-dev/el-art-cat-stargazer';
+import { register as registerArtColorSpin } from '@duskmoon-dev/el-art-color-spin';
+import { register as registerArtSynthwaveStarfield } from '@duskmoon-dev/el-art-synthwave-starfield';
+import { register as registerArtCircularGallery } from '@duskmoon-dev/el-art-circular-gallery';
+import { register as registerArtSnow } from '@duskmoon-dev/el-art-snow';
 
 registerButton();
 registerCard();
@@ -72,3 +84,15 @@ registerPopover();
 // Data display elements
 registerTable();
 registerProDataGrid();
+// CSS Art elements
+registerArtMoon();
+registerArtSun();
+registerArtAtom();
+registerArtEclipse();
+registerArtMountain();
+registerArtPlasmaBall();
+registerArtCatStargazer();
+registerArtColorSpin();
+registerArtSynthwaveStarfield();
+registerArtCircularGallery();
+registerArtSnow();

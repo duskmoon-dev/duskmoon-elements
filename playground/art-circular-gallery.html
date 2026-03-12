@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default (8 items)</h2>
+    <div class="demo-row">
+      <el-dm-art-circular-gallery></el-dm-art-circular-gallery>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Count</h2>
+    <div class="demo-row">
+      <el-dm-art-circular-gallery count="6"></el-dm-art-circular-gallery>
+      <el-dm-art-circular-gallery count="12"></el-dm-art-circular-gallery>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-circular-gallery size="sm"></el-dm-art-circular-gallery>
+      <el-dm-art-circular-gallery></el-dm-art-circular-gallery>
+      <el-dm-art-circular-gallery size="lg"></el-dm-art-circular-gallery>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/circular-gallery/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

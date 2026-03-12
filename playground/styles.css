@@ -129,6 +129,16 @@ section h2 {
   min-width: 100px;
 }
 
+/* Section headings */
+.section-heading {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--dm-color-on-surface, #333);
+  border-bottom: 2px solid var(--dm-color-outline, #e0e0e0);
+  padding-bottom: 0.5rem;
+}
+
 /* Grid layouts */
 .elements-grid {
   display: grid;
@@ -234,4 +244,91 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+.theme-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-outline);
+  background: var(--color-surface-container);
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.2s;
+}
+
+.theme-toggle:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --color-primary: oklch(70% 0.15 265);
+  --color-surface: oklch(15% 0.01 260);
+  --color-surface-dim: oklch(12% 0.01 260);
+  --color-surface-container: oklch(20% 0.01 260);
+  --color-surface-container-low: oklch(18% 0.01 260);
+  --color-surface-container-high: oklch(25% 0.01 260);
+  --color-on-surface: oklch(92% 0.01 260);
+  --color-on-surface-variant: oklch(70% 0.02 260);
+  --color-outline: oklch(40% 0.02 260);
+  --color-outline-variant: oklch(30% 0.01 260);
+}
+
+[data-theme="dark"] body {
+  background-color: oklch(12% 0.01 260);
+  color: oklch(92% 0.01 260);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3 {
+  color: oklch(90% 0.01 260);
+}
+
+[data-theme="dark"] section {
+  background: oklch(18% 0.01 260);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] section h2 {
+  color: oklch(85% 0.01 260);
+}
+
+[data-theme="dark"] .subtitle,
+[data-theme="dark"] .description,
+[data-theme="dark"] .demo-label {
+  color: oklch(65% 0.01 260);
+}
+
+[data-theme="dark"] footer {
+  border-top-color: oklch(30% 0.01 260);
+  color: oklch(55% 0.01 260);
+}
+
+[data-theme="dark"] .element-card {
+  background: oklch(18% 0.01 260);
+  border-color: oklch(30% 0.01 260);
+  color: oklch(90% 0.01 260);
+}
+
+[data-theme="dark"] .element-card code {
+  background: oklch(25% 0.01 260);
+  color: oklch(70% 0.12 265);
+}
+
+[data-theme="dark"] .element-card p {
+  color: oklch(65% 0.01 260);
+}
+
+[data-theme="dark"] .section-heading {
+  color: oklch(90% 0.01 260);
+  border-bottom-color: oklch(30% 0.01 260);
 }

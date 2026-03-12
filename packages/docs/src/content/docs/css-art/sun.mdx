@@ -1,0 +1,60 @@
+---
+title: Sun
+description: Pure CSS sun art with day and sunset variants
+order: 2
+section: css-art
+component: "@duskmoon-dev/el-art-sun"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Sun
+
+A pure CSS sun illustration with day and sunset variants, optional rays and pulse animations.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-sun
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-sun/register';
+```
+
+```html
+<el-dm-art-sun></el-dm-art-sun>
+```
+
+## Live Demo
+
+<ComponentDemo title="Variants">
+  <el-dm-art-sun></el-dm-art-sun>
+  <el-dm-art-sun variant="sunset"></el-dm-art-sun>
+</ComponentDemo>
+
+<ComponentDemo title="With Rays">
+  <el-dm-art-sun rays></el-dm-art-sun>
+  <el-dm-art-sun variant="sunset" rays></el-dm-art-sun>
+</ComponentDemo>
+
+<ComponentDemo title="Animated Pulse">
+  <el-dm-art-sun rays pulse></el-dm-art-sun>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-sun size="sm"></el-dm-art-sun>
+  <el-dm-art-sun></el-dm-art-sun>
+  <el-dm-art-sun size="lg"></el-dm-art-sun>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `variant` | `'day' \| 'sunset'` | `'day'` | Sun color variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the sun |
+| `rays` | `boolean` | `false` | Shows sun rays |
+| `pulse` | `boolean` | `false` | Enables pulse animation (requires `rays`) |
