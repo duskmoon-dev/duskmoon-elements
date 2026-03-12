@@ -33,11 +33,16 @@ duskmoon-elements/
 ├── packages/
 │   ├── base/             # @duskmoon-dev/el-base — base class, styles, utilities
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
+│   ├── css-arts/         # @duskmoon-dev/css-arts — bundle re-exporting all CSS art elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
 ├── elements/             # 32 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/
 │   ├── card/
 │   ├── input/
+│   └── ...
+├── css-arts/             # 11 pure CSS art element packages (@duskmoon-dev/el-art-*)
+│   ├── atom/
+│   ├── moon/
 │   └── ...
 ├── playground/           # Vite playground for manual testing
 ├── CLAUDE.md             # Project instructions for Claude Code
@@ -61,17 +66,23 @@ The core package must build before elements because element packages use TypeScr
 
 | Command | Description |
 |---------|-------------|
-| `bun run build:all` | Build core, then elements, then bundle (sequential) |
+| `bun run build:all` | Build core, then elements, bundle, CSS arts, and CSS arts bundle (sequential) |
 | `bun run build:base` | Build only `@duskmoon-dev/el-base` |
-| `bun run build:elements` | Build all 30 element packages |
+| `bun run build:elements` | Build all 31 element packages |
 | `bun run build:bundle` | Build the `@duskmoon-dev/elements` bundle package |
+| `bun run build:css-arts` | Build all 11 CSS art element packages |
+| `bun run build:css-arts-bundle` | Build the `@duskmoon-dev/css-arts` bundle package |
 
 ### Development
 
 | Command | Description |
 |---------|-------------|
 | `bun run playground` | Start Vite playground at http://localhost:4220 |
+| `bun run playground:build` | Build playground for production |
+| `bun run playground:preview` | Preview built playground |
 | `bun run docs:dev` | Start Astro docs site at http://localhost:4331 |
+| `bun run docs:build` | Build docs site for production |
+| `bun run docs:preview` | Preview built docs site |
 | `bun run dev` | Start dev mode for all workspaces |
 
 ### Quality
@@ -100,7 +111,12 @@ bun run --filter @duskmoon-dev/el-input lint:check
 | Command | Description |
 |---------|-------------|
 | `bun run release:dry-run` | Simulate publishing all packages |
-| `bun run release` | Publish core, then elements, then bundle to npm |
+| `bun run release` | Publish core, elements, bundle, CSS arts, and CSS arts bundle to npm |
+| `bun run release:base` | Publish `@duskmoon-dev/el-base` only |
+| `bun run release:elements` | Publish all 31 element packages only |
+| `bun run release:bundle` | Publish `@duskmoon-dev/elements` bundle only |
+| `bun run release:css-arts` | Publish CSS art packages only |
+| `bun run release:css-arts-bundle` | Publish `@duskmoon-dev/css-arts` bundle only |
 
 ## Architecture
 
@@ -505,7 +521,7 @@ bun run --filter @duskmoon-dev/el-button test -- -t "renders slot"
 
 ### Naming
 
-- Private methods: `_methodName`
+- Private methods: `#methodName` (ES private fields)
 - Constants: `UPPER_SNAKE_CASE`
 - Events: use `emit('dm-eventname', detail)` for custom events
 - CSS parts: semantic names (`button`, `input`, `label`)

@@ -40,6 +40,7 @@ bun add @duskmoon-dev/el-button
 |---------|-------------|
 | [@duskmoon-dev/el-base](./packages/base) | Base element class, CSS utilities, and theming |
 | [@duskmoon-dev/elements](./packages/elements) | All elements bundled together |
+| [@duskmoon-dev/css-arts](./packages/css-arts) | All pure CSS art elements bundled together |
 
 ### Input Components
 
@@ -97,6 +98,22 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-markdown](./elements/markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
 | [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
 | [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
+
+### CSS Art Components
+
+| Package | Element | Description |
+|---------|---------|-------------|
+| [@duskmoon-dev/el-art-atom](./css-arts/atom) | `<el-dm-art-atom>` | Animated atom model |
+| [@duskmoon-dev/el-art-cat-stargazer](./css-arts/cat-stargazer) | `<el-dm-art-cat-stargazer>` | Cat gazing at stars |
+| [@duskmoon-dev/el-art-circular-gallery](./css-arts/circular-gallery) | `<el-dm-art-circular-gallery>` | Circular image gallery |
+| [@duskmoon-dev/el-art-color-spin](./css-arts/color-spin) | `<el-dm-art-color-spin>` | Spinning color wheel |
+| [@duskmoon-dev/el-art-eclipse](./css-arts/eclipse) | `<el-dm-art-eclipse>` | Solar eclipse animation |
+| [@duskmoon-dev/el-art-moon](./css-arts/moon) | `<el-dm-art-moon>` | Moon phase art |
+| [@duskmoon-dev/el-art-mountain](./css-arts/mountain) | `<el-dm-art-mountain>` | Mountain landscape |
+| [@duskmoon-dev/el-art-plasma-ball](./css-arts/plasma-ball) | `<el-dm-art-plasma-ball>` | Plasma ball effect |
+| [@duskmoon-dev/el-art-snow](./css-arts/snow) | `<el-dm-art-snow>` | Snow animation |
+| [@duskmoon-dev/el-art-sun](./css-arts/sun) | `<el-dm-art-sun>` | Sun art |
+| [@duskmoon-dev/el-art-synthwave-starfield](./css-arts/synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
 
 ## Usage Examples
 
@@ -237,9 +254,14 @@ duskmoon-elements/
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
 │   └── ...                 # 32 element packages total
+├── css-arts/               # Pure CSS art element packages
+│   ├── atom/               # @duskmoon-dev/el-art-atom
+│   ├── moon/               # @duskmoon-dev/el-art-moon
+│   └── ...                 # 11 css art packages total
 ├── packages/
 │   ├── base/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)
+│   ├── css-arts/           # @duskmoon-dev/css-arts (bundle)
 │   └── docs/               # Documentation site
 ├── playground/             # Interactive demo
 └── package.json            # Root workspace config
