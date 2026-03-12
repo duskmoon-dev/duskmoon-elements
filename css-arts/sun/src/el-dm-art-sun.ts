@@ -1,7 +1,8 @@
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import rawCss from '@duskmoon-dev/css-art/dist/art/sun.css' with { type: 'text' };
 
-const coreCss = rawCss.replace(/@layer\s+css-art\s*\{/, '').replace(/\}\s*$/, '');
+const layerMatch = rawCss.match(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/);
+const coreCss = layerMatch ? layerMatch[1] : rawCss;
 
 const styles = css`
   :host {

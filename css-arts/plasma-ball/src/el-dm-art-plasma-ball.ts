@@ -1,7 +1,8 @@
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import rawCss from '@duskmoon-dev/css-art/dist/art/plasma-ball.css' with { type: 'text' };
 
-const coreCss = rawCss.replace(/@layer\s+css-art\s*\{/, '').replace(/\}\s*$/, '');
+const layerMatch = rawCss.match(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/);
+const coreCss = layerMatch ? layerMatch[1] : rawCss;
 
 const styles = css`
   :host {
@@ -40,7 +41,7 @@ export class ElDmArtPlasmaBall extends BaseElement {
     if (this.size && this.size !== 'md') classes.push(`art-plasma-ball-${this.size}`);
     return `
       <div class="${classes.join(' ')}">
-        <input type="checkbox" class="switcher">
+        <input type="checkbox" class="switcher" aria-label="Toggle plasma ball">
         <div class="glassball">
           <div class="electrode hide-electrode"></div>
           <div class="electrode"></div>

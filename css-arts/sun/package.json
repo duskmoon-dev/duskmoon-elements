@@ -17,7 +17,9 @@
       "require": "./dist/cjs/register.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
@@ -38,9 +40,19 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/css-art": "^0.2.0"
+    "@duskmoon-dev/css-art": "^0.3.0"
   },
-  "devDependencies": { "typescript": "^5.7.2" },
-  "publishConfig": { "access": "public" },
-  "keywords": ["duskmoon-dev", "custom-elements", "webcomponents", "css-art", "sun"]
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "duskmoon-dev",
+    "custom-elements",
+    "webcomponents",
+    "css-art",
+    "sun"
+  ]
 }

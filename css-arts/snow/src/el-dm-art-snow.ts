@@ -1,7 +1,8 @@
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import rawCss from '@duskmoon-dev/css-art/dist/art/snow.css' with { type: 'text' };
 
-const coreCss = rawCss.replace(/@layer\s+css-art\s*\{/, '').replace(/\}\s*$/, '');
+const layerMatch = rawCss.match(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/);
+const coreCss = layerMatch ? layerMatch[1] : rawCss;
 
 const styles = css`
   :host {
@@ -55,7 +56,9 @@ export class ElDmArtSnow extends BaseElement {
         `top:${top}%`,
         `--art-snowflake-size:${size}px`,
         this.fall ? `--art-snowflake-duration:${duration}s` : '',
-      ].filter(Boolean).join(';');
+      ]
+        .filter(Boolean)
+        .join(';');
       return `<div class="${classes.join(' ')}" style="${style}"></div>`;
     }).join('\n');
     return flakes;

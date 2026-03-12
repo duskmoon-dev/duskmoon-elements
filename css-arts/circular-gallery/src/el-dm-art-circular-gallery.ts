@@ -4,7 +4,7 @@ import rawCss from '@duskmoon-dev/css-art/dist/art/circular-gallery.css' with { 
 // @property declaration lives outside @layer — split and preserve it
 const layerMatch = rawCss.match(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/);
 const propertyDecls = rawCss.slice(0, rawCss.indexOf('@layer'));
-const coreCss = (layerMatch ? layerMatch[1] : rawCss);
+const coreCss = layerMatch ? layerMatch[1] : rawCss;
 
 const styles = css`
   :host {
@@ -17,10 +17,27 @@ const styles = css`
   ${coreCss}
 `;
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 const PLACEHOLDER_COLORS = [
-  '#e8b4b8', '#a8d5e2', '#b8d8be', '#f7e0b5',
-  '#c9b8e8', '#f5c6a0', '#b5d5c5', '#f0b8d0',
-  '#b8c8e8', '#d5e8b5', '#e8d5b8', '#c8e8d5',
+  '#e8b4b8',
+  '#a8d5e2',
+  '#b8d8be',
+  '#f7e0b5',
+  '#c9b8e8',
+  '#f5c6a0',
+  '#b5d5c5',
+  '#f0b8d0',
+  '#b8c8e8',
+  '#d5e8b5',
+  '#e8d5b8',
+  '#c8e8d5',
 ];
 
 export class ElDmArtCircularGallery extends BaseElement {
@@ -53,7 +70,7 @@ export class ElDmArtCircularGallery extends BaseElement {
     }).join('\n');
     return `
       <div class="${classes.join(' ')}">
-        <h1>${this.title}</h1>
+        <h1>${escapeHtml(this.title)}</h1>
         ${items}
       </div>
     `;
