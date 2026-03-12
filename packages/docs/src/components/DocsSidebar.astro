@@ -15,7 +15,13 @@ const nestedMenuCss = readFileSync(
   'utf-8',
 );
 
-const docs = await getCollection('docs', ({ data }) => !data.draft);
+const isCssArt = currentPath.includes('/docs/css-art');
+
+const docs = await getCollection('docs', ({ data }) => {
+  if (data.draft) return false;
+  if (isCssArt) return data.section === 'css-art';
+  return data.section !== 'css-art';
+});
 
 // Group docs by section
 const sections: Record<string, typeof docs> = {};
@@ -43,6 +49,7 @@ const sectionConfig: Record<string, { order: number; label: string }> = {
   'data-display': { order: 50, label: 'Data Display' },
   'components': { order: 60, label: 'Components' },
   'api': { order: 70, label: 'API' },
+  'css-art': { order: 80, label: 'CSS Art' },
 };
 
 const sortedSections = Object.keys(sections).sort((a, b) => {

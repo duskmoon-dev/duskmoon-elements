@@ -1,0 +1,52 @@
+---
+title: Plasma Ball
+description: Pure CSS plasma ball art with interactive glow rays
+order: 6
+section: css-art
+component: "@duskmoon-dev/el-art-plasma-ball"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Plasma Ball
+
+A pure CSS plasma ball with animated electric rays inside a glass sphere, complete with base and switch.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-plasma-ball
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-plasma-ball/register';
+```
+
+```html
+<el-dm-art-plasma-ball></el-dm-art-plasma-ball>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-plasma-ball></el-dm-art-plasma-ball>
+</ComponentDemo>
+
+<ComponentDemo title="Active (On)">
+  <el-dm-art-plasma-ball on></el-dm-art-plasma-ball>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-plasma-ball size="sm"></el-dm-art-plasma-ball>
+  <el-dm-art-plasma-ball></el-dm-art-plasma-ball>
+  <el-dm-art-plasma-ball size="lg"></el-dm-art-plasma-ball>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the plasma ball |
+| `on` | `boolean` | `false` | Activates the plasma rays animation |

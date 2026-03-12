@@ -1,0 +1,55 @@
+---
+title: Snow
+description: Pure CSS animated snowfall with configurable snowflakes
+order: 11
+section: css-art
+component: "@duskmoon-dev/el-art-snow"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Snow
+
+A pure CSS animated snowfall scene with configurable snowflake count, optional unicode snowflakes, and falling animation.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-snow
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-snow/register';
+```
+
+```html
+<el-dm-art-snow count="20" fall></el-dm-art-snow>
+```
+
+## Live Demo
+
+<ComponentDemo title="Static Snowflakes">
+  <el-dm-art-snow count="20"></el-dm-art-snow>
+</ComponentDemo>
+
+<ComponentDemo title="Falling Animation">
+  <el-dm-art-snow count="20" fall></el-dm-art-snow>
+</ComponentDemo>
+
+<ComponentDemo title="Unicode Snowflakes">
+  <el-dm-art-snow count="15" unicode fall></el-dm-art-snow>
+</ComponentDemo>
+
+<ComponentDemo title="Dense Snow">
+  <el-dm-art-snow count="60" fall></el-dm-art-snow>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `count` | `number` | `20` | Number of snowflakes (1–100) |
+| `unicode` | `boolean` | `false` | Use Unicode snowflake characters instead of CSS shapes |
+| `fall` | `boolean` | `false` | Enables falling animation |

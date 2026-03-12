@@ -1,0 +1,67 @@
+{
+  "name": "@duskmoon-dev/css-arts",
+  "version": "0.1.0",
+  "description": "All DuskMoon CSS art elements in one package",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./register": {
+      "types": "./dist/types/register.d.ts",
+      "import": "./dist/esm/register.js",
+      "require": "./dist/cjs/register.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "bun run clean",
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow",
+    "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
+    "clean": "del-cli dist",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.ts' '*.json' '*.md'",
+    "format:check": "prettier --check 'src/**/*.ts' '*.json' '*.md'",
+    "lint": "eslint src",
+    "lint:check": "eslint src --max-warnings 0",
+    "lint:fix": "eslint src --fix",
+    "release": "bun publish",
+    "release:dry-run": "bun publish --dry-run"
+  },
+  "dependencies": {
+    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-art-moon": "workspace:*",
+    "@duskmoon-dev/el-art-sun": "workspace:*",
+    "@duskmoon-dev/el-art-atom": "workspace:*",
+    "@duskmoon-dev/el-art-eclipse": "workspace:*",
+    "@duskmoon-dev/el-art-mountain": "workspace:*",
+    "@duskmoon-dev/el-art-plasma-ball": "workspace:*",
+    "@duskmoon-dev/el-art-cat-stargazer": "workspace:*",
+    "@duskmoon-dev/el-art-color-spin": "workspace:*",
+    "@duskmoon-dev/el-art-synthwave-starfield": "workspace:*",
+    "@duskmoon-dev/el-art-circular-gallery": "workspace:*",
+    "@duskmoon-dev/el-art-snow": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "duskmoon-dev",
+    "duskmoon",
+    "custom-elements",
+    "webcomponents",
+    "css-art"
+  ]
+}

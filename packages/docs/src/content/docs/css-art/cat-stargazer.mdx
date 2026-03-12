@@ -1,0 +1,47 @@
+---
+title: Cat Stargazer
+description: Pure CSS cat gazing at the moon art
+order: 7
+section: css-art
+component: "@duskmoon-dev/el-art-cat-stargazer"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Cat Stargazer
+
+A pure CSS illustration of a cat sitting on a hill, gazing up at the moon on a starry night.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-cat-stargazer
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-cat-stargazer/register';
+```
+
+```html
+<el-dm-art-cat-stargazer></el-dm-art-cat-stargazer>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-cat-stargazer></el-dm-art-cat-stargazer>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-cat-stargazer size="sm"></el-dm-art-cat-stargazer>
+  <el-dm-art-cat-stargazer></el-dm-art-cat-stargazer>
+  <el-dm-art-cat-stargazer size="lg"></el-dm-art-cat-stargazer>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the illustration |

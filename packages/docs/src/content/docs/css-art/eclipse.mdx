@@ -1,0 +1,47 @@
+---
+title: Eclipse
+description: Pure CSS solar eclipse art with layered corona effect
+order: 4
+section: css-art
+component: "@duskmoon-dev/el-art-eclipse"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Eclipse
+
+A pure CSS solar eclipse illustration with a moon silhouette against a layered corona glow.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-eclipse
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-eclipse/register';
+```
+
+```html
+<el-dm-art-eclipse></el-dm-art-eclipse>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-eclipse></el-dm-art-eclipse>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-eclipse size="sm"></el-dm-art-eclipse>
+  <el-dm-art-eclipse></el-dm-art-eclipse>
+  <el-dm-art-eclipse size="lg"></el-dm-art-eclipse>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the eclipse |

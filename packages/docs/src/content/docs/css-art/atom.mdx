@@ -1,0 +1,52 @@
+---
+title: Atom
+description: Pure CSS atom art with orbiting electron animation
+order: 3
+section: css-art
+component: "@duskmoon-dev/el-art-atom"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Atom
+
+A pure CSS atom illustration featuring a nucleus with animated orbiting electrons.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-atom
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-atom/register';
+```
+
+```html
+<el-dm-art-atom></el-dm-art-atom>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-atom></el-dm-art-atom>
+</ComponentDemo>
+
+<ComponentDemo title="With Glow">
+  <el-dm-art-atom glow></el-dm-art-atom>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-atom size="sm"></el-dm-art-atom>
+  <el-dm-art-atom></el-dm-art-atom>
+  <el-dm-art-atom size="lg"></el-dm-art-atom>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the atom |
+| `glow` | `boolean` | `false` | Adds a glow effect to the nucleus |

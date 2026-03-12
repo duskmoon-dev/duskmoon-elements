@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default</h2>
+    <div class="demo-row">
+      <el-dm-art-color-spin></el-dm-art-color-spin>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-color-spin size="sm"></el-dm-art-color-spin>
+      <el-dm-art-color-spin></el-dm-art-color-spin>
+      <el-dm-art-color-spin size="lg"></el-dm-art-color-spin>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/color-spin/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

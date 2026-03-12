@@ -1,0 +1,105 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('docs', ({ data }) => !data.draft && data.section === 'css-art');
+
+docs.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<DocsLayout title="CSS Art" description="Browse all DuskMoon pure-CSS art components" currentPath={Astro.url.pathname}>
+  <div class="css-art-page">
+    <header class="page-header">
+      <h1>CSS Art</h1>
+      <p class="page-description">
+        Browse all <strong>{docs.length}</strong> pure-CSS art components from the
+        <code>@duskmoon-dev/css-art</code> package. Each piece is a standalone Web Component
+        with zero JavaScript dependencies.
+      </p>
+    </header>
+
+    <div class="component-grid">
+      {docs.map((doc) => (
+        <a href={`/duskmoon-elements/docs/${doc.slug}`} class="component-card">
+          <h3 class="card-title">{doc.data.title}</h3>
+          <p class="card-description">{doc.data.description}</p>
+          <span class="card-link">View docs &rarr;</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</DocsLayout>
+
+<style>
+  .css-art-page {
+    max-width: 960px;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-header h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    color: var(--color-on-surface);
+    opacity: 0.75;
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  .component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .component-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-outline, #e0e0e0);
+    background-color: var(--color-surface-container, #f5f5f5);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+
+  .component-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin: 0 0 0.35rem;
+    color: var(--color-on-surface);
+  }
+
+  .card-description {
+    font-size: 0.85rem;
+    color: var(--color-on-surface);
+    opacity: 0.7;
+    margin: 0;
+    flex: 1;
+  }
+
+  .card-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 768px) {
+    .component-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

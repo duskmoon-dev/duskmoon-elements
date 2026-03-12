@@ -1,0 +1,53 @@
+---
+title: Circular Gallery
+description: Pure CSS circular rotating image gallery
+order: 10
+section: css-art
+component: "@duskmoon-dev/el-art-circular-gallery"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Circular Gallery
+
+A pure CSS circular image gallery with items arranged in a rotating ring using CSS `@property` for smooth animation.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-circular-gallery
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-circular-gallery/register';
+```
+
+```html
+<el-dm-art-circular-gallery count="8"></el-dm-art-circular-gallery>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default (8 items)">
+  <el-dm-art-circular-gallery></el-dm-art-circular-gallery>
+</ComponentDemo>
+
+<ComponentDemo title="Custom Count">
+  <el-dm-art-circular-gallery count="6"></el-dm-art-circular-gallery>
+  <el-dm-art-circular-gallery count="12"></el-dm-art-circular-gallery>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-circular-gallery size="sm"></el-dm-art-circular-gallery>
+  <el-dm-art-circular-gallery></el-dm-art-circular-gallery>
+  <el-dm-art-circular-gallery size="lg"></el-dm-art-circular-gallery>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `count` | `number` | `8` | Number of items in the gallery ring |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the gallery |

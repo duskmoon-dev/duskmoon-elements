@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Variants</h2>
+    <div class="demo-row">
+      <span class="demo-label">Full:</span>
+      <el-dm-art-moon></el-dm-art-moon>
+      <span class="demo-label">Crescent:</span>
+      <el-dm-art-moon variant="crescent"></el-dm-art-moon>
+    </div>
+  </section>
+
+  <section>
+    <h2>Glow</h2>
+    <div class="demo-row">
+      <el-dm-art-moon glow></el-dm-art-moon>
+      <el-dm-art-moon variant="crescent" glow></el-dm-art-moon>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-moon size="sm"></el-dm-art-moon>
+      <el-dm-art-moon></el-dm-art-moon>
+      <el-dm-art-moon size="lg"></el-dm-art-moon>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/moon/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

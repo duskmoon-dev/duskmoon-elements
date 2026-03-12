@@ -1,3 +1,31 @@
 <footer>
   <p>DuskMoon Elements &bull; <a href="https://github.com/duskmoon-dev/duskmoon-elements" target="_blank">GitHub</a></p>
+  <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+    <span class="theme-toggle-icon">☀️</span>
+  </button>
 </footer>
+<script>
+  (function () {
+    const btn = document.getElementById('theme-toggle');
+    const icon = btn && btn.querySelector('.theme-toggle-icon');
+    const stored = localStorage.getItem('playground-theme');
+    if (stored === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (icon) icon.textContent = '🌙';
+    }
+    if (btn) {
+      btn.addEventListener('click', function () {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('playground-theme', 'light');
+          if (icon) icon.textContent = '☀️';
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('playground-theme', 'dark');
+          if (icon) icon.textContent = '🌙';
+        }
+      });
+    }
+  })();
+</script>

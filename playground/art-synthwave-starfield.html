@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default</h2>
+    <div class="demo-row">
+      <el-dm-art-synthwave-starfield></el-dm-art-synthwave-starfield>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-synthwave-starfield size="sm"></el-dm-art-synthwave-starfield>
+      <el-dm-art-synthwave-starfield></el-dm-art-synthwave-starfield>
+      <el-dm-art-synthwave-starfield size="lg"></el-dm-art-synthwave-starfield>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../css-arts/synthwave-starfield/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

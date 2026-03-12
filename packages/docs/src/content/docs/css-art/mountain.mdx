@@ -1,0 +1,55 @@
+---
+title: Mountain
+description: Pure CSS mountain landscape art with single and range variants
+order: 5
+section: css-art
+component: "@duskmoon-dev/el-art-mountain"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Mountain
+
+A pure CSS mountain landscape with single peak and mountain range variants, plus optional sunset mode.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-mountain
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-mountain/register';
+```
+
+```html
+<el-dm-art-mountain></el-dm-art-mountain>
+```
+
+## Live Demo
+
+<ComponentDemo title="Variants">
+  <el-dm-art-mountain></el-dm-art-mountain>
+  <el-dm-art-mountain variant="range"></el-dm-art-mountain>
+</ComponentDemo>
+
+<ComponentDemo title="Sunset">
+  <el-dm-art-mountain sunset></el-dm-art-mountain>
+  <el-dm-art-mountain variant="range" sunset></el-dm-art-mountain>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-mountain size="sm"></el-dm-art-mountain>
+  <el-dm-art-mountain></el-dm-art-mountain>
+  <el-dm-art-mountain size="lg"></el-dm-art-mountain>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `variant` | `'single' \| 'range'` | `'single'` | Single peak or mountain range |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the illustration |
+| `sunset` | `boolean` | `false` | Applies warm sunset color palette |
