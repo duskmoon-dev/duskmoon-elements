@@ -133,7 +133,7 @@ css-arts/moon/
 
 Note: `@duskmoon-dev/css-art` is a published npm package (not workspace), so it uses a versioned semver range.
 
-### 4.4 Bundle Package `packages/css-arts/`
+### 4.4 Bundle Package `packages/art-elements/`
 
 **npm name:** `@duskmoon-dev/art-elements`
 
@@ -379,7 +379,7 @@ Update `playground/package.json` with all 11 `@duskmoon-dev/el-art-*` as workspa
 | `css-arts/synthwave-starfield/` | create | `@duskmoon-dev/el-art-synthwave-starfield` |
 | `css-arts/circular-gallery/` | create | `@duskmoon-dev/el-art-circular-gallery` |
 | `css-arts/snow/` | create | `@duskmoon-dev/el-art-snow` |
-| `packages/css-arts/` | create | `@duskmoon-dev/art-elements` bundle |
+| `packages/art-elements/` | create | `@duskmoon-dev/art-elements` bundle |
 | `packages/docs/src/content/config.ts` | modify | Add `css-art` section enum |
 | `packages/docs/src/components/DocsSidebar.astro` | modify | Path-based filtering + css-art config |
 | `packages/docs/src/layouts/DocsLayout.astro` | modify | Top nav links |

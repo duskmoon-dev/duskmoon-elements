@@ -95,8 +95,8 @@ jobs:
           done
 
           # Update CSS arts bundle
-          jq --arg v "$NEW_VERSION" '.version = $v' packages/css-arts/package.json > tmp.json && mv tmp.json packages/css-arts/package.json
-          echo "Updated packages/css-arts/package.json to $NEW_VERSION"
+          jq --arg v "$NEW_VERSION" '.version = $v' packages/art-elements/package.json > tmp.json && mv tmp.json packages/art-elements/package.json
+          echo "Updated packages/art-elements/package.json to $NEW_VERSION"
 
       - name: Build all packages
         run: bun run build:all
@@ -164,7 +164,7 @@ jobs:
           cd ../..
 
           echo "Publishing @duskmoon-dev/art-elements..."
-          cd packages/css-arts
+          cd packages/art-elements
           if npm view @duskmoon-dev/art-elements@$NEW_VERSION version >/dev/null 2>&1; then
             echo "  @duskmoon-dev/art-elements@$NEW_VERSION already published, skipping"
           else

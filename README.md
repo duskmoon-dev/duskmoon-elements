@@ -40,7 +40,7 @@ bun add @duskmoon-dev/el-button
 |---------|-------------|
 | [@duskmoon-dev/el-base](./packages/base) | Base element class, CSS utilities, and theming |
 | [@duskmoon-dev/elements](./packages/elements) | All elements bundled together |
-| [@duskmoon-dev/art-elements](./packages/css-arts) | All pure CSS art elements bundled together |
+| [@duskmoon-dev/art-elements](./packages/art-elements) | All pure CSS art elements bundled together |
 
 ### Input Components
 
