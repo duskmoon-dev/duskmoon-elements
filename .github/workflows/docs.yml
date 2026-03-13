@@ -10,6 +10,9 @@ on:
     branches: [main]
     paths:
       - 'packages/docs/**'
+      - 'elements/**'
+      - 'packages/elements/**'
+      - 'css-arts/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
