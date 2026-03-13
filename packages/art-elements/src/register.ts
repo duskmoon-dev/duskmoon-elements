@@ -9,3 +9,4 @@ import '@duskmoon-dev/el-art-color-spin/register';
 import '@duskmoon-dev/el-art-synthwave-starfield/register';
 import '@duskmoon-dev/el-art-circular-gallery/register';
 import '@duskmoon-dev/el-art-snow/register';
+import '@duskmoon-dev/el-art-flower-animation/register';

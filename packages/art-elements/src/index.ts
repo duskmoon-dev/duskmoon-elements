@@ -24,6 +24,10 @@ import {
   register as registerArtCircularGallery,
 } from '@duskmoon-dev/el-art-circular-gallery';
 import { ElDmArtSnow, register as registerArtSnow } from '@duskmoon-dev/el-art-snow';
+import {
+  ElDmArtFlowerAnimation,
+  register as registerArtFlowerAnimation,
+} from '@duskmoon-dev/el-art-flower-animation';
 
 export {
   ElDmArtMoon,
@@ -48,6 +52,8 @@ export {
   registerArtCircularGallery,
   ElDmArtSnow,
   registerArtSnow,
+  ElDmArtFlowerAnimation,
+  registerArtFlowerAnimation,
 };
 
 export function registerAllArts(): void {
@@ -62,4 +68,5 @@ export function registerAllArts(): void {
   registerArtSynthwaveStarfield();
   registerArtCircularGallery();
   registerArtSnow();
+  registerArtFlowerAnimation();
 }
