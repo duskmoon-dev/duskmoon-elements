@@ -33,7 +33,7 @@ duskmoon-elements/
 ├── packages/
 │   ├── base/             # @duskmoon-dev/el-base — base class, styles, utilities
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
-│   ├── css-arts/         # @duskmoon-dev/art-elements — bundle re-exporting all CSS art elements
+│   ├── art-elements/         # @duskmoon-dev/art-elements — bundle re-exporting all CSS art elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
 ├── elements/             # 32 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/

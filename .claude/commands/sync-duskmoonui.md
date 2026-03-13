@@ -1,5 +1,5 @@
 ---
-description: Analyze @duskmoon-dev/core and @duskmoon-dev/css-art changes from duskmoonui repo, propagate to el-base and css-arts packages, and generate update plan for duskmoon-elements.
+description: Analyze @duskmoon-dev/core and @duskmoon-dev/css-art changes from duskmoonui repo, propagate to el-base and art-elements packages, and generate update plan for duskmoon-elements.
 ---
 
 ## Input
@@ -45,7 +45,7 @@ echo "root pins core@$CORE_VER, latest upstream is $LATEST_VER"
 
 # @duskmoon-dev/css-art — consumed by css-arts/* packages
 CSSART_VER=$(jq -r '.dependencies["@duskmoon-dev/css-art"] // .devDependencies["@duskmoon-dev/css-art"]' css-arts/atom/package.json 2>/dev/null | sed 's/[\^~]//')
-echo "css-arts pins css-art@$CSSART_VER"
+echo "art-elements pins css-art@$CSSART_VER"
 ```
 
 ### 2. Extract API diff — @duskmoon-dev/core
@@ -90,7 +90,7 @@ git diff "v${CSSART_VER}..${LATEST_VER}" -- packages/css-art/src/ packages/css-a
 
 Focus on:
 - New art modules added (new `<el-dm-art-*>` opportunities)
-- Removed or renamed CSS class names used by existing css-arts elements
+- Removed or renamed CSS class names used by existing art-elements
 - Changed animation keyframes, CSS variable names
 - Breaking changes to the CSS-only API surface
 

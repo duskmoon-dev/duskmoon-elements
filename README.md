@@ -261,7 +261,7 @@ duskmoon-elements/
 ├── packages/
 │   ├── base/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)
-│   ├── css-arts/           # @duskmoon-dev/art-elements (bundle)
+│   ├── art-elements/       # @duskmoon-dev/art-elements (bundle)
 │   └── docs/               # Documentation site
 ├── playground/             # Interactive demo
 └── package.json            # Root workspace config
