@@ -1,4 +1,4 @@
-# @duskmoon-dev/css-arts
+# @duskmoon-dev/art-elements
 
 All DuskMoon CSS art elements in one package.
 

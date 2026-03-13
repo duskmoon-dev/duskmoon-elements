@@ -163,10 +163,10 @@ jobs:
           fi
           cd ../..
 
-          echo "Publishing @duskmoon-dev/css-arts..."
+          echo "Publishing @duskmoon-dev/art-elements..."
           cd packages/css-arts
-          if npm view @duskmoon-dev/css-arts@$NEW_VERSION version >/dev/null 2>&1; then
-            echo "  @duskmoon-dev/css-arts@$NEW_VERSION already published, skipping"
+          if npm view @duskmoon-dev/art-elements@$NEW_VERSION version >/dev/null 2>&1; then
+            echo "  @duskmoon-dev/art-elements@$NEW_VERSION already published, skipping"
           else
             bun publish --access public
           fi
@@ -242,7 +242,7 @@ jobs:
             ${{ steps.packages.outputs.elements }}
             **Bundles:**
             - @duskmoon-dev/elements - All DuskMoon elements in one bundle with auto-registration support
-            - @duskmoon-dev/css-arts - All CSS art elements in one bundle
+            - @duskmoon-dev/art-elements - All CSS art elements in one bundle
 
             **CSS Art Elements:**
             ${{ steps.packages.outputs.css_arts }}
@@ -253,7 +253,7 @@ jobs:
             bun add @duskmoon-dev/elements
 
             # Install the CSS art bundle
-            bun add @duskmoon-dev/css-arts
+            bun add @duskmoon-dev/art-elements
 
             # Or install individual packages
             bun add @duskmoon-dev/el-button
@@ -294,4 +294,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Bundles:**" >> $GITHUB_STEP_SUMMARY
           echo "- @duskmoon-dev/elements" >> $GITHUB_STEP_SUMMARY
-          echo "- @duskmoon-dev/css-arts" >> $GITHUB_STEP_SUMMARY
+          echo "- @duskmoon-dev/art-elements" >> $GITHUB_STEP_SUMMARY

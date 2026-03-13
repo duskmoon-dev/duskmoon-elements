@@ -135,7 +135,7 @@ Note: `@duskmoon-dev/css-art` is a published npm package (not workspace), so it 
 
 ### 4.4 Bundle Package `packages/css-arts/`
 
-**npm name:** `@duskmoon-dev/css-arts`
+**npm name:** `@duskmoon-dev/art-elements`
 
 ```typescript
 // src/index.ts
@@ -231,7 +231,7 @@ Root `package.json` additions:
 {
   "scripts": {
     "build:css-arts": "bun run --filter '@duskmoon-dev/el-art-*' build",
-    "build:css-arts-bundle": "bun run --filter @duskmoon-dev/css-arts build",
+    "build:css-arts-bundle": "bun run --filter @duskmoon-dev/art-elements build",
     "build:all": "bun run build:base && bun run build:elements && bun run build:bundle && bun run build:css-arts && bun run build:css-arts-bundle"
   }
 }
@@ -348,7 +348,7 @@ Update `playground/package.json` with all 11 `@duskmoon-dev/el-art-*` as workspa
 
 - [ ] `bun install` — all workspace deps resolved including `css-arts/*`
 - [ ] `bun run build:base && bun run build:css-arts` — all 11 art packages build with no errors
-- [ ] `bun run build:css-arts-bundle` — `@duskmoon-dev/css-arts` bundle builds
+- [ ] `bun run build:css-arts-bundle` — `@duskmoon-dev/art-elements` bundle builds
 - [ ] `bun run docs:dev` — docs site loads at `localhost:4331`
   - [ ] Header shows "Components" and "CSS Art" nav links
   - [ ] "Components" link shows sidebar with existing 9 sections
@@ -379,7 +379,7 @@ Update `playground/package.json` with all 11 `@duskmoon-dev/el-art-*` as workspa
 | `css-arts/synthwave-starfield/` | create | `@duskmoon-dev/el-art-synthwave-starfield` |
 | `css-arts/circular-gallery/` | create | `@duskmoon-dev/el-art-circular-gallery` |
 | `css-arts/snow/` | create | `@duskmoon-dev/el-art-snow` |
-| `packages/css-arts/` | create | `@duskmoon-dev/css-arts` bundle |
+| `packages/css-arts/` | create | `@duskmoon-dev/art-elements` bundle |
 | `packages/docs/src/content/config.ts` | modify | Add `css-art` section enum |
 | `packages/docs/src/components/DocsSidebar.astro` | modify | Path-based filtering + css-art config |
 | `packages/docs/src/layouts/DocsLayout.astro` | modify | Top nav links |

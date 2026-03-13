@@ -10,7 +10,7 @@
 "@duskmoon-dev/el-art-snow": minor
 "@duskmoon-dev/el-art-sun": minor
 "@duskmoon-dev/el-art-synthwave-starfield": minor
-"@duskmoon-dev/css-arts": minor
+"@duskmoon-dev/art-elements": minor
 ---
 
 feat(css-arts): add 11 pure CSS art custom elements and aggregator package
