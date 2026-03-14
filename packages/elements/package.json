@@ -24,8 +24,8 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress --external @duskmoon-dev/el-form --external @duskmoon-dev/el-slider --external @duskmoon-dev/el-file-upload --external @duskmoon-dev/el-autocomplete --external @duskmoon-dev/el-datepicker --external @duskmoon-dev/el-bottom-navigation --external @duskmoon-dev/el-breadcrumbs --external @duskmoon-dev/el-drawer --external @duskmoon-dev/el-menu --external @duskmoon-dev/el-navbar --external @duskmoon-dev/el-pagination --external @duskmoon-dev/el-stepper --external @duskmoon-dev/el-tabs --external @duskmoon-dev/el-accordion --external @duskmoon-dev/el-bottom-sheet --external @duskmoon-dev/el-popover --external @duskmoon-dev/el-table",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress --external @duskmoon-dev/el-form --external @duskmoon-dev/el-slider --external @duskmoon-dev/el-file-upload --external @duskmoon-dev/el-autocomplete --external @duskmoon-dev/el-datepicker --external @duskmoon-dev/el-bottom-navigation --external @duskmoon-dev/el-breadcrumbs --external @duskmoon-dev/el-drawer --external @duskmoon-dev/el-menu --external @duskmoon-dev/el-navbar --external @duskmoon-dev/el-pagination --external @duskmoon-dev/el-stepper --external @duskmoon-dev/el-tabs --external @duskmoon-dev/el-accordion --external @duskmoon-dev/el-bottom-sheet --external @duskmoon-dev/el-popover --external @duskmoon-dev/el-table",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress --external @duskmoon-dev/el-form --external @duskmoon-dev/el-slider --external @duskmoon-dev/el-file-upload --external @duskmoon-dev/el-autocomplete --external @duskmoon-dev/el-datepicker --external @duskmoon-dev/el-select --external @duskmoon-dev/el-cascader --external @duskmoon-dev/el-bottom-navigation --external @duskmoon-dev/el-breadcrumbs --external @duskmoon-dev/el-drawer --external @duskmoon-dev/el-menu --external @duskmoon-dev/el-navbar --external @duskmoon-dev/el-pagination --external @duskmoon-dev/el-stepper --external @duskmoon-dev/el-tabs --external @duskmoon-dev/el-accordion --external @duskmoon-dev/el-bottom-sheet --external @duskmoon-dev/el-popover --external @duskmoon-dev/el-table --external @duskmoon-dev/el-markdown-input --external @duskmoon-dev/el-pro-data-grid",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-button --external @duskmoon-dev/el-card --external @duskmoon-dev/el-input --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-switch --external @duskmoon-dev/el-alert --external @duskmoon-dev/el-dialog --external @duskmoon-dev/el-badge --external @duskmoon-dev/el-chip --external @duskmoon-dev/el-tooltip --external @duskmoon-dev/el-progress --external @duskmoon-dev/el-form --external @duskmoon-dev/el-slider --external @duskmoon-dev/el-file-upload --external @duskmoon-dev/el-autocomplete --external @duskmoon-dev/el-datepicker --external @duskmoon-dev/el-select --external @duskmoon-dev/el-cascader --external @duskmoon-dev/el-bottom-navigation --external @duskmoon-dev/el-breadcrumbs --external @duskmoon-dev/el-drawer --external @duskmoon-dev/el-menu --external @duskmoon-dev/el-navbar --external @duskmoon-dev/el-pagination --external @duskmoon-dev/el-stepper --external @duskmoon-dev/el-tabs --external @duskmoon-dev/el-accordion --external @duskmoon-dev/el-bottom-sheet --external @duskmoon-dev/el-popover --external @duskmoon-dev/el-table --external @duskmoon-dev/el-markdown-input --external @duskmoon-dev/el-pro-data-grid",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
     "clean": "del-cli dist",
     "typecheck": "tsc --noEmit",
@@ -55,6 +55,8 @@
     "@duskmoon-dev/el-file-upload": "workspace:*",
     "@duskmoon-dev/el-autocomplete": "workspace:*",
     "@duskmoon-dev/el-datepicker": "workspace:*",
+    "@duskmoon-dev/el-select": "workspace:*",
+    "@duskmoon-dev/el-cascader": "workspace:*",
     "@duskmoon-dev/el-bottom-navigation": "workspace:*",
     "@duskmoon-dev/el-breadcrumbs": "workspace:*",
     "@duskmoon-dev/el-drawer": "workspace:*",
@@ -66,7 +68,9 @@
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-bottom-sheet": "workspace:*",
     "@duskmoon-dev/el-popover": "workspace:*",
-    "@duskmoon-dev/el-table": "workspace:*"
+    "@duskmoon-dev/el-table": "workspace:*",
+    "@duskmoon-dev/el-markdown-input": "workspace:*",
+    "@duskmoon-dev/el-pro-data-grid": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

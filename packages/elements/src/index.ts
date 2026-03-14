@@ -66,6 +66,8 @@ import { ElDmSlider, register as registerSlider } from '@duskmoon-dev/el-slider'
 import { ElDmFileUpload, register as registerFileUpload } from '@duskmoon-dev/el-file-upload';
 import { ElDmAutocomplete, register as registerAutocomplete } from '@duskmoon-dev/el-autocomplete';
 import { ElDmDatepicker, register as registerDatepicker } from '@duskmoon-dev/el-datepicker';
+import { ElDmSelect, register as registerSelect } from '@duskmoon-dev/el-select';
+import { ElDmCascader, register as registerCascader } from '@duskmoon-dev/el-cascader';
 
 // Navigation elements
 import {
@@ -91,6 +93,19 @@ import { ElDmPopover, register as registerPopover } from '@duskmoon-dev/el-popov
 
 // Data display elements
 import { ElDmTable, ElDmTableColumn, register as registerTable } from '@duskmoon-dev/el-table';
+import {
+  ElDmProDataGrid,
+  registerProDataGrid,
+  ElDmGridColumn,
+  registerGridColumn,
+  ElDmGridColumnGroup,
+  registerGridColumnGroup,
+} from '@duskmoon-dev/el-pro-data-grid';
+import {
+  ElDmMarkdownInput,
+  register as registerMarkdownInput,
+  MarkdownInputHook,
+} from '@duskmoon-dev/el-markdown-input';
 
 // Re-export all elements
 export { ElDmButton, registerButton };
@@ -123,6 +138,22 @@ export { ElDmAutocomplete, registerAutocomplete };
 export type { AutocompleteSize, AutocompleteOption } from '@duskmoon-dev/el-autocomplete';
 export { ElDmDatepicker, registerDatepicker };
 export type { DatepickerSize } from '@duskmoon-dev/el-datepicker';
+export { ElDmSelect, registerSelect };
+export type {
+  SelectOption,
+  TreeSelectOption,
+  SelectChangeEventDetail,
+  SelectSearchEventDetail,
+  SelectExpandEventDetail,
+} from '@duskmoon-dev/el-select';
+export { ElDmCascader, registerCascader };
+export type {
+  CascaderOption,
+  LoadDataFn,
+  CascaderChangeEventDetail,
+  CascaderExpandEventDetail,
+  CascaderSearchEventDetail,
+} from '@duskmoon-dev/el-cascader';
 
 // Navigation elements
 export { ElDmBottomNavigation, registerBottomNavigation };
@@ -158,6 +189,29 @@ export type {
   TablePageEventDetail,
   TableRowClickEventDetail,
 } from '@duskmoon-dev/el-table';
+export {
+  ElDmProDataGrid,
+  registerProDataGrid,
+  ElDmGridColumn,
+  registerGridColumn,
+  ElDmGridColumnGroup,
+  registerGridColumnGroup,
+};
+export type {
+  Row,
+  SortItem,
+  CellChange,
+  ColumnDef,
+  FilterModel,
+  CellRange,
+  CellRangeParams,
+  SortChangeDetail,
+  FilterChangeDetail,
+  PageChangeDetail,
+  SelectionChangeDetail,
+} from '@duskmoon-dev/el-pro-data-grid';
+export { ElDmMarkdownInput, registerMarkdownInput, MarkdownInputHook };
+export type { Suggestion } from '@duskmoon-dev/el-markdown-input';
 
 /**
  * Register all DuskMoon custom elements
@@ -200,4 +254,10 @@ export function registerAll(): void {
   registerPopover();
   // Data display elements
   registerTable();
+  registerProDataGrid();
+  registerGridColumn();
+  registerGridColumnGroup();
+  registerMarkdownInput();
+  registerSelect();
+  registerCascader();
 }

@@ -383,7 +383,6 @@ export class ElDmMarkdown extends BaseElement {
       } else {
         // Dynamic import for optional peer dependency (CDN / non-Vite env).
         // Uses Function constructor to avoid static analysis by bundlers/TS.
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const dynamicImport = new Function('s', 'return import(s)');
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mermaidModule: any = await dynamicImport('mermaid');
