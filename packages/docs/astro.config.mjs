@@ -9,6 +9,11 @@ export default defineConfig({
   server: {
     port: 4331,
   },
+  vite: {
+    optimizeDeps: {
+      include: ['mermaid'],
+    },
+  },
   markdown: {
     shikiConfig: {
       themes: {

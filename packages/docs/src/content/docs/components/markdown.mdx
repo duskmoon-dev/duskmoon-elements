@@ -93,7 +93,7 @@ The component supports GFM features:
 - Footnotes
 
 <ComponentDemo title="GFM Features">
-  <el-dm-markdown content="| Feature | Supported |\n|---------|-----------||\n| Tables  | ✅        |\n| Tasks   | ✅        |\n\n- [x] Task 1\n- [ ] Task 2\n\n~~Strikethrough text~~" style="width: 100%; max-width: 400px;"></el-dm-markdown>
+  <el-dm-markdown content="| Feature | Supported |\n|---------|----------|\n| Tables  | ✅        |\n| Tasks   | ✅        |\n\n- [x] Task 1\n- [ ] Task 2\n\n~~Strikethrough text~~" style="width: 100%; max-width: 400px;"></el-dm-markdown>
 </ComponentDemo>
 
 ````html
@@ -128,14 +128,20 @@ Code blocks are automatically highlighted:
 
 ### Mermaid Diagrams
 
-Enable Mermaid support for diagrams:
+Mermaid diagrams are rendered automatically when the `mermaid` package is installed. Use `no-mermaid` to disable:
+
+<ComponentDemo title="Mermaid Diagram">
+  <el-dm-markdown content="```mermaid\ngraph TD\n  A[Start] --> B{Decision}\n  B -->|Yes| C[Process]\n  B -->|No| D[End]\n  C --> D\n```" style="width: 100%; max-width: 500px;"></el-dm-markdown>
+</ComponentDemo>
 
 ````html
-<el-dm-markdown mermaid>
+<el-dm-markdown>
   ```mermaid
   graph TD
-    A[Start] --> B[Process]
-    B --> C[End]
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Process]
+    B -->|No| D[End]
+    C --> D
   ```
 </el-dm-markdown>
 ````

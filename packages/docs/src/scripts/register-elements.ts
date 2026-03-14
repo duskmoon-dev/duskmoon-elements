@@ -1,6 +1,12 @@
 /**
  * Register all custom elements for documentation demos
  */
+import mermaid from 'mermaid';
+// Expose mermaid globally so el-dm-markdown can find it.
+// The element uses a dynamic import('mermaid') which Vite cannot rewrite in
+// pre-built dist files; globalThis acts as the bridge.
+(globalThis as unknown as Record<string, unknown>).mermaid = mermaid;
+
 import { register as registerButton } from '@duskmoon-dev/el-button';
 import { register as registerCard } from '@duskmoon-dev/el-card';
 import { register as registerInput } from '@duskmoon-dev/el-input';

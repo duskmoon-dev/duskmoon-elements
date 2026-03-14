@@ -1,9 +1,9 @@
 /**
  * DuskMoon Markdown Element
  *
- * A markdown renderer component using remark/rehype with syntax highlighting
- * and optional mermaid diagram support. Includes streaming mode for LLM output
- * with automatic syntax error recovery.
+ * A markdown renderer using marked (GFM) with syntax highlighting via
+ * highlight.js and optional mermaid diagram support. Includes streaming
+ * mode for LLM output with automatic syntax error recovery.
  *
  * @element el-dm-markdown
  *
@@ -41,12 +41,9 @@
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as markdownBodyCSS } from '@duskmoon-dev/core/components/markdown-body';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeStringify from 'rehype-stringify';
+import { Marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
+import hljs from 'highlight.js';
 
 import { github } from './themes/github.js';
 import { atomOneDark } from './themes/atom-one-dark.js';
@@ -59,6 +56,21 @@ export type MarkdownTheme = 'github' | 'atom-one-dark' | 'atom-one-light' | 'aut
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = markdownBodyCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+
+// Create a marked instance with GFM + syntax highlighting
+const markedInstance = new Marked(
+  markedHighlight({
+    langPrefix: 'hljs language-',
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    },
+  }),
+  {
+    gfm: true,
+    breaks: false,
+  },
+);
 
 const baseStyles = css`
   :host {
@@ -224,6 +236,12 @@ export class ElDmMarkdown extends BaseElement {
   /** Mutation observer for slot changes */
   private _observer?: MutationObserver;
 
+  /** Mutation observer for document theme changes (data-theme attribute) */
+  private _themeObserver?: MutationObserver;
+
+  /** Render counter for unique mermaid IDs across re-renders */
+  private _mermaidRenderCount: number = 0;
+
   /** Mermaid module (loaded dynamically) */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _mermaid?: any;
@@ -236,6 +254,9 @@ export class ElDmMarkdown extends BaseElement {
 
   /** Pending render frame ID */
   private _pendingRender: number | null = null;
+
+  /** Whether content was set explicitly via attribute or property (not slot) */
+  private _contentSetExplicitly: boolean = false;
 
   constructor() {
     super();
@@ -270,6 +291,18 @@ export class ElDmMarkdown extends BaseElement {
     }
   }
 
+  /**
+   * Resolve the mermaid theme from the current page theme.
+   * Maps sunshine → 'default', moonlight → 'dark', auto → system preference.
+   */
+  private _getMermaidTheme(): string {
+    const dataTheme = document.documentElement.dataset.theme;
+    if (dataTheme === 'moonlight') return 'dark';
+    if (dataTheme === 'sunshine') return 'default';
+    // Auto: follow system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
 
@@ -278,6 +311,19 @@ export class ElDmMarkdown extends BaseElement {
     // Load mermaid if not disabled
     if (!this.noMermaid) {
       this._loadMermaid();
+
+      // Re-render mermaid diagrams when the page theme changes
+      this._themeObserver = new MutationObserver(() => {
+        if (this._mermaid && this._fragment.includes('language-mermaid')) {
+          this._mermaidRenderCount++;
+          this.update();
+          requestAnimationFrame(() => this._processMermaidDiagrams());
+        }
+      });
+      this._themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
     }
 
     // Observe content changes
@@ -296,6 +342,7 @@ export class ElDmMarkdown extends BaseElement {
 
   disconnectedCallback(): void {
     this._observer?.disconnect();
+    this._themeObserver?.disconnect();
     super.disconnectedCallback();
   }
 
@@ -305,6 +352,7 @@ export class ElDmMarkdown extends BaseElement {
     if (name === 'content' && oldValue !== newValue) {
       // Unescape \n and \t in attribute values since HTML attributes
       // treat them as literal characters, not control characters.
+      this._contentSetExplicitly = true;
       this.content = (newValue ?? '').replace(/\\n/g, '\n').replace(/\\t/g, '\t');
       return;
     }
@@ -319,19 +367,34 @@ export class ElDmMarkdown extends BaseElement {
   }
 
   /**
-   * Load mermaid library dynamically
+   * Load mermaid library. Checks globalThis.mermaid first (set by the host
+   * app via a static import for bundler compatibility), then falls back to
+   * dynamic import for non-bundled environments like CDN usage.
    */
   private async _loadMermaid(): Promise<void> {
     try {
-      // Dynamic import for optional peer dependency
-      // @ts-expect-error mermaid is an optional peer dependency
-      const mermaidModule = await import('mermaid');
-      const mermaid = mermaidModule.default || mermaidModule;
-      mermaid.initialize({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const globalMermaid = (globalThis as any).mermaid;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let mermaidInstance: any;
+
+      if (globalMermaid) {
+        mermaidInstance = globalMermaid;
+      } else {
+        // Dynamic import for optional peer dependency (CDN / non-Vite env).
+        // Uses Function constructor to avoid static analysis by bundlers/TS.
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval
+        const dynamicImport = new Function('s', 'return import(s)');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mermaidModule: any = await dynamicImport('mermaid');
+        mermaidInstance = mermaidModule.default || mermaidModule;
+      }
+
+      mermaidInstance.initialize({
         startOnLoad: false,
         theme: 'default',
       });
-      this._mermaid = mermaid;
+      this._mermaid = mermaidInstance;
 
       if (this.debug) {
         console.log('[el-dm-markdown] Mermaid loaded');
@@ -359,7 +422,7 @@ export class ElDmMarkdown extends BaseElement {
         throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
       }
       this._content = await response.text();
-      await this._renderMarkdown();
+      this._renderMarkdown();
     } catch (error) {
       this._error = error instanceof Error ? error.message : 'Unknown error';
       this.emit('dm-error', { error: this._error });
@@ -372,21 +435,26 @@ export class ElDmMarkdown extends BaseElement {
   /**
    * Process content from slot or src
    */
-  private async _processContent(): Promise<void> {
+  private _processContent(): void {
     // If src is set, let _fetchContent handle it
     if (this.src) return;
 
-    const content = this._removeIndent(this.textContent ?? '');
-    if (content !== this._content) {
-      this._content = content;
-      await this._renderMarkdown();
+    // Don't overwrite content set explicitly via attribute/property
+    // unless there is actual slot content to show
+    const slotContent = this._removeIndent(this.textContent ?? '');
+    if (!slotContent && this._contentSetExplicitly) return;
+
+    if (slotContent !== this._content) {
+      this._content = slotContent;
+      this._contentSetExplicitly = false;
+      this._renderMarkdown();
     }
   }
 
   /**
-   * Render markdown to HTML
+   * Render markdown to HTML using marked (GFM + syntax highlighting)
    */
-  private async _renderMarkdown(): Promise<void> {
+  private _renderMarkdown(): void {
     if (!this._content) {
       this._fragment = '';
       this.update();
@@ -394,15 +462,7 @@ export class ElDmMarkdown extends BaseElement {
     }
 
     try {
-      const result = await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkRehype)
-        .use(rehypeHighlight, { detect: true, ignoreMissing: true })
-        .use(rehypeStringify)
-        .process(this._content);
-
-      this._fragment = String(result);
+      this._fragment = markedInstance.parse(this._content) as string;
       this.update();
 
       // Process mermaid diagrams after render
@@ -434,6 +494,7 @@ export class ElDmMarkdown extends BaseElement {
    */
   set content(value: string) {
     this._streamBuffer = value;
+    this._contentSetExplicitly = true;
 
     if (this._isStreaming) {
       this._scheduleStreamRender();
@@ -522,7 +583,7 @@ export class ElDmMarkdown extends BaseElement {
   /**
    * Render content during streaming with syntax fixes
    */
-  private async _renderStreamContent(): Promise<void> {
+  private _renderStreamContent(): void {
     if (!this._streamBuffer) {
       this._fragment = '';
       this.update();
@@ -541,15 +602,7 @@ export class ElDmMarkdown extends BaseElement {
         );
       }
 
-      const result = await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkRehype)
-        .use(rehypeHighlight, { detect: true, ignoreMissing: true })
-        .use(rehypeStringify)
-        .process(fixedContent);
-
-      this._fragment = String(result);
+      this._fragment = markedInstance.parse(fixedContent) as string;
       this.update();
 
       // Process mermaid diagrams after render (but skip during heavy streaming)
@@ -560,7 +613,6 @@ export class ElDmMarkdown extends BaseElement {
       }
     } catch (error) {
       // During streaming, don't show errors for parse failures
-      // Just render what we have as-is
       if (this.debug) {
         console.warn('[el-dm-markdown] Stream parse error:', error);
       }
@@ -588,20 +640,18 @@ export class ElDmMarkdown extends BaseElement {
     let suffix = '';
 
     // Fix unclosed inline code (`) - count backticks not in code blocks
-    // Only check the last line since inline code doesn't span lines
     const backtickCount = (lastLine.match(/`/g) || []).length;
     if (backtickCount % 2 !== 0) {
       suffix += '`';
     }
 
-    // Fix unclosed bold (**) - check for unmatched pairs
+    // Fix unclosed bold (**)
     const boldMatches = lastLine.match(/\*\*/g) || [];
     if (boldMatches.length % 2 !== 0) {
       suffix += '**';
     }
 
-    // Fix unclosed italic (*) - more complex due to overlap with bold
-    // Count single asterisks (not part of **)
+    // Fix unclosed italic (*) - count single asterisks (not part of **)
     const singleAsteriskMatches = lastLine.match(/(?<!\*)\*(?!\*)/g) || [];
     if (singleAsteriskMatches.length % 2 !== 0) {
       suffix += '*';
@@ -626,26 +676,20 @@ export class ElDmMarkdown extends BaseElement {
     }
 
     // Fix unclosed links - [text](url
-    // Check for [ without matching ]
     const openBracket = lastLine.lastIndexOf('[');
     const closeBracket = lastLine.lastIndexOf(']');
     if (openBracket > closeBracket) {
-      // We have an unclosed [
       const afterBracket = lastLine.substring(openBracket);
       if (afterBracket.includes('](')) {
-        // Pattern: [text](url - just need closing )
         suffix += ')';
       } else if (afterBracket.includes(']')) {
-        // Pattern: [text] - might need ()
         if (!afterBracket.match(/\]\s*\(/)) {
           suffix += '()';
         }
       } else {
-        // Pattern: [text - need ]()
         suffix += ']()';
       }
     } else {
-      // Check for ]( without closing )
       const linkStart = lastLine.lastIndexOf('](');
       if (linkStart !== -1) {
         const afterLink = lastLine.substring(linkStart + 2);
@@ -661,7 +705,6 @@ export class ElDmMarkdown extends BaseElement {
     if (imgOpenBracket !== -1) {
       const afterImg = lastLine.substring(imgOpenBracket);
       if (!afterImg.match(/!\[.*?\]\(.*?\)/)) {
-        // Incomplete image syntax
         if (!afterImg.includes(']')) {
           suffix += '](placeholder)';
         } else if (!afterImg.includes(')')) {
@@ -678,12 +721,21 @@ export class ElDmMarkdown extends BaseElement {
   }
 
   /**
-   * Process mermaid code blocks into diagrams
+   * Process mermaid code blocks into diagrams.
+   * Re-initializes mermaid with the current page theme (sunshine → 'default',
+   * moonlight → 'dark') before each render so diagrams adapt to theme changes.
    */
   private async _processMermaidDiagrams(): Promise<void> {
     if (this.noMermaid || !this._mermaid) return;
 
     const codeBlocks = this.shadowRoot.querySelectorAll<HTMLElement>('code.language-mermaid');
+    if (!codeBlocks.length) return;
+
+    // Re-initialize with the current page theme
+    this._mermaid.initialize({
+      startOnLoad: false,
+      theme: this._getMermaidTheme(),
+    });
 
     // Get the original mermaid content from the fragment
     const tempDiv = document.createElement('div');
@@ -704,7 +756,8 @@ export class ElDmMarkdown extends BaseElement {
       }
 
       try {
-        const id = `${this._mid}-mermaid-${i}`;
+        // Use a unique ID per render cycle so mermaid doesn't reuse cached SVGs
+        const id = `${this._mid}-mermaid-${this._mermaidRenderCount}-${i}`;
         const { svg } = await this._mermaid.render(id, decodedTxt);
         el.innerHTML = svg;
       } catch (error) {
