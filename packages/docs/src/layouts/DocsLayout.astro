@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { title, description, currentPath = Astro.url.pathname } = Astro.props;
-const isCssArt = currentPath.includes('/docs/css-art');
+const isCssArt = currentPath.includes('/docs/art-elements');
 ---
 
 <BaseLayout title={title} description={description}>
@@ -34,10 +34,10 @@ const isCssArt = currentPath.includes('/docs/css-art');
             Components
           </a>
           <a
-            href="/duskmoon-elements/docs/css-art/"
+            href="/duskmoon-elements/docs/art-elements/"
             class:list={['header-nav-link', { active: isCssArt }]}
           >
-            CSS Art
+            Art Elements
           </a>
         </nav>
         <div class="header-actions">

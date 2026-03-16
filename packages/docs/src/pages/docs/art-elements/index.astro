@@ -2,15 +2,15 @@
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import { getCollection } from 'astro:content';
 
-const docs = await getCollection('docs', ({ data }) => !data.draft && data.section === 'css-art');
+const docs = await getCollection('docs', ({ data }) => !data.draft && data.section === 'art-elements');
 
 docs.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 ---
 
-<DocsLayout title="CSS Art" description="Browse all DuskMoon pure-CSS art components" currentPath={Astro.url.pathname}>
+<DocsLayout title="Art Elements" description="Browse all DuskMoon pure-CSS art components" currentPath={Astro.url.pathname}>
   <div class="css-art-page">
     <header class="page-header">
-      <h1>CSS Art</h1>
+      <h1>Art Elements</h1>
       <p class="page-description">
         Browse all <strong>{docs.length}</strong> pure-CSS art components from the
         <code>@duskmoon-dev/css-art</code> package. Each piece is a standalone Web Component
