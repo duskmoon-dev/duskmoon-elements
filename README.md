@@ -103,17 +103,17 @@ bun add @duskmoon-dev/el-button
 
 | Package | Element | Description |
 |---------|---------|-------------|
-| [@duskmoon-dev/el-art-atom](./css-arts/atom) | `<el-dm-art-atom>` | Animated atom model |
-| [@duskmoon-dev/el-art-cat-stargazer](./css-arts/cat-stargazer) | `<el-dm-art-cat-stargazer>` | Cat gazing at stars |
-| [@duskmoon-dev/el-art-circular-gallery](./css-arts/circular-gallery) | `<el-dm-art-circular-gallery>` | Circular image gallery |
-| [@duskmoon-dev/el-art-color-spin](./css-arts/color-spin) | `<el-dm-art-color-spin>` | Spinning color wheel |
-| [@duskmoon-dev/el-art-eclipse](./css-arts/eclipse) | `<el-dm-art-eclipse>` | Solar eclipse animation |
-| [@duskmoon-dev/el-art-moon](./css-arts/moon) | `<el-dm-art-moon>` | Moon phase art |
-| [@duskmoon-dev/el-art-mountain](./css-arts/mountain) | `<el-dm-art-mountain>` | Mountain landscape |
-| [@duskmoon-dev/el-art-plasma-ball](./css-arts/plasma-ball) | `<el-dm-art-plasma-ball>` | Plasma ball effect |
-| [@duskmoon-dev/el-art-snow](./css-arts/snow) | `<el-dm-art-snow>` | Snow animation |
-| [@duskmoon-dev/el-art-sun](./css-arts/sun) | `<el-dm-art-sun>` | Sun art |
-| [@duskmoon-dev/el-art-synthwave-starfield](./css-arts/synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
+| [@duskmoon-dev/el-art-atom](./art-elements/atom) | `<el-dm-art-atom>` | Animated atom model |
+| [@duskmoon-dev/el-art-cat-stargazer](./art-elements/cat-stargazer) | `<el-dm-art-cat-stargazer>` | Cat gazing at stars |
+| [@duskmoon-dev/el-art-circular-gallery](./art-elements/circular-gallery) | `<el-dm-art-circular-gallery>` | Circular image gallery |
+| [@duskmoon-dev/el-art-color-spin](./art-elements/color-spin) | `<el-dm-art-color-spin>` | Spinning color wheel |
+| [@duskmoon-dev/el-art-eclipse](./art-elements/eclipse) | `<el-dm-art-eclipse>` | Solar eclipse animation |
+| [@duskmoon-dev/el-art-moon](./art-elements/moon) | `<el-dm-art-moon>` | Moon phase art |
+| [@duskmoon-dev/el-art-mountain](./art-elements/mountain) | `<el-dm-art-mountain>` | Mountain landscape |
+| [@duskmoon-dev/el-art-plasma-ball](./art-elements/plasma-ball) | `<el-dm-art-plasma-ball>` | Plasma ball effect |
+| [@duskmoon-dev/el-art-snow](./art-elements/snow) | `<el-dm-art-snow>` | Snow animation |
+| [@duskmoon-dev/el-art-sun](./art-elements/sun) | `<el-dm-art-sun>` | Sun art |
+| [@duskmoon-dev/el-art-synthwave-starfield](./art-elements/synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
 
 ## Usage Examples
 
@@ -254,7 +254,7 @@ duskmoon-elements/
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
 │   └── ...                 # 32 element packages total
-├── css-arts/               # Pure CSS art element packages
+├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
 │   └── ...                 # 11 css art packages total

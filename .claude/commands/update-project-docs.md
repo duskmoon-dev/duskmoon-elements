@@ -32,12 +32,12 @@ skills/duskmoon-elements/                       # Skill: using DuskMoon Elements
 
 | File | Purpose | Key Sources of Truth |
 |------|---------|---------------------|
-| `README.md` | Project overview: features, quick start, package list by category, theming, project structure | `elements/` directory, `css-arts/` directory, `packages/base/src/themes.ts`, `package.json` |
+| `README.md` | Project overview: features, quick start, package list by category, theming, project structure | `elements/` directory, `art-elements/` directory, `packages/base/src/themes.ts`, `package.json` |
 | `docs/development.md` | Developer guide: setup, architecture, core API, element patterns, testing, code style | `packages/base/src/index.ts`, `package.json`, `bunfig.toml`, `tsconfig.json`, element source files |
 | `skills/duskmoon-elements/SKILL.md` | Skill for using `<el-dm-*>` and `<el-dm-art-*>` elements: installation, registration, properties, events, slots, theming, CSS art elements | Element source files, css-art source files, `packages/base/src/index.ts` |
 | `skills/duskmoon-elements/references/core-api.md` | Core package exports, BaseElement API, mixins, CSS variables, themes, validation | `packages/base/src/index.ts`, `packages/base/src/*.ts` |
 | `skills/duskmoon-elements/references/element-catalog.md` | All element packages by category with tags and class names | `elements/` directory, each element's `src/index.ts` |
-| `skills/duskmoon-elements/references/css-art-catalog.md` | All CSS art packages with tags, class names, and properties | `css-arts/` directory, each art element's `src/index.ts` |
+| `skills/duskmoon-elements/references/css-art-catalog.md` | All CSS art packages with tags, class names, and properties | `art-elements/` directory, each art element's `src/index.ts` |
 
 ## Execution Steps
 
@@ -52,7 +52,7 @@ Read and compare the following against each doc file:
 - `bunfig.toml` — Test configuration
 - `tsconfig.json` — Compiler options
 - `elements/` directory listing — Count and list of element packages
-- `css-arts/` directory listing — Count and list of CSS art packages
+- `art-elements/` directory listing — Count and list of CSS art packages
 - A representative element `package.json` — Build scripts, exports, dependencies
 - A representative css-art `package.json` — Dependencies (especially `@duskmoon-dev/css-art` version)
 - `.github/workflows/` — CI/CD pipeline steps
@@ -63,7 +63,7 @@ Read and compare the following against each doc file:
 - `packages/base/src/index.ts` — Theme presets, registration patterns
 - Element count — Must match `elements/` directory listing
 - CSS art source files — Verify CSS art properties, sizing, layer stripping pattern
-- CSS art count — Must match `css-arts/` directory listing
+- CSS art count — Must match `art-elements/` directory listing
 
 **For `skills/duskmoon-elements/references/core-api.md`:**
 - `packages/base/src/index.ts` — All exports (values and types)
@@ -77,13 +77,13 @@ Read and compare the following against each doc file:
 - Category counts must add up to total package count
 
 **For `skills/duskmoon-elements/references/css-art-catalog.md`:**
-- `css-arts/` directory listing — All package names
+- `art-elements/` directory listing — All package names
 - Each art element's `src/index.ts` — Exported class and register function
 - Each art element's main `.ts` file — `static properties` (especially `size`)
 
 **For `README.md`:**
 - `elements/` directory listing — All packages present in each category table; no missing or extra entries
-- `css-arts/` directory listing — All CSS art packages present in the CSS Art Components table
+- `art-elements/` directory listing — All CSS art packages present in the CSS Art Components table
 - `packages/base/src/themes.ts` — Theme names and descriptions in the Theming section
 - `packages/` directory listing — Package directory names in Project Structure
 - Element count in Project Structure comment (`# N element packages total`)
@@ -114,9 +114,9 @@ Edit each doc file to reflect the current state. Follow these rules:
 After updating, confirm:
 - All exports listed in `packages/base/src/index.ts` appear in `skills/duskmoon-elements/references/core-api.md`
 - All element packages in `elements/` appear in both `skills/duskmoon-elements/references/element-catalog.md` and `README.md`
-- All CSS art packages in `css-arts/` appear in both `skills/duskmoon-elements/references/css-art-catalog.md` and `README.md`
+- All CSS art packages in `art-elements/` appear in both `skills/duskmoon-elements/references/css-art-catalog.md` and `README.md`
 - Element count in `skills/duskmoon-elements/SKILL.md` matches `elements/` directory count
-- CSS art count in `skills/duskmoon-elements/SKILL.md` matches `css-arts/` directory count
+- CSS art count in `skills/duskmoon-elements/SKILL.md` matches `art-elements/` directory count
 - All scripts in root `package.json` are documented in `development.md`
 - No file paths reference non-existent files
 - Code examples use current API signatures

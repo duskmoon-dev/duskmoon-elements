@@ -87,7 +87,7 @@ jobs:
           done
 
           # Update all CSS art packages
-          for pkg in css-arts/*; do
+          for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
               jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
               echo "Updated $pkg/package.json to $NEW_VERSION"
@@ -139,7 +139,7 @@ jobs:
           done
 
           # Publish all CSS art packages
-          for pkg in css-arts/*; do
+          for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
               FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
               echo "Publishing $FULL_PKG_NAME..."
@@ -213,7 +213,7 @@ jobs:
 
           # Build CSS art packages list for release notes
           CSS_ARTS=""
-          for pkg in css-arts/*; do
+          for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
               FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
               CSS_ARTS="$CSS_ARTS- $FULL_PKG_NAME\n"
@@ -285,7 +285,7 @@ jobs:
           done
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**CSS Art Elements:**" >> $GITHUB_STEP_SUMMARY
-          for pkg in css-arts/*; do
+          for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
               FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
               echo "- $FULL_PKG_NAME" >> $GITHUB_STEP_SUMMARY

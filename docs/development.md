@@ -40,7 +40,7 @@ duskmoon-elements/
 │   ├── card/
 │   ├── input/
 │   └── ...
-├── css-arts/             # 11 pure CSS art element packages (@duskmoon-dev/el-art-*)
+├── art-elements/             # 11 pure CSS art element packages (@duskmoon-dev/el-art-*)
 │   ├── atom/
 │   ├── moon/
 │   └── ...
@@ -70,8 +70,8 @@ The core package must build before elements because element packages use TypeScr
 | `bun run build:base` | Build only `@duskmoon-dev/el-base` |
 | `bun run build:elements` | Build all 32 element packages |
 | `bun run build:bundle` | Build the `@duskmoon-dev/elements` bundle package |
-| `bun run build:css-arts` | Build all 11 CSS art element packages |
-| `bun run build:css-arts-bundle` | Build the `@duskmoon-dev/art-elements` bundle package |
+| `bun run build:art-elements` | Build all 11 CSS art element packages |
+| `bun run build:art-elements-bundle` | Build the `@duskmoon-dev/art-elements` bundle package |
 
 ### Development
 
@@ -115,8 +115,8 @@ bun run --filter @duskmoon-dev/el-input lint:check
 | `bun run release:base` | Publish `@duskmoon-dev/el-base` only |
 | `bun run release:elements` | Publish all 32 element packages only |
 | `bun run release:bundle` | Publish `@duskmoon-dev/elements` bundle only |
-| `bun run release:css-arts` | Publish CSS art packages only |
-| `bun run release:css-arts-bundle` | Publish `@duskmoon-dev/art-elements` bundle only |
+| `bun run release:art-elements` | Publish CSS art packages only |
+| `bun run release:art-elements-bundle` | Publish `@duskmoon-dev/art-elements` bundle only |
 
 ## Architecture
 

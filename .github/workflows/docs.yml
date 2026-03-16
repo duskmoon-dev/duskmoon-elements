@@ -12,7 +12,7 @@ on:
       - 'packages/docs/**'
       - 'elements/**'
       - 'packages/elements/**'
-      - 'css-arts/**'
+      - 'art-elements/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 

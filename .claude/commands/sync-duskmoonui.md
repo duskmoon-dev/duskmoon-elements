@@ -15,7 +15,7 @@ Supports flags: `--only=core` or `--only=css-art` to restrict to one upstream pa
 ## Constraints
 
 - **READ-ONLY** — output analysis only, no file modifications
-- **Scope** — `@duskmoon-dev/core` → `@duskmoon-dev/el-base` → `elements/`; `@duskmoon-dev/css-art` → `css-arts/`
+- **Scope** — `@duskmoon-dev/core` → `@duskmoon-dev/el-base` → `elements/`; `@duskmoon-dev/css-art` → `art-elements/`
 - Single report, no interactive prompts
 
 ## Prerequisites
@@ -43,8 +43,8 @@ LATEST_VER=$(git -C "$UPSTREAM_REF" describe --tags --abbrev=0 2>/dev/null || ec
 CORE_VER=$(jq -r '.dependencies["@duskmoon-dev/core"] // .devDependencies["@duskmoon-dev/core"]' package.json 2>/dev/null | sed 's/[\^~]//')
 echo "root pins core@$CORE_VER, latest upstream is $LATEST_VER"
 
-# @duskmoon-dev/css-art — consumed by css-arts/* packages
-CSSART_VER=$(jq -r '.dependencies["@duskmoon-dev/css-art"] // .devDependencies["@duskmoon-dev/css-art"]' css-arts/atom/package.json 2>/dev/null | sed 's/[\^~]//')
+# @duskmoon-dev/css-art — consumed by art-elements/* packages
+CSSART_VER=$(jq -r '.dependencies["@duskmoon-dev/css-art"] // .devDependencies["@duskmoon-dev/css-art"]' art-elements/atom/package.json 2>/dev/null | sed 's/[\^~]//')
 echo "art-elements pins css-art@$CSSART_VER"
 ```
 
@@ -109,7 +109,7 @@ done
 **CSS Arts (css-art impact):**
 
 ```bash
-for ART in css-arts/*/; do
+for ART in art-elements/*/; do
   grep -rn "from.*@duskmoon-dev/css-art" "$ART/src/"
   grep -rn "@import.*css-art\|class=.*dm-art" "$ART/src/"
 done
