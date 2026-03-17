@@ -55,6 +55,7 @@
     "@duskmoon-dev/el-art-synthwave-starfield": "workspace:*",
     "@duskmoon-dev/el-art-circular-gallery": "workspace:*",
     "@duskmoon-dev/el-art-snow": "workspace:*",
+    "@duskmoon-dev/el-art-gemini-input": "workspace:*",
     "astro": "^5.1.1",
     "mermaid": "^11.0.0"
   },

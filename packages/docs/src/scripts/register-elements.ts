@@ -54,6 +54,7 @@ import { register as registerArtColorSpin } from '@duskmoon-dev/el-art-color-spi
 import { register as registerArtSynthwaveStarfield } from '@duskmoon-dev/el-art-synthwave-starfield';
 import { register as registerArtCircularGallery } from '@duskmoon-dev/el-art-circular-gallery';
 import { register as registerArtSnow } from '@duskmoon-dev/el-art-snow';
+import { register as registerArtGeminiInput } from '@duskmoon-dev/el-art-gemini-input';
 
 registerButton();
 registerCard();
@@ -102,3 +103,4 @@ registerArtColorSpin();
 registerArtSynthwaveStarfield();
 registerArtCircularGallery();
 registerArtSnow();
+registerArtGeminiInput();

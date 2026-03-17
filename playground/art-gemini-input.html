@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Default</h2>
+    <div class="demo-row">
+      <el-dm-art-gemini-input></el-dm-art-gemini-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Placeholder</h2>
+    <div class="demo-row">
+      <el-dm-art-gemini-input placeholder="Type something..."></el-dm-art-gemini-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="demo-row">
+      <el-dm-art-gemini-input size="sm"></el-dm-art-gemini-input>
+      <el-dm-art-gemini-input></el-dm-art-gemini-input>
+      <el-dm-art-gemini-input size="lg"></el-dm-art-gemini-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Custom Slots</h2>
+    <div class="demo-row">
+      <el-dm-art-gemini-input placeholder="Search...">
+        <span slot="prefix">🔍</span>
+        <button slot="suffix" type="button">Go</button>
+      </el-dm-art-gemini-input>
+    </div>
+  </section>
+
+  <script type="module">
+    import { register } from '../art-elements/gemini-input/src/index.ts';
+    register();
+  </script>
+</body>
+</html>

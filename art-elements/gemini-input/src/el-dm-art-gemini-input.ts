@@ -28,6 +28,18 @@ const styles = css`
     display: none !important;
   }
   ${coreCss}
+
+  /* Shadow DOM fixes:
+   * 1. mask: linear-gradient(white) hides ::after in Shadow DOM — remove it.
+   *    Must use same specificity as the nested rule (.art-gemini-input .art-gemini-input-border).
+   * 2. Make the static lightgray border transparent so the gradient always shows. */
+  .art-gemini-input {
+    border-color: transparent;
+
+    & .art-gemini-input-border {
+      mask: none;
+    }
+  }
 `;
 
 export class ElDmArtGeminiInput extends BaseElement {

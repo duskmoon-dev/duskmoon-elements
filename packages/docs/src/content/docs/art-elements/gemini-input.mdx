@@ -1,0 +1,72 @@
+---
+title: Gemini Input
+description: Gemini-style animated gradient input built entirely with CSS
+order: 12
+section: art-elements
+component: "@duskmoon-dev/el-art-gemini-input"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Gemini Input
+
+A Gemini-style animated gradient input built entirely with CSS. Features a rotating gradient border animation with an inner textarea and optional prefix/suffix slots.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-gemini-input
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-gemini-input/register';
+```
+
+```html
+<el-dm-art-gemini-input></el-dm-art-gemini-input>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-gemini-input></el-dm-art-gemini-input>
+</ComponentDemo>
+
+<ComponentDemo title="Custom Placeholder">
+  <el-dm-art-gemini-input placeholder="Type something..."></el-dm-art-gemini-input>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-gemini-input size="sm"></el-dm-art-gemini-input>
+  <el-dm-art-gemini-input></el-dm-art-gemini-input>
+  <el-dm-art-gemini-input size="lg"></el-dm-art-gemini-input>
+</ComponentDemo>
+
+<script>
+  import('@duskmoon-dev/el-art-gemini-input/register');
+</script>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the input |
+| `placeholder` | `string` | `'Ask me anything...'` | Placeholder text for the textarea |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `prefix` | Content before the textarea (default: attach button) |
+| `suffix` | Content after the textarea (default: send button) |
+
+## Custom Slots
+
+```html
+<el-dm-art-gemini-input placeholder="Search...">
+  <span slot="prefix">🔍</span>
+  <button slot="suffix" type="button">Go</button>
+</el-dm-art-gemini-input>
+```
