@@ -1,6 +1,6 @@
 # Element Catalog
 
-32 custom element packages, 40 custom element tags.
+33 custom element packages, 41 custom element tags.
 
 ## By Category
 
@@ -52,7 +52,7 @@
 | `@duskmoon-dev/el-form` | `<el-dm-form>` | `ElDmForm` | — |
 | `@duskmoon-dev/el-select` | `<el-dm-select>` | `ElDmSelect` | — |
 
-### Data Display (4)
+### Data Display (5)
 
 | Package | Tag | Class | Secondary |
 |---------|-----|-------|-----------|
@@ -60,6 +60,7 @@
 | `@duskmoon-dev/el-markdown-input` | `<el-dm-markdown-input>` | `ElDmMarkdownInput` | — |
 | `@duskmoon-dev/el-table` | `<el-dm-table>` | `ElDmTable` | `ElDmTableColumn` |
 | `@duskmoon-dev/el-pro-data-grid` | `<el-dm-pro-data-grid>` | `ElDmProDataGrid` | `ElDmGridColumn`, `ElDmGridColumnGroup` |
+| `@duskmoon-dev/el-code-block` | `<el-dm-code-block>` | `ElDmCodeBlock` | — |
 
 ## Multi-Element Packages
 

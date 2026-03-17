@@ -1,11 +1,11 @@
 ---
 name: duskmoon-elements
-description: Use the DuskMoon Elements custom element library (`<el-dm-*>` web components) and DuskMoon CSS Arts (`<el-dm-art-*>`). Use when building web pages or apps with DuskMoon elements, registering elements, setting properties/attributes, listening to events, using slots, applying themes, styling with CSS custom properties, or adding pure CSS art animations. Covers all 32 element packages (button, card, input, dialog, table, tabs, markdown-input, pro-data-grid, and more) and all 11 CSS art packages (atom, moon, sun, plasma-ball, synthwave-starfield, and more).
+description: Use the DuskMoon Elements custom element library (`<el-dm-*>` web components). Use when building web pages or apps with DuskMoon elements, registering elements, setting properties/attributes, listening to events, using slots, applying themes, or styling with CSS custom properties. Covers all 33 element packages (button, card, input, dialog, table, tabs, markdown-input, code-block, pro-data-grid, and more).
 ---
 
 # DuskMoon Elements
 
-32 custom element packages built on `@duskmoon-dev/el-base`. Each element is a standard Web Component with Shadow DOM.
+33 custom element packages built on `@duskmoon-dev/el-base`. Each element is a standard Web Component with Shadow DOM.
 
 ## Installation
 
@@ -180,81 +180,9 @@ el.size = 'lg';
 // → single re-render
 ```
 
-## CSS Art Elements
-
-11 pure CSS art custom elements built on `@duskmoon-dev/el-base`. Each element renders a self-contained CSS animation — no JavaScript logic, no external images.
-
-### Installation
-
-```bash
-# Individual art element
-bun add @duskmoon-dev/el-art-atom
-
-# All art elements at once
-bun add @duskmoon-dev/art-elements
-```
-
-### Registration
-
-```typescript
-// Option 1: Explicit (tree-shakable)
-import { register } from '@duskmoon-dev/el-art-atom';
-register();
-
-// Option 2: Side-effect auto-register
-import '@duskmoon-dev/el-art-atom/register';
-
-// Option 3: Register all CSS art elements
-import { registerAll } from '@duskmoon-dev/art-elements';
-registerAll();
-```
-
-### Usage in HTML
-
-```html
-<el-dm-art-atom></el-dm-art-atom>
-<el-dm-art-atom size="lg"></el-dm-art-atom>
-
-<el-dm-art-moon variant="crescent" glow></el-dm-art-moon>
-<el-dm-art-sun variant="sunset" rays></el-dm-art-sun>
-
-<el-dm-art-plasma-ball size="xl"></el-dm-art-plasma-ball>
-<el-dm-art-synthwave-starfield size="lg" paused></el-dm-art-synthwave-starfield>
-```
-
-### Properties
-
-All CSS art elements are `display: inline-block` by default. Most share:
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `size` | String | Size variant — `sm`, `md` (default), `lg`, `xl` |
-
-Element-specific properties:
-
-| Element | Extra Properties |
-|---------|-----------------|
-| `el-dm-art-moon` | `variant` (String), `glow` (Boolean) |
-| `el-dm-art-mountain` | `variant` (String) |
-| `el-dm-art-sun` | `variant` (String), `rays` (Boolean) |
-| `el-dm-art-snow` | `count` (Number), `unicode` (Boolean), `fall` (Boolean) |
-| `el-dm-art-circular-gallery` | `title` (String), `count` (Number) |
-| `el-dm-art-synthwave-starfield` | `paused` (Boolean) |
-
-### CSS Layer Stripping
-
-CSS art elements import raw CSS from `@duskmoon-dev/css-art` and strip the `@layer css-art { ... }` wrapper before injecting into Shadow DOM:
-
-```typescript
-import rawCss from '@duskmoon-dev/css-art/dist/art/{name}.css' with { type: 'text' };
-const layerMatch = rawCss.match(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/);
-const coreCss = layerMatch ? layerMatch[1] : rawCss;
-```
-
-This is required because `@layer` inside Shadow DOM does not interact with the document's layer order.
-
 ## References
 
-- [Element catalog](references/element-catalog.md) — all 32 packages by category with class names
-- [CSS Art catalog](references/css-art-catalog.md) — all 11 CSS art packages with tags and properties
+- [Element catalog](references/element-catalog.md) — all 33 packages by category with class names
 - [Core API](references/core-api.md) — BaseElement API, mixins, style utilities, CSS variables, themes, validation
+
+For CSS art elements (`<el-dm-art-*>`), see the [duskmoon-art-elements](../duskmoon-art-elements/SKILL.md) skill.

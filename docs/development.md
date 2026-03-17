@@ -35,12 +35,12 @@ duskmoon-elements/
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
 │   ├── art-elements/         # @duskmoon-dev/art-elements — bundle re-exporting all CSS art elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
-├── elements/             # 32 individual element packages (@duskmoon-dev/el-*)
+├── elements/             # 33 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/
 │   ├── card/
 │   ├── input/
 │   └── ...
-├── art-elements/             # 11 pure CSS art element packages (@duskmoon-dev/el-art-*)
+├── art-elements/             # 13 pure CSS art element packages (@duskmoon-dev/el-art-*)
 │   ├── atom/
 │   ├── moon/
 │   └── ...
@@ -68,9 +68,9 @@ The core package must build before elements because element packages use TypeScr
 |---------|-------------|
 | `bun run build:all` | Build core, then elements, bundle, CSS arts, and CSS arts bundle (sequential) |
 | `bun run build:base` | Build only `@duskmoon-dev/el-base` |
-| `bun run build:elements` | Build all 32 element packages |
+| `bun run build:elements` | Build all 33 element packages |
 | `bun run build:bundle` | Build the `@duskmoon-dev/elements` bundle package |
-| `bun run build:art-elements` | Build all 11 CSS art element packages |
+| `bun run build:art-elements` | Build all 13 CSS art element packages |
 | `bun run build:art-elements-bundle` | Build the `@duskmoon-dev/art-elements` bundle package |
 
 ### Development
@@ -113,7 +113,7 @@ bun run --filter @duskmoon-dev/el-input lint:check
 | `bun run release:dry-run` | Simulate publishing all packages |
 | `bun run release` | Publish core, elements, bundle, CSS arts, and CSS arts bundle to npm |
 | `bun run release:base` | Publish `@duskmoon-dev/el-base` only |
-| `bun run release:elements` | Publish all 32 element packages only |
+| `bun run release:elements` | Publish all 33 element packages only |
 | `bun run release:bundle` | Publish `@duskmoon-dev/elements` bundle only |
 | `bun run release:art-elements` | Publish CSS art packages only |
 | `bun run release:art-elements-bundle` | Publish `@duskmoon-dev/art-elements` bundle only |

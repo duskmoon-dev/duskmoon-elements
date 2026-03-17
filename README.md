@@ -98,6 +98,7 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-markdown](./elements/markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
 | [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
 | [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
+| [@duskmoon-dev/el-code-block](./elements/code-block) | `<el-dm-code-block>` | Code block with language badge, title, and copy button |
 
 ### CSS Art Components
 
@@ -114,6 +115,8 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-art-snow](./art-elements/snow) | `<el-dm-art-snow>` | Snow animation |
 | [@duskmoon-dev/el-art-sun](./art-elements/sun) | `<el-dm-art-sun>` | Sun art |
 | [@duskmoon-dev/el-art-synthwave-starfield](./art-elements/synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
+| [@duskmoon-dev/el-art-flower-animation](./art-elements/flower-animation) | `<el-dm-art-flower-animation>` | Animated flower bloom |
+| [@duskmoon-dev/el-art-gemini-input](./art-elements/gemini-input) | `<el-dm-art-gemini-input>` | Gemini-style animated gradient input |
 
 ## Usage Examples
 
@@ -253,11 +256,11 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 32 element packages total
+│   └── ...                 # 33 element packages total
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
-│   └── ...                 # 11 css art packages total
+│   └── ...                 # 13 css art packages total
 ├── packages/
 │   ├── base/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)

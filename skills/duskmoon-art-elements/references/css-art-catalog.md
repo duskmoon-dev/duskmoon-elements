@@ -1,6 +1,6 @@
 # CSS Art Catalog
 
-11 pure CSS art element packages.
+13 pure CSS art element packages.
 
 ## All Packages
 
@@ -11,6 +11,8 @@
 | `@duskmoon-dev/el-art-circular-gallery` | `<el-dm-art-circular-gallery>` | `ElDmArtCircularGallery` | `size`, `title`, `count` |
 | `@duskmoon-dev/el-art-color-spin` | `<el-dm-art-color-spin>` | `ElDmArtColorSpin` | `size` |
 | `@duskmoon-dev/el-art-eclipse` | `<el-dm-art-eclipse>` | `ElDmArtEclipse` | `size` |
+| `@duskmoon-dev/el-art-flower-animation` | `<el-dm-art-flower-animation>` | `ElDmArtFlowerAnimation` | `size` |
+| `@duskmoon-dev/el-art-gemini-input` | `<el-dm-art-gemini-input>` | `ElDmArtGeminiInput` | `size`, `placeholder` |
 | `@duskmoon-dev/el-art-moon` | `<el-dm-art-moon>` | `ElDmArtMoon` | `size`, `variant`, `glow` |
 | `@duskmoon-dev/el-art-mountain` | `<el-dm-art-mountain>` | `ElDmArtMountain` | `size`, `variant` |
 | `@duskmoon-dev/el-art-plasma-ball` | `<el-dm-art-plasma-ball>` | `ElDmArtPlasmaBall` | `size` |
@@ -41,3 +43,4 @@
 | `el-dm-art-circular-gallery` | `title` | String | Gallery title text |
 | `el-dm-art-circular-gallery` | `count` | Number | Number of items |
 | `el-dm-art-synthwave-starfield` | `paused` | Boolean | Pause the animation |
+| `el-dm-art-gemini-input` | `placeholder` | String | Input placeholder text |
