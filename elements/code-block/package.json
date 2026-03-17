@@ -1,5 +1,5 @@
 {
-  "name": "@duskmoon-dev/el-art-sun",
+  "name": "@duskmoon-dev/el-code-block",
   "version": "0.10.0",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -23,15 +23,15 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
     "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --watch",
     "clean": "del-cli dist",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write 'src/**/*.ts' '*.json' '*.md'",
-    "format:check": "prettier --check 'src/**/*.ts' '*.json' '*.md'",
+    "format": "prettier --write 'src/**/*.ts' '*.json' ",
+    "format:check": "prettier --check 'src/**/*.ts' '*.json' ",
     "lint": "eslint src",
     "lint:check": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/css-art": "^1.13.0"
+    "@duskmoon-dev/core": "^1.13.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
@@ -51,8 +51,7 @@
   "keywords": [
     "duskmoon-dev",
     "custom-elements",
-    "webcomponents",
-    "css-art",
-    "sun"
+    "web-components",
+    "code-block"
   ]
 }

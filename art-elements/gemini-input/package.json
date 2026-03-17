@@ -1,6 +1,7 @@
 {
-  "name": "@duskmoon-dev/el-art-sun",
+  "name": "@duskmoon-dev/el-art-gemini-input",
   "version": "0.10.0",
+  "description": "Pure CSS Gemini-style animated input custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -53,6 +54,6 @@
     "custom-elements",
     "webcomponents",
     "css-art",
-    "sun"
+    "gemini-input"
   ]
 }

@@ -1,5 +1,5 @@
 ---
-description: Bump @duskmoon-dev/core and @duskmoon-dev/css-art to latest npm versions across the monorepo, diff the upstream API changes, and update any affected element code.
+description: Bump @duskmoon-dev/core and @duskmoon-dev/css-art to latest npm versions across the monorepo, build, fix any breakage, then sync element packages to match upstream component additions/removals/API changes.
 ---
 
 ## Input
@@ -29,9 +29,28 @@ echo "css-art: pinned=$PINNED_CSSART  latest=$LATEST_CSSART"
 
 If both packages are already at latest, report "already up to date" and stop.
 
-### 2. Diff upstream API changes
+### 2. Update all pinned versions
 
-Clone or update the upstream repo, then diff only if versions differ:
+Edit every `package.json` that pins these packages, preserving the existing range prefix (`^`, `~`, or exact). Only write files where the version actually changed.
+
+- **`@duskmoon-dev/core`** — update in:
+  - `packages/docs/package.json`
+  - `elements/*/package.json` (all that list `@duskmoon-dev/core`)
+- **`@duskmoon-dev/css-art`** — update in:
+  - `art-elements/*/package.json` (all that list `@duskmoon-dev/css-art`)
+
+### 3. Install and build
+
+```bash
+bun install
+bun run build:all
+```
+
+If `build:all` fails, read the compiler errors and fix them before continuing. Repeat until the build is clean.
+
+### 4. Diff upstream API changes
+
+Clone or update the upstream repo to understand what changed between versions:
 
 ```bash
 UPSTREAM_REF="/tmp/duskmoonui-ref"
@@ -41,7 +60,6 @@ else
   git clone --depth=50 https://github.com/duskmoon-dev/duskmoonui.git "$UPSTREAM_REF"
 fi
 
-# Both packages use the same v*.*.* tag scheme
 cd "$UPSTREAM_REF"
 git diff "v${PINNED_CORE}..v${LATEST_CORE}" --stat -- packages/core/
 git diff "v${PINNED_CORE}..v${LATEST_CORE}" -- packages/core/src/ packages/core/index.ts
@@ -50,61 +68,33 @@ git diff "v${PINNED_CSSART}..v${LATEST_CSSART}" --stat -- packages/css-art/
 git diff "v${PINNED_CSSART}..v${LATEST_CSSART}" -- packages/css-art/src/ packages/css-art/index.ts
 ```
 
-Focus on:
-- Removed or renamed exports / CSS classes (breaking)
-- `@deprecated` annotations (high)
-- New exports, components, or CSS classes (additive)
+For each package, identify:
+
+| Category | Action required |
+|----------|----------------|
+| New component in `@duskmoon-dev/core` | Add a corresponding `elements/` package via `/create_element` |
+| Removed component from `@duskmoon-dev/core` | Remove the corresponding `elements/` package (delete folder, remove from workspace) |
+| New art module in `@duskmoon-dev/css-art` | Add a corresponding `art-elements/` package |
+| Removed art module | Remove the corresponding `art-elements/` package |
+| Changed prop/method/CSS class name | Update all usage sites in `elements/` and `art-elements/` |
+| New optional prop/method | No action required unless it improves an existing element |
+| `@deprecated` annotation | Update usage to the recommended alternative |
 
 Ignore internal implementation details that don't affect the public surface.
 
-### 3. Output change report
+### 5. Sync element packages
 
-```markdown
-# DuskMoon UI Sync: v{FROM_CORE} → v{TO_CORE}
+Apply the changes identified in step 4 in this order:
 
-## @duskmoon-dev/core
+1. **Remove** packages for deleted upstream components — delete the folder and remove from `bun workspaces` in root `package.json`.
+2. **Add** packages for new upstream components — use the `/create_element` skill for each, following existing naming conventions (`el-dm-<name>`, package `@duskmoon-dev/el-<name>`).
+3. **Update** existing packages for API changes — fix renamed props, changed method signatures, or renamed CSS classes.
 
-### Breaking
-- …
-
-### New
-- …
-
-## @duskmoon-dev/css-art
-
-### New
-- New art module `foo` — can add `<el-dm-art-foo>`
-
-## Element impact
-
-| Package | Priority | Notes |
-|---------|----------|-------|
-| el-dm-button | LOW | picks up new ghost color variants |
-```
-
-Only include sections with actual findings. Mark priority CRITICAL/HIGH/MEDIUM/LOW.
-
-### 4. Update all pinned versions
-
-Use `jq` (or direct file edits) to set the new version in every `package.json` that pins these packages, preserving the existing range prefix (`^`, `~`, or exact):
-
-- **`@duskmoon-dev/core`** — update in:
-  - `packages/docs/package.json`
-  - `elements/*/package.json` (all that list `@duskmoon-dev/core`)
-- **`@duskmoon-dev/css-art`** — update in:
-  - `art-elements/*/package.json` (all that list `@duskmoon-dev/css-art`)
-
-Only write files where the version actually changed.
-
-### 5. Apply code fixes for breaking changes
-
-If step 2 identified breaking changes (removed/renamed APIs, changed class names), locate affected usage sites and apply the necessary fixes before proceeding.
-
-### 6. Install and verify
+### 6. Final verify
 
 ```bash
 bun install
 bun run build:all && bun run test
 ```
 
-Report the final result.
+Report the final result: versions bumped, components added/removed, API fixes applied, and test outcome.

@@ -24,8 +24,8 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation --external @duskmoon-dev/el-art-gemini-input",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation --external @duskmoon-dev/el-art-gemini-input",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
     "clean": "del-cli dist",
     "typecheck": "tsc --noEmit",
@@ -50,7 +50,8 @@
     "@duskmoon-dev/el-art-synthwave-starfield": "workspace:*",
     "@duskmoon-dev/el-art-circular-gallery": "workspace:*",
     "@duskmoon-dev/el-art-snow": "workspace:*",
-    "@duskmoon-dev/el-art-flower-animation": "workspace:*"
+    "@duskmoon-dev/el-art-flower-animation": "workspace:*",
+    "@duskmoon-dev/el-art-gemini-input": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
