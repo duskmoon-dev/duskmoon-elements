@@ -106,6 +106,7 @@ import {
   register as registerMarkdownInput,
   MarkdownInputHook,
 } from '@duskmoon-dev/el-markdown-input';
+import { ElDmCodeBlock, register as registerCodeBlock } from '@duskmoon-dev/el-code-block';
 
 // Re-export all elements
 export { ElDmButton, registerButton };
@@ -212,6 +213,7 @@ export type {
 } from '@duskmoon-dev/el-pro-data-grid';
 export { ElDmMarkdownInput, registerMarkdownInput, MarkdownInputHook };
 export type { Suggestion } from '@duskmoon-dev/el-markdown-input';
+export { ElDmCodeBlock, registerCodeBlock };
 
 /**
  * Register all DuskMoon custom elements
@@ -260,4 +262,5 @@ export function registerAll(): void {
   registerMarkdownInput();
   registerSelect();
   registerCascader();
+  registerCodeBlock();
 }

@@ -28,6 +28,10 @@ import {
   ElDmArtFlowerAnimation,
   register as registerArtFlowerAnimation,
 } from '@duskmoon-dev/el-art-flower-animation';
+import {
+  ElDmArtGeminiInput,
+  register as registerArtGeminiInput,
+} from '@duskmoon-dev/el-art-gemini-input';
 
 export {
   ElDmArtMoon,
@@ -54,6 +58,8 @@ export {
   registerArtSnow,
   ElDmArtFlowerAnimation,
   registerArtFlowerAnimation,
+  ElDmArtGeminiInput,
+  registerArtGeminiInput,
 };
 
 export function registerAllArts(): void {
@@ -69,4 +75,5 @@ export function registerAllArts(): void {
   registerArtCircularGallery();
   registerArtSnow();
   registerArtFlowerAnimation();
+  registerArtGeminiInput();
 }
