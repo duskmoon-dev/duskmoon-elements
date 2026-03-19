@@ -70,6 +70,10 @@ The Markdown Input component offers:
 | `upload-url` | `string` | `undefined` | POST endpoint for file uploads |
 | `max-words` | `number` | `undefined` | Optional soft word count cap |
 | `dark` | `boolean` | `false` | Use dark theme variant |
+| `live-preview` | `boolean` | `false` | Auto-update preview while typing |
+| `debounce` | `number` | `300` | Debounce ms for live preview |
+| `katex-css-url` | `string` | CDN URL | Override KaTeX stylesheet location |
+| `mermaid-src` | `string` | CDN URL | Override mermaid.js source URL |
 
 ## Public API
 
@@ -111,6 +115,9 @@ All events bubble and are composed.
 | `upload-error` | `{ file: File, error: string }` | Upload failed |
 | `mention-query` | `{ trigger: "@", query: string, resolve: fn }` | User typed `@word` |
 | `reference-query` | `{ trigger: "#", query: string, resolve: fn }` | User typed `#word` |
+| `render-start` | `{}` | Preview render begins |
+| `render-done` | `{ html: string }` | Preview render complete |
+| `render-error` | `{ error: Error }` | Pipeline or mermaid failure |
 
 ## Basic Examples
 
@@ -385,6 +392,37 @@ The component uses DuskMoon Moonlight theme colors by default in dark mode.
 - Form field labeling support via `name` attribute
 - Screen reader announcements for upload progress
 - Autocomplete dropdown is keyboard accessible
+
+## Preview Tab (Render Pipeline)
+
+The preview tab transforms raw markdown into styled HTML using a unified pipeline:
+
+- **GFM** — Tables, task lists, strikethrough, autolinks via remark-gfm
+- **Math** — Inline `$E=mc^2$` and display `$$...$$` math via KaTeX
+- **Code highlighting** — Syntax colors for fenced code blocks via rehype-prism-plus
+- **Mermaid** — Diagrams rendered as SVG (lazy-loaded post-render step)
+- **XSS protection** — All output sanitized via rehype-sanitize
+
+The pipeline is **lazy-loaded** — dependencies are only imported on first preview tab activation. Subsequent tab switches reuse the cached processor.
+
+### Live Preview
+
+Enable auto-updating preview while typing:
+
+```html
+<el-dm-markdown-input live-preview debounce="300"></el-dm-markdown-input>
+```
+
+### Self-hosting KaTeX and Mermaid
+
+By default, KaTeX CSS loads from jsDelivr CDN. Override for self-hosted setups:
+
+```html
+<el-dm-markdown-input
+  katex-css-url="/assets/katex.min.css"
+  mermaid-src="/assets/mermaid.esm.min.mjs"
+></el-dm-markdown-input>
+```
 
 ## Integration with @duskmoon-dev/core
 
