@@ -276,7 +276,7 @@ export class ElDmMarkdownInput extends BaseElement {
             aria-haspopup="listbox"
             aria-autocomplete="list"
             aria-controls="ac-dropdown"
-            placeholder="${ph}"
+            placeholder="${escapeHtmlStr(ph)}"
             ${disabled ? 'disabled' : ''}
             ${readonly ? 'readonly' : ''}
             spellcheck="false"
