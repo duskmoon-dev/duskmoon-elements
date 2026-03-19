@@ -366,8 +366,8 @@ export class ElDmMarkdownInput extends BaseElement {
       if (this.#acSuggestions.length > 0 && !this.#acDropdown?.hidden) {
         this.#handleDropdownKeydown(e);
       }
-      // Ctrl+Shift+P → toggle preview (T023)
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+      // Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac) → toggle preview
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
         e.preventDefault();
         this.#switchTab(this.#activeTab === 'write' ? 'preview' : 'write');
       }
