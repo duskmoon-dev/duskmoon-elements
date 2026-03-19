@@ -118,6 +118,7 @@ export class ElDmMarkdownInput extends BaseElement {
   #acTrigger: '@' | '#' | null = null;
 
   // ── Render pipeline (lazy-loaded) ───────────────────────────────────
+  #prevDark = false;
   #renderFn: typeof RenderFn | null = null;
   #mermaidFn: typeof MermaidFn | null = null;
   #livePreviewTimer: ReturnType<typeof setTimeout> | null = null;
@@ -214,6 +215,15 @@ export class ElDmMarkdownInput extends BaseElement {
     // Update Prism theme when dark attribute changes
     const dark = !!(this as unknown as { dark: boolean }).dark;
     applyPrismTheme(this.shadowRoot, dark);
+
+    // Re-render preview if dark attribute changed while preview tab is active
+    // (mermaid diagrams use theme-dependent SVGs, code blocks need matching Prism theme)
+    if (dark !== this.#prevDark) {
+      this.#prevDark = dark;
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#renderPreview(ta.value);
+      }
+    }
 
     // Re-render status bar (maxWords may have changed)
     this.#updateStatusBarNow();

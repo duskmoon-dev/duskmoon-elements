@@ -46,4 +46,54 @@ describe('XSS protection', () => {
     expect(html).toContain('<strong>Bold</strong>');
     expect(html).toContain('https://example.com');
   });
+
+  test('strips SVG-based XSS', async () => {
+    const md = '<svg onload="alert(1)"><circle r="40"></circle></svg>';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('onload');
+  });
+
+  test('strips vbscript: URLs', async () => {
+    const md = '[click](vbscript:alert(1))';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('vbscript:');
+  });
+
+  test('strips object/embed tags', async () => {
+    const md = '<object data="evil.swf"></object><embed src="evil.swf">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<object');
+    expect(html).not.toContain('<embed');
+  });
+
+  test('strips form tags', async () => {
+    const md = '<form action="https://evil.com"><input type="submit"></form>';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<form');
+  });
+
+  test('strips style tags with CSS injection', async () => {
+    const md = '<style>body { display: none }</style>';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<style');
+  });
+
+  test('strips base tag hijacking', async () => {
+    const md = '<base href="https://evil.com">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<base');
+  });
+
+  test('strips meta refresh redirect', async () => {
+    const md = '<meta http-equiv="refresh" content="0;url=https://evil.com">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<meta');
+  });
+
+  test('preserves KaTeX math output classes', async () => {
+    const md = '$x^2$';
+    const html = await renderMarkdown(md);
+    // KaTeX uses span.katex which requires className to be allowed
+    expect(html).toContain('katex');
+  });
 });

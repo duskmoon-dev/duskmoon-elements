@@ -122,4 +122,72 @@ describe('renderMarkdown', () => {
     expect(html1).toContain('test 1');
     expect(html2).toContain('test 2');
   });
+
+  test('renders nested blockquotes', async () => {
+    const md = '> outer\n>> inner';
+    const html = await renderMarkdown(md);
+    // Should contain nested blockquote elements
+    expect(html).toContain('<blockquote>');
+    expect(html).toContain('inner');
+  });
+
+  test('renders inline code', async () => {
+    const md = 'Use `console.log()` for debug';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<code>console.log()</code>');
+  });
+
+  test('renders GFM autolinks', async () => {
+    const md = 'Visit https://example.com for more';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<a');
+    expect(html).toContain('https://example.com');
+  });
+
+  test('renders GFM table with alignment', async () => {
+    const md = '| Left | Center | Right |\n|:-----|:------:|------:|\n| a | b | c |';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<table>');
+    expect(html).toContain('align');
+  });
+
+  test('renders task list checkboxes as disabled', async () => {
+    const md = '- [x] Done\n- [ ] Todo';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('disabled');
+  });
+
+  test('renders code block with unknown language gracefully', async () => {
+    const md = '```unknownlang\nsome code\n```';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<code');
+    expect(html).toContain('some code');
+  });
+
+  test('renders complex nested markdown', async () => {
+    const md = `> **bold in quote** and *italic*
+>
+> - list in quote
+> - with \`code\``;
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<blockquote>');
+    expect(html).toContain('<strong>');
+    expect(html).toContain('<em>');
+    expect(html).toContain('<li>');
+  });
+
+  test('handles very long single-line input', async () => {
+    const md = 'word '.repeat(1000);
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<p>');
+    expect(html).toContain('word');
+  });
+
+  test('renders multiple code blocks in sequence', async () => {
+    const md = '```js\na\n```\n\n```python\nb\n```';
+    const html = await renderMarkdown(md);
+    // Both blocks should be present
+    expect(html).toContain('language-js');
+    expect(html).toContain('language-python');
+  });
 });
