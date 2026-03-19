@@ -96,4 +96,34 @@ describe('XSS protection', () => {
     // KaTeX uses span.katex which requires className to be allowed
     expect(html).toContain('katex');
   });
+
+  test('strips link tags (stylesheet exfiltration)', async () => {
+    const md = '<link rel="stylesheet" href="https://evil.com/steal.css">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<link');
+  });
+
+  test('strips javascript: URLs in image src', async () => {
+    const md = '<img src="javascript:alert(1)">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('javascript:');
+  });
+
+  test('strips nested script in blockquote', async () => {
+    const md = '> <script>alert(1)</script>';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('<script');
+  });
+
+  test('strips onclick on raw HTML img tag', async () => {
+    const md = '<img src="https://example.com/img.png" onclick="alert(1)" alt="test">';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('onclick');
+  });
+
+  test('preserves safe image src from https', async () => {
+    const md = '![logo](https://example.com/logo.png)';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('https://example.com/logo.png');
+  });
 });
