@@ -564,6 +564,7 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#renderAbortController = controller;
 
     this.emit('render-start', {});
+    preview.setAttribute('aria-busy', 'true');
 
     // Show skeleton on first load while pipeline imports
     if (!this.#renderFn) {
@@ -586,6 +587,7 @@ export class ElDmMarkdownInput extends BaseElement {
       if (controller.signal.aborted) return;
 
       preview.innerHTML = html;
+      preview.removeAttribute('aria-busy');
 
       // Inject KaTeX CSS into shadow DOM if not already present
       this.#ensureKatexCss();
@@ -605,6 +607,7 @@ export class ElDmMarkdownInput extends BaseElement {
       if (controller.signal.aborted) return;
 
       // Fallback: show raw markdown as preformatted text
+      preview.removeAttribute('aria-busy');
       preview.innerHTML = `<pre class="render-error-fallback">${escapeHtmlStr(source)}</pre>`;
       this.emit('render-error', { error: err instanceof Error ? err : new Error(String(err)) });
     }

@@ -598,6 +598,14 @@ describe('ElDmMarkdownInput', () => {
       cleanup(el);
     });
 
+    test('preview panel gets aria-busy while rendering', () => {
+      getTabButton(el, 'preview').click();
+      const preview = el.shadowRoot!.querySelector('.preview-body');
+      // aria-busy should be set during render (synchronously set before async pipeline)
+      expect(preview?.getAttribute('aria-busy')).toBe('true');
+      cleanup(el);
+    });
+
     test('attach button click opens file input', () => {
       let fileInputClicked = false;
       const fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
