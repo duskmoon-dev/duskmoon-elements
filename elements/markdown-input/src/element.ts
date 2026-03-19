@@ -116,6 +116,8 @@ export class ElDmMarkdownInput extends BaseElement {
   #acSelectedIndex = -1;
   #acTriggerPos = -1;
   #acTrigger: '@' | '#' | null = null;
+  /** Monotonically-increasing counter to discard out-of-order resolve() calls. */
+  #acGeneration = 0;
 
   // ── Render pipeline (lazy-loaded) ───────────────────────────────────
   #prevDark = false;
@@ -728,7 +730,11 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#acTrigger = trigger;
     this.#acTriggerPos = triggerPos;
 
-    const resolve = (list: Suggestion[]) => this.setSuggestions(list);
+    // Capture current generation so stale async resolutions are ignored
+    const gen = ++this.#acGeneration;
+    const resolve = (list: Suggestion[]) => {
+      if (gen === this.#acGeneration) this.setSuggestions(list);
+    };
 
     if (trigger === '@') {
       this.emit('mention-query', { trigger, query, resolve });
@@ -790,6 +796,7 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   #closeDropdown(): void {
+    this.#acGeneration++; // invalidate any pending resolve() callbacks
     this.#acSuggestions = [];
     this.#acSelectedIndex = -1;
     this.#acTrigger = null;
