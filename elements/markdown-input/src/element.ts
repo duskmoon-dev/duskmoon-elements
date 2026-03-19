@@ -123,6 +123,8 @@ export class ElDmMarkdownInput extends BaseElement {
   #mermaidFn: typeof MermaidFn | null = null;
   #livePreviewTimer: ReturnType<typeof setTimeout> | null = null;
   #renderAbortController: AbortController | null = null;
+  /** Source value from the last completed preview render — skip re-render if unchanged. */
+  #lastRenderedSource: string | null = null;
 
   // ── Upload state ─────────────────────────────────────────────────────
   #uploadIdCounter = 0;
@@ -222,9 +224,11 @@ export class ElDmMarkdownInput extends BaseElement {
 
     // Re-render preview if dark attribute changed while preview tab is active
     // (mermaid diagrams use theme-dependent SVGs, code blocks need matching Prism theme)
+    // Force=true bypasses the source cache so theme-sensitive renders always refresh.
     if (dark !== this.#prevDark) {
       this.#prevDark = dark;
       if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#lastRenderedSource = null; // invalidate cache on theme change
         this.#renderPreview(ta.value);
       }
     }
@@ -534,10 +538,16 @@ export class ElDmMarkdownInput extends BaseElement {
   /**
    * Render markdown to the preview panel using the unified pipeline.
    * Shows a loading skeleton on first load, emits render events.
+   * Skips re-render if the source and theme are unchanged from the last render.
    */
-  async #renderPreview(source: string): Promise<void> {
+  async #renderPreview(source: string, force = false): Promise<void> {
     const preview = this.#previewBody;
     if (!preview) return;
+
+    // Skip if source is identical to the last completed render (and not forced)
+    if (!force && this.#lastRenderedSource === source && this.#renderFn !== null) {
+      return;
+    }
 
     // Cancel any in-flight render
     this.#renderAbortController?.abort();
@@ -567,6 +577,7 @@ export class ElDmMarkdownInput extends BaseElement {
       if (controller.signal.aborted) return;
 
       preview.innerHTML = html;
+      this.#lastRenderedSource = source;
 
       // Inject KaTeX CSS into shadow DOM if not already present
       this.#ensureKatexCss();
