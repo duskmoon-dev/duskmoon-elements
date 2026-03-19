@@ -30,14 +30,14 @@ export function detectTrigger(
       if (!/\s/.test(query)) {
         // Make sure the char before the trigger is whitespace, start-of-string, or trigger is at position 0
         const before = i > 0 ? value[i - 1] : null;
-        if (before === null || /[\s\n]/.test(before)) {
+        if (before === null || /\s/.test(before)) {
           return { trigger: ch as '@' | '#', query, triggerPos: i };
         }
       }
       return null;
     }
 
-    if (/[\s\n]/.test(ch)) {
+    if (/\s/.test(ch)) {
       // Hit whitespace before finding a trigger
       return null;
     }
