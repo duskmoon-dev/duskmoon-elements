@@ -317,6 +317,12 @@ export const elementStyles = css`
     background: var(--md-bg-hover);
   }
 
+  .attach-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   .attach-btn:focus-visible {
     outline: 2px solid var(--md-accent);
     outline-offset: 1px;
