@@ -243,6 +243,7 @@ export class ElDmMarkdownInput extends BaseElement {
             role="tab"
             aria-selected="true"
             aria-controls="write-panel"
+            tabindex="0"
           >Write</button>
           <button
             class="tab-btn"
@@ -250,6 +251,7 @@ export class ElDmMarkdownInput extends BaseElement {
             role="tab"
             aria-selected="false"
             aria-controls="preview-panel"
+            tabindex="-1"
           >Preview</button>
         </div>
 
@@ -400,6 +402,20 @@ export class ElDmMarkdownInput extends BaseElement {
       if (tab) this.#switchTab(tab);
     });
 
+    // Arrow key navigation between tabs (WAI-ARIA tablist pattern)
+    toolbar?.addEventListener('keydown', (e) => {
+      const kev = e as KeyboardEvent;
+      if (kev.key === 'ArrowLeft' || kev.key === 'ArrowRight') {
+        kev.preventDefault();
+        const nextTab = this.#activeTab === 'write' ? 'preview' : 'write';
+        this.#switchTab(nextTab);
+        const nextBtn = this.shadowRoot.querySelector<HTMLElement>(
+          `.tab-btn[data-tab="${nextTab}"]`,
+        );
+        nextBtn?.focus();
+      }
+    });
+
     // ── Attach button ──────────────────────────────────────────────
     const attachBtn = this.shadowRoot.querySelector('.attach-btn');
     attachBtn?.addEventListener('click', () => this.#fileInput?.click());
@@ -474,6 +490,7 @@ export class ElDmMarkdownInput extends BaseElement {
     writeBtns.forEach((btn) => {
       const isActive = btn.dataset.tab === tab;
       btn.setAttribute('aria-selected', String(isActive));
+      btn.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
     if (tab === 'preview') {
