@@ -16,9 +16,24 @@
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import rawCss from '@duskmoon-dev/css-art/dist/art/gemini-input.css' with { type: 'text' };
 
-// Keep @property rules (outside the layer) and strip only the @layer wrapper.
-// @property registrations are needed for the rotation animation to work.
-const coreCss = rawCss.replace(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/, (_, inner) => inner);
+// Extract the @property block and the @layer contents separately.
+// @property must be injected at document scope — browsers don't interpolate
+// registered custom properties when @property is only in a shadow DOM
+// adoptedStyleSheet, causing the conic-gradient animation to be static.
+const propertyRule = rawCss.match(/(@property[\s\S]*?\})/)?.[1] ?? '';
+// Strip @property blocks from shadow CSS (registered at document scope above)
+// and unwrap the @layer, leaving only the component rules.
+const coreCss = rawCss
+  .replace(/@property[\s\S]*?\}/g, '')
+  .replace(/@layer\s+css-art\s*\{([\s\S]*)\}\s*$/, (_, inner) => inner);
+
+// Register @property at document scope once so animation interpolation works.
+if (propertyRule && !document.getElementById('el-dm-art-gemini-input-property')) {
+  const style = document.createElement('style');
+  style.id = 'el-dm-art-gemini-input-property';
+  style.textContent = propertyRule;
+  document.head.appendChild(style);
+}
 
 const styles = css`
   :host {
