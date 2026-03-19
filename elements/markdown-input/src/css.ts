@@ -249,6 +249,17 @@ export const elementStyles = css`
   .mermaid-error {
     border-left: 3px solid var(--md-color-error);
     opacity: 0.7;
+    position: relative;
+  }
+
+  .mermaid-error::before {
+    content: 'Mermaid render failed';
+    display: block;
+    font-size: 0.75rem;
+    color: var(--md-color-error);
+    font-family: inherit;
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
   }
 
   /* ── Render error fallback ──────────────────────────────────────────── */
@@ -257,6 +268,18 @@ export const elementStyles = css`
     word-wrap: break-word;
     font-size: 0.875rem;
     opacity: 0.8;
+    border-left: 3px solid var(--md-color-error);
+    padding-left: 0.75rem;
+    color: var(--md-text-muted);
+  }
+
+  .render-error-fallback::before {
+    content: 'Preview render failed — showing raw markdown';
+    display: block;
+    font-size: 0.75rem;
+    color: var(--md-color-error);
+    font-family: inherit;
+    margin-bottom: 0.5rem;
   }
 
   /* ── Status bar ─────────────────────────────────────────────────────── */
