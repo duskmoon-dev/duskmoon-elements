@@ -843,6 +843,10 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#syncFormValue();
       this.#scheduleHighlight();
       this.#updateStatusBarNow();
+      // Keep preview in sync when value is set programmatically
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#renderPreview(str);
+      }
     } else {
       // Called before element is connected — store in reactive property
       (this as unknown as { value: string }).value = str;
