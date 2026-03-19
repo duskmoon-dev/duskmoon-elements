@@ -201,6 +201,53 @@ export const elementStyles = css`
     /* .markdown-body styles come from @duskmoon-dev/core via the element */
   }
 
+  /* ── Preview skeleton (shown while render pipeline loads) ──────────── */
+  .preview-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .skeleton-line {
+    height: 0.875rem;
+    background: linear-gradient(
+      90deg,
+      var(--md-bg-toolbar) 25%,
+      var(--md-bg-hover) 50%,
+      var(--md-bg-toolbar) 75%
+    );
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Mermaid diagram blocks ────────────────────────────────────────── */
+  .mermaid-diagram {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+
+  .mermaid-error {
+    border-left: 3px solid var(--md-color-error);
+    opacity: 0.7;
+  }
+
+  /* ── Render error fallback ──────────────────────────────────────────── */
+  .render-error-fallback {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
   /* ── Status bar ─────────────────────────────────────────────────────── */
   .status-bar {
     display: flex;

@@ -38,6 +38,9 @@ import { detectTrigger, confirmSuggestion, renderDropdown } from './autocomplete
 import { countWords, renderStatusCount } from './status-bar.js';
 import type { Suggestion } from './types.js';
 
+// Render pipeline is lazy-loaded — only imported when preview tab is first activated
+import type { renderMarkdown as RenderFn, renderMermaidBlocks as MermaidFn } from './render.js';
+
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreMarkdownStyles = markdownBodyCSS
   .replace(/@layer\s+components\s*\{/, '')
@@ -61,6 +64,10 @@ export class ElDmMarkdownInput extends BaseElement {
     uploadUrl: { type: String, reflect: true, attribute: 'upload-url' },
     maxWords: { type: Number, reflect: true, attribute: 'max-words' },
     dark: { type: Boolean, reflect: true },
+    livePreview: { type: Boolean, reflect: true, attribute: 'live-preview' },
+    debounce: { type: Number, reflect: true, default: 300 },
+    katexCssUrl: { type: String, reflect: true, attribute: 'katex-css-url' },
+    mermaidSrc: { type: String, reflect: true, attribute: 'mermaid-src' },
   };
 
   declare name: string;
@@ -71,6 +78,10 @@ export class ElDmMarkdownInput extends BaseElement {
   declare uploadUrl: string | undefined;
   declare maxWords: number | undefined;
   declare dark: boolean;
+  declare livePreview: boolean;
+  declare debounce: number;
+  declare katexCssUrl: string | undefined;
+  declare mermaidSrc: string | undefined;
 
   // ── ElementInternals for form association ────────────────────────────
   #internals!: ElementInternals;
@@ -106,6 +117,13 @@ export class ElDmMarkdownInput extends BaseElement {
   #acTriggerPos = -1;
   #acTrigger: '@' | '#' | null = null;
 
+  // ── Render pipeline (lazy-loaded) ───────────────────────────────────
+  #renderFn: typeof RenderFn | null = null;
+  #mermaidFn: typeof MermaidFn | null = null;
+  #renderLoading = false;
+  #livePreviewTimer: ReturnType<typeof setTimeout> | null = null;
+  #renderAbortController: AbortController | null = null;
+
   // ── Upload state ─────────────────────────────────────────────────────
   #uploadIdCounter = 0;
 
@@ -133,6 +151,8 @@ export class ElDmMarkdownInput extends BaseElement {
 
   disconnectedCallback(): void {
     this.#resizeObserver?.disconnect();
+    this.#renderAbortController?.abort();
+    if (this.#livePreviewTimer !== null) clearTimeout(this.#livePreviewTimer);
     super.disconnectedCallback();
   }
 
@@ -299,6 +319,7 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#scheduleHighlight();
       this.#scheduleStatusUpdate();
       this.#handleAutocompleteInput();
+      this.#scheduleLivePreview();
     });
 
     // ── Scroll sync (backdrop must follow textarea scroll) ─────────
@@ -450,7 +471,7 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#writeArea?.setAttribute('hidden', '');
       if (this.#previewBody) {
         this.#previewBody.removeAttribute('hidden');
-        this.#previewBody.innerHTML = this.#renderMarkdown(this.#textarea?.value ?? '');
+        this.#renderPreview(this.#textarea?.value ?? '');
       }
     } else {
       this.#writeArea?.removeAttribute('hidden');
@@ -459,112 +480,111 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // Minimal markdown renderer (preview tab)
+  // Unified render pipeline (preview tab)
   // ════════════════════════════════════════════════════════════════════
 
-  #renderMarkdown(md: string): string {
-    if (!md.trim()) return '<p></p>';
+  /**
+   * Load the render pipeline lazily. Called on first preview activation.
+   * Returns cached functions on subsequent calls.
+   */
+  async #loadRenderPipeline(): Promise<{
+    renderMarkdown: typeof RenderFn;
+    renderMermaidBlocks: typeof MermaidFn;
+  }> {
+    if (this.#renderFn && this.#mermaidFn) {
+      return { renderMarkdown: this.#renderFn, renderMermaidBlocks: this.#mermaidFn };
+    }
 
-    // Step 1: Extract fenced code blocks
-    // Use a placeholder string that won't appear in markdown content
-    const CB_PH = '\u2060CB';
-    const IC_PH = '\u2060IC';
-    const codeBlocks: string[] = [];
-    let html = md.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
-      const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const idx =
-        codeBlocks.push(`<pre><code class="language-${lang || 'text'}">${escaped}</code></pre>`) -
-        1;
-      return `${CB_PH}${idx}${CB_PH}`;
-    });
+    const mod = await import('./render.js');
+    this.#renderFn = mod.renderMarkdown;
+    this.#mermaidFn = mod.renderMermaidBlocks;
+    return { renderMarkdown: this.#renderFn, renderMermaidBlocks: this.#mermaidFn };
+  }
 
-    // Step 2: Extract inline code
-    const inlineCodes: string[] = [];
-    html = html.replace(/`([^`\n]+)`/g, (_, code) => {
-      const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const idx = inlineCodes.push(`<code>${escaped}</code>`) - 1;
-      return `${IC_PH}${idx}${IC_PH}`;
-    });
+  /**
+   * Render markdown to the preview panel using the unified pipeline.
+   * Shows a loading skeleton on first load, emits render events.
+   */
+  async #renderPreview(source: string): Promise<void> {
+    const preview = this.#previewBody;
+    if (!preview) return;
 
-    // Step 3: HTML-escape remaining content
-    html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Cancel any in-flight render
+    this.#renderAbortController?.abort();
+    const controller = new AbortController();
+    this.#renderAbortController = controller;
 
-    // Step 4: Markdown transformations
-    // Images before links — sanitize URLs to block javascript: and other unsafe protocols
-    html = html.replace(
-      /!\[([^\]]*)\]\(([^)]+)\)/g,
-      (_, alt, url) => `<img src="${sanitizeUrl(url)}" alt="${alt}">`,
-    );
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      (_, text, url) => `<a href="${sanitizeUrl(url)}">${text}</a>`,
-    );
+    this.emit('render-start', {});
 
-    // Headings
-    html = html
-      .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
-      .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
-      .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    // Show skeleton on first load while pipeline imports
+    if (!this.#renderFn) {
+      preview.innerHTML = `
+        <div class="preview-skeleton" aria-label="Loading preview…">
+          <div class="skeleton-line" style="width:90%"></div>
+          <div class="skeleton-line" style="width:75%"></div>
+          <div class="skeleton-line" style="width:85%"></div>
+          <div class="skeleton-line" style="width:60%"></div>
+        </div>`;
+    }
 
-    // Horizontal rules
-    html = html.replace(/^[-*_]{3,}$/gm, '<hr>');
+    try {
+      const { renderMarkdown, renderMermaidBlocks } = await this.#loadRenderPipeline();
 
-    // Blockquotes (note: > is escaped to &gt; above)
-    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+      // If this render was aborted (new one started), bail out
+      if (controller.signal.aborted) return;
 
-    // Bold + italic (order matters: *** before ** before *)
-    html = html
-      .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')
-      .replace(/__(.+?)__/g, '<strong>$1</strong>')
-      .replace(/_(.+?)_/g, '<em>$1</em>');
+      const html = await renderMarkdown(source);
+      if (controller.signal.aborted) return;
 
-    // Strikethrough
-    html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+      preview.innerHTML = html;
 
-    // Lists (single-level)
-    // Tag items with a type marker to distinguish ul from ol, then group consecutive runs
-    html = html.replace(/^[ \t]*[-*+] (.+)$/gm, '<li data-list="ul">$1</li>');
-    html = html.replace(/^[ \t]*\d+\. (.+)$/gm, '<li data-list="ol">$1</li>');
-    // Group consecutive unordered items into <ul>
-    html = html.replace(
-      /(<li data-list="ul">[^\n]*<\/li>(?:\n<li data-list="ul">[^\n]*<\/li>)*)/g,
-      (match) => '<ul>' + match.replace(/ data-list="ul"/g, '') + '</ul>',
-    );
-    // Group consecutive ordered items into <ol>
-    html = html.replace(
-      /(<li data-list="ol">[^\n]*<\/li>(?:\n<li data-list="ol">[^\n]*<\/li>)*)/g,
-      (match) => '<ol>' + match.replace(/ data-list="ol"/g, '') + '</ol>',
-    );
+      // Inject KaTeX CSS into shadow DOM if not already present
+      this.#ensureKatexCss();
 
-    // Paragraphs
-    const lines = html.split('\n\n');
-    html = lines
-      .map((block) => {
-        const t = block.trim();
-        if (!t) return '';
-        if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img)/.test(t) || t.startsWith(CB_PH)) return t;
-        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
-      })
-      .filter(Boolean)
-      .join('\n');
+      // Mermaid post-render step
+      const mermaidSrc = (this as unknown as { mermaidSrc: string | undefined }).mermaidSrc;
+      await renderMermaidBlocks(preview, mermaidSrc);
 
-    // Step 5: Restore placeholders
-    html = html.replace(
-      new RegExp(`${CB_PH}(\\d+)${CB_PH}`, 'g'),
-      (_, i) => codeBlocks[parseInt(i, 10)] ?? '',
-    );
-    html = html.replace(
-      new RegExp(`${IC_PH}(\\d+)${IC_PH}`, 'g'),
-      (_, i) => inlineCodes[parseInt(i, 10)] ?? '',
-    );
+      this.emit('render-done', { html });
+    } catch (err) {
+      if (controller.signal.aborted) return;
 
-    return html;
+      // Fallback: show raw markdown as preformatted text
+      preview.innerHTML = `<pre class="render-error-fallback">${escapeHtmlStr(source)}</pre>`;
+      this.emit('render-error', { error: err instanceof Error ? err : new Error(String(err)) });
+    }
+  }
+
+  /**
+   * Ensure KaTeX CSS is loaded in the shadow DOM.
+   */
+  #ensureKatexCss(): void {
+    if (this.shadowRoot.querySelector('#katex-css')) return;
+
+    const katexUrl =
+      (this as unknown as { katexCssUrl: string | undefined }).katexCssUrl ??
+      'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+
+    const link = document.createElement('link');
+    link.id = 'katex-css';
+    link.rel = 'stylesheet';
+    link.href = katexUrl;
+    this.shadowRoot.appendChild(link);
+  }
+
+  /**
+   * Schedule a debounced live preview render (only when live-preview attribute is set).
+   */
+  #scheduleLivePreview(): void {
+    if (!(this as unknown as { livePreview: boolean }).livePreview) return;
+    if (this.#activeTab !== 'preview') return;
+
+    if (this.#livePreviewTimer !== null) clearTimeout(this.#livePreviewTimer);
+    const ms = (this as unknown as { debounce: number }).debounce ?? 300;
+    this.#livePreviewTimer = setTimeout(() => {
+      this.#livePreviewTimer = null;
+      this.#renderPreview(this.#textarea?.value ?? '');
+    }, ms);
   }
 
   // ════════════════════════════════════════════════════════════════════

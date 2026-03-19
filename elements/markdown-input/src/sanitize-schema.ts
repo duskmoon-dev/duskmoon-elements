@@ -1,0 +1,62 @@
+/**
+ * Extended sanitization schema for rehype-sanitize.
+ *
+ * Builds on the default GitHub schema to allow:
+ * - KaTeX output (span className/style, math MathML elements)
+ * - Mermaid placeholders (code className)
+ * - Task list checkboxes (input type/checked/disabled)
+ */
+import { defaultSchema } from 'rehype-sanitize';
+import type { Schema } from 'hast-util-sanitize';
+
+function deepMergeSchemas(base: Schema, extension: Partial<Schema>): Schema {
+  const result: Schema = { ...base };
+
+  if (extension.attributes) {
+    result.attributes = { ...base.attributes };
+    for (const [tag, attrs] of Object.entries(extension.attributes)) {
+      const existing = result.attributes[tag];
+      if (Array.isArray(existing)) {
+        result.attributes[tag] = [...existing, ...(attrs as string[])];
+      } else {
+        result.attributes[tag] = attrs;
+      }
+    }
+  }
+
+  if (extension.tagNames) {
+    result.tagNames = [...(base.tagNames ?? []), ...extension.tagNames];
+  }
+
+  return result;
+}
+
+export const sanitizeSchema: Schema = deepMergeSchemas(defaultSchema, {
+  attributes: {
+    // KaTeX output
+    span: ['className', 'style'],
+    // Mermaid placeholder
+    code: ['className'],
+    // Task list checkboxes (rendered as disabled — no interactive toggling)
+    input: ['type', 'checked', 'disabled'],
+  },
+  tagNames: [
+    // KaTeX MathML elements
+    'math',
+    'semantics',
+    'mrow',
+    'mi',
+    'mo',
+    'mn',
+    'msup',
+    'msub',
+    'mfrac',
+    'mover',
+    'munder',
+    'msqrt',
+    'mtable',
+    'mtr',
+    'mtd',
+    'annotation',
+  ],
+});
