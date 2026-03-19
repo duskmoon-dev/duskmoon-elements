@@ -586,7 +586,6 @@ export class ElDmMarkdownInput extends BaseElement {
       if (controller.signal.aborted) return;
 
       preview.innerHTML = html;
-      this.#lastRenderedSource = source;
 
       // Inject KaTeX CSS into shadow DOM if not already present
       this.#ensureKatexCss();
@@ -594,6 +593,12 @@ export class ElDmMarkdownInput extends BaseElement {
       // Mermaid post-render step
       const mermaidSrc = (this as unknown as { mermaidSrc: string | undefined }).mermaidSrc;
       await renderMermaidBlocks(preview, mermaidSrc);
+      if (controller.signal.aborted) return;
+
+      // Update cache only after the full render pipeline (including mermaid)
+      // completes successfully. Setting it earlier would cause cache hits
+      // to skip mermaid post-processing on re-render.
+      this.#lastRenderedSource = source;
 
       this.emit('render-done', { html });
     } catch (err) {
