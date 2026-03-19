@@ -687,7 +687,7 @@ export class ElDmMarkdownInput extends BaseElement {
     row.id = id;
     row.innerHTML = `
       <span class="upload-filename">${escapeHtmlStr(filename)}</span>
-      <div class="upload-bar-track">
+      <div class="upload-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading ${escapeHtmlStr(filename)}">
         <div class="upload-bar" style="width: 0%"></div>
       </div>
     `;
@@ -695,6 +695,8 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   #updateProgressRow(id: string, pct: number): void {
+    const track = this.#uploadList?.querySelector<HTMLElement>(`#${id} .upload-bar-track`);
+    if (track) track.setAttribute('aria-valuenow', String(pct));
     const bar = this.#uploadList?.querySelector<HTMLElement>(`#${id} .upload-bar`);
     if (bar) bar.style.width = `${pct}%`;
   }
