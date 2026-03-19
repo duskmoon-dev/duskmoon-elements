@@ -211,6 +211,7 @@ When `max-words` is set:
 - Shows current word count relative to cap (e.g., "142 / 500 words")
 - Status turns amber at 90% of cap
 - Status turns red at 100% of cap
+- The element reports as **form-invalid** when the cap is exceeded (native `checkValidity()` / `reportValidity()` work)
 
 Word count algorithm: `text.trim().split(/\s+/).filter(Boolean).length`
 
