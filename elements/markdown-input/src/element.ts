@@ -709,6 +709,7 @@ export class ElDmMarkdownInput extends BaseElement {
     if (!this.#uploadList) return;
     const row = document.createElement('div');
     row.className = 'upload-error-row';
+    row.setAttribute('role', 'alert');
     row.innerHTML = `
       <span class="upload-error-msg">${escapeHtmlStr(file.name)}: ${escapeHtmlStr(message)}</span>
     `;
