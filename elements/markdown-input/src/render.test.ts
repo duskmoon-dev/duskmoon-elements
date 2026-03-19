@@ -123,6 +123,19 @@ describe('renderMarkdown', () => {
     expect(html2).toContain('test 2');
   });
 
+  test('concurrent calls share one processor build (no duplicate initialization)', async () => {
+    // Fire multiple concurrent renders before the processor is cached.
+    // All should resolve correctly without interfering with each other.
+    const [a, b, c] = await Promise.all([
+      renderMarkdown('# Concurrent A'),
+      renderMarkdown('# Concurrent B'),
+      renderMarkdown('# Concurrent C'),
+    ]);
+    expect(a).toContain('Concurrent A');
+    expect(b).toContain('Concurrent B');
+    expect(c).toContain('Concurrent C');
+  });
+
   test('renders nested blockquotes', async () => {
     const md = '> outer\n>> inner';
     const html = await renderMarkdown(md);

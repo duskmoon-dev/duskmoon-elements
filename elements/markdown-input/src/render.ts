@@ -15,11 +15,10 @@ type Processor = {
   process(source: string): Promise<{ toString(): string }>;
 };
 
-let processor: Processor | null = null;
+// Store the promise itself so concurrent calls share one build (no duplicate initialization)
+let processorPromise: Promise<Processor> | null = null;
 
-async function getProcessor(): Promise<Processor> {
-  if (processor) return processor;
-
+async function buildProcessor(): Promise<Processor> {
   const [
     { unified },
     { default: remarkParse },
@@ -42,7 +41,7 @@ async function getProcessor(): Promise<Processor> {
     import('rehype-stringify'),
   ]);
 
-  processor = unified()
+  return unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -51,8 +50,13 @@ async function getProcessor(): Promise<Processor> {
     .use(rehypePrismPlus, { ignoreMissing: true })
     .use(rehypeSanitize, sanitizeSchema)
     .use(rehypeStringify) as unknown as Processor;
+}
 
-  return processor;
+function getProcessor(): Promise<Processor> {
+  if (!processorPromise) {
+    processorPromise = buildProcessor();
+  }
+  return processorPromise;
 }
 
 /**
@@ -66,6 +70,8 @@ export async function renderMarkdown(source: string): Promise<string> {
 }
 
 // ── Mermaid post-render ─────────────────────────────────────────────────
+
+let mermaidIdCounter = 0;
 
 /**
  * Detect the current theme by checking `data-theme` on `<html>`.
@@ -105,7 +111,7 @@ export async function renderMermaidBlocks(
     const pre = block.parentElement;
     if (!pre) continue;
 
-    const id = `mermaid-${Date.now()}-${i}`;
+    const id = `mermaid-${++mermaidIdCounter}-${i}`;
     try {
       const { svg } = await mermaid.render(id, block.textContent ?? '');
       const wrapper = document.createElement('div');
