@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import { renderMarkdown } from './render.js';
+import { renderMarkdown, renderMermaidBlocks } from './render.js';
 
 describe('renderMarkdown', () => {
   test('renders plain text as paragraph', async () => {
@@ -202,5 +202,25 @@ describe('renderMarkdown', () => {
     // Both blocks should be present
     expect(html).toContain('language-js');
     expect(html).toContain('language-python');
+  });
+});
+
+describe('renderMermaidBlocks', () => {
+  test('returns immediately when no mermaid blocks are present', async () => {
+    const container = document.createElement('div');
+    container.innerHTML = '<p>No mermaid here</p>';
+    // Should resolve without throwing (early-exit path)
+    await expect(renderMermaidBlocks(container)).resolves.toBeUndefined();
+    // Container is unchanged
+    expect(container.innerHTML).toContain('No mermaid here');
+  });
+
+  test('does not modify container with only non-mermaid code blocks', async () => {
+    const container = document.createElement('div');
+    container.innerHTML = '<pre><code class="language-js">const x = 1;</code></pre>';
+    await renderMermaidBlocks(container);
+    // JS block should be untouched
+    expect(container.innerHTML).toContain('language-js');
+    expect(container.innerHTML).toContain('const x = 1;');
   });
 });
