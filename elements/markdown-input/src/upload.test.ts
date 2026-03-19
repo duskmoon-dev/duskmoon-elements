@@ -46,7 +46,6 @@ class MockXHR {
 }
 
 let mockXhr: MockXHR;
-const origXHR = globalThis.XMLHttpRequest;
 
 describe('isAcceptedType', () => {
   test('accepts image/png', () => {
