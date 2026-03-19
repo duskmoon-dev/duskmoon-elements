@@ -223,8 +223,12 @@ export const elementStyles = css`
   }
 
   @keyframes skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   /* ── Mermaid diagram blocks ────────────────────────────────────────── */
