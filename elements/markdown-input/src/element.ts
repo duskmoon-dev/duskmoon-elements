@@ -251,6 +251,7 @@ export class ElDmMarkdownInput extends BaseElement {
         <div class="toolbar" role="tablist" aria-label="Editor mode">
           <button
             class="tab-btn"
+            id="tab-write"
             data-tab="write"
             role="tab"
             aria-selected="true"
@@ -259,6 +260,7 @@ export class ElDmMarkdownInput extends BaseElement {
           >Write</button>
           <button
             class="tab-btn"
+            id="tab-preview"
             data-tab="preview"
             role="tab"
             aria-selected="false"
@@ -267,7 +269,7 @@ export class ElDmMarkdownInput extends BaseElement {
           >Preview</button>
         </div>
 
-        <div class="write-area" id="write-panel" role="tabpanel" aria-label="Markdown editor">
+        <div class="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
           <div class="backdrop" aria-hidden="true">
             <div class="backdrop-content"></div>
           </div>
@@ -290,7 +292,7 @@ export class ElDmMarkdownInput extends BaseElement {
           class="preview-body markdown-body"
           id="preview-panel"
           role="tabpanel"
-          aria-label="Markdown preview"
+          aria-labelledby="tab-preview"
           hidden
         ></div>
 
