@@ -55,6 +55,26 @@ describe('detectTrigger', () => {
     const result = detectTrigger(text, text.length);
     expect(result).toEqual({ trigger: '@', query: 'jo', triggerPos: 7 });
   });
+
+  test('detects @ with unicode query characters', () => {
+    const result = detectTrigger('Hello @用户', 9);
+    expect(result).toEqual({ trigger: '@', query: '用户', triggerPos: 6 });
+  });
+
+  test('detects trigger on second line of multi-line text', () => {
+    const text = 'first line\n@query';
+    const result = detectTrigger(text, text.length);
+    expect(result).toEqual({ trigger: '@', query: 'query', triggerPos: 11 });
+  });
+
+  test('detects # with cursor right after trigger (empty query)', () => {
+    const result = detectTrigger('issue #', 7);
+    expect(result).toEqual({ trigger: '#', query: '', triggerPos: 6 });
+  });
+
+  test('returns null for email-like pattern in middle of text', () => {
+    expect(detectTrigger('send to user@example.com now', 24)).toBeNull();
+  });
 });
 
 describe('confirmSuggestion', () => {
@@ -85,6 +105,12 @@ describe('confirmSuggestion', () => {
   test('handles empty replacement', () => {
     const { newValue } = confirmSuggestion('@query', 0, 6, '@', '');
     expect(newValue).toBe('@');
+  });
+
+  test('handles triggerPos equal to cursorPos (empty query)', () => {
+    const { newValue, newCursorPos } = confirmSuggestion('tag @', 4, 5, '@', 'alice');
+    expect(newValue).toBe('tag @alice');
+    expect(newCursorPos).toBe(10);
   });
 });
 
@@ -137,5 +163,32 @@ describe('renderDropdown', () => {
     expect(html).toContain('&amp;');
     expect(html).toContain('&lt;');
     expect(html).not.toContain('"&<>"');
+  });
+
+  test('marks all items as unselected when selectedIndex is -1 with multiple items', () => {
+    const html = renderDropdown(
+      [
+        { id: 'a', label: 'Alpha' },
+        { id: 'b', label: 'Beta' },
+        { id: 'c', label: 'Gamma' },
+      ],
+      -1,
+    );
+    const selectedCount = (html.match(/aria-selected="true"/g) || []).length;
+    const unselectedCount = (html.match(/aria-selected="false"/g) || []).length;
+    expect(selectedCount).toBe(0);
+    expect(unselectedCount).toBe(3);
+  });
+
+  test('renders correct id attributes for each item', () => {
+    const html = renderDropdown(
+      [
+        { id: 'a', label: 'A' },
+        { id: 'b', label: 'B' },
+      ],
+      0,
+    );
+    expect(html).toContain('id="ac-item-0"');
+    expect(html).toContain('id="ac-item-1"');
   });
 });
