@@ -125,6 +125,8 @@ export class ElDmMarkdownInput extends BaseElement {
   #renderAbortController: AbortController | null = null;
   /** Source value from the last completed preview render — skip re-render if unchanged. */
   #lastRenderedSource: string | null = null;
+  /** True once the KaTeX <link> stylesheet has been injected into the shadow root. */
+  #katexCssInjected = false;
 
   // ── Upload state ─────────────────────────────────────────────────────
   #uploadIdCounter = 0;
@@ -600,7 +602,8 @@ export class ElDmMarkdownInput extends BaseElement {
    * Ensure KaTeX CSS is loaded in the shadow DOM.
    */
   #ensureKatexCss(): void {
-    if (this.shadowRoot.querySelector('#katex-css')) return;
+    if (this.#katexCssInjected) return;
+    this.#katexCssInjected = true;
 
     const katexUrl =
       (this as unknown as { katexCssUrl: string | undefined }).katexCssUrl ??
