@@ -98,8 +98,6 @@ describe('fileToMarkdown', () => {
 
   test('generates link markdown for txt', () => {
     const file = makeFile('notes.txt', 'text/plain');
-    expect(fileToMarkdown(file, '/uploads/notes.txt')).toBe(
-      '[notes.txt](/uploads/notes.txt)',
-    );
+    expect(fileToMarkdown(file, '/uploads/notes.txt')).toBe('[notes.txt](/uploads/notes.txt)');
   });
 });
