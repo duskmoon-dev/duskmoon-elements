@@ -231,6 +231,13 @@ export const elementStyles = css`
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-line {
+      animation: none;
+      background: var(--md-bg-hover);
+    }
+  }
+
   /* ── Mermaid diagram blocks ────────────────────────────────────────── */
   .mermaid-diagram {
     display: flex;
