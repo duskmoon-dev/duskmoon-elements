@@ -37,13 +37,18 @@ function _loadScript(src: string): Promise<void> {
 /**
  * Ensure Prism is loaded and ready. Returns a cached Promise after the first call.
  * Safe to call multiple times — only one network request is ever made.
+ * If loading fails (e.g. network error), the cache is cleared so the next call retries.
  */
 export function ensurePrism(): Promise<void> {
   if (window.Prism) return Promise.resolve();
   if (_prismReady) return _prismReady;
 
   _prismReady = _loadScript(PRISM_CORE_URL).then(() => {
-    if (!window.Prism) return;
+    if (!window.Prism) {
+      // Script failed to load — clear cache so next call retries
+      _prismReady = null;
+      return;
+    }
     // Configure autoloader before loading it
     window.Prism.manual = true;
     return _loadScript(PRISM_AUTOLOADER_URL).then(() => {
