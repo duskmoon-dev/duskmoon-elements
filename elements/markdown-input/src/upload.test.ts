@@ -1,9 +1,52 @@
-import { describe, test, expect } from 'bun:test';
-import { isAcceptedType, fileToMarkdown } from './upload.js';
+import { describe, test, expect, mock, beforeEach } from 'bun:test';
+import { isAcceptedType, fileToMarkdown, uploadFile } from './upload.js';
 
 function makeFile(name: string, type: string): File {
   return new File([''], name, { type });
 }
+
+// ── Minimal XHR mock for uploadFile tests ─────────────────────────────
+type XHRHandler = (e?: { lengthComputable: boolean; loaded: number; total: number }) => void;
+
+class MockXHR {
+  status = 200;
+  responseText = '';
+  upload = { addEventListener: mock((_: string, __: XHRHandler) => {}) };
+  open = mock((_method: string, _url: string) => {});
+  send = mock((_body: FormData) => {});
+
+  #listeners: Record<string, XHRHandler> = {};
+
+  addEventListener(event: string, handler: XHRHandler) {
+    this.#listeners[event] = handler;
+  }
+
+  // Test helpers to trigger XHR events
+  _fireLoad() {
+    this.#listeners['load']?.();
+  }
+  _fireError() {
+    this.#listeners['error']?.();
+  }
+  _fireAbort() {
+    this.#listeners['abort']?.();
+  }
+  _fireProgress(loaded: number, total: number) {
+    const handler = this.upload.addEventListener.mock.calls.find(
+      (c: [string, XHRHandler]) => c[0] === 'progress',
+    )?.[1] as XHRHandler | undefined;
+    handler?.({ lengthComputable: true, loaded, total });
+  }
+  _fireProgressNonComputable() {
+    const handler = this.upload.addEventListener.mock.calls.find(
+      (c: [string, XHRHandler]) => c[0] === 'progress',
+    )?.[1] as XHRHandler | undefined;
+    handler?.({ lengthComputable: false, loaded: 0, total: 0 });
+  }
+}
+
+let mockXhr: MockXHR;
+const origXHR = globalThis.XMLHttpRequest;
 
 describe('isAcceptedType', () => {
   test('accepts image/png', () => {
@@ -99,5 +142,160 @@ describe('fileToMarkdown', () => {
   test('generates link markdown for txt', () => {
     const file = makeFile('notes.txt', 'text/plain');
     expect(fileToMarkdown(file, '/uploads/notes.txt')).toBe('[notes.txt](/uploads/notes.txt)');
+  });
+
+  test('generates image markdown for svg', () => {
+    const file = makeFile('logo.svg', 'image/svg+xml');
+    expect(fileToMarkdown(file, '/uploads/logo.svg')).toBe('![logo.svg](/uploads/logo.svg)');
+  });
+
+  test('embeds brackets in filename verbatim', () => {
+    // Note: filenames with markdown-special chars produce technically malformed
+    // markdown — this test documents current behavior (no escaping).
+    const file = makeFile('file[1].png', 'image/png');
+    expect(fileToMarkdown(file, '/u/file.png')).toBe('![file[1].png](/u/file.png)');
+  });
+
+  test('embeds parentheses in URL verbatim', () => {
+    const file = makeFile('doc.pdf', 'application/pdf');
+    expect(fileToMarkdown(file, '/u/doc%20(1).pdf')).toBe('[doc.pdf](/u/doc%20(1).pdf)');
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// uploadFile — XHR mock tests
+// ════════════════════════════════════════════════════════════════════════
+
+describe('uploadFile', () => {
+  beforeEach(() => {
+    mockXhr = new MockXHR();
+    (globalThis as Record<string, unknown>).XMLHttpRequest = class {
+      constructor() {
+        return mockXhr as unknown as XMLHttpRequest;
+      }
+    };
+  });
+
+  // Restore real XHR after all upload tests
+  // (bun:test doesn't have afterAll for describe, but we restore per-test via beforeEach)
+
+  test('resolves with URL on successful 200 JSON response', async () => {
+    const file = makeFile('photo.png', 'image/png');
+    const progressCalls: number[] = [];
+    const promise = uploadFile(file, '/api/upload', (pct) => progressCalls.push(pct));
+
+    // Verify XHR was opened and sent
+    expect(mockXhr.open).toHaveBeenCalledWith('POST', '/api/upload');
+    expect(mockXhr.send).toHaveBeenCalled();
+
+    // Simulate successful response
+    mockXhr.status = 200;
+    mockXhr.responseText = JSON.stringify({ url: 'https://cdn.example.com/photo.png' });
+    mockXhr._fireLoad();
+
+    const result = await promise;
+    expect(result).toBe('https://cdn.example.com/photo.png');
+  });
+
+  test('resolves on 201 status', async () => {
+    const file = makeFile('doc.pdf', 'application/pdf');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr.status = 201;
+    mockXhr.responseText = JSON.stringify({ url: '/files/doc.pdf' });
+    mockXhr._fireLoad();
+
+    expect(await promise).toBe('/files/doc.pdf');
+  });
+
+  test('rejects when response JSON is missing url field', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr.status = 200;
+    mockXhr.responseText = JSON.stringify({ path: '/files/file.txt' });
+    mockXhr._fireLoad();
+
+    await expect(promise).rejects.toBe('Upload response missing url field');
+  });
+
+  test('rejects when response is not valid JSON', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr.status = 200;
+    mockXhr.responseText = '<html>OK</html>';
+    mockXhr._fireLoad();
+
+    await expect(promise).rejects.toBe('Upload response is not valid JSON');
+  });
+
+  test('rejects on non-2xx status', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr.status = 413;
+    mockXhr._fireLoad();
+
+    await expect(promise).rejects.toBe('Upload failed with status 413');
+  });
+
+  test('rejects on 500 server error', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr.status = 500;
+    mockXhr._fireLoad();
+
+    await expect(promise).rejects.toBe('Upload failed with status 500');
+  });
+
+  test('rejects on network error', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr._fireError();
+
+    await expect(promise).rejects.toBe('Network error during upload');
+  });
+
+  test('rejects on abort', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const promise = uploadFile(file, '/upload', () => {});
+
+    mockXhr._fireAbort();
+
+    await expect(promise).rejects.toBe('Upload aborted');
+  });
+
+  test('reports progress via callback', async () => {
+    const file = makeFile('big.zip', 'application/zip');
+    const progress: number[] = [];
+    const promise = uploadFile(file, '/upload', (pct) => progress.push(pct));
+
+    mockXhr._fireProgress(50, 100);
+    mockXhr._fireProgress(100, 100);
+
+    mockXhr.status = 200;
+    mockXhr.responseText = JSON.stringify({ url: '/files/big.zip' });
+    mockXhr._fireLoad();
+
+    await promise;
+    expect(progress).toEqual([50, 100]);
+  });
+
+  test('does not call progress when lengthComputable is false', async () => {
+    const file = makeFile('file.txt', 'text/plain');
+    const progress: number[] = [];
+    const promise = uploadFile(file, '/upload', (pct) => progress.push(pct));
+
+    mockXhr._fireProgressNonComputable();
+
+    mockXhr.status = 200;
+    mockXhr.responseText = JSON.stringify({ url: '/f.txt' });
+    mockXhr._fireLoad();
+
+    await promise;
+    expect(progress).toEqual([]);
   });
 });

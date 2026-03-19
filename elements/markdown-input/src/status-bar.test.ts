@@ -64,6 +64,18 @@ describe('countColour', () => {
   test('returns normal at 89%', () => {
     expect(countColour(89, 100)).toBe('normal');
   });
+
+  test('returns normal when maxWords is 0 (treated as uncapped)', () => {
+    expect(countColour(50, 0)).toBe('normal');
+  });
+
+  test('returns warning at exactly 90% with small cap', () => {
+    expect(countColour(9, 10)).toBe('warning');
+  });
+
+  test('returns normal at 0 words regardless of cap', () => {
+    expect(countColour(0, 100)).toBe('normal');
+  });
 });
 
 describe('renderStatusCount', () => {
@@ -104,5 +116,20 @@ describe('renderStatusCount', () => {
     const html = renderStatusCount(10, 40, 100);
     // No class attribute on span at normal level
     expect(html).not.toMatch(/class=/);
+  });
+
+  test('renders uncapped count when maxWords is undefined', () => {
+    const html = renderStatusCount(5, 20, undefined);
+    expect(html).toContain('5 words');
+    expect(html).toContain('20 chars');
+    // Uncapped format: no "X / Y words" pattern
+    expect(html).not.toMatch(/\d+ \/ \d+ words/);
+  });
+
+  test('renders uncapped count when maxWords is 0', () => {
+    // maxWords=0 is falsy, so renderStatusCount treats it as uncapped
+    const html = renderStatusCount(10, 50, 0 as unknown as null);
+    expect(html).toContain('10 words');
+    expect(html).not.toMatch(/\d+ \/ \d+ words/);
   });
 });

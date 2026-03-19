@@ -23,16 +23,30 @@ describe('sanitizeSchema', () => {
     expect(inputAttrs).toContain('disabled');
   });
 
-  test('includes KaTeX MathML tag names', () => {
+  test('includes all KaTeX MathML tag names', () => {
     const tags = sanitizeSchema.tagNames;
     expect(tags).toBeDefined();
-    expect(tags).toContain('math');
-    expect(tags).toContain('semantics');
-    expect(tags).toContain('mrow');
-    expect(tags).toContain('mfrac');
-    expect(tags).toContain('msup');
-    expect(tags).toContain('msub');
-    expect(tags).toContain('annotation');
+    // All 16 MathML tags from the PRD schema
+    for (const tag of [
+      'math',
+      'semantics',
+      'mrow',
+      'mi',
+      'mo',
+      'mn',
+      'msup',
+      'msub',
+      'mfrac',
+      'mover',
+      'munder',
+      'msqrt',
+      'mtable',
+      'mtr',
+      'mtd',
+      'annotation',
+    ]) {
+      expect(tags).toContain(tag);
+    }
   });
 
   test('preserves default schema tagNames', () => {
@@ -49,5 +63,20 @@ describe('sanitizeSchema', () => {
   test('does not include script tag', () => {
     const tags = sanitizeSchema.tagNames;
     expect(tags).not.toContain('script');
+  });
+
+  test('does not allow style attribute on non-span elements', () => {
+    // Only span should have style — verify div and p do not
+    const divAttrs = sanitizeSchema.attributes?.['div'];
+    const pAttrs = sanitizeSchema.attributes?.['p'];
+    if (Array.isArray(divAttrs)) expect(divAttrs).not.toContain('style');
+    if (Array.isArray(pAttrs)) expect(pAttrs).not.toContain('style');
+  });
+
+  test('does not include iframe or object tags', () => {
+    const tags = sanitizeSchema.tagNames;
+    expect(tags).not.toContain('iframe');
+    expect(tags).not.toContain('object');
+    expect(tags).not.toContain('embed');
   });
 });
