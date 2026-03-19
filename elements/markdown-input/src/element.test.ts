@@ -173,6 +173,36 @@ describe('ElDmMarkdownInput', () => {
         cleanup(el);
       });
     });
+
+    test('readonly attribute disables attach button', () => {
+      el.setAttribute('readonly', '');
+      return Promise.resolve().then(() => {
+        const attachBtn = el.shadowRoot!.querySelector('.attach-btn') as HTMLButtonElement;
+        expect(attachBtn.disabled).toBe(true);
+        cleanup(el);
+      });
+    });
+
+    test('removing disabled attribute re-enables textarea', () => {
+      el.setAttribute('disabled', '');
+      return Promise.resolve().then(() => {
+        el.removeAttribute('disabled');
+        return Promise.resolve().then(() => {
+          expect(getTextarea(el).disabled).toBe(false);
+          cleanup(el);
+        });
+      });
+    });
+
+    test('max-words attribute sets maxWords prop', () => {
+      el.setAttribute('max-words', '100');
+      return Promise.resolve().then(() => {
+        const statusCount = el.shadowRoot!.querySelector('.status-bar-count');
+        // With 0 words and maxWords=100, should show "0 / 100"
+        expect(statusCount?.textContent).toContain('100');
+        cleanup(el);
+      });
+    });
   });
 
   // ── Public API ────────────────────────────────────────────────────
@@ -406,6 +436,56 @@ describe('ElDmMarkdownInput', () => {
       const statusCount = el.shadowRoot!.querySelector('.status-bar-count');
       expect(statusCount?.textContent).toContain('3');
       cleanup(el);
+    });
+
+    test('shows word cap fraction when max-words is set', async () => {
+      const cappedEl = createElement({ 'max-words': '10' });
+      // Wait for reactive property to apply
+      await Promise.resolve();
+
+      const ta = getTextarea(cappedEl);
+      ta.value = 'one two three';
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+
+      await new Promise((r) => setTimeout(r, 150));
+
+      const statusCount = cappedEl.shadowRoot!.querySelector('.status-bar-count');
+      // Should show "3 / 10 words"
+      expect(statusCount?.textContent).toContain('3 / 10');
+      cleanup(cappedEl);
+    });
+
+    test('shows warning style when approaching word cap', async () => {
+      const cappedEl = createElement({ 'max-words': '10' });
+      await Promise.resolve();
+
+      const ta = getTextarea(cappedEl);
+      ta.value = 'one two three four five six seven eight nine'; // 9 words = 90%
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+
+      await new Promise((r) => setTimeout(r, 150));
+
+      const statusCount = cappedEl.shadowRoot!.querySelector('.status-bar-count');
+      // At 90%+ the inner span gets class="warning"
+      const inner = statusCount?.querySelector('span');
+      expect(inner?.className).toBe('warning');
+      cleanup(cappedEl);
+    });
+
+    test('shows error style when exceeding word cap', async () => {
+      const cappedEl = createElement({ 'max-words': '3' });
+      await Promise.resolve();
+
+      const ta = getTextarea(cappedEl);
+      ta.value = 'one two three four five'; // 5 words > 3 cap
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+
+      await new Promise((r) => setTimeout(r, 150));
+
+      const statusCount = cappedEl.shadowRoot!.querySelector('.status-bar-count');
+      const inner = statusCount?.querySelector('span');
+      expect(inner?.className).toBe('error');
+      cleanup(cappedEl);
     });
   });
 
