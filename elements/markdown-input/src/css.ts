@@ -451,4 +451,14 @@ export const elementStyles = css`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  /* ── Reduced motion: disable all transitions and animations ──────── */
+  @media (prefers-reduced-motion: reduce) {
+    .tab-btn,
+    .attach-btn,
+    .ac-item,
+    .upload-bar {
+      transition: none;
+    }
+  }
 `;
