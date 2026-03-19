@@ -71,8 +71,12 @@ export function confirmSuggestion(
   const before = value.slice(0, triggerPos);
   const after = value.slice(cursorPos);
   const inserted = `${trigger}${replacement}`;
-  const newValue = before + inserted + after;
-  const newCursorPos = triggerPos + inserted.length;
+  // Add a trailing space so the user can continue typing immediately,
+  // unless the next character is already a space or we're at end of line
+  const needsSpace = after.length === 0 || (after[0] !== ' ' && after[0] !== '\n');
+  const suffix = needsSpace ? ' ' : '';
+  const newValue = before + inserted + suffix + after;
+  const newCursorPos = triggerPos + inserted.length + suffix.length;
   return { newValue, newCursorPos };
 }
 

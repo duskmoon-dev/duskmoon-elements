@@ -78,15 +78,16 @@ describe('detectTrigger', () => {
 });
 
 describe('confirmSuggestion', () => {
-  test('replaces @ query with suggestion id', () => {
+  test('replaces @ query with suggestion id and adds trailing space', () => {
     const { newValue, newCursorPos } = confirmSuggestion('@ali', 0, 4, '@', 'asmith');
-    expect(newValue).toBe('@asmith');
-    expect(newCursorPos).toBe(7);
+    expect(newValue).toBe('@asmith ');
+    expect(newCursorPos).toBe(8);
   });
 
-  test('replaces # query in mid-string', () => {
+  test('replaces # query in mid-string without double space', () => {
     const { newValue, newCursorPos } = confirmSuggestion('fix #bug here', 4, 8, '#', '42');
     expect(newValue).toBe('fix #42 here');
+    // Cursor lands right after "#42" (space already present, not duplicated)
     expect(newCursorPos).toBe(7);
   });
 
@@ -96,21 +97,33 @@ describe('confirmSuggestion', () => {
     expect(newValue).toBe('Hello @alice world');
   });
 
-  test('handles trigger at end of string', () => {
+  test('handles trigger at end of string with trailing space', () => {
     const { newValue, newCursorPos } = confirmSuggestion('ping @', 5, 6, '@', 'bob');
-    expect(newValue).toBe('ping @bob');
-    expect(newCursorPos).toBe(9);
+    expect(newValue).toBe('ping @bob ');
+    expect(newCursorPos).toBe(10);
   });
 
   test('handles empty replacement', () => {
     const { newValue } = confirmSuggestion('@query', 0, 6, '@', '');
-    expect(newValue).toBe('@');
+    expect(newValue).toBe('@ ');
   });
 
   test('handles triggerPos equal to cursorPos (empty query)', () => {
     const { newValue, newCursorPos } = confirmSuggestion('tag @', 4, 5, '@', 'alice');
-    expect(newValue).toBe('tag @alice');
-    expect(newCursorPos).toBe(10);
+    expect(newValue).toBe('tag @alice ');
+    expect(newCursorPos).toBe(11);
+  });
+
+  test('does not add trailing space when next char is newline', () => {
+    const { newValue, newCursorPos } = confirmSuggestion('@ali\nmore', 0, 4, '@', 'asmith');
+    expect(newValue).toBe('@asmith\nmore');
+    expect(newCursorPos).toBe(7);
+  });
+
+  test('does not add trailing space when next char is already a space', () => {
+    const { newValue, newCursorPos } = confirmSuggestion('@ali rest', 0, 4, '@', 'asmith');
+    expect(newValue).toBe('@asmith rest');
+    expect(newCursorPos).toBe(7);
   });
 });
 
