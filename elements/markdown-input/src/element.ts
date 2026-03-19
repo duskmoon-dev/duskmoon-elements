@@ -210,6 +210,10 @@ export class ElDmMarkdownInput extends BaseElement {
       ta.value = propVal;
       this.#syncFormValue();
       this.#scheduleHighlight();
+      // Re-render preview if the value changed while the preview tab is active
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#renderPreview(propVal);
+      }
     }
 
     // Update Prism theme when dark attribute changes
