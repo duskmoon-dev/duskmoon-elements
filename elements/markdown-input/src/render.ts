@@ -54,7 +54,11 @@ async function buildProcessor(): Promise<Processor> {
 
 function getProcessor(): Promise<Processor> {
   if (!processorPromise) {
-    processorPromise = buildProcessor();
+    processorPromise = buildProcessor().catch((err) => {
+      // Clear cache on failure so subsequent calls retry the imports
+      processorPromise = null;
+      throw err;
+    });
   }
   return processorPromise;
 }
