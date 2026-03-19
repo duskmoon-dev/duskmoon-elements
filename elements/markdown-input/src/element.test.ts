@@ -511,4 +511,122 @@ describe('ElDmMarkdownInput', () => {
       expect(() => el.remove()).not.toThrow();
     });
   });
+
+  // ── Edge cases ────────────────────────────────────────────────────
+
+  describe('edge cases', () => {
+    test('setValue before element is connected stores value in reactive prop', () => {
+      const detached = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      // Before connecting, setValue falls through to reactive prop
+      detached.setValue('pre-connect value');
+      // Now connect — the initial update should pick up the stored value
+      document.body.appendChild(detached);
+      expect(detached.getValue()).toBe('pre-connect value');
+      detached.remove();
+    });
+
+    test('getValue returns empty string when called before first render', () => {
+      const detached = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      expect(detached.getValue()).toBe('');
+    });
+
+    test('insertText on empty textarea appends text', () => {
+      el.insertText('appended');
+      expect(el.getValue()).toBe('appended');
+      cleanup(el);
+    });
+
+    test('multiple setValue calls use the last value', () => {
+      el.setValue('first');
+      el.setValue('second');
+      el.setValue('third');
+      expect(el.getValue()).toBe('third');
+      cleanup(el);
+    });
+
+    test('setSuggestions with single item selects it', () => {
+      el.setSuggestions([{ id: 'only', label: 'Only Option' }]);
+      const dropdown = el.shadowRoot!.querySelector('.ac-dropdown')!;
+      const item = dropdown.querySelector('[data-ac-index="0"]');
+      expect(item?.getAttribute('aria-selected')).toBe('true');
+      cleanup(el);
+    });
+
+    test('tab switching back to write preserves textarea content', () => {
+      el.setValue('preserved');
+      getTabButton(el, 'preview').click();
+      getTabButton(el, 'write').click();
+      expect(el.getValue()).toBe('preserved');
+      cleanup(el);
+    });
+
+    test('disabled blocks drag-and-drop uploads', () => {
+      el.setAttribute('disabled', '');
+      return Promise.resolve().then(() => {
+        const errors: string[] = [];
+        el.addEventListener('upload-start', () => {
+          errors.push('should not fire');
+        });
+
+        const writeArea = el.shadowRoot!.querySelector('.write-area') as HTMLElement;
+        const dropEvent = new Event('drop', { bubbles: true }) as Event & {
+          dataTransfer: { files: File[] };
+        };
+        Object.defineProperty(dropEvent, 'dataTransfer', {
+          value: { files: [new File(['x'], 'test.png', { type: 'image/png' })] },
+        });
+        Object.defineProperty(dropEvent, 'preventDefault', { value: () => {} });
+        writeArea.dispatchEvent(dropEvent);
+
+        expect(errors.length).toBe(0);
+        cleanup(el);
+      });
+    });
+
+    test('empty setValue clears textarea', () => {
+      el.setValue('content');
+      el.setValue('');
+      expect(el.getValue()).toBe('');
+      cleanup(el);
+    });
+
+    test('render-start event fires when preview tab is activated', () => {
+      const events: string[] = [];
+      el.addEventListener('render-start', () => events.push('render-start'));
+      getTabButton(el, 'preview').click();
+      expect(events).toContain('render-start');
+      cleanup(el);
+    });
+
+    test('attach button click opens file input', () => {
+      let fileInputClicked = false;
+      const fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
+      fileInput.click = () => {
+        fileInputClicked = true;
+      };
+      const attachBtn = el.shadowRoot!.querySelector('.attach-btn') as HTMLButtonElement;
+      attachBtn.click();
+      expect(fileInputClicked).toBe(true);
+      cleanup(el);
+    });
+
+    test('arrow key navigation in toolbar switches tabs', () => {
+      const toolbar = el.shadowRoot!.querySelector('.toolbar') as HTMLElement;
+      const event = new Event('keydown', { bubbles: true }) as Event & Record<string, unknown>;
+      Object.assign(event, { key: 'ArrowRight' });
+      Object.defineProperty(event, 'preventDefault', { value: () => {} });
+      toolbar.dispatchEvent(event);
+      expect(getTabButton(el, 'preview').getAttribute('aria-selected')).toBe('true');
+      cleanup(el);
+    });
+
+    test('value attribute reflects through to textarea', () => {
+      const attrEl = createElement({ value: 'from-attribute' });
+      return Promise.resolve().then(() => {
+        // The value should be applied after initial render
+        expect(attrEl.getValue()).toBe('from-attribute');
+        cleanup(attrEl);
+      });
+    });
+  });
 });
