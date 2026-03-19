@@ -391,6 +391,7 @@ export class ElDmMarkdownInput extends BaseElement {
       writeArea.addEventListener('drop', (e) => {
         e.preventDefault();
         writeArea.style.opacity = '';
+        if ((this as unknown as { disabled: boolean }).disabled) return;
         if ((this as unknown as { readonly: boolean }).readonly) return;
         const files = Array.from(e.dataTransfer?.files ?? []).filter(isAcceptedType);
         files.forEach((f) => this.#startUpload(f));
@@ -399,6 +400,7 @@ export class ElDmMarkdownInput extends BaseElement {
 
     // ── Clipboard paste (images only) ─────────────────────────────
     ta.addEventListener('paste', (e) => {
+      if ((this as unknown as { disabled: boolean }).disabled) return;
       if ((this as unknown as { readonly: boolean }).readonly) return;
       const imageFiles = Array.from(e.clipboardData?.files ?? []).filter((f) =>
         f.type.startsWith('image/'),
