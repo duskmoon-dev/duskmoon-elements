@@ -167,9 +167,7 @@ describe('fileToMarkdown', () => {
 
   test('handles filename with ] that could close markdown link text', () => {
     const file = makeFile('evil](http://evil.com)[x', 'application/pdf');
-    expect(fileToMarkdown(file, '/safe.pdf')).toBe(
-      '[evil\\](http://evil.com)\\[x](/safe.pdf)',
-    );
+    expect(fileToMarkdown(file, '/safe.pdf')).toBe('[evil\\](http://evil.com)\\[x](/safe.pdf)');
   });
 });
 
