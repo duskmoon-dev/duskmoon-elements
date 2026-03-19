@@ -836,6 +836,17 @@ export class ElDmMarkdownInput extends BaseElement {
     const chars = text.length;
     const maxWords = (this as unknown as { maxWords: number | undefined }).maxWords ?? null;
     this.#statusCount.innerHTML = renderStatusCount(words, chars, maxWords);
+
+    // Report form validity — mark as invalid when word cap is exceeded
+    if (maxWords && words > maxWords) {
+      this.#internals?.setValidity(
+        { customError: true },
+        `Content exceeds ${maxWords} word limit (${words} words)`,
+        this.#textarea ?? undefined,
+      );
+    } else {
+      this.#internals?.setValidity({});
+    }
   }
 
   // ════════════════════════════════════════════════════════════════════
