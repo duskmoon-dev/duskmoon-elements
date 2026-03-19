@@ -276,6 +276,7 @@ export class ElDmMarkdownInput extends BaseElement {
           <textarea
             aria-label="Markdown editor"
             aria-haspopup="listbox"
+            aria-expanded="false"
             aria-autocomplete="list"
             aria-controls="ac-dropdown"
             placeholder="${escapeHtmlStr(ph)}"
@@ -807,17 +808,21 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#acDropdown.innerHTML = '';
       this.#acDropdown.hidden = true;
     }
+    this.#textarea?.setAttribute('aria-expanded', 'false');
+    this.#textarea?.removeAttribute('aria-activedescendant');
   }
 
   #updateDropdown(): void {
     if (!this.#acDropdown) return;
     if (this.#acSuggestions.length === 0) {
       this.#acDropdown.hidden = true;
+      this.#textarea?.setAttribute('aria-expanded', 'false');
       this.#textarea?.removeAttribute('aria-activedescendant');
       return;
     }
     this.#acDropdown.innerHTML = renderDropdown(this.#acSuggestions, this.#acSelectedIndex);
     this.#acDropdown.hidden = false;
+    this.#textarea?.setAttribute('aria-expanded', 'true');
     // Update aria-activedescendant so screen readers announce the highlighted item
     if (this.#acSelectedIndex >= 0) {
       this.#textarea?.setAttribute('aria-activedescendant', `ac-item-${this.#acSelectedIndex}`);
