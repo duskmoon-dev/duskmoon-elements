@@ -120,7 +120,6 @@ export class ElDmMarkdownInput extends BaseElement {
   // ── Render pipeline (lazy-loaded) ───────────────────────────────────
   #renderFn: typeof RenderFn | null = null;
   #mermaidFn: typeof MermaidFn | null = null;
-  #renderLoading = false;
   #livePreviewTimer: ReturnType<typeof setTimeout> | null = null;
   #renderAbortController: AbortController | null = null;
 
@@ -846,21 +845,6 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#acSelectedIndex = list.length > 0 ? 0 : -1;
     this.#updateDropdown();
   }
-}
-
-/**
- * Sanitize a URL for use in rendered HTML (preview tab).
- * Only allows https://, http://, relative paths, and anchor fragments.
- * Rejects javascript:, data:, vbscript:, and other unsafe protocols.
- */
-function sanitizeUrl(url: string): string {
-  const trimmed = url.trim();
-  // Has no protocol → relative URL, safe
-  if (!/^[a-z][a-z\d+\-.]*:/i.test(trimmed)) return trimmed;
-  // Allow http and https only
-  if (/^https?:/i.test(trimmed)) return trimmed;
-  // All other protocols (javascript:, data:, vbscript:, …) → neutralise
-  return '#';
 }
 
 /** HTML-escape a string for safe insertion into innerHTML. */
