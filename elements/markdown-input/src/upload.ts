@@ -25,12 +25,18 @@ export function isAcceptedType(file: File): boolean {
 /**
  * Generate the markdown insertion string for an uploaded file.
  * Images use `![name](url)`, all other files use `[name](url)`.
+ *
+ * Filenames and URLs are escaped to prevent markdown syntax injection:
+ * - `[` and `]` in filenames are backslash-escaped
+ * - `(` and `)` in URLs are percent-encoded
  */
 export function fileToMarkdown(file: File, url: string): string {
+  const safeName = file.name.replace(/[[\]]/g, '\\$&');
+  const safeUrl = url.replace(/\(/g, '%28').replace(/\)/g, '%29');
   if (file.type.startsWith('image/')) {
-    return `![${file.name}](${url})`;
+    return `![${safeName}](${safeUrl})`;
   }
-  return `[${file.name}](${url})`;
+  return `[${safeName}](${safeUrl})`;
 }
 
 /**

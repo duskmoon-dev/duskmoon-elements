@@ -148,16 +148,28 @@ describe('fileToMarkdown', () => {
     expect(fileToMarkdown(file, '/uploads/logo.svg')).toBe('![logo.svg](/uploads/logo.svg)');
   });
 
-  test('embeds brackets in filename verbatim', () => {
-    // Note: filenames with markdown-special chars produce technically malformed
-    // markdown — this test documents current behavior (no escaping).
+  test('escapes brackets in filename to prevent markdown injection', () => {
     const file = makeFile('file[1].png', 'image/png');
-    expect(fileToMarkdown(file, '/u/file.png')).toBe('![file[1].png](/u/file.png)');
+    expect(fileToMarkdown(file, '/u/file.png')).toBe('![file\\[1\\].png](/u/file.png)');
   });
 
-  test('embeds parentheses in URL verbatim', () => {
+  test('percent-encodes parentheses in URL to prevent markdown injection', () => {
     const file = makeFile('doc.pdf', 'application/pdf');
-    expect(fileToMarkdown(file, '/u/doc%20(1).pdf')).toBe('[doc.pdf](/u/doc%20(1).pdf)');
+    expect(fileToMarkdown(file, '/u/doc%20(1).pdf')).toBe('[doc.pdf](/u/doc%20%281%29.pdf)');
+  });
+
+  test('escapes both brackets in filename and parens in URL', () => {
+    const file = makeFile('report[final].png', 'image/png');
+    expect(fileToMarkdown(file, '/u/report(2).png')).toBe(
+      '![report\\[final\\].png](/u/report%282%29.png)',
+    );
+  });
+
+  test('handles filename with ] that could close markdown link text', () => {
+    const file = makeFile('evil](http://evil.com)[x', 'application/pdf');
+    expect(fileToMarkdown(file, '/safe.pdf')).toBe(
+      '[evil\\](http://evil.com)\\[x](/safe.pdf)',
+    );
   });
 });
 
