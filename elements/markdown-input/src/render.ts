@@ -130,7 +130,10 @@ export async function renderMermaidBlocks(
       wrapper.className = 'mermaid-diagram';
       // Safety: mermaid's rendered SVG is treated as trusted output from the
       // mermaid library (not user HTML). It bypasses rehype-sanitize intentionally.
-      // If upgrading mermaid, verify its output does not include user-controlled content.
+      // Known risk: if mermaid emits user-controlled content in SVG attributes or
+      // text nodes a XSS could occur. The mermaid-src URL is validated to https: only.
+      // TODO: run mermaid output through DOMPurify for defense-in-depth once a
+      // lightweight sanitizer integration is available without bloating the bundle.
       wrapper.innerHTML = svg;
       pre.replaceWith(wrapper);
     } catch {

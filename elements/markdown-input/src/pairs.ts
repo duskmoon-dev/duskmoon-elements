@@ -96,7 +96,7 @@ type ContinuationResult = { prefix: string; eraseCurrentLine: false } | { eraseC
  * Return value:
  *  - null                        → do nothing (fall through to native Enter)
  *  - { prefix, eraseCurrentLine: false } → insert "\n" + prefix
- *  - { eraseCurrentLine: true }  → erase current line's content and insert "\n"
+ *  - { eraseCurrentLine: true }  → erase the current line's bullet prefix (no "\n" inserted)
  *
  * Rules to implement:
  *  - `* text`  → continue with `* ` on the next line

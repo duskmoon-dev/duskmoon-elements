@@ -175,10 +175,10 @@ export class ElDmMarkdownInput extends BaseElement {
       // so that required+valueMissing validity is evaluated against the real
       // initial content rather than a transient empty textarea.
       const initVal = (this as unknown as { value: string }).value ?? '';
-      if (initVal && this.#textarea) {
+      if (this.#textarea) {
         this.#textarea.value = initVal;
         this.#syncFormValue();
-        this.#scheduleHighlight();
+        if (initVal) this.#scheduleHighlight();
       }
       this.#updateStatusBarNow();
       return;
@@ -411,6 +411,8 @@ export class ElDmMarkdownInput extends BaseElement {
     const writeArea = this.#writeArea;
     if (writeArea) {
       writeArea.addEventListener('dragover', (e) => {
+        if ((this as unknown as { disabled: boolean }).disabled) return;
+        if ((this as unknown as { readonly: boolean }).readonly) return;
         e.preventDefault();
         writeArea.style.opacity = '0.8';
       });
@@ -976,8 +978,10 @@ export class ElDmMarkdownInput extends BaseElement {
     const newPos = start + str.length;
     ta.setSelectionRange(newPos, newPos);
     // Dispatch 'input' — the textarea's input listener handles syncFormValue(),
-    // emit('change'), scheduleHighlight(), scheduleStatusUpdate(), and autocomplete
-    ta.dispatchEvent(new Event('input', { bubbles: true }));
+    // emit('change'), scheduleHighlight(), scheduleStatusUpdate(), and autocomplete.
+    // bubbles: false keeps the synthetic event inside the shadow root so it is not
+    // observable on the host element (preventing shadow DOM boundary leakage).
+    ta.dispatchEvent(new Event('input', { bubbles: false }));
   }
 
   /**

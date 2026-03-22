@@ -68,6 +68,11 @@ export function ensurePrism(): Promise<void> {
     window.Prism.manual = true;
     return _loadScript(PRISM_AUTOLOADER_URL).then(() => {
       if (window.Prism?.plugins?.autoloader) {
+        // Security note: individual language grammar scripts (e.g. prism-python.min.js)
+        // loaded by the autoloader are fetched from the same cdnjs base URL but without
+        // per-file SRI hashes. A compromised CDN could serve malicious grammar scripts.
+        // Acceptable trade-off for syntax highlighting; mitigated by SRI on core + autoloader.
+        // TODO: consider bundling commonly-used grammars statically to remove this gap.
         window.Prism.plugins.autoloader.languages_path = `${PRISM_BASE}/components/`;
       }
     });
