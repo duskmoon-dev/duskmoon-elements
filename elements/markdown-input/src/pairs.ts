@@ -69,14 +69,14 @@ export function handleEnterKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boole
   e.preventDefault();
 
   if (result.eraseCurrentLine) {
-    // Erase the current line's prefix (e.g. exit an empty list bullet)
-    const newValue = value.slice(0, lineStart) + '\n' + value.slice(pos);
+    // Remove the current line's prefix — don't add '\n'; value.slice(pos)
+    // already starts with it (if content follows) or the line is at EOF.
+    const newValue = value.slice(0, lineStart) + value.slice(pos);
     ta.value = newValue;
-    ta.setSelectionRange(lineStart + 1, lineStart + 1);
+    ta.setSelectionRange(lineStart, lineStart);
   } else {
     // Insert newline + continuation prefix
-    const newValue =
-      value.slice(0, pos) + '\n' + result.prefix + value.slice(ta.selectionEnd);
+    const newValue = value.slice(0, pos) + '\n' + result.prefix + value.slice(ta.selectionEnd);
     const newPos = pos + 1 + result.prefix.length;
     ta.value = newValue;
     ta.setSelectionRange(newPos, newPos);
@@ -87,9 +87,7 @@ export function handleEnterKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boole
 
 // ─── Continuation policy ─────────────────────────────────────────────────────
 
-type ContinuationResult =
-  | { prefix: string; eraseCurrentLine: false }
-  | { eraseCurrentLine: true };
+type ContinuationResult = { prefix: string; eraseCurrentLine: false } | { eraseCurrentLine: true };
 
 /**
  * Given the text of the current line (from line-start to cursor), decide what
@@ -110,18 +108,15 @@ type ContinuationResult =
  *  - Ordered lists (`1. `, `2. `) are out of scope for now.
  *  - Blockquote (`> `) continuation is a bonus if you want it.
  */
-export function getLineContinuation(_line: string): ContinuationResult | null {
-  // TODO: implement the continuation policy (5-10 lines)
-  //
-  // Useful patterns:
-  //   Unordered list:  /^(\* )(.*)$/   — group 1 = prefix, group 2 = content
-  //   ATX heading:     /^(#{1,6} )(.*)$/ — group 1 = "### ", group 2 = content
-  //
-  // Examples:
-  //   getLineContinuation('* todo item') → { prefix: '* ', eraseCurrentLine: false }
-  //   getLineContinuation('* ')          → { eraseCurrentLine: true }
-  //   getLineContinuation('### Heading') → { prefix: '', eraseCurrentLine: false }
-  //   getLineContinuation('plain text')  → null
+export function getLineContinuation(line: string): ContinuationResult | null {
+  // Empty unordered bullet → break out of list
+  if (line === '* ') return { eraseCurrentLine: true };
+
+  // Unordered list with content → continue bullet on next line
+  if (/^\* ./.test(line)) return { prefix: '* ', eraseCurrentLine: false };
+
+  // ATX heading (any level) → plain newline, no heading continuation
+  if (/^#{1,6} ./.test(line)) return { prefix: '', eraseCurrentLine: false };
 
   return null;
 }
