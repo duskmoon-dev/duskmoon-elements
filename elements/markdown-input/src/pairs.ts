@@ -110,7 +110,7 @@ type ContinuationResult =
  *  - Ordered lists (`1. `, `2. `) are out of scope for now.
  *  - Blockquote (`> `) continuation is a bonus if you want it.
  */
-export function getLineContinuation(line: string): ContinuationResult | null {
+export function getLineContinuation(_line: string): ContinuationResult | null {
   // TODO: implement the continuation policy (5-10 lines)
   //
   // Useful patterns:
