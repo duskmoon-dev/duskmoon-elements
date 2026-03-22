@@ -35,6 +35,7 @@ import { elementStyles } from './css.js';
 import { ensurePrism, highlightMarkdown, applyPrismTheme } from './highlight.js';
 import { uploadFile, fileToMarkdown, isAcceptedType } from './upload.js';
 import { detectTrigger, confirmSuggestion, renderDropdown } from './autocomplete.js';
+import { handlePairKey, handleEnterKey } from './pairs.js';
 import { countWords, renderStatusCount } from './status-bar.js';
 import type { Suggestion } from './types.js';
 
@@ -366,15 +367,46 @@ export class ElDmMarkdownInput extends BaseElement {
       }, 150);
     });
 
-    // ── Tab key for autocomplete (prevent default only when dropdown open) ──
+    // ── Keydown: autocomplete nav, smart pairs, list/heading continuation ──
     ta.addEventListener('keydown', (e) => {
+      // Autocomplete dropdown takes priority when open
       if (this.#acSuggestions.length > 0 && !this.#acDropdown?.hidden) {
         this.#handleDropdownKeydown(e);
+        if (e.defaultPrevented) return;
       }
+
       // Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac) → toggle preview
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
         e.preventDefault();
         this.#switchTab(this.#activeTab === 'write' ? 'preview' : 'write');
+        return;
+      }
+
+      // Skip smart editing when the editor is read-only or disabled
+      if (
+        (this as unknown as { disabled: boolean }).disabled ||
+        (this as unknown as { readonly: boolean }).readonly
+      ) {
+        return;
+      }
+
+      // Smart pair insertion (backtick pairing)
+      if (!e.ctrlKey && !e.metaKey && !e.altKey && handlePairKey(ta, e.key)) {
+        e.preventDefault();
+        this.#syncFormValue();
+        this.emit('change', { value: ta.value });
+        this.#scheduleHighlight();
+        return;
+      }
+
+      // List/heading Enter continuation
+      if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (handleEnterKey(ta, e)) {
+          this.#syncFormValue();
+          this.emit('change', { value: ta.value });
+          this.#scheduleHighlight();
+          this.#scheduleStatusUpdate();
+        }
       }
     });
 
