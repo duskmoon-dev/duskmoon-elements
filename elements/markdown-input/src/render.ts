@@ -99,7 +99,15 @@ export async function renderMermaidBlocks(
   const blocks = container.querySelectorAll('pre > code.language-mermaid');
   if (blocks.length === 0) return;
 
-  // Dynamic import — either from provided URL or the npm package
+  // Dynamic import — either from provided URL or the npm package.
+  // Only https: URLs are accepted to prevent arbitrary code execution via
+  // a consumer-supplied mermaid-src attribute pointing to a malicious module.
+  if (mermaidSrc !== undefined && !/^https:\/\//i.test(mermaidSrc)) {
+    console.warn(
+      `[el-dm-markdown-input] mermaid-src "${mermaidSrc}" rejected — only https: URLs are allowed. Falling back to bundled mermaid.`,
+    );
+    mermaidSrc = undefined;
+  }
   const mermaidModule = mermaidSrc
     ? await import(/* @vite-ignore */ mermaidSrc)
     : await import('mermaid');

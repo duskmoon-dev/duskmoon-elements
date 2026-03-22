@@ -17,6 +17,15 @@ declare global {
 const PRISM_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0';
 const PRISM_CORE_URL = `${PRISM_BASE}/prism.min.js`;
 const PRISM_AUTOLOADER_URL = `${PRISM_BASE}/plugins/autoloader/prism-autoloader.min.js`;
+
+// Subresource Integrity hashes for Prism 1.29.0 from cdnjs.
+// Update these whenever the CDN URL or version changes.
+const PRISM_SRI: Record<string, string> = {
+  [PRISM_CORE_URL]:
+    'sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==',
+  [PRISM_AUTOLOADER_URL]:
+    'sha512-SkmBfuA2hqjzEVpmnMt/LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==',
+};
 const PRISM_THEME_DARK_URL = `${PRISM_BASE}/themes/prism-tomorrow.min.css`;
 const PRISM_THEME_LIGHT_URL = `${PRISM_BASE}/themes/prism-coy.min.css`;
 
@@ -28,6 +37,12 @@ function _loadScript(src: string): Promise<void> {
   return new Promise((resolve) => {
     const script = document.createElement('script');
     script.src = src;
+    // Apply Subresource Integrity if available, to guard against CDN compromise.
+    const integrity = PRISM_SRI[src];
+    if (integrity) {
+      script.integrity = integrity;
+      script.crossOrigin = 'anonymous';
+    }
     script.onload = () => resolve();
     script.onerror = () => resolve(); // resolve even on error (graceful degrade)
     document.head.appendChild(script);
@@ -66,7 +81,7 @@ export function ensurePrism(): Promise<void> {
  * Escapes & first to prevent double-escaping.
  */
 function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /**

@@ -62,6 +62,7 @@ export class ElDmMarkdownInput extends BaseElement {
     placeholder: { type: String, reflect: true, default: 'Write markdown\u2026' },
     disabled: { type: Boolean, reflect: true },
     readonly: { type: Boolean, reflect: true },
+    required: { type: Boolean, reflect: true },
     uploadUrl: { type: String, reflect: true, attribute: 'upload-url' },
     maxWords: { type: Number, reflect: true, attribute: 'max-words' },
     dark: { type: Boolean, reflect: true },
@@ -76,6 +77,7 @@ export class ElDmMarkdownInput extends BaseElement {
   declare placeholder: string;
   declare disabled: boolean;
   declare readonly: boolean;
+  declare required: boolean;
   declare uploadUrl: string | undefined;
   declare maxWords: number | undefined;
   declare dark: boolean;
@@ -901,11 +903,18 @@ export class ElDmMarkdownInput extends BaseElement {
     const maxWords = (this as unknown as { maxWords: number | undefined }).maxWords ?? null;
     this.#statusCount.innerHTML = renderStatusCount(words, chars, maxWords);
 
-    // Report form validity — mark as invalid when word cap is exceeded
+    // Report form validity
+    const isRequired = !!(this as unknown as { required: boolean }).required;
     if (maxWords && words > maxWords) {
       this.#internals?.setValidity(
         { customError: true },
         `Content exceeds ${maxWords} word limit (${words} words)`,
+        this.#textarea ?? undefined,
+      );
+    } else if (isRequired && text.trim() === '') {
+      this.#internals?.setValidity(
+        { valueMissing: true },
+        'Please fill in this field.',
         this.#textarea ?? undefined,
       );
     } else {

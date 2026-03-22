@@ -29,10 +29,20 @@ export function isAcceptedType(file: File): boolean {
  * Filenames and URLs are escaped to prevent markdown syntax injection:
  * - `[` and `]` in filenames are backslash-escaped
  * - `(` and `)` in URLs are percent-encoded
+ *
+ * Only `https:` and relative URLs are accepted. Dangerous schemes like
+ * `javascript:` or `data:` from a compromised upload endpoint are rejected
+ * and replaced with `#unsafe-url` so the markdown is never persisted with
+ * an executable URL.
  */
 export function fileToMarkdown(file: File, url: string): string {
+  // Reject non-https absolute URLs (e.g. javascript:, data:, file:)
+  const isSafeUrl = /^https:\/\//i.test(url) || /^\//.test(url) || /^\.\.?\//.test(url);
+  const safeUrl = isSafeUrl
+    ? url.replace(/\(/g, '%28').replace(/\)/g, '%29')
+    : '#unsafe-url';
+
   const safeName = file.name.replace(/[[\]]/g, '\\$&');
-  const safeUrl = url.replace(/\(/g, '%28').replace(/\)/g, '%29');
   if (file.type.startsWith('image/')) {
     return `![${safeName}](${safeUrl})`;
   }
