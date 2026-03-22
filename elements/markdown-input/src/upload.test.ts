@@ -225,7 +225,7 @@ describe('uploadFile', () => {
     mockXhr.responseText = JSON.stringify({ path: '/files/file.txt' });
     mockXhr._fireLoad();
 
-    await expect(promise).rejects.toBe('Upload response missing url field');
+    await expect(promise).rejects.toThrow('Upload response missing url field');
   });
 
   test('rejects when response is not valid JSON', async () => {
@@ -236,7 +236,7 @@ describe('uploadFile', () => {
     mockXhr.responseText = '<html>OK</html>';
     mockXhr._fireLoad();
 
-    await expect(promise).rejects.toBe('Upload response is not valid JSON');
+    await expect(promise).rejects.toThrow('Upload response is not valid JSON');
   });
 
   test('rejects on non-2xx status', async () => {
@@ -246,7 +246,7 @@ describe('uploadFile', () => {
     mockXhr.status = 413;
     mockXhr._fireLoad();
 
-    await expect(promise).rejects.toBe('Upload failed with status 413');
+    await expect(promise).rejects.toThrow('Upload failed with status 413');
   });
 
   test('rejects on 500 server error', async () => {
@@ -256,7 +256,7 @@ describe('uploadFile', () => {
     mockXhr.status = 500;
     mockXhr._fireLoad();
 
-    await expect(promise).rejects.toBe('Upload failed with status 500');
+    await expect(promise).rejects.toThrow('Upload failed with status 500');
   });
 
   test('rejects on network error', async () => {
@@ -265,7 +265,7 @@ describe('uploadFile', () => {
 
     mockXhr._fireError();
 
-    await expect(promise).rejects.toBe('Network error during upload');
+    await expect(promise).rejects.toThrow('Network error during upload');
   });
 
   test('rejects on abort', async () => {
@@ -274,7 +274,7 @@ describe('uploadFile', () => {
 
     mockXhr._fireAbort();
 
-    await expect(promise).rejects.toBe('Upload aborted');
+    await expect(promise).rejects.toThrow('Upload aborted');
   });
 
   test('reports progress via callback', async () => {

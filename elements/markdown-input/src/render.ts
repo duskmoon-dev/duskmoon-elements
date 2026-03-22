@@ -120,6 +120,9 @@ export async function renderMermaidBlocks(
       const { svg } = await mermaid.render(id, block.textContent ?? '');
       const wrapper = document.createElement('div');
       wrapper.className = 'mermaid-diagram';
+      // Safety: mermaid's rendered SVG is treated as trusted output from the
+      // mermaid library (not user HTML). It bypasses rehype-sanitize intentionally.
+      // If upgrading mermaid, verify its output does not include user-controlled content.
       wrapper.innerHTML = svg;
       pre.replaceWith(wrapper);
     } catch {

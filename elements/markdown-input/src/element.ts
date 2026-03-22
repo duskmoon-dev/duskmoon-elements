@@ -147,13 +147,6 @@ export class ElDmMarkdownInput extends BaseElement {
 
   connectedCallback(): void {
     super.connectedCallback(); // triggers initial update() → render()
-
-    // Set initial form value from the reactive `value` property
-    const initial = (this as unknown as { value: string }).value ?? '';
-    if (initial && this.#textarea) {
-      this.#textarea.value = initial;
-      this.#syncFormValue();
-    }
   }
 
   disconnectedCallback(): void {
@@ -613,10 +606,16 @@ export class ElDmMarkdownInput extends BaseElement {
       const { renderMarkdown, renderMermaidBlocks } = await this.#loadRenderPipeline();
 
       // If this render was aborted (new one started), bail out
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
       const html = await renderMarkdown(source);
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
       preview.innerHTML = html;
       preview.removeAttribute('aria-busy');
@@ -627,7 +626,10 @@ export class ElDmMarkdownInput extends BaseElement {
       // Mermaid post-render step
       const mermaidSrc = (this as unknown as { mermaidSrc: string | undefined }).mermaidSrc;
       await renderMermaidBlocks(preview, mermaidSrc);
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
       // Update cache only after the full render pipeline (including mermaid)
       // completes successfully. Setting it earlier would cause cache hits
@@ -636,7 +638,10 @@ export class ElDmMarkdownInput extends BaseElement {
 
       this.emit('render-done', { html });
     } catch (err) {
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
       // Fallback: show raw markdown as preformatted text
       preview.removeAttribute('aria-busy');
@@ -714,9 +719,9 @@ export class ElDmMarkdownInput extends BaseElement {
         this.insertText(markdown);
         this.emit('upload-done', { file, url, markdown });
       })
-      .catch((err: string) => {
+      .catch((err: unknown) => {
         this.#removeUploadRow(id);
-        const errorMsg = typeof err === 'string' ? err : 'Upload failed';
+        const errorMsg = err instanceof Error ? err.message : 'Upload failed';
         this.emit('upload-error', { file, error: errorMsg });
         this.#showUploadError(file, errorMsg);
       });

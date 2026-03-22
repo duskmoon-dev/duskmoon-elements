@@ -46,7 +46,7 @@ export function fileToMarkdown(file: File, url: string): string {
  * @param uploadUrl    POST endpoint — must return `{ url: string }` on 2xx
  * @param onProgress   Callback fired with progress 0–100 during upload
  * @returns            Resolves with the URL from the server response
- * @throws             Rejects with an error message string on failure
+ * @throws             Rejects with an Error on failure
  */
 export function uploadFile(
   file: File,
@@ -71,18 +71,18 @@ export function uploadFile(
           if (data.url) {
             resolve(data.url);
           } else {
-            reject('Upload response missing url field');
+            reject(new Error('Upload response missing url field'));
           }
         } catch {
-          reject('Upload response is not valid JSON');
+          reject(new Error('Upload response is not valid JSON'));
         }
       } else {
-        reject(`Upload failed with status ${xhr.status}`);
+        reject(new Error(`Upload failed with status ${xhr.status}`));
       }
     });
 
-    xhr.addEventListener('error', () => reject('Network error during upload'));
-    xhr.addEventListener('abort', () => reject('Upload aborted'));
+    xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
+    xhr.addEventListener('abort', () => reject(new Error('Upload aborted')));
 
     xhr.open('POST', uploadUrl);
     xhr.send(body);

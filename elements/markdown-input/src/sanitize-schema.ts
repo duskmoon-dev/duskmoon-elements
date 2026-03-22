@@ -33,7 +33,11 @@ function deepMergeSchemas(base: Schema, extension: Partial<Schema>): Schema {
 
 export const sanitizeSchema: Schema = deepMergeSchemas(defaultSchema, {
   attributes: {
-    // KaTeX output
+    // KaTeX output — `style` is required for KaTeX's inline math sizing.
+    // Trade-off: allowing `style` on `span` is a potential injection vector if
+    // a compromised KaTeX version emits user-controlled content. Acceptable here
+    // because KaTeX only renders math expressions from fenced code blocks, not
+    // arbitrary user HTML. Do not widen this allowlist without review.
     span: ['className', 'style'],
     // Mermaid placeholder
     code: ['className'],
