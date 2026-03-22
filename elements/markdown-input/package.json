@@ -41,6 +41,7 @@
   "dependencies": {
     "@duskmoon-dev/core": "^1.13.0",
     "@duskmoon-dev/el-base": "workspace:*",
+    "hast-util-sanitize": "5.0.2",
     "rehype-katex": "7.0.1",
     "rehype-prism-plus": "2.0.2",
     "rehype-sanitize": "6.0.0",
