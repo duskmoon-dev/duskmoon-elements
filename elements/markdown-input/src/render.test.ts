@@ -294,3 +294,64 @@ describe('renderMermaidBlocks (mocked mermaid)', () => {
     expect(html).toContain('🌍');
   });
 });
+
+// ─── renderMermaidBlocks mermaidSrc URL validation ─────────────────────────
+
+describe('renderMermaidBlocks mermaidSrc URL validation', () => {
+  test('falls back to bundled mermaid when mermaidSrc is a javascript: URL', async () => {
+    const container = document.createElement('div');
+    container.innerHTML = `<pre><code class="language-mermaid">graph TD; A-->B;</code></pre>`;
+    const warnSpy: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => warnSpy.push(String(args[0]));
+    try {
+      // Should not import from javascript: URL — should warn and fall back
+      await renderMermaidBlocks(container, 'javascript:alert(1)').catch(() => {});
+    } finally {
+      console.warn = origWarn;
+    }
+    expect(warnSpy.some((m) => m.includes('rejected'))).toBe(true);
+  });
+
+  test('falls back to bundled mermaid when mermaidSrc is a data: URL', async () => {
+    const container = document.createElement('div');
+    container.innerHTML = `<pre><code class="language-mermaid">graph TD; A-->B;</code></pre>`;
+    const warnSpy: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => warnSpy.push(String(args[0]));
+    try {
+      await renderMermaidBlocks(container, 'data:text/javascript,alert(1)').catch(() => {});
+    } finally {
+      console.warn = origWarn;
+    }
+    expect(warnSpy.some((m) => m.includes('rejected'))).toBe(true);
+  });
+
+  test('falls back to bundled mermaid when mermaidSrc is a protocol-relative URL', async () => {
+    const container = document.createElement('div');
+    container.innerHTML = `<pre><code class="language-mermaid">graph TD; A-->B;</code></pre>`;
+    const warnSpy: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => warnSpy.push(String(args[0]));
+    try {
+      await renderMermaidBlocks(container, '//attacker.example.com/evil.js').catch(() => {});
+    } finally {
+      console.warn = origWarn;
+    }
+    expect(warnSpy.some((m) => m.includes('rejected'))).toBe(true);
+  });
+
+  test('accepts https: mermaidSrc without warning', async () => {
+    const container = document.createElement('div');
+    // No mermaid blocks — returns early before attempting the import
+    const warnSpy: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => warnSpy.push(String(args[0]));
+    try {
+      await renderMermaidBlocks(container, 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs');
+    } finally {
+      console.warn = origWarn;
+    }
+    expect(warnSpy.some((m) => m.includes('rejected'))).toBe(false);
+  });
+});

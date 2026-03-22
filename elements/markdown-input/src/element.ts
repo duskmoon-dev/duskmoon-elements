@@ -170,15 +170,17 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#cacheDOMRefs();
       this.#attachEventHandlers();
       this.#initHighlight();
-      this.#updateStatusBarNow();
 
-      // Restore initial value from reactive prop
+      // Restore initial value from reactive prop BEFORE updating status bar,
+      // so that required+valueMissing validity is evaluated against the real
+      // initial content rather than a transient empty textarea.
       const initVal = (this as unknown as { value: string }).value ?? '';
       if (initVal && this.#textarea) {
         this.#textarea.value = initVal;
         this.#syncFormValue();
         this.#scheduleHighlight();
       }
+      this.#updateStatusBarNow();
       return;
     }
 
@@ -659,9 +661,18 @@ export class ElDmMarkdownInput extends BaseElement {
     if (this.#katexCssInjected) return;
     this.#katexCssInjected = true;
 
-    const katexUrl =
+    const rawUrl =
       (this as unknown as { katexCssUrl: string | undefined }).katexCssUrl ??
       'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+
+    // Only allow https: URLs to prevent data:/javascript: CSS injection.
+    // katex-css-url is a trusted-author attribute but must not be user-controlled.
+    const katexUrl = /^https:\/\//i.test(rawUrl) ? rawUrl : 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+    if (katexUrl !== rawUrl) {
+      console.warn(
+        `[el-dm-markdown-input] katex-css-url "${rawUrl}" rejected — only https: URLs are allowed.`,
+      );
+    }
 
     const link = document.createElement('link');
     link.id = 'katex-css';

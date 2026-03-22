@@ -169,6 +169,41 @@ describe('fileToMarkdown', () => {
     const file = makeFile('evil](http://evil.com)[x', 'application/pdf');
     expect(fileToMarkdown(file, '/safe.pdf')).toBe('[evil\\](http://evil.com)\\[x](/safe.pdf)');
   });
+
+  test('replaces javascript: URL with #unsafe-url', () => {
+    const file = makeFile('script.js', 'text/javascript');
+    expect(fileToMarkdown(file, 'javascript:alert(1)')).toBe('[script.js](#unsafe-url)');
+  });
+
+  test('replaces data: URL with #unsafe-url', () => {
+    const file = makeFile('img.png', 'image/png');
+    expect(fileToMarkdown(file, 'data:image/png;base64,abc')).toBe('![img.png](#unsafe-url)');
+  });
+
+  test('replaces file: URL with #unsafe-url', () => {
+    const file = makeFile('doc.txt', 'text/plain');
+    expect(fileToMarkdown(file, 'file:///etc/passwd')).toBe('[doc.txt](#unsafe-url)');
+  });
+
+  test('replaces http: URL with #unsafe-url (only https allowed)', () => {
+    const file = makeFile('img.png', 'image/png');
+    expect(fileToMarkdown(file, 'http://cdn.example.com/img.png')).toBe('![img.png](#unsafe-url)');
+  });
+
+  test('accepts relative path starting with /', () => {
+    const file = makeFile('img.png', 'image/png');
+    expect(fileToMarkdown(file, '/uploads/img.png')).toBe('![img.png](/uploads/img.png)');
+  });
+
+  test('accepts relative path starting with ./', () => {
+    const file = makeFile('doc.pdf', 'application/pdf');
+    expect(fileToMarkdown(file, './files/doc.pdf')).toBe('[doc.pdf](./files/doc.pdf)');
+  });
+
+  test('accepts relative path starting with ../', () => {
+    const file = makeFile('doc.pdf', 'application/pdf');
+    expect(fileToMarkdown(file, '../files/doc.pdf')).toBe('[doc.pdf](../files/doc.pdf)');
+  });
 });
 
 // ════════════════════════════════════════════════════════════════════════
