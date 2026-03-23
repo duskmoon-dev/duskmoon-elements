@@ -108,10 +108,24 @@ export async function renderMermaidBlocks(
     );
     mermaidSrc = undefined;
   }
-  const mermaidModule = mermaidSrc
-    ? await import(/* @vite-ignore */ mermaidSrc)
-    : await import('mermaid');
-  const mermaid = mermaidModule.default ?? mermaidModule;
+
+  // Catch import failure separately so a CDN outage does not destroy the
+  // already-rendered prose HTML. Blocks are marked as errored and we return
+  // without throwing — the caller's prose render survives.
+  let mermaidModule: { default?: unknown } | undefined;
+  try {
+    mermaidModule = mermaidSrc
+      ? await import(/* @vite-ignore */ mermaidSrc)
+      : await import('mermaid');
+  } catch (err) {
+    console.error('[el-dm-markdown-input] Failed to load mermaid: %o', err);
+    blocks.forEach((block) => block.parentElement?.classList.add('mermaid-error'));
+    return;
+  }
+  const mermaid = (mermaidModule.default ?? mermaidModule) as {
+    initialize(opts: Record<string, unknown>): void;
+    render(id: string, src: string): Promise<{ svg: string }>;
+  };
 
   mermaid.initialize({
     startOnLoad: false,
@@ -136,8 +150,13 @@ export async function renderMermaidBlocks(
       // lightweight sanitizer integration is available without bloating the bundle.
       wrapper.innerHTML = svg;
       pre.replaceWith(wrapper);
-    } catch {
-      // Leave original code block on render failure
+    } catch (err) {
+      console.error(
+        '[el-dm-markdown-input] mermaid.render failed for block %s: %o\nSource: %s',
+        id,
+        err,
+        block.textContent?.slice(0, 200),
+      );
       pre.classList.add('mermaid-error');
     }
   }

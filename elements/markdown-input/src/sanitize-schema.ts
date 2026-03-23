@@ -43,6 +43,14 @@ export const sanitizeSchema: Schema = deepMergeSchemas(defaultSchema, {
     code: ['className'],
     // Task list checkboxes (rendered as disabled — no interactive toggling)
     input: ['type', 'checked', 'disabled'],
+    // KaTeX MathML presentation attributes
+    math: ['xmlns', 'display'],
+    annotation: ['encoding'],
+    mi: ['mathvariant'],
+    mo: ['stretchy', 'lspace', 'rspace'],
+    mpadded: ['height', 'depth', 'width', 'lspace', 'voffset'],
+    mspace: ['height', 'depth', 'width'],
+    mstyle: ['mathsize', 'mathcolor', 'mathbackground', 'displaystyle'],
   },
   tagNames: [
     // KaTeX MathML elements
@@ -62,5 +70,15 @@ export const sanitizeSchema: Schema = deepMergeSchemas(defaultSchema, {
     'mtr',
     'mtd',
     'annotation',
+    // Additional KaTeX MathML elements emitted by KaTeX 0.16.x
+    'mtext',
+    'mpadded',
+    'mspace',
+    'merror',
+    'mstyle',
+    'ms',
+    'mphantom',
+    'mmultiscripts',
+    'mprescripts',
   ],
 });

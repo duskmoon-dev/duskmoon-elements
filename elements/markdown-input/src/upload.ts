@@ -51,16 +51,29 @@ export function fileToMarkdown(file: File, url: string): string {
  * Upload a single file to the given URL via XHR POST multipart/form-data.
  *
  * @param file         The file to upload
- * @param uploadUrl    POST endpoint — must return `{ url: string }` on 2xx
+ * @param uploadUrl    POST endpoint — must be an https: or relative URL.
+ *                     Must return `{ url: string }` on 2xx.
  * @param onProgress   Callback fired with progress 0–100 during upload
  * @returns            Resolves with the URL from the server response
- * @throws             Rejects with an Error on failure
+ * @throws             Rejects with an Error on failure or invalid URL
  */
 export function uploadFile(
   file: File,
   uploadUrl: string,
   onProgress: (pct: number) => void,
 ): Promise<string> {
+  // Validate the upload URL scheme to prevent SSRF and accidental data exfiltration.
+  // Only https: and relative URLs are accepted (same policy as fileToMarkdown).
+  const isSafeUploadUrl =
+    /^https:\/\//i.test(uploadUrl) || /^\//.test(uploadUrl) || /^\.\.?\//.test(uploadUrl);
+  if (!isSafeUploadUrl) {
+    return Promise.reject(
+      new Error(
+        `[el-dm-markdown-input] upload-url "${uploadUrl}" rejected — only https: and relative URLs are allowed.`,
+      ),
+    );
+  }
+
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const body = new FormData();
