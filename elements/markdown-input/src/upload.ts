@@ -38,9 +38,7 @@ export function isAcceptedType(file: File): boolean {
 export function fileToMarkdown(file: File, url: string): string {
   // Reject non-https absolute URLs (e.g. javascript:, data:, file:)
   const isSafeUrl = /^https:\/\//i.test(url) || /^\//.test(url) || /^\.\.?\//.test(url);
-  const safeUrl = isSafeUrl
-    ? url.replace(/\(/g, '%28').replace(/\)/g, '%29')
-    : '#unsafe-url';
+  const safeUrl = isSafeUrl ? url.replace(/\(/g, '%28').replace(/\)/g, '%29') : '#unsafe-url';
 
   const safeName = file.name.replace(/[[\]]/g, '\\$&');
   if (file.type.startsWith('image/')) {

@@ -348,7 +348,10 @@ describe('renderMermaidBlocks mermaidSrc URL validation', () => {
     const origWarn = console.warn;
     console.warn = (...args: unknown[]) => warnSpy.push(String(args[0]));
     try {
-      await renderMermaidBlocks(container, 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs');
+      await renderMermaidBlocks(
+        container,
+        'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs',
+      );
     } finally {
       console.warn = origWarn;
     }

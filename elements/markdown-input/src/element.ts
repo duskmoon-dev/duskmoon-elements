@@ -669,7 +669,9 @@ export class ElDmMarkdownInput extends BaseElement {
 
     // Only allow https: URLs to prevent data:/javascript: CSS injection.
     // katex-css-url is a trusted-author attribute but must not be user-controlled.
-    const katexUrl = /^https:\/\//i.test(rawUrl) ? rawUrl : 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+    const katexUrl = /^https:\/\//i.test(rawUrl)
+      ? rawUrl
+      : 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
     if (katexUrl !== rawUrl) {
       console.warn(
         `[el-dm-markdown-input] katex-css-url "${rawUrl}" rejected — only https: URLs are allowed.`,
