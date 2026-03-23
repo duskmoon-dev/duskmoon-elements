@@ -122,7 +122,7 @@ export async function renderMermaidBlocks(
     blocks.forEach((block) => block.parentElement?.classList.add('mermaid-error'));
     return;
   }
-  const mermaid = (mermaidModule.default ?? mermaidModule) as {
+  const mermaid = (mermaidModule!.default ?? mermaidModule) as {
     initialize(opts: Record<string, unknown>): void;
     render(id: string, src: string): Promise<{ svg: string }>;
   };
