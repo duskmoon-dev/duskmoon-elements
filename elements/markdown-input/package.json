@@ -23,8 +23,8 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core --external unified --external remark-parse --external remark-gfm --external remark-math --external remark-rehype --external rehype-katex --external rehype-prism-plus --external rehype-sanitize --external rehype-stringify --external hast-util-sanitize --external mermaid",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core --external unified --external remark-parse --external remark-gfm --external remark-math --external remark-rehype --external rehype-katex --external rehype-prism-plus --external rehype-sanitize --external rehype-stringify --external hast-util-sanitize --external mermaid",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
     "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --watch",
     "clean": "del-cli dist",
@@ -39,8 +39,18 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
+    "@duskmoon-dev/core": "^1.13.0",
     "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/core": "^1.13.0"
+    "hast-util-sanitize": "5.0.2",
+    "rehype-katex": "7.0.1",
+    "rehype-prism-plus": "2.0.2",
+    "rehype-sanitize": "6.0.0",
+    "rehype-stringify": "10.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "unified": "11.0.5"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
@@ -60,5 +70,8 @@
     "markdown",
     "editor",
     "markdown-editor"
-  ]
+  ],
+  "optionalDependencies": {
+    "mermaid": "11.13.0"
+  }
 }

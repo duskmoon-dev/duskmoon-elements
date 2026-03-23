@@ -35,8 +35,12 @@ import { elementStyles } from './css.js';
 import { ensurePrism, highlightMarkdown, applyPrismTheme } from './highlight.js';
 import { uploadFile, fileToMarkdown, isAcceptedType } from './upload.js';
 import { detectTrigger, confirmSuggestion, renderDropdown } from './autocomplete.js';
+import { handlePairKey, handleEnterKey } from './pairs.js';
 import { countWords, renderStatusCount } from './status-bar.js';
 import type { Suggestion } from './types.js';
+
+// Render pipeline is lazy-loaded — only imported when preview tab is first activated
+import type { renderMarkdown as RenderFn, renderMermaidBlocks as MermaidFn } from './render.js';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreMarkdownStyles = markdownBodyCSS
@@ -58,9 +62,14 @@ export class ElDmMarkdownInput extends BaseElement {
     placeholder: { type: String, reflect: true, default: 'Write markdown\u2026' },
     disabled: { type: Boolean, reflect: true },
     readonly: { type: Boolean, reflect: true },
+    required: { type: Boolean, reflect: true },
     uploadUrl: { type: String, reflect: true, attribute: 'upload-url' },
     maxWords: { type: Number, reflect: true, attribute: 'max-words' },
     dark: { type: Boolean, reflect: true },
+    livePreview: { type: Boolean, reflect: true, attribute: 'live-preview' },
+    debounce: { type: Number, reflect: true, default: 300 },
+    katexCssUrl: { type: String, reflect: true, attribute: 'katex-css-url' },
+    mermaidSrc: { type: String, reflect: true, attribute: 'mermaid-src' },
   };
 
   declare name: string;
@@ -68,9 +77,14 @@ export class ElDmMarkdownInput extends BaseElement {
   declare placeholder: string;
   declare disabled: boolean;
   declare readonly: boolean;
+  declare required: boolean;
   declare uploadUrl: string | undefined;
   declare maxWords: number | undefined;
   declare dark: boolean;
+  declare livePreview: boolean;
+  declare debounce: number;
+  declare katexCssUrl: string | undefined;
+  declare mermaidSrc: string | undefined;
 
   // ── ElementInternals for form association ────────────────────────────
   #internals!: ElementInternals;
@@ -105,6 +119,19 @@ export class ElDmMarkdownInput extends BaseElement {
   #acSelectedIndex = -1;
   #acTriggerPos = -1;
   #acTrigger: '@' | '#' | null = null;
+  /** Monotonically-increasing counter to discard out-of-order resolve() calls. */
+  #acGeneration = 0;
+
+  // ── Render pipeline (lazy-loaded) ───────────────────────────────────
+  #prevDark = false;
+  #renderFn: typeof RenderFn | null = null;
+  #mermaidFn: typeof MermaidFn | null = null;
+  #livePreviewTimer: ReturnType<typeof setTimeout> | null = null;
+  #renderAbortController: AbortController | null = null;
+  /** Source value from the last completed preview render — skip re-render if unchanged. */
+  #lastRenderedSource: string | null = null;
+  /** True once the KaTeX <link> stylesheet has been injected into the shadow root. */
+  #katexCssInjected = false;
 
   // ── Upload state ─────────────────────────────────────────────────────
   #uploadIdCounter = 0;
@@ -122,17 +149,12 @@ export class ElDmMarkdownInput extends BaseElement {
 
   connectedCallback(): void {
     super.connectedCallback(); // triggers initial update() → render()
-
-    // Set initial form value from the reactive `value` property
-    const initial = (this as unknown as { value: string }).value ?? '';
-    if (initial && this.#textarea) {
-      this.#textarea.value = initial;
-      this.#syncFormValue();
-    }
   }
 
   disconnectedCallback(): void {
     this.#resizeObserver?.disconnect();
+    this.#renderAbortController?.abort();
+    if (this.#livePreviewTimer !== null) clearTimeout(this.#livePreviewTimer);
     super.disconnectedCallback();
   }
 
@@ -148,15 +170,17 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#cacheDOMRefs();
       this.#attachEventHandlers();
       this.#initHighlight();
-      this.#updateStatusBarNow();
 
-      // Restore initial value from reactive prop
+      // Restore initial value from reactive prop BEFORE updating status bar,
+      // so that required+valueMissing validity is evaluated against the real
+      // initial content rather than a transient empty textarea.
       const initVal = (this as unknown as { value: string }).value ?? '';
-      if (initVal && this.#textarea) {
+      if (this.#textarea) {
         this.#textarea.value = initVal;
         this.#syncFormValue();
-        this.#scheduleHighlight();
+        if (initVal) this.#scheduleHighlight();
       }
+      this.#updateStatusBarNow();
       return;
     }
 
@@ -190,11 +214,26 @@ export class ElDmMarkdownInput extends BaseElement {
       ta.value = propVal;
       this.#syncFormValue();
       this.#scheduleHighlight();
+      // Re-render preview if the value changed while the preview tab is active
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#renderPreview(propVal);
+      }
     }
 
     // Update Prism theme when dark attribute changes
     const dark = !!(this as unknown as { dark: boolean }).dark;
     applyPrismTheme(this.shadowRoot, dark);
+
+    // Re-render preview if dark attribute changed while preview tab is active
+    // (mermaid diagrams use theme-dependent SVGs, code blocks need matching Prism theme)
+    // Force=true bypasses the source cache so theme-sensitive renders always refresh.
+    if (dark !== this.#prevDark) {
+      this.#prevDark = dark;
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#lastRenderedSource = null; // invalidate cache on theme change
+        this.#renderPreview(ta.value);
+      }
+    }
 
     // Re-render status bar (maxWords may have changed)
     this.#updateStatusBarNow();
@@ -210,30 +249,35 @@ export class ElDmMarkdownInput extends BaseElement {
         <div class="toolbar" role="tablist" aria-label="Editor mode">
           <button
             class="tab-btn"
+            id="tab-write"
             data-tab="write"
             role="tab"
             aria-selected="true"
             aria-controls="write-panel"
+            tabindex="0"
           >Write</button>
           <button
             class="tab-btn"
+            id="tab-preview"
             data-tab="preview"
             role="tab"
             aria-selected="false"
             aria-controls="preview-panel"
+            tabindex="-1"
           >Preview</button>
         </div>
 
-        <div class="write-area" id="write-panel" role="tabpanel" aria-label="Markdown editor">
+        <div class="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
           <div class="backdrop" aria-hidden="true">
             <div class="backdrop-content"></div>
           </div>
           <textarea
             aria-label="Markdown editor"
             aria-haspopup="listbox"
+            aria-expanded="false"
             aria-autocomplete="list"
             aria-controls="ac-dropdown"
-            placeholder="${ph}"
+            placeholder="${escapeHtmlStr(ph)}"
             ${disabled ? 'disabled' : ''}
             ${readonly ? 'readonly' : ''}
             spellcheck="false"
@@ -247,7 +291,7 @@ export class ElDmMarkdownInput extends BaseElement {
           class="preview-body markdown-body"
           id="preview-panel"
           role="tabpanel"
-          aria-label="Markdown preview"
+          aria-labelledby="tab-preview"
           hidden
         ></div>
 
@@ -299,6 +343,7 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#scheduleHighlight();
       this.#scheduleStatusUpdate();
       this.#handleAutocompleteInput();
+      this.#scheduleLivePreview();
     });
 
     // ── Scroll sync (backdrop must follow textarea scroll) ─────────
@@ -319,15 +364,46 @@ export class ElDmMarkdownInput extends BaseElement {
       }, 150);
     });
 
-    // ── Tab key for autocomplete (prevent default only when dropdown open) ──
+    // ── Keydown: autocomplete nav, smart pairs, list/heading continuation ──
     ta.addEventListener('keydown', (e) => {
+      // Autocomplete dropdown takes priority when open
       if (this.#acSuggestions.length > 0 && !this.#acDropdown?.hidden) {
         this.#handleDropdownKeydown(e);
+        if (e.defaultPrevented) return;
       }
-      // Ctrl+Shift+P → toggle preview (T023)
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+
+      // Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac) → toggle preview
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
         e.preventDefault();
         this.#switchTab(this.#activeTab === 'write' ? 'preview' : 'write');
+        return;
+      }
+
+      // Skip smart editing when the editor is read-only or disabled
+      if (
+        (this as unknown as { disabled: boolean }).disabled ||
+        (this as unknown as { readonly: boolean }).readonly
+      ) {
+        return;
+      }
+
+      // Smart pair insertion (backtick pairing)
+      if (!e.ctrlKey && !e.metaKey && !e.altKey && handlePairKey(ta, e.key)) {
+        e.preventDefault();
+        this.#syncFormValue();
+        this.emit('change', { value: ta.value });
+        this.#scheduleHighlight();
+        return;
+      }
+
+      // List/heading Enter continuation
+      if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (handleEnterKey(ta, e)) {
+          this.#syncFormValue();
+          this.emit('change', { value: ta.value });
+          this.#scheduleHighlight();
+          this.#scheduleStatusUpdate();
+        }
       }
     });
 
@@ -335,6 +411,8 @@ export class ElDmMarkdownInput extends BaseElement {
     const writeArea = this.#writeArea;
     if (writeArea) {
       writeArea.addEventListener('dragover', (e) => {
+        if ((this as unknown as { disabled: boolean }).disabled) return;
+        if ((this as unknown as { readonly: boolean }).readonly) return;
         e.preventDefault();
         writeArea.style.opacity = '0.8';
       });
@@ -344,6 +422,7 @@ export class ElDmMarkdownInput extends BaseElement {
       writeArea.addEventListener('drop', (e) => {
         e.preventDefault();
         writeArea.style.opacity = '';
+        if ((this as unknown as { disabled: boolean }).disabled) return;
         if ((this as unknown as { readonly: boolean }).readonly) return;
         const files = Array.from(e.dataTransfer?.files ?? []).filter(isAcceptedType);
         files.forEach((f) => this.#startUpload(f));
@@ -352,6 +431,7 @@ export class ElDmMarkdownInput extends BaseElement {
 
     // ── Clipboard paste (images only) ─────────────────────────────
     ta.addEventListener('paste', (e) => {
+      if ((this as unknown as { disabled: boolean }).disabled) return;
       if ((this as unknown as { readonly: boolean }).readonly) return;
       const imageFiles = Array.from(e.clipboardData?.files ?? []).filter((f) =>
         f.type.startsWith('image/'),
@@ -368,6 +448,20 @@ export class ElDmMarkdownInput extends BaseElement {
       const btn = (e.target as HTMLElement).closest<HTMLElement>('.tab-btn');
       const tab = btn?.dataset.tab as 'write' | 'preview' | undefined;
       if (tab) this.#switchTab(tab);
+    });
+
+    // Arrow key navigation between tabs (WAI-ARIA tablist pattern)
+    toolbar?.addEventListener('keydown', (e) => {
+      const kev = e as KeyboardEvent;
+      if (kev.key === 'ArrowLeft' || kev.key === 'ArrowRight') {
+        kev.preventDefault();
+        const nextTab = this.#activeTab === 'write' ? 'preview' : 'write';
+        this.#switchTab(nextTab);
+        const nextBtn = this.shadowRoot.querySelector<HTMLElement>(
+          `.tab-btn[data-tab="${nextTab}"]`,
+        );
+        nextBtn?.focus();
+      }
     });
 
     // ── Attach button ──────────────────────────────────────────────
@@ -444,13 +538,14 @@ export class ElDmMarkdownInput extends BaseElement {
     writeBtns.forEach((btn) => {
       const isActive = btn.dataset.tab === tab;
       btn.setAttribute('aria-selected', String(isActive));
+      btn.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
     if (tab === 'preview') {
       this.#writeArea?.setAttribute('hidden', '');
       if (this.#previewBody) {
         this.#previewBody.removeAttribute('hidden');
-        this.#previewBody.innerHTML = this.#renderMarkdown(this.#textarea?.value ?? '');
+        this.#renderPreview(this.#textarea?.value ?? '');
       }
     } else {
       this.#writeArea?.removeAttribute('hidden');
@@ -459,112 +554,150 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // Minimal markdown renderer (preview tab)
+  // Unified render pipeline (preview tab)
   // ════════════════════════════════════════════════════════════════════
 
-  #renderMarkdown(md: string): string {
-    if (!md.trim()) return '<p></p>';
+  /**
+   * Load the render pipeline lazily. Called on first preview activation.
+   * Returns cached functions on subsequent calls.
+   */
+  async #loadRenderPipeline(): Promise<{
+    renderMarkdown: typeof RenderFn;
+    renderMermaidBlocks: typeof MermaidFn;
+  }> {
+    if (this.#renderFn && this.#mermaidFn) {
+      return { renderMarkdown: this.#renderFn, renderMermaidBlocks: this.#mermaidFn };
+    }
 
-    // Step 1: Extract fenced code blocks
-    // Use a placeholder string that won't appear in markdown content
-    const CB_PH = '\u2060CB';
-    const IC_PH = '\u2060IC';
-    const codeBlocks: string[] = [];
-    let html = md.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
-      const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const idx =
-        codeBlocks.push(`<pre><code class="language-${lang || 'text'}">${escaped}</code></pre>`) -
-        1;
-      return `${CB_PH}${idx}${CB_PH}`;
-    });
+    const mod = await import('./render.js');
+    this.#renderFn = mod.renderMarkdown;
+    this.#mermaidFn = mod.renderMermaidBlocks;
+    return { renderMarkdown: this.#renderFn, renderMermaidBlocks: this.#mermaidFn };
+  }
 
-    // Step 2: Extract inline code
-    const inlineCodes: string[] = [];
-    html = html.replace(/`([^`\n]+)`/g, (_, code) => {
-      const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const idx = inlineCodes.push(`<code>${escaped}</code>`) - 1;
-      return `${IC_PH}${idx}${IC_PH}`;
-    });
+  /**
+   * Render markdown to the preview panel using the unified pipeline.
+   * Shows a loading skeleton on first load, emits render events.
+   * Skips re-render if the source and theme are unchanged from the last render.
+   */
+  async #renderPreview(source: string, force = false): Promise<void> {
+    const preview = this.#previewBody;
+    if (!preview) return;
 
-    // Step 3: HTML-escape remaining content
-    html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Skip if source is identical to the last completed render (and not forced)
+    if (!force && this.#lastRenderedSource === source && this.#renderFn !== null) {
+      return;
+    }
 
-    // Step 4: Markdown transformations
-    // Images before links — sanitize URLs to block javascript: and other unsafe protocols
-    html = html.replace(
-      /!\[([^\]]*)\]\(([^)]+)\)/g,
-      (_, alt, url) => `<img src="${sanitizeUrl(url)}" alt="${alt}">`,
-    );
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      (_, text, url) => `<a href="${sanitizeUrl(url)}">${text}</a>`,
-    );
+    // Cancel any in-flight render
+    this.#renderAbortController?.abort();
+    const controller = new AbortController();
+    this.#renderAbortController = controller;
 
-    // Headings
-    html = html
-      .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
-      .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
-      .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    this.emit('render-start', {});
+    preview.setAttribute('aria-busy', 'true');
 
-    // Horizontal rules
-    html = html.replace(/^[-*_]{3,}$/gm, '<hr>');
+    // Show skeleton on first load while pipeline imports
+    if (!this.#renderFn) {
+      preview.innerHTML = `
+        <div class="preview-skeleton" aria-label="Loading preview…">
+          <div class="skeleton-line" style="width:90%"></div>
+          <div class="skeleton-line" style="width:75%"></div>
+          <div class="skeleton-line" style="width:85%"></div>
+          <div class="skeleton-line" style="width:60%"></div>
+        </div>`;
+    }
 
-    // Blockquotes (note: > is escaped to &gt; above)
-    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+    try {
+      const { renderMarkdown, renderMermaidBlocks } = await this.#loadRenderPipeline();
 
-    // Bold + italic (order matters: *** before ** before *)
-    html = html
-      .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')
-      .replace(/__(.+?)__/g, '<strong>$1</strong>')
-      .replace(/_(.+?)_/g, '<em>$1</em>');
+      // If this render was aborted (new one started), bail out
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
-    // Strikethrough
-    html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+      const html = await renderMarkdown(source);
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
-    // Lists (single-level)
-    // Tag items with a type marker to distinguish ul from ol, then group consecutive runs
-    html = html.replace(/^[ \t]*[-*+] (.+)$/gm, '<li data-list="ul">$1</li>');
-    html = html.replace(/^[ \t]*\d+\. (.+)$/gm, '<li data-list="ol">$1</li>');
-    // Group consecutive unordered items into <ul>
-    html = html.replace(
-      /(<li data-list="ul">[^\n]*<\/li>(?:\n<li data-list="ul">[^\n]*<\/li>)*)/g,
-      (match) => '<ul>' + match.replace(/ data-list="ul"/g, '') + '</ul>',
-    );
-    // Group consecutive ordered items into <ol>
-    html = html.replace(
-      /(<li data-list="ol">[^\n]*<\/li>(?:\n<li data-list="ol">[^\n]*<\/li>)*)/g,
-      (match) => '<ol>' + match.replace(/ data-list="ol"/g, '') + '</ol>',
-    );
+      preview.innerHTML = html;
+      preview.removeAttribute('aria-busy');
 
-    // Paragraphs
-    const lines = html.split('\n\n');
-    html = lines
-      .map((block) => {
-        const t = block.trim();
-        if (!t) return '';
-        if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img)/.test(t) || t.startsWith(CB_PH)) return t;
-        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
-      })
-      .filter(Boolean)
-      .join('\n');
+      // Inject KaTeX CSS into shadow DOM if not already present
+      this.#ensureKatexCss();
 
-    // Step 5: Restore placeholders
-    html = html.replace(
-      new RegExp(`${CB_PH}(\\d+)${CB_PH}`, 'g'),
-      (_, i) => codeBlocks[parseInt(i, 10)] ?? '',
-    );
-    html = html.replace(
-      new RegExp(`${IC_PH}(\\d+)${IC_PH}`, 'g'),
-      (_, i) => inlineCodes[parseInt(i, 10)] ?? '',
-    );
+      // Mermaid post-render step
+      const mermaidSrc = (this as unknown as { mermaidSrc: string | undefined }).mermaidSrc;
+      await renderMermaidBlocks(preview, mermaidSrc);
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
 
-    return html;
+      // Update cache only after the full render pipeline (including mermaid)
+      // completes successfully. Setting it earlier would cause cache hits
+      // to skip mermaid post-processing on re-render.
+      this.#lastRenderedSource = source;
+
+      this.emit('render-done', { html });
+    } catch (err) {
+      if (controller.signal.aborted) {
+        preview.removeAttribute('aria-busy');
+        return;
+      }
+
+      // Fallback: show raw markdown as preformatted text
+      preview.removeAttribute('aria-busy');
+      preview.innerHTML = `<pre class="render-error-fallback">${escapeHtmlStr(source)}</pre>`;
+      this.emit('render-error', { error: err instanceof Error ? err : new Error(String(err)) });
+    }
+  }
+
+  /**
+   * Ensure KaTeX CSS is loaded in the shadow DOM.
+   */
+  #ensureKatexCss(): void {
+    if (this.#katexCssInjected) return;
+    this.#katexCssInjected = true;
+
+    const rawUrl =
+      (this as unknown as { katexCssUrl: string | undefined }).katexCssUrl ??
+      'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+
+    // Only allow https: URLs to prevent data:/javascript: CSS injection.
+    // katex-css-url is a trusted-author attribute but must not be user-controlled.
+    const katexUrl = /^https:\/\//i.test(rawUrl)
+      ? rawUrl
+      : 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+    if (katexUrl !== rawUrl) {
+      console.warn(
+        `[el-dm-markdown-input] katex-css-url "${rawUrl}" rejected — only https: URLs are allowed.`,
+      );
+    }
+
+    const link = document.createElement('link');
+    link.id = 'katex-css';
+    link.rel = 'stylesheet';
+    link.href = katexUrl;
+    this.shadowRoot.appendChild(link);
+  }
+
+  /**
+   * Schedule a debounced live preview render (only when live-preview attribute is set).
+   */
+  #scheduleLivePreview(): void {
+    if (!(this as unknown as { livePreview: boolean }).livePreview) return;
+    if (this.#activeTab !== 'preview') return;
+
+    if (this.#livePreviewTimer !== null) clearTimeout(this.#livePreviewTimer);
+    const ms = (this as unknown as { debounce: number }).debounce ?? 300;
+    this.#livePreviewTimer = setTimeout(() => {
+      this.#livePreviewTimer = null;
+      this.#renderPreview(this.#textarea?.value ?? '');
+    }, ms);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -603,9 +736,9 @@ export class ElDmMarkdownInput extends BaseElement {
         this.insertText(markdown);
         this.emit('upload-done', { file, url, markdown });
       })
-      .catch((err: string) => {
+      .catch((err: unknown) => {
         this.#removeUploadRow(id);
-        const errorMsg = typeof err === 'string' ? err : 'Upload failed';
+        const errorMsg = err instanceof Error ? err.message : 'Upload failed';
         this.emit('upload-error', { file, error: errorMsg });
         this.#showUploadError(file, errorMsg);
       });
@@ -618,7 +751,7 @@ export class ElDmMarkdownInput extends BaseElement {
     row.id = id;
     row.innerHTML = `
       <span class="upload-filename">${escapeHtmlStr(filename)}</span>
-      <div class="upload-bar-track">
+      <div class="upload-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading ${escapeHtmlStr(filename)}">
         <div class="upload-bar" style="width: 0%"></div>
       </div>
     `;
@@ -626,6 +759,8 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   #updateProgressRow(id: string, pct: number): void {
+    const track = this.#uploadList?.querySelector<HTMLElement>(`#${id} .upload-bar-track`);
+    if (track) track.setAttribute('aria-valuenow', String(pct));
     const bar = this.#uploadList?.querySelector<HTMLElement>(`#${id} .upload-bar`);
     if (bar) bar.style.width = `${pct}%`;
   }
@@ -638,6 +773,7 @@ export class ElDmMarkdownInput extends BaseElement {
     if (!this.#uploadList) return;
     const row = document.createElement('div');
     row.className = 'upload-error-row';
+    row.setAttribute('role', 'alert');
     row.innerHTML = `
       <span class="upload-error-msg">${escapeHtmlStr(file.name)}: ${escapeHtmlStr(message)}</span>
     `;
@@ -664,7 +800,11 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#acTrigger = trigger;
     this.#acTriggerPos = triggerPos;
 
-    const resolve = (list: Suggestion[]) => this.setSuggestions(list);
+    // Capture current generation so stale async resolutions are ignored
+    const gen = ++this.#acGeneration;
+    const resolve = (list: Suggestion[]) => {
+      if (gen === this.#acGeneration) this.setSuggestions(list);
+    };
 
     if (trigger === '@') {
       this.emit('mention-query', { trigger, query, resolve });
@@ -726,6 +866,7 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   #closeDropdown(): void {
+    this.#acGeneration++; // invalidate any pending resolve() callbacks
     this.#acSuggestions = [];
     this.#acSelectedIndex = -1;
     this.#acTrigger = null;
@@ -734,17 +875,21 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#acDropdown.innerHTML = '';
       this.#acDropdown.hidden = true;
     }
+    this.#textarea?.setAttribute('aria-expanded', 'false');
+    this.#textarea?.removeAttribute('aria-activedescendant');
   }
 
   #updateDropdown(): void {
     if (!this.#acDropdown) return;
     if (this.#acSuggestions.length === 0) {
       this.#acDropdown.hidden = true;
+      this.#textarea?.setAttribute('aria-expanded', 'false');
       this.#textarea?.removeAttribute('aria-activedescendant');
       return;
     }
     this.#acDropdown.innerHTML = renderDropdown(this.#acSuggestions, this.#acSelectedIndex);
     this.#acDropdown.hidden = false;
+    this.#textarea?.setAttribute('aria-expanded', 'true');
     // Update aria-activedescendant so screen readers announce the highlighted item
     if (this.#acSelectedIndex >= 0) {
       this.#textarea?.setAttribute('aria-activedescendant', `ac-item-${this.#acSelectedIndex}`);
@@ -772,6 +917,24 @@ export class ElDmMarkdownInput extends BaseElement {
     const chars = text.length;
     const maxWords = (this as unknown as { maxWords: number | undefined }).maxWords ?? null;
     this.#statusCount.innerHTML = renderStatusCount(words, chars, maxWords);
+
+    // Report form validity
+    const isRequired = !!(this as unknown as { required: boolean }).required;
+    if (maxWords && words > maxWords) {
+      this.#internals?.setValidity(
+        { customError: true },
+        `Content exceeds ${maxWords} word limit (${words} words)`,
+        this.#textarea ?? undefined,
+      );
+    } else if (isRequired && text.trim() === '') {
+      this.#internals?.setValidity(
+        { valueMissing: true },
+        'Please fill in this field.',
+        this.#textarea ?? undefined,
+      );
+    } else {
+      this.#internals?.setValidity({});
+    }
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -793,6 +956,10 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#syncFormValue();
       this.#scheduleHighlight();
       this.#updateStatusBarNow();
+      // Keep preview in sync when value is set programmatically
+      if (this.#activeTab === 'preview' && this.#previewBody) {
+        this.#renderPreview(str);
+      }
     } else {
       // Called before element is connected — store in reactive property
       (this as unknown as { value: string }).value = str;
@@ -813,8 +980,10 @@ export class ElDmMarkdownInput extends BaseElement {
     const newPos = start + str.length;
     ta.setSelectionRange(newPos, newPos);
     // Dispatch 'input' — the textarea's input listener handles syncFormValue(),
-    // emit('change'), scheduleHighlight(), scheduleStatusUpdate(), and autocomplete
-    ta.dispatchEvent(new Event('input', { bubbles: true }));
+    // emit('change'), scheduleHighlight(), scheduleStatusUpdate(), and autocomplete.
+    // bubbles: false keeps the synthetic event inside the shadow root so it is not
+    // observable on the host element (preventing shadow DOM boundary leakage).
+    ta.dispatchEvent(new Event('input', { bubbles: false }));
   }
 
   /**
@@ -828,26 +997,12 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 }
 
-/**
- * Sanitize a URL for use in rendered HTML (preview tab).
- * Only allows https://, http://, relative paths, and anchor fragments.
- * Rejects javascript:, data:, vbscript:, and other unsafe protocols.
- */
-function sanitizeUrl(url: string): string {
-  const trimmed = url.trim();
-  // Has no protocol → relative URL, safe
-  if (!/^[a-z][a-z\d+\-.]*:/i.test(trimmed)) return trimmed;
-  // Allow http and https only
-  if (/^https?:/i.test(trimmed)) return trimmed;
-  // All other protocols (javascript:, data:, vbscript:, …) → neutralise
-  return '#';
-}
-
 /** HTML-escape a string for safe insertion into innerHTML. */
 function escapeHtmlStr(s: string): string {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

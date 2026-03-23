@@ -73,6 +73,71 @@ console.log(greet('World'));
   </section>
 
   <section>
+    <h2>Rich Preview (Math, Code, GFM, Mermaid)</h2>
+    <p style="margin-bottom: 1rem; color: var(--dm-gray-600);">
+      Switch to the <strong>Preview</strong> tab to see rendered markdown with KaTeX math,
+      syntax-highlighted code blocks, GFM tables, task lists, and mermaid diagrams.
+    </p>
+    <el-dm-markdown-input
+      name="rich-preview"
+      value="# Rich Preview Demo
+
+## Math (KaTeX)
+
+Inline math: $E = mc^2$ and $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$
+
+Display math:
+
+$$
+\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+$$
+
+## Code Highlighting
+
+```typescript
+interface User {
+  name: string;
+  email: string;
+}
+
+function greet(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+```
+
+## GFM Features
+
+| Feature | Status |
+|---------|--------|
+| Tables | ✅ |
+| Task lists | ✅ |
+| Strikethrough | ✅ |
+| Autolinks | ✅ |
+
+- [x] Implement render pipeline
+- [x] Add KaTeX support
+- [ ] Write more tests
+
+This text has ~~strikethrough~~ styling.
+
+## Mermaid Diagram
+
+```mermaid
+graph LR
+  A[Write] --> B[Parse]
+  B --> C[Transform]
+  C --> D[Render]
+  D --> E[Preview]
+```
+
+## Blockquote
+
+> **Note:** This preview is rendered using the unified pipeline with
+> remark-gfm, remark-math, rehype-katex, rehype-prism-plus, and rehype-sanitize."
+    ></el-dm-markdown-input>
+  </section>
+
+  <section>
     <h2>Disabled</h2>
     <el-dm-markdown-input
       name="readonly-content"

@@ -201,6 +201,87 @@ export const elementStyles = css`
     /* .markdown-body styles come from @duskmoon-dev/core via the element */
   }
 
+  /* ── Preview skeleton (shown while render pipeline loads) ──────────── */
+  .preview-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .skeleton-line {
+    height: 0.875rem;
+    background: linear-gradient(
+      90deg,
+      var(--md-bg-toolbar) 25%,
+      var(--md-bg-hover) 50%,
+      var(--md-bg-toolbar) 75%
+    );
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-line {
+      animation: none;
+      background: var(--md-bg-hover);
+    }
+  }
+
+  /* ── Mermaid diagram blocks ────────────────────────────────────────── */
+  .mermaid-diagram {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+
+  .mermaid-error {
+    border-left: 3px solid var(--md-color-error);
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .mermaid-error::before {
+    content: 'Mermaid render failed';
+    display: block;
+    font-size: 0.75rem;
+    color: var(--md-color-error);
+    font-family: inherit;
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
+  }
+
+  /* ── Render error fallback ──────────────────────────────────────────── */
+  .render-error-fallback {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.875rem;
+    opacity: 0.8;
+    border-left: 3px solid var(--md-color-error);
+    padding-left: 0.75rem;
+    color: var(--md-text-muted);
+  }
+
+  .render-error-fallback::before {
+    content: 'Preview render failed — showing raw markdown';
+    display: block;
+    font-size: 0.75rem;
+    color: var(--md-color-error);
+    font-family: inherit;
+    margin-bottom: 0.5rem;
+  }
+
   /* ── Status bar ─────────────────────────────────────────────────────── */
   .status-bar {
     display: flex;
@@ -234,6 +315,12 @@ export const elementStyles = css`
   .attach-btn:hover {
     color: var(--md-text);
     background: var(--md-bg-hover);
+  }
+
+  .attach-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   .attach-btn:focus-visible {
@@ -369,5 +456,15 @@ export const elementStyles = css`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* ── Reduced motion: disable all transitions and animations ──────── */
+  @media (prefers-reduced-motion: reduce) {
+    .tab-btn,
+    .attach-btn,
+    .ac-item,
+    .upload-bar {
+      transition: none;
+    }
   }
 `;

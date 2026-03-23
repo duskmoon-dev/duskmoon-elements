@@ -65,6 +65,20 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
           </div>
 
           <div class="setting-group">
+            <label>
+              <input type="checkbox" id="readonly-toggle" />
+              Read-only
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="live-preview-toggle" />
+              Live Preview
+            </label>
+          </div>
+
+          <div class="setting-group">
             <button id="reset-btn" class="btn-secondary">Reset</button>
           </div>
 
@@ -73,6 +87,9 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
             <button id="insert-heading-btn">Insert # Heading</button>
             <button id="insert-bold-btn">Insert **Bold**</button>
             <button id="insert-code-btn">Insert `code`</button>
+            <button id="insert-table-btn">Insert Table</button>
+            <button id="insert-math-btn">Insert $Math$</button>
+            <button id="insert-mermaid-btn">Insert Mermaid</button>
             <button id="clear-btn">Clear All</button>
           </div>
 
@@ -389,6 +406,8 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
     const maxWordsInput = document.getElementById('max-words-input') as HTMLInputElement;
     const uploadUrlInput = document.getElementById('upload-url-input') as HTMLInputElement;
     const disabledToggle = document.getElementById('disabled-toggle') as HTMLInputElement;
+    const readonlyToggle = document.getElementById('readonly-toggle') as HTMLInputElement;
+    const livePreviewToggle = document.getElementById('live-preview-toggle') as HTMLInputElement;
     const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
     const eventLog = document.getElementById('events-log') as HTMLElement;
     const apiOutput = document.getElementById('api-output') as HTMLElement;
@@ -446,16 +465,38 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
       }
     });
 
+    // Readonly toggle
+    readonlyToggle.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).checked) {
+        editor.setAttribute('readonly', '');
+      } else {
+        editor.removeAttribute('readonly');
+      }
+    });
+
+    // Live preview toggle
+    livePreviewToggle.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).checked) {
+        editor.setAttribute('live-preview', '');
+      } else {
+        editor.removeAttribute('live-preview');
+      }
+    });
+
     // Reset button
     resetBtn.addEventListener('click', () => {
       themeSelect.value = 'light';
       maxWordsInput.value = '';
       uploadUrlInput.value = '';
       disabledToggle.checked = false;
+      readonlyToggle.checked = false;
+      livePreviewToggle.checked = false;
       editor.removeAttribute('dark');
       editor.removeAttribute('max-words');
       editor.removeAttribute('upload-url');
       editor.removeAttribute('disabled');
+      editor.removeAttribute('readonly');
+      editor.removeAttribute('live-preview');
       editor.setValue('');
     });
 
@@ -470,6 +511,18 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
 
     document.getElementById('insert-code-btn')?.addEventListener('click', () => {
       editor.insertText('`code`');
+    });
+
+    document.getElementById('insert-table-btn')?.addEventListener('click', () => {
+      editor.insertText('\n| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| Cell 1   | Cell 2   | Cell 3   |\n| Cell 4   | Cell 5   | Cell 6   |\n');
+    });
+
+    document.getElementById('insert-math-btn')?.addEventListener('click', () => {
+      editor.insertText('$E = mc^2$');
+    });
+
+    document.getElementById('insert-mermaid-btn')?.addEventListener('click', () => {
+      editor.insertText('\n```mermaid\ngraph TD;\n  A[Start] --> B{Decision};\n  B -->|Yes| C[Do it];\n  B -->|No| D[Skip];\n  C --> E[End];\n  D --> E;\n```\n');
     });
 
     document.getElementById('clear-btn')?.addEventListener('click', () => {
@@ -542,23 +595,57 @@ import ThemeToggle from '../../components/ThemeToggle.astro';
       e.detail.resolve(filtered);
     });
 
-    // Initialize with sample content
+    // Initialize with sample content showcasing the render pipeline
     editor.setValue(`# Markdown Input Playground
 
-Type \`@\` to mention users or \`#\` to reference items!
+Switch to the **Preview** tab (or press \`Ctrl+Shift+P\`) to see rendered output.
 
-## Features
+## GFM Features
 
-- **Write/Preview tabs** with syntax highlighting
-- **File upload** via drag-and-drop or paste
-- **Autocomplete** for @mentions and #references
-- **Live word count** with optional limits
-- **Form integration** for native submission
+| Feature | Syntax | Rendered |
+|---------|--------|---------|
+| Bold | \`**text**\` | **text** |
+| Italic | \`*text*\` | *text* |
+| Strikethrough | \`~~text~~\` | ~~text~~ |
 
-Try these:
-- Type @ to test mentions
-- Type # to test references
-- Drag and drop an image to test upload
-- Use Ctrl+Shift+P to toggle preview`);
+### Task List
+
+- [x] GFM tables
+- [x] Math via KaTeX
+- [x] Code highlighting via Prism
+- [ ] Mermaid diagrams (see below)
+
+## Math
+
+Inline math: $E = mc^2$
+
+Display math:
+
+$$
+\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}
+$$
+
+## Code Highlighting
+
+\`\`\`typescript
+export function renderMarkdown(source: string): Promise<string> {
+  return getProcessor().then(proc => String(proc.process(source)));
+}
+\`\`\`
+
+## Mermaid Diagram
+
+\`\`\`mermaid
+graph TD;
+  A[Write Tab] -->|Ctrl+Shift+P| B[Preview Tab];
+  B -->|Render Pipeline| C[HTML Output];
+  C --> D[KaTeX Math];
+  C --> E[Prism Highlighting];
+  C --> F[Mermaid SVG];
+\`\`\`
+
+## Autocomplete
+
+Type \`@\` to mention users or \`#\` to reference items.`);
   </script>
 </BaseLayout>

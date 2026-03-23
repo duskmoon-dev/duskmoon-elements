@@ -30,14 +30,14 @@ export function detectTrigger(
       if (!/\s/.test(query)) {
         // Make sure the char before the trigger is whitespace, start-of-string, or trigger is at position 0
         const before = i > 0 ? value[i - 1] : null;
-        if (before === null || /[\s\n]/.test(before)) {
+        if (before === null || /\s/.test(before)) {
           return { trigger: ch as '@' | '#', query, triggerPos: i };
         }
       }
       return null;
     }
 
-    if (/[\s\n]/.test(ch)) {
+    if (/\s/.test(ch)) {
       // Hit whitespace before finding a trigger
       return null;
     }
@@ -71,8 +71,12 @@ export function confirmSuggestion(
   const before = value.slice(0, triggerPos);
   const after = value.slice(cursorPos);
   const inserted = `${trigger}${replacement}`;
-  const newValue = before + inserted + after;
-  const newCursorPos = triggerPos + inserted.length;
+  // Add a trailing space so the user can continue typing immediately,
+  // unless the next character is already a space or we're at end of line
+  const needsSpace = after.length === 0 || (after[0] !== ' ' && after[0] !== '\n');
+  const suffix = needsSpace ? ' ' : '';
+  const newValue = before + inserted + suffix + after;
+  const newCursorPos = triggerPos + inserted.length + suffix.length;
   return { newValue, newCursorPos };
 }
 
@@ -101,5 +105,10 @@ export function renderDropdown(suggestions: Suggestion[], selectedIndex: number)
 }
 
 function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

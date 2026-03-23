@@ -27,16 +27,15 @@
 export { ElDmMarkdownInput } from './element.js';
 export type { Suggestion } from './types.js';
 
+import { ElDmMarkdownInput } from './element.js';
+
 /**
  * Register the <el-dm-markdown-input> custom element.
  * Safe to call multiple times — guards against double registration.
  */
 export function register(): void {
   if (!customElements.get('el-dm-markdown-input')) {
-    // Dynamic import to avoid circular reference at module evaluation time
-    import('./element.js').then(({ ElDmMarkdownInput }) => {
-      customElements.define('el-dm-markdown-input', ElDmMarkdownInput);
-    });
+    customElements.define('el-dm-markdown-input', ElDmMarkdownInput);
   }
 }
 
