@@ -57,6 +57,7 @@ export const elementStyles = css`
     background: var(--md-bg);
     color: var(--md-text);
     overflow: hidden;
+    height: inherit;
   }
 
   .editor:focus-within {
@@ -106,74 +107,62 @@ export const elementStyles = css`
     border-radius: 3px;
   }
 
-  /* ── Write area (backdrop + textarea overlay) ───────────────────────── */
+  /* ── Write area (render-layer + textarea overlay) ──────────────────── */
+  /*
+   * CodeMirror-style render model: .render-layer sits in normal flow and
+   * drives the container height; the textarea is absolutely positioned on
+   * top. No scroll sync required — both layers always share the same size.
+   */
   .write-area {
     position: relative;
     min-height: 12rem;
-    flex: 1;
+    flex: 1 1 auto;
+  }
+
+  .write-area[hidden] {
+    display: none;
   }
 
   /*
-   * Backdrop: renders syntax-highlighted HTML behind the transparent textarea.
-   * Must share IDENTICAL font metrics with the textarea to stay pixel-aligned.
+   * Render layer: highlighted HTML in normal flow. Drives container height.
+   * pointer-events: none lets clicks pass through to the textarea underneath.
+   * Font metrics MUST match the textarea exactly for pixel-aligned overlay.
    */
-  .backdrop {
-    position: absolute;
-    inset: 0;
+  .render-layer {
+    position: relative;
+    z-index: 1;
     pointer-events: none;
-    /*
-     * Use overflow: auto (not overflow: hidden) so the backdrop reserves
-     * the same scrollbar gutter as the textarea when content overflows.
-     * Without this, the textarea scrollbar narrows its text area but the
-     * backdrop stays full-width — lines wrap at different points — causing
-     * the cursor to appear misaligned with the highlighted text.
-     */
-    overflow: auto;
-    scrollbar-width: none; /* Firefox */
-    border: none;
-    background: transparent;
-    /*
-     * Do NOT put white-space: pre-wrap here. The backdrop div contains a
-     * backdrop-content child, and the HTML template has whitespace text
-     * nodes (newline + indent) between them. With pre-wrap on the parent
-     * those text nodes render as a visible leading newline, shifting all
-     * content down by one line and misaligning the cursor vertically.
-     * pre-wrap lives on .backdrop-content instead.
-     */
-
+    min-height: 12rem;
     font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.875rem;
     line-height: 1.6;
     padding: 0.75rem;
-    color: var(--md-text);
-  }
-
-  .backdrop::-webkit-scrollbar {
-    display: none; /* Chrome / Safari */
-  }
-
-  .backdrop-content {
-    display: block;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    /* Prism token colours are injected via a separate <style id="prism-theme"> */
+    color: var(--md-text);
   }
 
+  /*
+   * Textarea: absolute overlay on top of the render layer. Transparent text
+   * lets highlighted content show through; caret-color keeps cursor visible.
+   * overflow: hidden — the render layer drives height, not the textarea.
+   */
   textarea {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     display: block;
     width: 100%;
-    min-height: 12rem;
+    height: 100%;
     border: none;
     outline: none;
-    resize: vertical;
+    resize: none;
     background: transparent;
     color: transparent;
     caret-color: var(--md-text);
     box-sizing: border-box;
-
-    /* MUST match .backdrop exactly */
+    overflow: hidden;
     font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.875rem;
     line-height: 1.6;
@@ -196,9 +185,16 @@ export const elementStyles = css`
   .preview-body {
     padding: 0.75rem;
     min-height: 12rem;
+    height: stretch;
+    flex: 1 1 auto;
+    display: flex;
     overflow-y: auto;
     color: var(--md-text);
     /* .markdown-body styles come from @duskmoon-dev/core via the element */
+  }
+
+  .preview-body[hidden] {
+    display: none;
   }
 
   /* ── Preview skeleton (shown while render pipeline loads) ──────────── */

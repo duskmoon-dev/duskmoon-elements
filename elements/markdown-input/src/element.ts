@@ -2,7 +2,7 @@
  * DuskMoon Markdown Input Element
  *
  * A form-associated custom element providing a markdown editor with:
- * - Write tab with syntax-highlighted backdrop (Prism.js CDN)
+ * - Write tab with syntax-highlighted render layer (Prism.js CDN)
  * - Preview tab with rendered HTML (.markdown-body from @duskmoon-dev/core)
  * - File upload via drag-and-drop, clipboard paste, or file picker
  * - @mention / #reference autocomplete dropdown
@@ -102,17 +102,13 @@ export class ElDmMarkdownInput extends BaseElement {
 
   // ── DOM element refs (set after first render) ────────────────────────
   #textarea: HTMLTextAreaElement | null = null;
-  #backdrop: HTMLElement | null = null;
-  #backdropContent: HTMLElement | null = null;
+  #renderLayer: HTMLElement | null = null;
   #writeArea: HTMLElement | null = null;
   #previewBody: HTMLElement | null = null;
   #statusCount: HTMLElement | null = null;
   #acDropdown: HTMLElement | null = null;
   #uploadList: HTMLElement | null = null;
   #fileInput: HTMLInputElement | null = null;
-
-  // ── Resize observer ──────────────────────────────────────────────────
-  #resizeObserver: ResizeObserver | null = null;
 
   // ── Autocomplete state ───────────────────────────────────────────────
   #acSuggestions: Suggestion[] = [];
@@ -152,7 +148,6 @@ export class ElDmMarkdownInput extends BaseElement {
   }
 
   disconnectedCallback(): void {
-    this.#resizeObserver?.disconnect();
     this.#renderAbortController?.abort();
     if (this.#livePreviewTimer !== null) clearTimeout(this.#livePreviewTimer);
     super.disconnectedCallback();
@@ -268,9 +263,7 @@ export class ElDmMarkdownInput extends BaseElement {
         </div>
 
         <div class="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
-          <div class="backdrop" aria-hidden="true">
-            <div class="backdrop-content"></div>
-          </div>
+          <div class="render-layer" aria-hidden="true"></div>
           <textarea
             aria-label="Markdown editor"
             aria-haspopup="listbox"
@@ -322,8 +315,7 @@ export class ElDmMarkdownInput extends BaseElement {
 
   #cacheDOMRefs(): void {
     this.#textarea = this.shadowRoot.querySelector('textarea');
-    this.#backdrop = this.shadowRoot.querySelector('.backdrop');
-    this.#backdropContent = this.shadowRoot.querySelector('.backdrop-content');
+    this.#renderLayer = this.shadowRoot.querySelector('.render-layer');
     this.#writeArea = this.shadowRoot.querySelector('.write-area');
     this.#previewBody = this.shadowRoot.querySelector('.preview-body');
     this.#statusCount = this.shadowRoot.querySelector('.status-bar-count');
@@ -344,14 +336,6 @@ export class ElDmMarkdownInput extends BaseElement {
       this.#scheduleStatusUpdate();
       this.#handleAutocompleteInput();
       this.#scheduleLivePreview();
-    });
-
-    // ── Scroll sync (backdrop must follow textarea scroll) ─────────
-    ta.addEventListener('scroll', () => {
-      if (this.#backdrop) {
-        this.#backdrop.scrollTop = ta.scrollTop;
-        this.#backdrop.scrollLeft = ta.scrollLeft;
-      }
     });
 
     // ── Close dropdown when focus leaves the textarea ──────────────
@@ -486,19 +470,10 @@ export class ElDmMarkdownInput extends BaseElement {
       }
     });
 
-    // ── ResizeObserver: mirror textarea dimensions to backdrop ─────
-    if (typeof ResizeObserver !== 'undefined') {
-      this.#resizeObserver = new ResizeObserver(() => {
-        if (this.#backdrop && this.#textarea) {
-          this.#backdrop.style.height = `${this.#textarea.offsetHeight}px`;
-        }
-      });
-      this.#resizeObserver.observe(ta);
-    }
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // Highlight (Write tab backdrop)
+  // Highlight (Write tab render layer)
   // ════════════════════════════════════════════════════════════════════
 
   #initHighlight(): void {
@@ -506,8 +481,8 @@ export class ElDmMarkdownInput extends BaseElement {
     applyPrismTheme(this.shadowRoot, dark);
     ensurePrism().then(() => {
       // Highlight immediately once Prism is ready
-      if (this.#textarea && this.#backdropContent) {
-        this.#backdropContent.innerHTML = highlightMarkdown(this.#textarea.value);
+      if (this.#textarea && this.#renderLayer) {
+        this.#renderLayer.innerHTML = highlightMarkdown(this.#textarea.value);
       }
     });
   }
@@ -516,12 +491,8 @@ export class ElDmMarkdownInput extends BaseElement {
     if (this.#highlightTimer !== null) clearTimeout(this.#highlightTimer);
     this.#highlightTimer = setTimeout(() => {
       this.#highlightTimer = null;
-      if (this.#backdropContent && this.#textarea) {
-        this.#backdropContent.innerHTML = highlightMarkdown(this.#textarea.value);
-      }
-      // Sync scroll after highlight (content size may change)
-      if (this.#backdrop && this.#textarea) {
-        this.#backdrop.scrollTop = this.#textarea.scrollTop;
+      if (this.#renderLayer && this.#textarea) {
+        this.#renderLayer.innerHTML = highlightMarkdown(this.#textarea.value);
       }
     }, 60);
   }
