@@ -27,9 +27,13 @@ const rays = () => `
 export class ElDmArtPlasmaBall extends BaseElement {
   static properties = {
     size: { type: String, reflect: true },
+    on: { type: Boolean, reflect: true },
+    noBase: { type: Boolean, reflect: true, attribute: 'no-base' },
   };
 
   declare size: string;
+  declare on: boolean;
+  declare noBase: boolean;
 
   constructor() {
     super();
@@ -39,9 +43,10 @@ export class ElDmArtPlasmaBall extends BaseElement {
   render(): string {
     const classes = ['art-plasma-ball'];
     if (this.size && this.size !== 'md') classes.push(`art-plasma-ball-${this.size}`);
+    if (this.noBase) classes.push('art-plasma-ball-no-base');
     return `
       <div class="${classes.join(' ')}">
-        <input type="checkbox" class="switcher" aria-label="Toggle plasma ball">
+        <input type="checkbox" class="switcher" aria-label="Toggle plasma ball"${this.on ? ' checked' : ''}>
         <div class="glassball">
           <div class="electrode hide-electrode"></div>
           <div class="electrode"></div>
