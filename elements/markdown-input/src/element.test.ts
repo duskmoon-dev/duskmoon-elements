@@ -570,16 +570,16 @@ describe('ElDmMarkdownInput', () => {
     });
   });
 
-  // ── Scroll sync ───────────────────────────────────────────────────
+  // ── Render layer (replaces old scroll sync / backdrop) ───────────
 
-  describe('scroll sync', () => {
-    test('backdrop scrollTop follows textarea scroll', () => {
-      const ta = getTextarea(el);
-      const backdrop = el.shadowRoot!.querySelector('.backdrop') as HTMLElement;
-      // Simulate scroll
-      Object.defineProperty(ta, 'scrollTop', { value: 50, configurable: true });
-      ta.dispatchEvent(new Event('scroll'));
-      expect(backdrop.scrollTop).toBe(50);
+  describe('render layer', () => {
+    test('render-layer exists and backdrop is removed', () => {
+      const renderLayer = el.shadowRoot!.querySelector('.render-layer');
+      const backdrop = el.shadowRoot!.querySelector('.backdrop');
+      const backdropContent = el.shadowRoot!.querySelector('.backdrop-content');
+      expect(renderLayer).not.toBeNull();
+      expect(backdrop).toBeNull();
+      expect(backdropContent).toBeNull();
       cleanup(el);
     });
   });

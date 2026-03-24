@@ -132,7 +132,32 @@ export function applyPrismTheme(shadowRoot: ShadowRoot, dark: boolean): void {
     shadowRoot.appendChild(styleEl);
   }
 
-  const expected = `@import url("${themeUrl}");`;
+  // Rules after @import beat the imported stylesheet for equal specificity,
+  // so these overrides neutralise prism-coy / prism-tomorrow's hardcoded
+  // pre/code backgrounds and borders inside the preview panel, letting the
+  // markdown-body styles from @duskmoon-dev/core control the visual frame.
+  // Only Prism token colours (.token.*) are preserved.
+  const previewOverrides = `
+.preview-body pre[class*="language-"] {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  position: static;
+}
+.preview-body pre[class*="language-"] > code {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background-image: none;
+  display: block;
+  overflow: auto;
+  max-height: none;
+  height: auto;
+}`;
+
+  const expected = `@import url("${themeUrl}");${previewOverrides}`;
   if (styleEl.textContent !== expected) {
     styleEl.textContent = expected;
   }
