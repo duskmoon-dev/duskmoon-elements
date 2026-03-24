@@ -72,31 +72,41 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
+          # Helper: update .version and resolve all workspace:* deps to the new version
+          update_pkg() {
+            local file="$1"
+            jq --arg v "$NEW_VERSION" '
+              .version = $v |
+              if .dependencies then
+                .dependencies |= with_entries(
+                  if .value == "workspace:*" then .value = $v else . end
+                )
+              else . end
+            ' "$file" > tmp.json && mv tmp.json "$file"
+            echo "Updated $file to $NEW_VERSION"
+          }
+
           # Update core and bundle packages
           for pkg in packages/base packages/elements; do
-            jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-            echo "Updated $pkg/package.json to $NEW_VERSION"
+            update_pkg "$pkg/package.json"
           done
 
           # Update all element packages
           for pkg in elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-              echo "Updated $pkg/package.json to $NEW_VERSION"
+              update_pkg "$pkg/package.json"
             fi
           done
 
           # Update all CSS art packages
           for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              jq --arg v "$NEW_VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-              echo "Updated $pkg/package.json to $NEW_VERSION"
+              update_pkg "$pkg/package.json"
             fi
           done
 
           # Update CSS arts bundle
-          jq --arg v "$NEW_VERSION" '.version = $v' packages/art-elements/package.json > tmp.json && mv tmp.json packages/art-elements/package.json
-          echo "Updated packages/art-elements/package.json to $NEW_VERSION"
+          update_pkg packages/art-elements/package.json
 
       - name: Build all packages
         run: bun run build:all
