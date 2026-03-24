@@ -16,11 +16,9 @@ const styles = css`
 
 export class ElDmArtMountain extends BaseElement {
   static properties = {
-    variant: { type: String, reflect: true, default: 'single' },
     size: { type: String, reflect: true },
   };
 
-  declare variant: string;
   declare size: string;
 
   constructor() {
@@ -29,22 +27,34 @@ export class ElDmArtMountain extends BaseElement {
   }
 
   render(): string {
-    const isRange = this.variant === 'range';
     const classes = ['art-mountain'];
-    if (isRange) classes.push('art-mountain-range');
-    if (this.variant === 'sunset') classes.push('art-mountain-sunset');
-    if (this.variant === 'forest') classes.push('art-mountain-forest');
     if (this.size && this.size !== 'md') classes.push(`art-mountain-${this.size}`);
 
-    if (isRange) {
-      return `
-        <div class="${classes.join(' ')}">
-          <div class="art-peak"></div>
-          <div class="art-peak"></div>
-          <div class="art-peak"></div>
+    return `
+      <div class="${classes.join(' ')}">
+        <div class="mountains">
+          <div class="mountain"></div>
+          <div class="mountain"></div>
+          <div class="mountain"></div>
+          <div class="mountain"></div>
         </div>
-      `;
-    }
-    return `<div class="${classes.join(' ')}"></div>`;
+        <div class="trees">
+          <div class="tree"></div>
+          <div class="tree"></div>
+          <div class="tree"></div>
+        </div>
+        <div class="lights">
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+          <div class="borealis"></div>
+        </div>
+      </div>
+    `;
   }
 }

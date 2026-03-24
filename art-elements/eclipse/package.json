@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/css-art": "^1.13.0"
+    "@duskmoon-dev/css-art": "^1.14.1"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

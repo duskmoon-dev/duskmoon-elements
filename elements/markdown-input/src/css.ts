@@ -188,6 +188,7 @@ export const elementStyles = css`
     height: stretch;
     flex: 1 1 auto;
     display: flex;
+    flex-direction: column;
     overflow-y: auto;
     color: var(--md-text);
     /* .markdown-body styles come from @duskmoon-dev/core via the element */

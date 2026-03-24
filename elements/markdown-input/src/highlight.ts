@@ -75,6 +75,11 @@ export function ensurePrism(): Promise<void> {
         // TODO: consider bundling commonly-used grammars statically to remove this gap.
         window.Prism.plugins.autoloader.languages_path = `${PRISM_BASE}/components/`;
       }
+      // Pre-load the markdown grammar so highlightMarkdown() works immediately
+      // when ensurePrism() resolves. The autoloader only fetches grammars on
+      // demand (when it sees a language-xxx class), so without this the first
+      // call to highlightMarkdown() always falls back to plain text.
+      return _loadScript(`${PRISM_BASE}/components/prism-markdown.min.js`);
     });
   });
 

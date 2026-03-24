@@ -22,6 +22,9 @@
     { "path": "../../art-elements/synthwave-starfield" },
     { "path": "../../art-elements/circular-gallery" },
     { "path": "../../art-elements/snow" },
-    { "path": "../../art-elements/flower-animation" }
+    { "path": "../../art-elements/flower-animation" },
+    { "path": "../../art-elements/gemini-input" },
+    { "path": "../../art-elements/snowball-preloader" },
+    { "path": "../../art-elements/csswitch" }
   ]
 }

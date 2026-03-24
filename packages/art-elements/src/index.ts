@@ -32,6 +32,11 @@ import {
   ElDmArtGeminiInput,
   register as registerArtGeminiInput,
 } from '@duskmoon-dev/el-art-gemini-input';
+import {
+  ElDmArtSnowballPreloader,
+  register as registerArtSnowballPreloader,
+} from '@duskmoon-dev/el-art-snowball-preloader';
+import { ElDmArtCsswitch, register as registerArtCsswitch } from '@duskmoon-dev/el-art-csswitch';
 
 export {
   ElDmArtMoon,
@@ -60,6 +65,10 @@ export {
   registerArtFlowerAnimation,
   ElDmArtGeminiInput,
   registerArtGeminiInput,
+  ElDmArtSnowballPreloader,
+  registerArtSnowballPreloader,
+  ElDmArtCsswitch,
+  registerArtCsswitch,
 };
 
 export function registerAllArts(): void {
@@ -76,4 +85,6 @@ export function registerAllArts(): void {
   registerArtSnow();
   registerArtFlowerAnimation();
   registerArtGeminiInput();
+  registerArtSnowballPreloader();
+  registerArtCsswitch();
 }

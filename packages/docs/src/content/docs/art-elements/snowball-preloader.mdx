@@ -1,0 +1,54 @@
+---
+title: Snowball Preloader
+description: Pure CSS snowball preloader animation
+order: 13
+section: art-elements
+component: "@duskmoon-dev/el-art-snowball-preloader"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Snowball Preloader
+
+A pure CSS snowball preloader animation featuring a rolling snowball on an orbital track.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-art-snowball-preloader
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-art-snowball-preloader/register';
+```
+
+```html
+<el-dm-art-snowball-preloader></el-dm-art-snowball-preloader>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-art-snowball-preloader></el-dm-art-snowball-preloader>
+</ComponentDemo>
+
+<ComponentDemo title="Sizes">
+  <el-dm-art-snowball-preloader size="sm"></el-dm-art-snowball-preloader>
+  <el-dm-art-snowball-preloader></el-dm-art-snowball-preloader>
+  <el-dm-art-snowball-preloader size="lg"></el-dm-art-snowball-preloader>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the preloader |
+
+## CSS Custom Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--art-snowball-preloader-size` | `256px` | Size of the preloader |
+| `--art-snowball-preloader-bg` | `hsl(223, 90%, 95%)` | Background color of the track |

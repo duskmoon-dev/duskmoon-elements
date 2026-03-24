@@ -1,6 +1,6 @@
 ---
 title: Mountain
-description: Pure CSS mountain landscape art with single and range variants
+description: Pure CSS aurora borealis mountain night scene
 order: 5
 section: art-elements
 component: "@duskmoon-dev/el-art-mountain"
@@ -10,7 +10,7 @@ import ComponentDemo from '../../../components/ComponentDemo.astro';
 
 # Mountain
 
-A pure CSS mountain landscape with single peak and mountain range variants, plus optional sunset mode.
+A pure CSS aurora borealis night scene with layered mountain silhouettes, pine trees, and animated northern lights.
 
 ## Installation
 
@@ -30,14 +30,8 @@ import '@duskmoon-dev/el-art-mountain/register';
 
 ## Live Demo
 
-<ComponentDemo title="Variants">
+<ComponentDemo title="Default">
   <el-dm-art-mountain></el-dm-art-mountain>
-  <el-dm-art-mountain variant="range"></el-dm-art-mountain>
-</ComponentDemo>
-
-<ComponentDemo title="Sunset">
-  <el-dm-art-mountain sunset></el-dm-art-mountain>
-  <el-dm-art-mountain variant="range" sunset></el-dm-art-mountain>
 </ComponentDemo>
 
 <ComponentDemo title="Sizes">
@@ -50,6 +44,10 @@ import '@duskmoon-dev/el-art-mountain/register';
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `variant` | `'single' \| 'range'` | `'single'` | Single peak or mountain range |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the illustration |
-| `sunset` | `boolean` | `false` | Applies warm sunset color palette |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the scene |
+
+## CSS Custom Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--art-mountain-size` | `600px` | Width and height of the canvas |

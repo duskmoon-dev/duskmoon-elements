@@ -55,6 +55,8 @@ import { register as registerArtSynthwaveStarfield } from '@duskmoon-dev/el-art-
 import { register as registerArtCircularGallery } from '@duskmoon-dev/el-art-circular-gallery';
 import { register as registerArtSnow } from '@duskmoon-dev/el-art-snow';
 import { register as registerArtGeminiInput } from '@duskmoon-dev/el-art-gemini-input';
+import { register as registerArtSnowballPreloader } from '@duskmoon-dev/el-art-snowball-preloader';
+import { register as registerArtCsswitch } from '@duskmoon-dev/el-art-csswitch';
 
 registerButton();
 registerCard();
@@ -104,3 +106,5 @@ registerArtSynthwaveStarfield();
 registerArtCircularGallery();
 registerArtSnow();
 registerArtGeminiInput();
+registerArtSnowballPreloader();
+registerArtCsswitch();
