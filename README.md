@@ -1,5 +1,7 @@
 # DuskMoon Elements
 
+[![CI](https://github.com/duskmoon-dev/duskmoon-elements/actions/workflows/ci.yml/badge.svg)](https://github.com/duskmoon-dev/duskmoon-elements/actions/workflows/ci.yml)
+[![Release](https://github.com/duskmoon-dev/duskmoon-elements/actions/workflows/release.yml/badge.svg)](https://github.com/duskmoon-dev/duskmoon-elements/actions/workflows/release.yml)
 [![@duskmoon-dev/elements](https://img.shields.io/npm/v/@duskmoon-dev/elements?label=%40duskmoon-dev%2Felements)](https://www.npmjs.com/package/@duskmoon-dev/elements)
 [![@duskmoon-dev/art-elements](https://img.shields.io/npm/v/@duskmoon-dev/art-elements?label=%40duskmoon-dev%2Fart-elements)](https://www.npmjs.com/package/@duskmoon-dev/art-elements)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
