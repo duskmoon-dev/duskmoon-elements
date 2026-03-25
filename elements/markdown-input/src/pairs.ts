@@ -1,10 +1,46 @@
 /**
  * Smart pair insertion and list/heading continuation for the markdown editor.
  *
- * Two behaviors:
+ * Three behaviors:
  *  1. Backtick pairing   — ` → `|`  or wraps selection; ``` → fenced block
- *  2. Enter continuation — carries list bullets (*) or breaks out of headings
+ *  2. Tab indent          — Tab inserts 2 spaces; Shift+Tab de-indents
+ *  3. Enter continuation — carries list bullets (*) or breaks out of headings
+ *
+ * All text mutations go through `replaceRange()` which uses
+ * `document.execCommand('insertText')` so that every edit participates in
+ * the browser's native Ctrl+Z / Cmd+Z undo stack.
  */
+
+// ─── Undo-safe text replacement ─────────────────────────────────────────────
+
+/**
+ * Replace a range in the textarea and position the cursor, preserving the
+ * browser's native undo history.
+ *
+ * Uses `document.execCommand('insertText')` which, despite being deprecated,
+ * is the only cross-browser mechanism for programmatic edits that integrate
+ * with the undo stack. Falls back to direct `ta.value` assignment (which
+ * resets undo) in environments where execCommand is unavailable (e.g. tests).
+ */
+function replaceRange(
+  ta: HTMLTextAreaElement,
+  from: number,
+  to: number,
+  text: string,
+  cursorStart: number,
+  cursorEnd?: number,
+): void {
+  ta.setSelectionRange(from, to);
+  // execCommand is unavailable in some environments (e.g. happy-dom in tests)
+  const execOk =
+    typeof document.execCommand === 'function' &&
+    document.execCommand('insertText', false, text);
+  if (!execOk) {
+    // Fallback: direct assignment (works but resets undo history)
+    ta.value = ta.value.slice(0, from) + text + ta.value.slice(to);
+  }
+  ta.setSelectionRange(cursorStart, cursorEnd ?? cursorStart);
+}
 
 // ─── Backtick pairing ────────────────────────────────────────────────────────
 
@@ -24,22 +60,19 @@ export function handlePairKey(ta: HTMLTextAreaElement, key: string): boolean {
   // Selection: wrap the selected text in backticks
   if (start !== end) {
     const selected = value.slice(start, end);
-    ta.value = value.slice(0, start) + '`' + selected + '`' + value.slice(end);
-    ta.setSelectionRange(start + 1, end + 1);
+    replaceRange(ta, start, end, '`' + selected + '`', start + 1, end + 1);
     return true;
   }
 
   // Triple-backtick: two `` already before cursor → create fenced code block
   if (start >= 2 && value.slice(start - 2, start) === '``') {
     // Result: ```\n<cursor>\n```
-    ta.value = value.slice(0, start) + '`\n\n```' + value.slice(end);
-    ta.setSelectionRange(start + 2, start + 2);
+    replaceRange(ta, start, end, '`\n\n```', start + 2);
     return true;
   }
 
   // Default: insert a closing backtick and leave cursor between them
-  ta.value = value.slice(0, start) + '``' + value.slice(end);
-  ta.setSelectionRange(start + 1, start + 1);
+  replaceRange(ta, start, end, '``', start + 1);
   return true;
 }
 
@@ -64,8 +97,7 @@ export function handleTabKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boolean
 
   // Single cursor, no shift: plain indent at cursor position
   if (start === end && !e.shiftKey) {
-    ta.value = value.slice(0, start) + INDENT + value.slice(end);
-    ta.setSelectionRange(start + INDENT.length, start + INDENT.length);
+    replaceRange(ta, start, end, INDENT, start + INDENT.length);
     return true;
   }
 
@@ -77,13 +109,18 @@ export function handleTabKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boolean
     ? block.replace(/^ {1,2}/gm, '') // remove up to 2 leading spaces per line
     : block.replace(/^/gm, INDENT); // prepend 2 spaces to every line
 
-  ta.value = value.slice(0, lineStart) + transformed + value.slice(end);
-
   const delta = transformed.length - block.length;
   const firstLineLeading = block.split('\n')[0].match(/^ */)?.[0].length ?? 0;
   const firstLineDelta = e.shiftKey ? -Math.min(2, firstLineLeading) : INDENT.length;
 
-  ta.setSelectionRange(Math.max(lineStart, start + firstLineDelta), end + delta);
+  replaceRange(
+    ta,
+    lineStart,
+    end,
+    transformed,
+    Math.max(lineStart, start + firstLineDelta),
+    end + delta,
+  );
   return true;
 }
 
@@ -113,17 +150,12 @@ export function handleEnterKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boole
   e.preventDefault();
 
   if (result.eraseCurrentLine) {
-    // Remove the current line's prefix — don't add '\n'; value.slice(pos)
-    // already starts with it (if content follows) or the line is at EOF.
-    const newValue = value.slice(0, lineStart) + value.slice(pos);
-    ta.value = newValue;
-    ta.setSelectionRange(lineStart, lineStart);
+    // Remove the current line's prefix
+    replaceRange(ta, lineStart, pos, '', lineStart);
   } else {
     // Insert newline + continuation prefix
-    const newValue = value.slice(0, pos) + '\n' + result.prefix + value.slice(ta.selectionEnd);
-    const newPos = pos + 1 + result.prefix.length;
-    ta.value = newValue;
-    ta.setSelectionRange(newPos, newPos);
+    const insert = '\n' + result.prefix;
+    replaceRange(ta, pos, pos, insert, pos + insert.length);
   }
 
   return true;
