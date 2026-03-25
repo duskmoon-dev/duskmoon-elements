@@ -43,6 +43,50 @@ export function handlePairKey(ta: HTMLTextAreaElement, key: string): boolean {
   return true;
 }
 
+// ─── Tab indent ───────────────────────────────────────────────────────────────
+
+const INDENT = '  '; // 2 spaces — standard markdown soft-tab
+
+/**
+ * Handle Tab / Shift+Tab for indent and de-indent.
+ *
+ * - Tab (no selection):    insert 2 spaces at cursor
+ * - Tab (with selection):  add 2 spaces to every selected line
+ * - Shift+Tab:             remove up to 2 leading spaces from every selected line
+ *
+ * @returns true if the event was handled (caller should preventDefault)
+ */
+export function handleTabKey(ta: HTMLTextAreaElement, e: KeyboardEvent): boolean {
+  if (e.key !== 'Tab') return false;
+  e.preventDefault();
+
+  const { selectionStart: start, selectionEnd: end, value } = ta;
+
+  // Single cursor, no shift: plain indent at cursor position
+  if (start === end && !e.shiftKey) {
+    ta.value = value.slice(0, start) + INDENT + value.slice(end);
+    ta.setSelectionRange(start + INDENT.length, start + INDENT.length);
+    return true;
+  }
+
+  // Block indent/de-indent: operate on all lines touched by the selection
+  const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+  const block = value.slice(lineStart, end);
+
+  const transformed = e.shiftKey
+    ? block.replace(/^ {1,2}/gm, '') // remove up to 2 leading spaces per line
+    : block.replace(/^/gm, INDENT); // prepend 2 spaces to every line
+
+  ta.value = value.slice(0, lineStart) + transformed + value.slice(end);
+
+  const delta = transformed.length - block.length;
+  const firstLineLeading = block.split('\n')[0].match(/^ */)?.[0].length ?? 0;
+  const firstLineDelta = e.shiftKey ? -Math.min(2, firstLineLeading) : INDENT.length;
+
+  ta.setSelectionRange(Math.max(lineStart, start + firstLineDelta), end + delta);
+  return true;
+}
+
 // ─── Enter continuation ───────────────────────────────────────────────────────
 
 /**

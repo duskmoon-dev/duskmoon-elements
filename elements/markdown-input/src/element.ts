@@ -35,7 +35,7 @@ import { elementStyles } from './css.js';
 import { ensurePrism, highlightMarkdown, applyPrismTheme } from './highlight.js';
 import { uploadFile, fileToMarkdown, isAcceptedType } from './upload.js';
 import { detectTrigger, confirmSuggestion, renderDropdown } from './autocomplete.js';
-import { handlePairKey, handleEnterKey } from './pairs.js';
+import { handlePairKey, handleEnterKey, handleTabKey } from './pairs.js';
 import { countWords, renderStatusCount } from './status-bar.js';
 import type { Suggestion } from './types.js';
 
@@ -379,6 +379,16 @@ export class ElDmMarkdownInput extends BaseElement {
         this.#syncFormValue();
         this.emit('change', { value: ta.value });
         this.#scheduleHighlight();
+        return;
+      }
+
+      // Tab indent / Shift+Tab de-indent
+      if (e.key === 'Tab' && !e.ctrlKey && !e.metaKey) {
+        if (handleTabKey(ta, e)) {
+          this.#syncFormValue();
+          this.emit('change', { value: ta.value });
+          this.#scheduleHighlight();
+        }
         return;
       }
 
