@@ -161,9 +161,35 @@ All events bubble and are composed.
 
 <ComponentDemo title="Markdown Input with Autocomplete">
   <el-dm-markdown-input
+    id="autocomplete-demo"
     style="width: 100%; height: 300px; border: 1px solid var(--color-outline);"
     placeholder="Type @ to mention users…"
   ></el-dm-markdown-input>
+  <script>{`
+    const acEditor = document.getElementById('autocomplete-demo');
+    acEditor.addEventListener('mention-query', (e) => {
+      const users = [
+        { id: 'alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
+        { id: 'bob', label: 'Bob Jones', subtitle: 'bob@example.com' },
+        { id: 'charlie', label: 'Charlie Brown', subtitle: 'charlie@example.com' }
+      ];
+      const filtered = users.filter(u =>
+        u.label.toLowerCase().includes(e.detail.query.toLowerCase())
+      );
+      e.detail.resolve(filtered);
+    });
+    acEditor.addEventListener('reference-query', (e) => {
+      const refs = [
+        { id: 'bug', label: 'Bug Report' },
+        { id: 'feature', label: 'Feature Request' },
+        { id: 'docs', label: 'Documentation' }
+      ];
+      const filtered = refs.filter(r =>
+        r.label.toLowerCase().includes(e.detail.query.toLowerCase())
+      );
+      e.detail.resolve(filtered);
+    });
+  `}</script>
 </ComponentDemo>
 
 ```javascript
@@ -172,9 +198,9 @@ const editor = document.querySelector('el-dm-markdown-input');
 // Handle @mention queries
 editor.addEventListener('mention-query', async (e) => {
   const users = [
-    { id: '@alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
-    { id: '@bob', label: 'Bob Jones', subtitle: 'bob@example.com' },
-    { id: '@charlie', label: 'Charlie Brown', subtitle: 'charlie@example.com' }
+    { id: 'alice', label: 'Alice Smith', subtitle: 'alice@example.com' },
+    { id: 'bob', label: 'Bob Jones', subtitle: 'bob@example.com' },
+    { id: 'charlie', label: 'Charlie Brown', subtitle: 'charlie@example.com' }
   ];
 
   const filtered = users.filter(u =>
@@ -187,9 +213,9 @@ editor.addEventListener('mention-query', async (e) => {
 // Handle #reference queries
 editor.addEventListener('reference-query', async (e) => {
   const refs = [
-    { id: '#bug', label: 'Bug Report' },
-    { id: '#feature', label: 'Feature Request' },
-    { id: '#docs', label: 'Documentation' }
+    { id: 'bug', label: 'Bug Report' },
+    { id: 'feature', label: 'Feature Request' },
+    { id: 'docs', label: 'Documentation' }
   ];
 
   const filtered = refs.filter(r =>

@@ -879,6 +879,71 @@ export class ElDmMarkdownInput extends BaseElement {
     } else {
       this.#textarea?.removeAttribute('aria-activedescendant');
     }
+    // Position the dropdown near the caret
+    const coords = this.#getCaretCoords();
+    if (coords) {
+      this.#acDropdown.style.top = `${coords.top}px`;
+      this.#acDropdown.style.left = `${coords.left}px`;
+    }
+  }
+
+  /**
+   * Compute the caret's position (top-left of the line below the cursor)
+   * in coordinates relative to :host.
+   *
+   * Uses a hidden mirror div positioned at the textarea's exact viewport
+   * location so text wraps identically, making the marker span's
+   * getBoundingClientRect() directly give us the cursor's viewport position.
+   */
+  #getCaretCoords(): { top: number; left: number } | null {
+    const ta = this.#textarea;
+    if (!ta) return null;
+    const pos = ta.selectionStart ?? 0;
+    const cs = getComputedStyle(ta);
+    const taRect = ta.getBoundingClientRect();
+
+    const mirror = document.createElement('div');
+    Object.assign(mirror.style, {
+      position: 'fixed',
+      visibility: 'hidden',
+      pointerEvents: 'none',
+      top: `${taRect.top}px`,
+      left: `${taRect.left}px`,
+      width: `${taRect.width}px`,
+      font: cs.font,
+      letterSpacing: cs.letterSpacing,
+      paddingTop: cs.paddingTop,
+      paddingRight: cs.paddingRight,
+      paddingBottom: cs.paddingBottom,
+      paddingLeft: cs.paddingLeft,
+      borderTopWidth: cs.borderTopWidth,
+      borderRightWidth: cs.borderRightWidth,
+      borderBottomWidth: cs.borderBottomWidth,
+      borderLeftWidth: cs.borderLeftWidth,
+      boxSizing: cs.boxSizing,
+      whiteSpace: 'pre-wrap',
+      wordBreak: 'break-word',
+      overflowWrap: cs.overflowWrap,
+      overflow: 'hidden',
+    });
+
+    const before = document.createTextNode(ta.value.substring(0, pos));
+    const marker = document.createElement('span');
+    marker.textContent = '\u200b';
+    mirror.appendChild(before);
+    mirror.appendChild(marker);
+
+    document.body.appendChild(mirror);
+    const markerRect = marker.getBoundingClientRect();
+    document.body.removeChild(mirror);
+
+    const hostRect = this.getBoundingClientRect();
+    const lineHeight = parseFloat(cs.lineHeight) || 20;
+
+    return {
+      top: markerRect.top - hostRect.top - ta.scrollTop + lineHeight,
+      left: Math.max(0, markerRect.left - hostRect.left),
+    };
   }
 
   // ════════════════════════════════════════════════════════════════════

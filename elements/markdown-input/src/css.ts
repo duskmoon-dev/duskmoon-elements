@@ -211,6 +211,15 @@ export const elementStyles = css`
     display: none;
   }
 
+  /*
+   * Markdown content children must not shrink below their natural height.
+   * Without this, flex-shrink:1 (default) compresses all children to fit
+   * the 329px container instead of letting overflow-y:auto scroll them.
+   */
+  .preview-body > * {
+    flex-shrink: 0;
+  }
+
   /* ── Preview skeleton (shown while render pipeline loads) ──────────── */
   .preview-skeleton {
     display: flex;
@@ -364,9 +373,9 @@ export const elementStyles = css`
   .ac-dropdown {
     position: absolute;
     z-index: 100;
-    left: 0.75rem;
-    /* Align to bottom of the editor chrome; the editor fills 100% of :host height */
-    bottom: calc(var(--md-status-bar-height, 2rem) + 4px);
+    /* top and left are set dynamically by #updateDropdown() via #getCaretCoords() */
+    top: 0;
+    left: 0;
     min-width: 16rem;
     max-width: 28rem;
     max-height: 16rem;
