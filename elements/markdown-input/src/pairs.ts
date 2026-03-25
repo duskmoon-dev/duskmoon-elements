@@ -66,8 +66,12 @@ export function handlePairKey(ta: HTMLTextAreaElement, key: string): boolean {
 
   // Triple-backtick: two `` already before cursor → create fenced code block
   if (start >= 2 && value.slice(start - 2, start) === '``') {
+    // Consume any auto-closed backticks sitting after the cursor so they
+    // don't end up appended after the closing fence.
+    let consumeEnd = end;
+    while (consumeEnd < value.length && value[consumeEnd] === '`') consumeEnd++;
     // Result: ```\n<cursor>\n```
-    replaceRange(ta, start, end, '`\n\n```', start + 2);
+    replaceRange(ta, start, consumeEnd, '`\n\n```', start + 2);
     return true;
   }
 
