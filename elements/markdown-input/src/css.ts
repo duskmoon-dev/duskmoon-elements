@@ -179,6 +179,17 @@ export const elementStyles = css`
     color: var(--md-text-muted);
   }
 
+  /*
+   * Selection: keep text transparent so the render layer stays visible, but
+   * apply a semi-transparent highlight so selected regions are clearly marked.
+   * Without this rule the browser's default opaque selection background covers
+   * the render layer, making selected text appear invisible.
+   */
+  textarea::selection {
+    color: transparent;
+    background-color: var(--md-selection-bg, color-mix(in srgb, var(--md-accent) 35%, transparent));
+  }
+
   textarea:disabled {
     cursor: not-allowed;
     opacity: 0.6;
