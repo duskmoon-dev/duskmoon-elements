@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-form",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "0.11.2",
     "@duskmoon-dev/core": "^1.14.1"
   },
   "devDependencies": {

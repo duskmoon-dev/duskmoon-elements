@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-markdown",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/core": "^1.14.1",
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "0.11.2",
     "highlight.js": "11.11.1",
     "marked": "17.0.4",
     "marked-highlight": "2.2.3"

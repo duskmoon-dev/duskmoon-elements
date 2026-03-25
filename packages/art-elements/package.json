@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/art-elements",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "All DuskMoon CSS art elements in one package",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -38,22 +38,22 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/el-art-moon": "workspace:*",
-    "@duskmoon-dev/el-art-sun": "workspace:*",
-    "@duskmoon-dev/el-art-atom": "workspace:*",
-    "@duskmoon-dev/el-art-eclipse": "workspace:*",
-    "@duskmoon-dev/el-art-mountain": "workspace:*",
-    "@duskmoon-dev/el-art-plasma-ball": "workspace:*",
-    "@duskmoon-dev/el-art-cat-stargazer": "workspace:*",
-    "@duskmoon-dev/el-art-color-spin": "workspace:*",
-    "@duskmoon-dev/el-art-synthwave-starfield": "workspace:*",
-    "@duskmoon-dev/el-art-circular-gallery": "workspace:*",
-    "@duskmoon-dev/el-art-snow": "workspace:*",
-    "@duskmoon-dev/el-art-flower-animation": "workspace:*",
-    "@duskmoon-dev/el-art-gemini-input": "workspace:*",
-    "@duskmoon-dev/el-art-snowball-preloader": "workspace:*",
-    "@duskmoon-dev/el-art-csswitch": "workspace:*"
+    "@duskmoon-dev/el-base": "0.11.2",
+    "@duskmoon-dev/el-art-moon": "0.11.2",
+    "@duskmoon-dev/el-art-sun": "0.11.2",
+    "@duskmoon-dev/el-art-atom": "0.11.2",
+    "@duskmoon-dev/el-art-eclipse": "0.11.2",
+    "@duskmoon-dev/el-art-mountain": "0.11.2",
+    "@duskmoon-dev/el-art-plasma-ball": "0.11.2",
+    "@duskmoon-dev/el-art-cat-stargazer": "0.11.2",
+    "@duskmoon-dev/el-art-color-spin": "0.11.2",
+    "@duskmoon-dev/el-art-synthwave-starfield": "0.11.2",
+    "@duskmoon-dev/el-art-circular-gallery": "0.11.2",
+    "@duskmoon-dev/el-art-snow": "0.11.2",
+    "@duskmoon-dev/el-art-flower-animation": "0.11.2",
+    "@duskmoon-dev/el-art-gemini-input": "0.11.2",
+    "@duskmoon-dev/el-art-snowball-preloader": "0.11.2",
+    "@duskmoon-dev/el-art-csswitch": "0.11.2"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
