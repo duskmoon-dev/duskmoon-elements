@@ -1,6 +1,7 @@
 # DuskMoon Elements
 
-[![npm version](https://img.shields.io/npm/v/@duskmoon-dev/elements)](https://www.npmjs.com/package/@duskmoon-dev/elements)
+[![@duskmoon-dev/elements](https://img.shields.io/npm/v/@duskmoon-dev/elements?label=%40duskmoon-dev%2Felements)](https://www.npmjs.com/package/@duskmoon-dev/elements)
+[![@duskmoon-dev/art-elements](https://img.shields.io/npm/v/@duskmoon-dev/art-elements?label=%40duskmoon-dev%2Fart-elements)](https://www.npmjs.com/package/@duskmoon-dev/art-elements)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A comprehensive collection of customizable web components built with vanilla TypeScript and Shadow DOM.
@@ -36,87 +37,89 @@ bun add @duskmoon-dev/el-button
 
 ### Core
 
-| Package | Description |
-|---------|-------------|
-| [@duskmoon-dev/el-base](./packages/base) | Base element class, CSS utilities, and theming |
-| [@duskmoon-dev/elements](./packages/elements) | All elements bundled together |
-| [@duskmoon-dev/art-elements](./packages/art-elements) | All pure CSS art elements bundled together |
+| Package | Version | Description |
+|---------|---------|-------------|
+| [@duskmoon-dev/el-base](./packages/base) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-base)](https://www.npmjs.com/package/@duskmoon-dev/el-base) | Base element class, CSS utilities, and theming |
+| [@duskmoon-dev/elements](./packages/elements) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/elements)](https://www.npmjs.com/package/@duskmoon-dev/elements) | All elements bundled together |
+| [@duskmoon-dev/art-elements](./packages/art-elements) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/art-elements)](https://www.npmjs.com/package/@duskmoon-dev/art-elements) | All pure CSS art elements bundled together |
 
 ### Input Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-button](./elements/button) | `<el-dm-button>` | Customizable button with variants and loading state |
-| [@duskmoon-dev/el-input](./elements/input) | `<el-dm-input>` | Text input with validation and helper text |
-| [@duskmoon-dev/el-switch](./elements/switch) | `<el-dm-switch>` | Toggle switch with labels |
-| [@duskmoon-dev/el-slider](./elements/slider) | `<el-dm-slider>` | Range slider with value display |
-| [@duskmoon-dev/el-select](./elements/select) | `<el-dm-select>` | Dropdown select with search |
-| [@duskmoon-dev/el-cascader](./elements/cascader) | `<el-dm-cascader>` | Multi-level cascading selector |
-| [@duskmoon-dev/el-autocomplete](./elements/autocomplete) | `<el-dm-autocomplete>` | Input with suggestions |
-| [@duskmoon-dev/el-datepicker](./elements/datepicker) | `<el-dm-datepicker>` | Date picker with calendar |
-| [@duskmoon-dev/el-file-upload](./elements/file-upload) | `<el-dm-file-upload>` | File upload with drag and drop |
-| [@duskmoon-dev/el-form](./elements/form) | `<el-dm-form>` | Form container with validation |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-button](./elements/button) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-button)](https://www.npmjs.com/package/@duskmoon-dev/el-button) | `<el-dm-button>` | Customizable button with variants and loading state |
+| [@duskmoon-dev/el-input](./elements/input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-input)](https://www.npmjs.com/package/@duskmoon-dev/el-input) | `<el-dm-input>` | Text input with validation and helper text |
+| [@duskmoon-dev/el-switch](./elements/switch) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-switch)](https://www.npmjs.com/package/@duskmoon-dev/el-switch) | `<el-dm-switch>` | Toggle switch with labels |
+| [@duskmoon-dev/el-slider](./elements/slider) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-slider)](https://www.npmjs.com/package/@duskmoon-dev/el-slider) | `<el-dm-slider>` | Range slider with value display |
+| [@duskmoon-dev/el-select](./elements/select) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-select)](https://www.npmjs.com/package/@duskmoon-dev/el-select) | `<el-dm-select>` | Dropdown select with search |
+| [@duskmoon-dev/el-cascader](./elements/cascader) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-cascader)](https://www.npmjs.com/package/@duskmoon-dev/el-cascader) | `<el-dm-cascader>` | Multi-level cascading selector |
+| [@duskmoon-dev/el-autocomplete](./elements/autocomplete) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-autocomplete)](https://www.npmjs.com/package/@duskmoon-dev/el-autocomplete) | `<el-dm-autocomplete>` | Input with suggestions |
+| [@duskmoon-dev/el-datepicker](./elements/datepicker) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-datepicker)](https://www.npmjs.com/package/@duskmoon-dev/el-datepicker) | `<el-dm-datepicker>` | Date picker with calendar |
+| [@duskmoon-dev/el-file-upload](./elements/file-upload) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-file-upload)](https://www.npmjs.com/package/@duskmoon-dev/el-file-upload) | `<el-dm-file-upload>` | File upload with drag and drop |
+| [@duskmoon-dev/el-form](./elements/form) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-form)](https://www.npmjs.com/package/@duskmoon-dev/el-form) | `<el-dm-form>` | Form container with validation |
 
 ### Feedback Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-alert](./elements/alert) | `<el-dm-alert>` | Alert messages with variants |
-| [@duskmoon-dev/el-dialog](./elements/dialog) | `<el-dm-dialog>` | Modal dialog |
-| [@duskmoon-dev/el-badge](./elements/badge) | `<el-dm-badge>` | Status badges and counters |
-| [@duskmoon-dev/el-chip](./elements/chip) | `<el-dm-chip>` | Tags and chips |
-| [@duskmoon-dev/el-tooltip](./elements/tooltip) | `<el-dm-tooltip>` | Hover tooltips |
-| [@duskmoon-dev/el-progress](./elements/progress) | `<el-dm-progress>` | Progress bars and spinners |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-alert](./elements/alert) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-alert)](https://www.npmjs.com/package/@duskmoon-dev/el-alert) | `<el-dm-alert>` | Alert messages with variants |
+| [@duskmoon-dev/el-dialog](./elements/dialog) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-dialog)](https://www.npmjs.com/package/@duskmoon-dev/el-dialog) | `<el-dm-dialog>` | Modal dialog |
+| [@duskmoon-dev/el-badge](./elements/badge) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-badge)](https://www.npmjs.com/package/@duskmoon-dev/el-badge) | `<el-dm-badge>` | Status badges and counters |
+| [@duskmoon-dev/el-chip](./elements/chip) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-chip)](https://www.npmjs.com/package/@duskmoon-dev/el-chip) | `<el-dm-chip>` | Tags and chips |
+| [@duskmoon-dev/el-tooltip](./elements/tooltip) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-tooltip)](https://www.npmjs.com/package/@duskmoon-dev/el-tooltip) | `<el-dm-tooltip>` | Hover tooltips |
+| [@duskmoon-dev/el-progress](./elements/progress) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-progress)](https://www.npmjs.com/package/@duskmoon-dev/el-progress) | `<el-dm-progress>` | Progress bars and spinners |
 
 ### Navigation Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-tabs](./elements/tabs) | `<el-dm-tabs>` | Tabbed interface |
-| [@duskmoon-dev/el-menu](./elements/menu) | `<el-dm-menu>` | Dropdown and context menus |
-| [@duskmoon-dev/el-navbar](./elements/navbar) | `<el-dm-navbar>` | Navigation bar |
-| [@duskmoon-dev/el-drawer](./elements/drawer) | `<el-dm-drawer>` | Slide-out drawer |
-| [@duskmoon-dev/el-breadcrumbs](./elements/breadcrumbs) | `<el-dm-breadcrumbs>` | Breadcrumb navigation |
-| [@duskmoon-dev/el-pagination](./elements/pagination) | `<el-dm-pagination>` | Page navigation |
-| [@duskmoon-dev/el-stepper](./elements/stepper) | `<el-dm-stepper>` | Step indicator |
-| [@duskmoon-dev/el-bottom-navigation](./elements/bottom-navigation) | `<el-dm-bottom-navigation>` | Mobile bottom nav |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-tabs](./elements/tabs) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-tabs)](https://www.npmjs.com/package/@duskmoon-dev/el-tabs) | `<el-dm-tabs>` | Tabbed interface |
+| [@duskmoon-dev/el-menu](./elements/menu) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-menu)](https://www.npmjs.com/package/@duskmoon-dev/el-menu) | `<el-dm-menu>` | Dropdown and context menus |
+| [@duskmoon-dev/el-navbar](./elements/navbar) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-navbar)](https://www.npmjs.com/package/@duskmoon-dev/el-navbar) | `<el-dm-navbar>` | Navigation bar |
+| [@duskmoon-dev/el-drawer](./elements/drawer) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-drawer)](https://www.npmjs.com/package/@duskmoon-dev/el-drawer) | `<el-dm-drawer>` | Slide-out drawer |
+| [@duskmoon-dev/el-breadcrumbs](./elements/breadcrumbs) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-breadcrumbs)](https://www.npmjs.com/package/@duskmoon-dev/el-breadcrumbs) | `<el-dm-breadcrumbs>` | Breadcrumb navigation |
+| [@duskmoon-dev/el-pagination](./elements/pagination) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pagination)](https://www.npmjs.com/package/@duskmoon-dev/el-pagination) | `<el-dm-pagination>` | Page navigation |
+| [@duskmoon-dev/el-stepper](./elements/stepper) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-stepper)](https://www.npmjs.com/package/@duskmoon-dev/el-stepper) | `<el-dm-stepper>` | Step indicator |
+| [@duskmoon-dev/el-bottom-navigation](./elements/bottom-navigation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-bottom-navigation)](https://www.npmjs.com/package/@duskmoon-dev/el-bottom-navigation) | `<el-dm-bottom-navigation>` | Mobile bottom nav |
 
 ### Surface Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-card](./elements/card) | `<el-dm-card>` | Content card with slots |
-| [@duskmoon-dev/el-accordion](./elements/accordion) | `<el-dm-accordion>` | Collapsible sections |
-| [@duskmoon-dev/el-popover](./elements/popover) | `<el-dm-popover>` | Floating content |
-| [@duskmoon-dev/el-bottom-sheet](./elements/bottom-sheet) | `<el-dm-bottom-sheet>` | Mobile bottom sheet |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-card](./elements/card) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-card)](https://www.npmjs.com/package/@duskmoon-dev/el-card) | `<el-dm-card>` | Content card with slots |
+| [@duskmoon-dev/el-accordion](./elements/accordion) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-accordion)](https://www.npmjs.com/package/@duskmoon-dev/el-accordion) | `<el-dm-accordion>` | Collapsible sections |
+| [@duskmoon-dev/el-popover](./elements/popover) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-popover)](https://www.npmjs.com/package/@duskmoon-dev/el-popover) | `<el-dm-popover>` | Floating content |
+| [@duskmoon-dev/el-bottom-sheet](./elements/bottom-sheet) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-bottom-sheet)](https://www.npmjs.com/package/@duskmoon-dev/el-bottom-sheet) | `<el-dm-bottom-sheet>` | Mobile bottom sheet |
 
 ### Data Display Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-table](./elements/table) | `<el-dm-table>` | Data table with sorting |
-| [@duskmoon-dev/el-markdown](./elements/markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
-| [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
-| [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
-| [@duskmoon-dev/el-code-block](./elements/code-block) | `<el-dm-code-block>` | Code block with language badge, title, and copy button |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-table](./elements/table) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-table)](https://www.npmjs.com/package/@duskmoon-dev/el-table) | `<el-dm-table>` | Data table with sorting |
+| [@duskmoon-dev/el-markdown](./elements/markdown) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
+| [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown-input)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
+| [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pro-data-grid)](https://www.npmjs.com/package/@duskmoon-dev/el-pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
+| [@duskmoon-dev/el-code-block](./elements/code-block) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-code-block)](https://www.npmjs.com/package/@duskmoon-dev/el-code-block) | `<el-dm-code-block>` | Code block with language badge, title, and copy button |
 
 ### CSS Art Components
 
-| Package | Element | Description |
-|---------|---------|-------------|
-| [@duskmoon-dev/el-art-atom](./art-elements/atom) | `<el-dm-art-atom>` | Animated atom model |
-| [@duskmoon-dev/el-art-cat-stargazer](./art-elements/cat-stargazer) | `<el-dm-art-cat-stargazer>` | Cat gazing at stars |
-| [@duskmoon-dev/el-art-circular-gallery](./art-elements/circular-gallery) | `<el-dm-art-circular-gallery>` | Circular image gallery |
-| [@duskmoon-dev/el-art-color-spin](./art-elements/color-spin) | `<el-dm-art-color-spin>` | Spinning color wheel |
-| [@duskmoon-dev/el-art-eclipse](./art-elements/eclipse) | `<el-dm-art-eclipse>` | Solar eclipse animation |
-| [@duskmoon-dev/el-art-moon](./art-elements/moon) | `<el-dm-art-moon>` | Moon phase art |
-| [@duskmoon-dev/el-art-mountain](./art-elements/mountain) | `<el-dm-art-mountain>` | Mountain landscape |
-| [@duskmoon-dev/el-art-plasma-ball](./art-elements/plasma-ball) | `<el-dm-art-plasma-ball>` | Plasma ball effect |
-| [@duskmoon-dev/el-art-snow](./art-elements/snow) | `<el-dm-art-snow>` | Snow animation |
-| [@duskmoon-dev/el-art-sun](./art-elements/sun) | `<el-dm-art-sun>` | Sun art |
-| [@duskmoon-dev/el-art-synthwave-starfield](./art-elements/synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
-| [@duskmoon-dev/el-art-flower-animation](./art-elements/flower-animation) | `<el-dm-art-flower-animation>` | Animated flower bloom |
-| [@duskmoon-dev/el-art-gemini-input](./art-elements/gemini-input) | `<el-dm-art-gemini-input>` | Gemini-style animated gradient input |
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-art-atom](./art-elements/atom) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-atom)](https://www.npmjs.com/package/@duskmoon-dev/el-art-atom) | `<el-dm-art-atom>` | Animated atom model |
+| [@duskmoon-dev/el-art-cat-stargazer](./art-elements/cat-stargazer) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-cat-stargazer)](https://www.npmjs.com/package/@duskmoon-dev/el-art-cat-stargazer) | `<el-dm-art-cat-stargazer>` | Cat gazing at stars |
+| [@duskmoon-dev/el-art-circular-gallery](./art-elements/circular-gallery) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-circular-gallery)](https://www.npmjs.com/package/@duskmoon-dev/el-art-circular-gallery) | `<el-dm-art-circular-gallery>` | Circular image gallery |
+| [@duskmoon-dev/el-art-color-spin](./art-elements/color-spin) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-color-spin)](https://www.npmjs.com/package/@duskmoon-dev/el-art-color-spin) | `<el-dm-art-color-spin>` | Spinning color wheel |
+| [@duskmoon-dev/el-art-csswitch](./art-elements/csswitch) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-csswitch)](https://www.npmjs.com/package/@duskmoon-dev/el-art-csswitch) | `<el-dm-art-csswitch>` | CSS-style game controller switch |
+| [@duskmoon-dev/el-art-eclipse](./art-elements/eclipse) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-eclipse)](https://www.npmjs.com/package/@duskmoon-dev/el-art-eclipse) | `<el-dm-art-eclipse>` | Solar eclipse animation |
+| [@duskmoon-dev/el-art-flower-animation](./art-elements/flower-animation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-flower-animation)](https://www.npmjs.com/package/@duskmoon-dev/el-art-flower-animation) | `<el-dm-art-flower-animation>` | Animated flower bloom |
+| [@duskmoon-dev/el-art-gemini-input](./art-elements/gemini-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-gemini-input)](https://www.npmjs.com/package/@duskmoon-dev/el-art-gemini-input) | `<el-dm-art-gemini-input>` | Gemini-style animated gradient input |
+| [@duskmoon-dev/el-art-moon](./art-elements/moon) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-moon)](https://www.npmjs.com/package/@duskmoon-dev/el-art-moon) | `<el-dm-art-moon>` | Moon phase art |
+| [@duskmoon-dev/el-art-mountain](./art-elements/mountain) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-mountain)](https://www.npmjs.com/package/@duskmoon-dev/el-art-mountain) | `<el-dm-art-mountain>` | Mountain landscape with aurora |
+| [@duskmoon-dev/el-art-plasma-ball](./art-elements/plasma-ball) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-plasma-ball)](https://www.npmjs.com/package/@duskmoon-dev/el-art-plasma-ball) | `<el-dm-art-plasma-ball>` | Plasma ball effect |
+| [@duskmoon-dev/el-art-snow](./art-elements/snow) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-snow)](https://www.npmjs.com/package/@duskmoon-dev/el-art-snow) | `<el-dm-art-snow>` | Snow animation |
+| [@duskmoon-dev/el-art-snowball-preloader](./art-elements/snowball-preloader) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-snowball-preloader)](https://www.npmjs.com/package/@duskmoon-dev/el-art-snowball-preloader) | `<el-dm-art-snowball-preloader>` | Animated snowball loading indicator |
+| [@duskmoon-dev/el-art-sun](./art-elements/sun) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-sun)](https://www.npmjs.com/package/@duskmoon-dev/el-art-sun) | `<el-dm-art-sun>` | Sun art |
+| [@duskmoon-dev/el-art-synthwave-starfield](./art-elements/synthwave-starfield) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-art-synthwave-starfield)](https://www.npmjs.com/package/@duskmoon-dev/el-art-synthwave-starfield) | `<el-dm-art-synthwave-starfield>` | Synthwave starfield |
 
 ## Usage Examples
 
@@ -260,7 +263,7 @@ duskmoon-elements/
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
-│   └── ...                 # 13 css art packages total
+│   └── ...                 # 15 css art packages total
 ├── packages/
 │   ├── base/               # @duskmoon-dev/el-base
 │   ├── elements/           # @duskmoon-dev/elements (bundle)
