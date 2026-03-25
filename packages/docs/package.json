@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
-    "@duskmoon-dev/core": "^1.14.1",
+    "@duskmoon-dev/core": "^1.14.2",
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-alert": "workspace:*",
     "@duskmoon-dev/el-autocomplete": "workspace:*",
