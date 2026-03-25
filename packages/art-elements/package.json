@@ -56,7 +56,7 @@
     "@duskmoon-dev/el-art-csswitch": "0.11.2"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^6.0.2"
   },
   "publishConfig": {
     "access": "public"

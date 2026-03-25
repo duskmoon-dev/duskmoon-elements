@@ -38,7 +38,7 @@
     "@duskmoon-dev/core": "^1.14.1"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.2"
   },
   "publishConfig": {
     "access": "public"
