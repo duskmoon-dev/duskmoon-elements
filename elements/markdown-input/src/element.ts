@@ -70,6 +70,7 @@ export class ElDmMarkdownInput extends BaseElement {
     debounce: { type: Number, reflect: true, default: 300 },
     katexCssUrl: { type: String, reflect: true, attribute: 'katex-css-url' },
     mermaidSrc: { type: String, reflect: true, attribute: 'mermaid-src' },
+    resize: { type: String, reflect: true, default: 'none' },
   };
 
   declare name: string;
@@ -85,6 +86,7 @@ export class ElDmMarkdownInput extends BaseElement {
   declare debounce: number;
   declare katexCssUrl: string | undefined;
   declare mermaidSrc: string | undefined;
+  declare resize: 'none' | 'vertical' | 'horizontal' | 'both';
 
   // ── ElementInternals for form association ────────────────────────────
   #internals!: ElementInternals;

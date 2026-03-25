@@ -457,6 +457,20 @@ export const elementStyles = css`
     white-space: nowrap;
   }
 
+  /* ── Resizable editor ──────────────────────────────────────────────── */
+  /* resize attribute mirrors the CSS resize property: vertical | horizontal | both */
+  :host([resize='vertical']) .editor {
+    resize: vertical;
+  }
+
+  :host([resize='horizontal']) .editor {
+    resize: horizontal;
+  }
+
+  :host([resize='both']) .editor {
+    resize: both;
+  }
+
   /* ── Reduced motion: disable all transitions and animations ──────── */
   @media (prefers-reduced-motion: reduce) {
     .tab-btn,
