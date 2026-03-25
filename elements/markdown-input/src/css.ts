@@ -58,6 +58,7 @@ export const elementStyles = css`
     color: var(--md-text);
     overflow: hidden;
     height: inherit;
+    min-height: 12rem;
   }
 
   .editor:focus-within {
@@ -109,13 +110,18 @@ export const elementStyles = css`
 
   /* ── Write area (render-layer + textarea overlay) ──────────────────── */
   /*
-   * CodeMirror-style render model: .render-layer sits in normal flow and
-   * drives the container height; the textarea is absolutely positioned on
-   * top. No scroll sync required — both layers always share the same size.
+   * CSS grid overlay model: both .render-layer and textarea occupy the same
+   * grid cell (grid-area: 1/1), making them normal-flow siblings. The
+   * render-layer drives the cell's height; the textarea stretches to match.
+   * The write-area is the scroll container — both layers scroll together
+   * with no JS sync required. This fixes overflow when the editor has a
+   * fixed height set by the consumer.
    */
   .write-area {
     position: relative;
-    min-height: 12rem;
+    display: grid;
+    overflow-y: auto;
+    min-height: 0;
     flex: 1 1 auto;
   }
 
@@ -124,15 +130,13 @@ export const elementStyles = css`
   }
 
   /*
-   * Render layer: highlighted HTML in normal flow. Drives container height.
-   * pointer-events: none lets clicks pass through to the textarea underneath.
+   * Render layer: highlighted HTML that drives the grid cell height.
+   * pointer-events: none lets clicks pass through to the textarea on top.
    * Font metrics MUST match the textarea exactly for pixel-aligned overlay.
    */
   .render-layer {
-    position: relative;
-    z-index: 1;
+    grid-area: 1 / 1;
     pointer-events: none;
-    min-height: 12rem;
     font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.875rem;
     line-height: 1.6;
@@ -144,14 +148,13 @@ export const elementStyles = css`
   }
 
   /*
-   * Textarea: absolute overlay on top of the render layer. Transparent text
+   * Textarea: grid overlay on top of the render layer. Transparent text
    * lets highlighted content show through; caret-color keeps cursor visible.
-   * overflow: hidden — the render layer drives height, not the textarea.
+   * overflow: hidden — the write-area is the scroll container, not textarea.
    */
   textarea {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
+    grid-area: 1 / 1;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
@@ -184,8 +187,7 @@ export const elementStyles = css`
   /* ── Preview panel ──────────────────────────────────────────────────── */
   .preview-body {
     padding: 0.75rem;
-    min-height: 12rem;
-    height: stretch;
+    min-height: 0; /* allow flex item to shrink and scroll */
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
