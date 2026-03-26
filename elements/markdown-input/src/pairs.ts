@@ -33,8 +33,7 @@ function replaceRange(
   ta.setSelectionRange(from, to);
   // execCommand is unavailable in some environments (e.g. happy-dom in tests)
   const execOk =
-    typeof document.execCommand === 'function' &&
-    document.execCommand('insertText', false, text);
+    typeof document.execCommand === 'function' && document.execCommand('insertText', false, text);
   if (!execOk) {
     // Fallback: direct assignment (works but resets undo history)
     ta.value = ta.value.slice(0, from) + text + ta.value.slice(to);

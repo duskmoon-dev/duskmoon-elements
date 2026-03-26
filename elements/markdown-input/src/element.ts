@@ -481,7 +481,6 @@ export class ElDmMarkdownInput extends BaseElement {
         }
       }
     });
-
   }
 
   // ════════════════════════════════════════════════════════════════════

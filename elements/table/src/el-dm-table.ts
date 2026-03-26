@@ -494,7 +494,7 @@ export class ElDmTable extends BaseElement {
       const aVal = a[this.sortColumn];
       const bVal = b[this.sortColumn];
 
-      let comparison = 0;
+      let comparison: number;
       if (aVal === null || aVal === undefined) comparison = 1;
       else if (bVal === null || bVal === undefined) comparison = -1;
       else if (typeof aVal === 'string' && typeof bVal === 'string') {

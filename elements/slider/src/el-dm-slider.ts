@@ -320,7 +320,7 @@ export class ElDmSlider extends BaseElement {
   private _handleKeyDown(e: KeyboardEvent): void {
     if (this.disabled) return;
 
-    let newValue = this.value;
+    let newValue: number;
     const bigStep = (this.max - this.min) / 10;
 
     switch (e.key) {

@@ -24,6 +24,9 @@ import type { PropertyDefinitions } from './base-element.js';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T = HTMLElement> = abstract new (...args: any[]) => T;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AbstractConstructor<T = object> = abstract new (...args: any[]) => T;
+
 interface BaseElementLike extends HTMLElement {
   connectedCallback(): void;
   disconnectedCallback(): void;
@@ -38,7 +41,9 @@ interface BaseElementConstructorLike {
  * Mixin that adds keyboard focus management.
  * Sets tabindex, handles focus/blur events, and tracks focused state.
  */
-export function FocusableMixin<T extends Constructor<BaseElementLike>>(Base: T) {
+export function FocusableMixin<T extends Constructor<BaseElementLike>>(
+  Base: T,
+): T & AbstractConstructor<{ focused: boolean }> {
   abstract class FocusableElement extends Base {
     static properties: PropertyDefinitions = {
       ...(Base as unknown as BaseElementConstructorLike).properties,
@@ -71,7 +76,8 @@ export function FocusableMixin<T extends Constructor<BaseElementLike>>(Base: T) 
     }
   }
 
-  return FocusableElement;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return FocusableElement as any;
 }
 
 /**
@@ -106,7 +112,17 @@ export function FormMixin<T extends Constructor<BaseElementLike>>(Base: T) {
  * Mixin that adds event listener management with automatic cleanup.
  * Listeners added via addListener() are removed on disconnect.
  */
-export function EventListenerMixin<T extends Constructor<BaseElementLike>>(Base: T) {
+export function EventListenerMixin<T extends Constructor<BaseElementLike>>(
+  Base: T,
+): T &
+  AbstractConstructor<{
+    addListener(
+      target: EventTarget,
+      type: string,
+      handler: EventListener,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+  }> {
   abstract class EventListenerElement extends Base {
     #listeners: Array<{
       target: EventTarget;
@@ -137,14 +153,20 @@ export function EventListenerMixin<T extends Constructor<BaseElementLike>>(Base:
     }
   }
 
-  return EventListenerElement;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return EventListenerElement as any;
 }
 
 /**
  * Mixin that adds slot change observation.
  * Tracks slotted elements and fires a callback when slots change.
  */
-export function SlotObserverMixin<T extends Constructor<BaseElementLike>>(Base: T) {
+export function SlotObserverMixin<T extends Constructor<BaseElementLike>>(
+  Base: T,
+): T &
+  AbstractConstructor<{
+    observeSlot(slotName: string, handler: (elements: Element[]) => void): void;
+  }> {
   abstract class SlotObserverElement extends Base {
     #slotObservers: Map<string, (elements: Element[]) => void> = new Map();
 
@@ -184,5 +206,6 @@ export function SlotObserverMixin<T extends Constructor<BaseElementLike>>(Base: 
     }
   }
 
-  return SlotObserverElement;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return SlotObserverElement as any;
 }
