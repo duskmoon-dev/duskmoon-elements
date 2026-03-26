@@ -35,10 +35,10 @@ export class ElDmArtSnowballPreloader extends BaseElement {
         <div class="art-snowball-preloader-inner-ring"></div>
         <div class="art-snowball-preloader-track-cover"></div>
         <div class="art-snowball-preloader-ball">
-          <div class="art-snowball-preloader-ball-outer-shadow"></div>
-          <div class="art-snowball-preloader-ball-side-shadows"></div>
           <div class="art-snowball-preloader-ball-texture"></div>
+          <div class="art-snowball-preloader-ball-outer-shadow"></div>
           <div class="art-snowball-preloader-ball-inner-shadow"></div>
+          <div class="art-snowball-preloader-ball-side-shadows"></div>
         </div>
       </div>
     `;
