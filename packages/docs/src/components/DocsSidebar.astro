@@ -72,8 +72,8 @@ function isActive(slug: string): boolean {
         {sections[section].map((doc) => (
           <li>
             <a
-              href={`/duskmoon-elements/docs/${doc.slug}`}
-              aria-current={isActive(doc.slug) ? 'page' : undefined}
+              href={`/duskmoon-elements/docs/${doc.id}`}
+              aria-current={isActive(doc.id) ? 'page' : undefined}
             >
               {doc.data.title}
             </a>

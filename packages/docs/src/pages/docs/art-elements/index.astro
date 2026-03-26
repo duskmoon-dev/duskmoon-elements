@@ -20,7 +20,7 @@ docs.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 
     <div class="component-grid">
       {docs.map((doc) => (
-        <a href={`/duskmoon-elements/docs/${doc.slug}`} class="component-card">
+        <a href={`/duskmoon-elements/docs/${doc.id}`} class="component-card">
           <h3 class="card-title">{doc.data.title}</h3>
           <p class="card-description">{doc.data.description}</p>
           <span class="card-link">View docs &rarr;</span>

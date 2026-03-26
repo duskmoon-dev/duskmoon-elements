@@ -31,7 +31,7 @@ export function buildNavigation(docs: CollectionEntry<'docs'>[]): NavSection[] {
     }
     sections[section].push({
       title: doc.data.title,
-      slug: doc.slug,
+      slug: doc.id,
       order: doc.data.order || 999,
     });
   });

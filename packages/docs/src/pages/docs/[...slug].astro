@@ -1,22 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import DocsLayout from '../../layouts/DocsLayout.astro';
 import { findPrevNext } from '../../utils/navigation';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
   return docs.map((doc) => ({
-    params: { slug: doc.slug },
+    params: { slug: doc.id },
     props: { doc },
   }));
 }
 
 const { doc } = Astro.props;
-const { Content } = await doc.render();
+const { Content } = await render(doc);
 
 // Get all docs for prev/next navigation
 const allDocs = await getCollection('docs', ({ data }) => !data.draft);
-const { prev, next } = findPrevNext(allDocs, doc.slug);
+const { prev, next } = findPrevNext(allDocs, doc.id);
 ---
 
 <DocsLayout
