@@ -1,0 +1,62 @@
+---
+title: Multi Select
+description: Dropdown for selecting multiple items from a list with chip display
+order: 21
+section: input
+component: "@duskmoon-dev/el-multi-select"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Multi Select
+
+A dropdown element for selecting multiple items from a list. Selected items are displayed as chips with a customizable placeholder and color theming.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-multi-select
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-multi-select';
+register();
+```
+
+```html
+<el-dm-multi-select placeholder="Choose tags...">
+  <!-- options -->
+</el-dm-multi-select>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-multi-select placeholder="Select items..."></el-dm-multi-select>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-multi-select color="primary" placeholder="Primary"></el-dm-multi-select>
+  <el-dm-multi-select color="secondary" placeholder="Secondary"></el-dm-multi-select>
+  <el-dm-multi-select color="success" placeholder="Success"></el-dm-multi-select>
+</ComponentDemo>
+
+<ComponentDemo title="Disabled">
+  <el-dm-multi-select disabled placeholder="Disabled"></el-dm-multi-select>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `placeholder` | `string` | `'Select...'` | Placeholder text when nothing is selected |
+| `disabled` | `boolean` | `false` | Disable the select |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Dropdown options/content |

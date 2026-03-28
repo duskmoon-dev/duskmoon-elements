@@ -1,0 +1,78 @@
+---
+title: Theme Controller
+description: Presentational wrapper for CSS-based theme switching controls
+order: 25
+section: input
+component: "@duskmoon-dev/el-theme-controller"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Theme Controller
+
+A presentational wrapper for CSS-based radio theme switching. Provides a styled container for theme selection controls using the DuskMoon theme system.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-theme-controller
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-theme-controller';
+register();
+```
+
+```html
+<el-dm-theme-controller>
+  <label>
+    <input type="radio" name="theme" value="sunshine" />
+    Light
+  </label>
+  <label>
+    <input type="radio" name="theme" value="moonlight" />
+    Dark
+  </label>
+</el-dm-theme-controller>
+```
+
+## Live Demo
+
+<ComponentDemo title="Theme Controller">
+  <el-dm-theme-controller>
+    <label>
+      <input type="radio" name="theme-demo" value="sunshine" />
+      Sunshine
+    </label>
+    <label>
+      <input type="radio" name="theme-demo" value="moonlight" />
+      Moonlight
+    </label>
+    <label>
+      <input type="radio" name="theme-demo" value="" />
+      Auto
+    </label>
+  </el-dm-theme-controller>
+</ComponentDemo>
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Theme selection controls (radio buttons, toggles, etc.) |
+
+## Theme Integration
+
+The theme controller works with the DuskMoon theme system. Themes are applied by setting the `data-theme` attribute on the `<html>` element:
+
+```javascript
+// Apply theme manually
+document.documentElement.setAttribute('data-theme', 'moonlight');
+
+// Remove for auto (system preference)
+document.documentElement.removeAttribute('data-theme');
+```
+
+See the [Theming guide](/duskmoon-elements/docs/theming) for details on available themes.

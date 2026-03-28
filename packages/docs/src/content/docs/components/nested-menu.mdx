@@ -1,0 +1,66 @@
+---
+title: Nested Menu
+description: Sidebar navigation with collapsible menu levels for hierarchical structures
+order: 26
+section: navigation
+component: "@duskmoon-dev/el-nested-menu"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Nested Menu
+
+A sidebar navigation element with collapsible menu levels for building hierarchical navigation structures. Renders as a `<ul>` list with slotted content.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-nested-menu
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-nested-menu';
+register();
+```
+
+```html
+<el-dm-nested-menu>
+  <li><a href="/docs">Getting Started</a></li>
+  <li>
+    <details>
+      <summary>Components</summary>
+      <ul>
+        <li><a href="/docs/button">Button</a></li>
+        <li><a href="/docs/input">Input</a></li>
+      </ul>
+    </details>
+  </li>
+</el-dm-nested-menu>
+```
+
+## Live Demo
+
+<ComponentDemo title="Nested Menu">
+  <el-dm-nested-menu style="width: 240px;">
+    <li><a href="#">Getting Started</a></li>
+    <li><a href="#">Theming</a></li>
+    <li class="nested-menu-title">Components</li>
+    <li><a href="#">Button</a></li>
+    <li><a href="#">Input</a></li>
+    <li><a href="#">Switch</a></li>
+  </el-dm-nested-menu>
+</ComponentDemo>
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Menu items (`<li>` elements with links, details/summary for collapsible sections, or `.nested-menu-title` for section headers) |
+
+## CSS Classes
+
+| Class | Description |
+|-------|-------------|
+| `nested-menu-title` | Apply to `<li>` elements to render as a non-clickable section header |

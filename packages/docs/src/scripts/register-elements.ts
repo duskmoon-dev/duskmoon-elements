@@ -42,6 +42,18 @@ import { register as registerPopover } from '@duskmoon-dev/el-popover';
 // Data display elements
 import { register as registerTable } from '@duskmoon-dev/el-table';
 import { register as registerProDataGrid } from '@duskmoon-dev/el-pro-data-grid';
+// New elements
+import { register as registerFormGroup } from '@duskmoon-dev/el-form-group';
+import { register as registerMultiSelect } from '@duskmoon-dev/el-multi-select';
+import { register as registerNavigation } from '@duskmoon-dev/el-navigation';
+import { register as registerNestedMenu } from '@duskmoon-dev/el-nested-menu';
+import { register as registerOtpInput } from '@duskmoon-dev/el-otp-input';
+import { register as registerPinInput } from '@duskmoon-dev/el-pin-input';
+import { register as registerSegmentControl } from '@duskmoon-dev/el-segment-control';
+import { register as registerThemeController } from '@duskmoon-dev/el-theme-controller';
+import { register as registerTimeInput } from '@duskmoon-dev/el-time-input';
+import { register as registerTreeSelect } from '@duskmoon-dev/el-tree-select';
+import { register as registerCodeEngine } from '@duskmoon-dev/el-code-engine';
 // CSS Art elements
 import { register as registerArtMoon } from '@duskmoon-dev/el-art-moon';
 import { register as registerArtSun } from '@duskmoon-dev/el-art-sun';
@@ -93,6 +105,18 @@ registerPopover();
 // Data display elements
 registerTable();
 registerProDataGrid();
+// New elements
+registerFormGroup();
+registerMultiSelect();
+registerNavigation();
+registerNestedMenu();
+registerOtpInput();
+registerPinInput();
+registerSegmentControl();
+registerThemeController();
+registerTimeInput();
+registerTreeSelect();
+registerCodeEngine();
 // CSS Art elements
 registerArtMoon();
 registerArtSun();

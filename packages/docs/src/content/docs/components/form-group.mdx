@@ -1,0 +1,61 @@
+---
+title: Form Group
+description: Layout utility for grouping form fields with vertical or horizontal orientation
+order: 20
+section: input
+component: "@duskmoon-dev/el-form-group"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Form Group
+
+A layout utility element for grouping and organizing form fields. Supports vertical (stacked) and horizontal (inline) orientations.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-form-group
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-form-group';
+register();
+```
+
+```html
+<el-dm-form-group>
+  <el-dm-input label="First Name"></el-dm-input>
+  <el-dm-input label="Last Name"></el-dm-input>
+</el-dm-form-group>
+```
+
+## Live Demo
+
+<ComponentDemo title="Vertical (Default)">
+  <el-dm-form-group style="width: 100%;">
+    <el-dm-input label="Email" placeholder="you@example.com"></el-dm-input>
+    <el-dm-input label="Password" placeholder="Enter password"></el-dm-input>
+  </el-dm-form-group>
+</ComponentDemo>
+
+<ComponentDemo title="Horizontal">
+  <el-dm-form-group orientation="horizontal" style="width: 100%;">
+    <el-dm-input label="First Name" placeholder="Jane"></el-dm-input>
+    <el-dm-input label="Last Name" placeholder="Doe"></el-dm-input>
+  </el-dm-form-group>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction of child fields |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Form field elements to group |

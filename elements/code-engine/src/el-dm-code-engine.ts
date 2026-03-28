@@ -1,0 +1,301 @@
+/**
+ * DuskMoon Code Engine Element
+ *
+ * A lightweight code editor backed by @duskmoon-dev/code-engine (CodeMirror 6 fork).
+ * Behaves like a native <input> or <textarea>: the `value` attribute sets the initial
+ * content, the `value` property always reflects the current content, and the element
+ * fires `input` on every change and `change` on blur.
+ *
+ * @element el-dm-code-engine
+ *
+ * @attr {string} value - Initial editor content (read once at mount, like <input>)
+ * @attr {string} language - Language name for syntax highlighting (e.g. "javascript", "css")
+ * @attr {boolean} readonly - Whether the editor is read-only
+ * @attr {string} theme - Editor theme: "duskmoon" | "sunshine" | "moonlight" | "one-dark"
+ * @attr {boolean} wrap - Enable line wrapping
+ *
+ * @prop {string} value - Gets or sets current editor content
+ *
+ * @method focus() - Focuses the editor
+ * @method getValue() - Returns current editor content
+ * @method setValue(value: string) - Sets editor content programmatically
+ *
+ * @fires input - Fired on every document change, detail: { value: string }
+ * @fires change - Fired when editor loses focus, detail: { value: string }
+ *
+ * @csspart editor - The CodeMirror mount container
+ */
+
+import { BaseElement, css } from '@duskmoon-dev/el-base';
+import type { Extension } from '@duskmoon-dev/code-engine';
+import { EditorView } from '@duskmoon-dev/code-engine/view';
+import { EditorState, Compartment } from '@duskmoon-dev/code-engine/state';
+import { basicSetup } from '@duskmoon-dev/code-engine/setup';
+
+// ── Static theme imports (all 4 are small; avoids runtime bare-specifier issues) ──
+import * as _duskmoonTheme from '@duskmoon-dev/code-engine/theme/duskmoon';
+import * as _sunshineTheme from '@duskmoon-dev/code-engine/theme/sunshine';
+import * as _moonlightTheme from '@duskmoon-dev/code-engine/theme/moonlight';
+import * as _oneDarkTheme from '@duskmoon-dev/code-engine/theme/one-dark';
+
+function extractExt(mod: Record<string, unknown>): Extension {
+  const v =
+    mod.default ??
+    Object.values(mod).find((x) => typeof x === 'function' || (x && typeof x !== 'string'));
+  // Theme modules export a factory function (e.g. duskMoon(options?))
+  if (typeof v === 'function') return (v as () => Extension)() as Extension;
+  return (v ?? []) as Extension;
+}
+
+const THEMES: Record<string, Extension> = {
+  duskmoon: extractExt(_duskmoonTheme as unknown as Record<string, unknown>),
+  sunshine: extractExt(_sunshineTheme as unknown as Record<string, unknown>),
+  moonlight: extractExt(_moonlightTheme as unknown as Record<string, unknown>),
+  'one-dark': extractExt(_oneDarkTheme as unknown as Record<string, unknown>),
+};
+
+// ── Language loaders (literal import paths so bundlers can resolve them) ──
+
+function langLoader(
+  importFn: () => Promise<Record<string, unknown>>,
+  opts?: Record<string, unknown>,
+): () => Promise<Extension | null> {
+  return async () => {
+    const mod = await importFn();
+    const factory = mod.default ?? Object.values(mod).find((v) => typeof v === 'function');
+    if (typeof factory === 'function') {
+      return (opts ? factory(opts) : factory()) as Extension;
+    }
+    return factory as Extension | null;
+  };
+}
+
+const LANG_LOADERS: Record<string, () => Promise<Extension | null>> = {
+  javascript: langLoader(() => import('@duskmoon-dev/code-engine/lang/javascript')),
+  typescript: langLoader(() => import('@duskmoon-dev/code-engine/lang/javascript'), {
+    typescript: true,
+  }),
+  css: langLoader(() => import('@duskmoon-dev/code-engine/lang/css')),
+  html: langLoader(() => import('@duskmoon-dev/code-engine/lang/html')),
+  json: langLoader(() => import('@duskmoon-dev/code-engine/lang/json')),
+  python: langLoader(() => import('@duskmoon-dev/code-engine/lang/python')),
+  markdown: langLoader(() => import('@duskmoon-dev/code-engine/lang/markdown')),
+  xml: langLoader(() => import('@duskmoon-dev/code-engine/lang/xml')),
+  sql: langLoader(() => import('@duskmoon-dev/code-engine/lang/sql')),
+  rust: langLoader(() => import('@duskmoon-dev/code-engine/lang/rust')),
+  go: langLoader(() => import('@duskmoon-dev/code-engine/lang/go')),
+  java: langLoader(() => import('@duskmoon-dev/code-engine/lang/java')),
+  cpp: langLoader(() => import('@duskmoon-dev/code-engine/lang/cpp')),
+  php: langLoader(() => import('@duskmoon-dev/code-engine/lang/php')),
+  yaml: langLoader(() => import('@duskmoon-dev/code-engine/lang/yaml')),
+  sass: langLoader(() => import('@duskmoon-dev/code-engine/lang/sass')),
+  less: langLoader(() => import('@duskmoon-dev/code-engine/lang/less')),
+  elixir: langLoader(() => import('@duskmoon-dev/code-engine/lang/elixir')),
+  erlang: langLoader(() => import('@duskmoon-dev/code-engine/lang/erlang')),
+  heex: langLoader(() => import('@duskmoon-dev/code-engine/lang/heex')),
+  dart: langLoader(() => import('@duskmoon-dev/code-engine/lang/dart')),
+  zig: langLoader(() => import('@duskmoon-dev/code-engine/lang/zig')),
+  vue: langLoader(() => import('@duskmoon-dev/code-engine/lang/vue')),
+  angular: langLoader(() => import('@duskmoon-dev/code-engine/lang/angular')),
+  liquid: langLoader(() => import('@duskmoon-dev/code-engine/lang/liquid')),
+  jinja: langLoader(() => import('@duskmoon-dev/code-engine/lang/jinja')),
+  wast: langLoader(() => import('@duskmoon-dev/code-engine/lang/wast')),
+  lezer: langLoader(() => import('@duskmoon-dev/code-engine/lang/lezer')),
+  caddyfile: langLoader(() => import('@duskmoon-dev/code-engine/lang/caddyfile')),
+};
+export type CodeEngineTheme = 'duskmoon' | 'sunshine' | 'moonlight' | 'one-dark';
+
+const styles = css`
+  :host {
+    display: block;
+    min-height: 200px;
+    font-family: var(
+      --dm-font-mono,
+      ui-monospace,
+      'Cascadia Code',
+      'Source Code Pro',
+      Menlo,
+      Consolas,
+      'DejaVu Sans Mono',
+      monospace
+    );
+  }
+
+  :host([hidden]) {
+    display: none !important;
+  }
+
+  .cm-host {
+    height: 100%;
+  }
+
+  .cm-host .cm-editor {
+    height: 100%;
+  }
+
+  .cm-host .cm-editor.cm-focused {
+    outline: none;
+  }
+`;
+
+export class ElDmCodeEngine extends BaseElement {
+  static properties = {
+    language: { type: String, reflect: true },
+    readonly: { type: Boolean, reflect: true },
+    theme: { type: String, reflect: true, default: 'duskmoon' },
+    wrap: { type: Boolean, reflect: true },
+  };
+
+  declare language: string;
+  declare readonly: boolean;
+  declare theme: CodeEngineTheme;
+  declare wrap: boolean;
+
+  #editor: EditorView | null = null;
+  #pendingValue: string | null = null;
+
+  readonly #languageCompartment = new Compartment();
+  readonly #readonlyCompartment = new Compartment();
+  readonly #themeCompartment = new Compartment();
+  readonly #wrapCompartment = new Compartment();
+
+  readonly #langCache = new Map<string, Extension | null>();
+
+  constructor() {
+    super();
+    this.attachStyles(styles);
+  }
+
+  /**
+   * Current editor content. Getter always returns live document text.
+   * Setter updates the editor document (or queues the value if called before mount).
+   */
+  get value(): string {
+    return (
+      this.#editor?.state.doc.toString() ?? this.#pendingValue ?? this.getAttribute('value') ?? ''
+    );
+  }
+
+  set value(v: string) {
+    if (this.#editor) {
+      this.#editor.dispatch({
+        changes: { from: 0, to: this.#editor.state.doc.length, insert: v },
+      });
+    } else {
+      this.#pendingValue = v;
+    }
+  }
+
+  /** Focus the editor. */
+  focus(): void {
+    this.#editor?.focus();
+  }
+
+  /** Returns current editor content. Equivalent to reading the `value` property. */
+  getValue(): string {
+    return this.value;
+  }
+
+  /** Sets editor content programmatically. Equivalent to assigning the `value` property. */
+  setValue(v: string): void {
+    this.value = v;
+  }
+
+  protected render(): string {
+    return '<div class="cm-host" part="editor"></div>';
+  }
+
+  protected update(): void {
+    if (!this.#editor) {
+      // First render: create the container then mount the editor.
+      super.update();
+      void this.#mountEditor();
+    } else {
+      // Editor already mounted: reconfigure via compartment transactions.
+      void this.#applyConfig();
+    }
+  }
+
+  disconnectedCallback(): void {
+    // Save current content so it survives a DOM move/reconnect.
+    if (this.#editor) {
+      this.#pendingValue = this.#editor.state.doc.toString();
+      this.#editor.destroy();
+      this.#editor = null;
+    }
+    super.disconnectedCallback();
+  }
+
+  // ── Private helpers ──────────────────────────────────────────────────
+
+  async #mountEditor(): Promise<void> {
+    const host = this.shadowRoot?.querySelector('.cm-host');
+    if (!host || this.#editor) return;
+
+    const initialDoc = this.#pendingValue ?? this.getAttribute('value') ?? '';
+    this.#pendingValue = null;
+
+    const langExt = await this.#loadLanguage(this.language);
+
+    this.#editor = new EditorView({
+      state: EditorState.create({
+        doc: initialDoc,
+        extensions: [
+          basicSetup,
+          this.#languageCompartment.of(langExt ?? []),
+          this.#readonlyCompartment.of(EditorState.readOnly.of(this.readonly ?? false)),
+          this.#themeCompartment.of(THEMES[this.theme] ?? []),
+          this.#wrapCompartment.of(this.wrap ? EditorView.lineWrapping : []),
+          EditorView.updateListener.of((update) => {
+            if (update.docChanged) {
+              this.emit('input', { value: update.state.doc.toString() });
+            }
+          }),
+          EditorView.domEventHandlers({
+            blur: () => {
+              this.emit('change', { value: this.#editor!.state.doc.toString() });
+              return false;
+            },
+          }),
+        ],
+      }),
+      parent: host,
+      root: this.shadowRoot,
+    });
+  }
+
+  async #applyConfig(): Promise<void> {
+    if (!this.#editor) return;
+
+    const langExt = await this.#loadLanguage(this.language);
+
+    this.#editor.dispatch({
+      effects: [
+        this.#languageCompartment.reconfigure(langExt ?? []),
+        this.#readonlyCompartment.reconfigure(EditorState.readOnly.of(this.readonly ?? false)),
+        this.#themeCompartment.reconfigure(THEMES[this.theme] ?? []),
+        this.#wrapCompartment.reconfigure(this.wrap ? EditorView.lineWrapping : []),
+      ],
+    });
+  }
+
+  async #loadLanguage(name: string): Promise<Extension | null> {
+    if (!name) return null;
+    if (this.#langCache.has(name)) return this.#langCache.get(name)!;
+
+    const loader = LANG_LOADERS[name];
+    if (!loader) {
+      this.#langCache.set(name, null);
+      return null;
+    }
+
+    try {
+      const ext = await loader();
+      this.#langCache.set(name, ext);
+      return ext;
+    } catch {
+      this.#langCache.set(name, null);
+      return null;
+    }
+  }
+}

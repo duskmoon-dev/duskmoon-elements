@@ -107,6 +107,25 @@ import {
   MarkdownInputHook,
 } from '@duskmoon-dev/el-markdown-input';
 import { ElDmCodeBlock, register as registerCodeBlock } from '@duskmoon-dev/el-code-block';
+import { ElDmCodeEngine, register as registerCodeEngine } from '@duskmoon-dev/el-code-engine';
+
+// New elements
+import { ElDmFormGroup, register as registerFormGroup } from '@duskmoon-dev/el-form-group';
+import { ElDmMultiSelect, register as registerMultiSelect } from '@duskmoon-dev/el-multi-select';
+import { ElDmNavigation, register as registerNavigation } from '@duskmoon-dev/el-navigation';
+import { ElDmNestedMenu, register as registerNestedMenu } from '@duskmoon-dev/el-nested-menu';
+import { ElDmOtpInput, register as registerOtpInput } from '@duskmoon-dev/el-otp-input';
+import { ElDmPinInput, register as registerPinInput } from '@duskmoon-dev/el-pin-input';
+import {
+  ElDmSegmentControl,
+  register as registerSegmentControl,
+} from '@duskmoon-dev/el-segment-control';
+import {
+  ElDmThemeController,
+  register as registerThemeController,
+} from '@duskmoon-dev/el-theme-controller';
+import { ElDmTimeInput, register as registerTimeInput } from '@duskmoon-dev/el-time-input';
+import { ElDmTreeSelect, register as registerTreeSelect } from '@duskmoon-dev/el-tree-select';
 
 // Re-export all elements
 export { ElDmButton, registerButton };
@@ -214,6 +233,25 @@ export type {
 export { ElDmMarkdownInput, registerMarkdownInput, MarkdownInputHook };
 export type { Suggestion } from '@duskmoon-dev/el-markdown-input';
 export { ElDmCodeBlock, registerCodeBlock };
+export { ElDmCodeEngine, registerCodeEngine };
+export type { CodeEngineTheme } from '@duskmoon-dev/el-code-engine';
+
+// New elements
+export { ElDmFormGroup, registerFormGroup };
+export { ElDmMultiSelect, registerMultiSelect };
+export { ElDmNavigation, registerNavigation };
+export { ElDmNestedMenu, registerNestedMenu };
+export { ElDmOtpInput, registerOtpInput };
+export type { OtpInputColor } from '@duskmoon-dev/el-otp-input';
+export { ElDmPinInput, registerPinInput };
+export type { PinInputColor } from '@duskmoon-dev/el-pin-input';
+export { ElDmSegmentControl, registerSegmentControl };
+export type { SegmentControlColor } from '@duskmoon-dev/el-segment-control';
+export { ElDmThemeController, registerThemeController };
+export { ElDmTimeInput, registerTimeInput };
+export type { TimeInputColor } from '@duskmoon-dev/el-time-input';
+export { ElDmTreeSelect, registerTreeSelect };
+export type { TreeSelectColor } from '@duskmoon-dev/el-tree-select';
 
 /**
  * Register all DuskMoon custom elements
@@ -263,4 +301,16 @@ export function registerAll(): void {
   registerSelect();
   registerCascader();
   registerCodeBlock();
+  registerCodeEngine();
+  // New elements
+  registerFormGroup();
+  registerMultiSelect();
+  registerNavigation();
+  registerNestedMenu();
+  registerOtpInput();
+  registerPinInput();
+  registerSegmentControl();
+  registerThemeController();
+  registerTimeInput();
+  registerTreeSelect();
 }
