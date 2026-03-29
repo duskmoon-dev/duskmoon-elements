@@ -35,7 +35,15 @@ const styles = css`
     border-radius: var(--dm-radius-md, 0.5rem);
     background: var(--dm-surface, #fafafa);
     color: var(--dm-on-surface, #1a1a1a);
-    font-family: var(--dm-font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-family: var(
+      --dm-font-mono,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      monospace
+    );
     font-size: 0.875rem;
     line-height: 1.5;
     overflow: hidden;
@@ -93,7 +101,9 @@ const styles = css`
     font-family: inherit;
     font-size: 0.6875rem;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
 
   .copy-button:hover {
