@@ -1,0 +1,55 @@
+---
+title: Time Input
+description: Time selection input with color theming
+order: 26
+section: input
+component: "@duskmoon-dev/el-time-input"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Time Input
+
+A styled time selection input component wrapping a native `<input type="time">` with DuskMoon theming and color support.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-time-input
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-time-input';
+register();
+```
+
+```html
+<el-dm-time-input value="09:30" color="primary"></el-dm-time-input>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-time-input value="09:30"></el-dm-time-input>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-time-input value="10:00" color="primary"></el-dm-time-input>
+  <el-dm-time-input value="14:30" color="secondary"></el-dm-time-input>
+  <el-dm-time-input value="18:00" color="success"></el-dm-time-input>
+  <el-dm-time-input value="23:59" color="error"></el-dm-time-input>
+</ComponentDemo>
+
+<ComponentDemo title="Disabled">
+  <el-dm-time-input value="12:00" disabled></el-dm-time-input>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `string` | `''` | Time value in `HH:MM` format |
+| `disabled` | `boolean` | `false` | Disable the input |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |

@@ -1,0 +1,59 @@
+---
+title: OTP Input
+description: One-time password input with individual digit fields for verification codes
+order: 22
+section: input
+component: "@duskmoon-dev/el-otp-input"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# OTP Input
+
+A one-time password (OTP) input component that renders individual input fields for each digit. Useful for verification codes, two-factor authentication, and similar workflows.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-otp-input
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-otp-input';
+register();
+```
+
+```html
+<el-dm-otp-input length="6" color="primary"></el-dm-otp-input>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default (6 digits)">
+  <el-dm-otp-input></el-dm-otp-input>
+</ComponentDemo>
+
+<ComponentDemo title="4 Digits">
+  <el-dm-otp-input length="4"></el-dm-otp-input>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-otp-input length="4" color="primary"></el-dm-otp-input>
+  <el-dm-otp-input length="4" color="secondary"></el-dm-otp-input>
+  <el-dm-otp-input length="4" color="success"></el-dm-otp-input>
+  <el-dm-otp-input length="4" color="error"></el-dm-otp-input>
+</ComponentDemo>
+
+<ComponentDemo title="Disabled">
+  <el-dm-otp-input length="4" disabled></el-dm-otp-input>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `length` | `number` | `6` | Number of digit fields |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+| `disabled` | `boolean` | `false` | Disable all fields |

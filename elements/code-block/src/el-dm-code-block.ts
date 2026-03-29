@@ -2,7 +2,6 @@
  * DuskMoon Code Block Element
  *
  * A styled container for displaying code with optional header, language badge, and copy button.
- * Uses styles from @duskmoon-dev/core for consistent theming.
  *
  * @element el-dm-code-block
  *
@@ -22,9 +21,112 @@
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
-import { css as codeBlockCSS } from '@duskmoon-dev/core/components/code-block';
 
-const coreStyles = codeBlockCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+const styles = css`
+  :host {
+    display: block;
+  }
+  :host([hidden]) {
+    display: none !important;
+  }
+
+  .code-block {
+    border: 1px solid var(--dm-border, #e0e0e0);
+    border-radius: var(--dm-radius-md, 0.5rem);
+    background: var(--dm-surface, #fafafa);
+    color: var(--dm-on-surface, #1a1a1a);
+    font-family: var(
+      --dm-font-mono,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      monospace
+    );
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  .code-block-compact .code-content {
+    padding: 0.5rem;
+  }
+
+  .code-block-borderless {
+    border: none;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--dm-border, #e0e0e0);
+    background: var(--dm-surface-container, #f0f0f0);
+    font-size: 0.75rem;
+  }
+
+  .code-title {
+    font-weight: 600;
+    color: var(--dm-on-surface, #1a1a1a);
+  }
+
+  .code-language {
+    margin-inline-start: auto;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--dm-radius-sm, 0.25rem);
+    background: var(--dm-primary, #6750a4);
+    color: var(--dm-on-primary, #fff);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .code-title + .code-language {
+    margin-inline-start: 0;
+  }
+
+  .copy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-inline-start: auto;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--dm-border, #e0e0e0);
+    border-radius: var(--dm-radius-sm, 0.25rem);
+    background: var(--dm-surface, #fafafa);
+    color: var(--dm-on-surface-variant, #555);
+    font-family: inherit;
+    font-size: 0.6875rem;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+  }
+
+  .copy-button:hover {
+    background: var(--dm-surface-container-high, #e0e0e0);
+    color: var(--dm-on-surface, #1a1a1a);
+  }
+
+  .code-content {
+    padding: 0;
+  }
+
+  ::slotted(pre) {
+    margin: 0;
+    padding: 1rem;
+    background: transparent;
+    overflow-x: auto;
+  }
+
+  ::slotted(code) {
+    background: transparent;
+    padding: 0;
+  }
+`;
 
 const COPY_ICON = `<svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
 
@@ -47,26 +149,7 @@ export class ElDmCodeBlock extends BaseElement {
 
   constructor() {
     super();
-    this.attachStyles(css`
-      :host {
-        display: block;
-      }
-      :host([hidden]) {
-        display: none !important;
-      }
-      ${coreStyles}
-      /* Pass slotted pre/code through without re-styling */
-      ::slotted(pre) {
-        margin: 0;
-        padding: 1rem;
-        background: transparent;
-        overflow-x: auto;
-      }
-      ::slotted(code) {
-        background: transparent;
-        padding: 0;
-      }
-    `);
+    this.attachStyles(styles);
   }
 
   private _getSlottedText(): string {

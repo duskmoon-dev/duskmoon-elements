@@ -1,0 +1,71 @@
+---
+title: Segment Control
+description: Segmented toggle group for selecting one option from a set
+order: 24
+section: input
+component: "@duskmoon-dev/el-segment-control"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Segment Control
+
+A segmented button/toggle group for presenting multiple options where only one is selected at a time. Similar to iOS segmented controls or radio button groups with a pill-style UI.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-segment-control
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-segment-control';
+register();
+```
+
+```html
+<el-dm-segment-control color="primary">
+  <button>Day</button>
+  <button>Week</button>
+  <button>Month</button>
+</el-dm-segment-control>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-segment-control>
+    <button>Day</button>
+    <button>Week</button>
+    <button>Month</button>
+  </el-dm-segment-control>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-segment-control color="primary">
+    <button>Option A</button>
+    <button>Option B</button>
+  </el-dm-segment-control>
+  <el-dm-segment-control color="secondary">
+    <button>Option A</button>
+    <button>Option B</button>
+  </el-dm-segment-control>
+  <el-dm-segment-control color="success">
+    <button>Option A</button>
+    <button>Option B</button>
+  </el-dm-segment-control>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Segment items (buttons or similar interactive elements) |

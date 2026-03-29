@@ -1,0 +1,50 @@
+---
+title: Navigation
+description: Composite navigation layout container for building navigation structures
+order: 25
+section: navigation
+component: "@duskmoon-dev/el-navigation"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Navigation
+
+A composite navigation layout container element for building navigation structures. Acts as a semantic wrapper for navigation items.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-navigation
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-navigation';
+register();
+```
+
+```html
+<el-dm-navigation>
+  <a href="/home">Home</a>
+  <a href="/about">About</a>
+  <a href="/contact">Contact</a>
+</el-dm-navigation>
+```
+
+## Live Demo
+
+<ComponentDemo title="Basic Navigation">
+  <el-dm-navigation>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </el-dm-navigation>
+</ComponentDemo>
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Navigation items (links, buttons, etc.) |

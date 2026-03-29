@@ -1,0 +1,62 @@
+---
+title: Tree Select
+description: Hierarchical dropdown for selecting from tree-structured data
+order: 27
+section: input
+component: "@duskmoon-dev/el-tree-select"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Tree Select
+
+A hierarchical dropdown selection component for presenting tree-structured data. Renders a trigger button with a placeholder and a slot for tree-structured options.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-tree-select
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-tree-select';
+register();
+```
+
+```html
+<el-dm-tree-select placeholder="Select department...">
+  <!-- tree options -->
+</el-dm-tree-select>
+```
+
+## Live Demo
+
+<ComponentDemo title="Default">
+  <el-dm-tree-select placeholder="Select department..."></el-dm-tree-select>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-tree-select color="primary" placeholder="Primary"></el-dm-tree-select>
+  <el-dm-tree-select color="secondary" placeholder="Secondary"></el-dm-tree-select>
+  <el-dm-tree-select color="success" placeholder="Success"></el-dm-tree-select>
+</ComponentDemo>
+
+<ComponentDemo title="Disabled">
+  <el-dm-tree-select disabled placeholder="Disabled"></el-dm-tree-select>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `placeholder` | `string` | `'Select...'` | Placeholder text when nothing is selected |
+| `disabled` | `boolean` | `false` | Disable the select |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| Default | Tree-structured items/options |

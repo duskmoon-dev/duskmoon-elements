@@ -1,0 +1,64 @@
+---
+title: PIN Input
+description: Secure PIN entry with masking option and configurable field count
+order: 23
+section: input
+component: "@duskmoon-dev/el-pin-input"
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# PIN Input
+
+A PIN input component for secure PIN entry. Supports masking (password mode) and configurable field count with color theming.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-pin-input
+```
+
+## Usage
+
+```javascript
+import { register } from '@duskmoon-dev/el-pin-input';
+register();
+```
+
+```html
+<el-dm-pin-input length="4" masked></el-dm-pin-input>
+```
+
+## Live Demo
+
+<ComponentDemo title="Masked (Default)">
+  <el-dm-pin-input></el-dm-pin-input>
+</ComponentDemo>
+
+<ComponentDemo title="Unmasked">
+  <el-dm-pin-input length="4"></el-dm-pin-input>
+</ComponentDemo>
+
+<ComponentDemo title="6-Digit PIN">
+  <el-dm-pin-input length="6" masked></el-dm-pin-input>
+</ComponentDemo>
+
+<ComponentDemo title="Colors">
+  <el-dm-pin-input length="4" color="primary" masked></el-dm-pin-input>
+  <el-dm-pin-input length="4" color="secondary" masked></el-dm-pin-input>
+  <el-dm-pin-input length="4" color="success" masked></el-dm-pin-input>
+  <el-dm-pin-input length="4" color="error" masked></el-dm-pin-input>
+</ComponentDemo>
+
+<ComponentDemo title="Disabled">
+  <el-dm-pin-input length="4" disabled masked></el-dm-pin-input>
+</ComponentDemo>
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `length` | `number` | `4` | Number of PIN fields |
+| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+| `disabled` | `boolean` | `false` | Disable all fields |
+| `masked` | `boolean` | `true` | Show dots instead of digits (password mode) |
