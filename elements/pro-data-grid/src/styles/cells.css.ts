@@ -40,8 +40,8 @@ export const cellStyles = css`
 
   /* Bordered mode */
   :host([bordered]) .grid-cell {
-    border-right: 1px solid var(--grid-cell-border-color, var(--dm-color-outline-variant, #e0e0e0));
-    border-bottom: 1px solid var(--grid-cell-border-color, var(--dm-color-outline-variant, #e0e0e0));
+    border-right: 1px solid var(--grid-cell-border-color, var(--color-outline-variant, #e0e0e0));
+    border-bottom: 1px solid var(--grid-cell-border-color, var(--color-outline-variant, #e0e0e0));
   }
 
   :host([bordered]) .grid-cell:last-child {
@@ -49,7 +49,7 @@ export const cellStyles = css`
   }
 
   :host([bordered]) .grid-header-cell {
-    border-right: 1px solid var(--grid-cell-border-color, var(--dm-color-outline-variant, #e0e0e0));
+    border-right: 1px solid var(--grid-cell-border-color, var(--color-outline-variant, #e0e0e0));
   }
 
   :host([bordered]) .grid-header-cell:last-child {
@@ -69,7 +69,7 @@ export const cellStyles = css`
 
   /* Focused cell */
   .grid-cell:focus-visible {
-    outline: var(--grid-focus-ring, 2px solid var(--dm-color-primary, #6750a4));
+    outline: var(--grid-focus-ring, 2px solid var(--color-primary, #6750a4));
     outline-offset: -2px;
   }
 
@@ -93,12 +93,12 @@ export const cellStyles = css`
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid var(--dm-color-outline, #999);
+    border: 2px solid var(--color-outline, #999);
     border-radius: 3px;
   }
 
   .grid-cell-boolean[data-checked]::before {
-    background: var(--dm-color-primary, #6750a4);
-    border-color: var(--dm-color-primary, #6750a4);
+    background: var(--color-primary, #6750a4);
+    border-color: var(--color-primary, #6750a4);
   }
 `;

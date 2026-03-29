@@ -3,60 +3,89 @@ title: Multi Select
 description: Dropdown for selecting multiple items from a list with chip display
 order: 21
 section: input
-component: "@duskmoon-dev/el-multi-select"
+component: "@duskmoon-dev/el-select"
 ---
 
 import ComponentDemo from '../../../components/ComponentDemo.astro';
 
 # Multi Select
 
-A dropdown element for selecting multiple items from a list. Selected items are displayed as chips with a customizable placeholder and color theming.
+Select multiple items from a dropdown list. Built on `el-dm-select` with the `multiple` attribute.
 
 ## Installation
 
 ```bash
-npm install @duskmoon-dev/el-multi-select
+npm install @duskmoon-dev/el-select
 ```
 
 ## Usage
 
 ```javascript
-import { register } from '@duskmoon-dev/el-multi-select';
-register();
+import '@duskmoon-dev/el-select/register';
 ```
 
 ```html
-<el-dm-multi-select placeholder="Choose tags...">
-  <!-- options -->
-</el-dm-multi-select>
+<el-dm-select
+  multiple
+  placeholder="Choose tags..."
+  options='[{"value":"a","label":"Option A"},{"value":"b","label":"Option B"}]'
+></el-dm-select>
 ```
 
 ## Live Demo
 
 <ComponentDemo title="Default">
-  <el-dm-multi-select placeholder="Select items..."></el-dm-multi-select>
+  <el-dm-select
+    multiple
+    placeholder="Select items..."
+    options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"},{"value":"cherry","label":"Cherry"},{"value":"date","label":"Date"},{"value":"elderberry","label":"Elderberry"}]'
+  ></el-dm-select>
 </ComponentDemo>
 
-<ComponentDemo title="Colors">
-  <el-dm-multi-select color="primary" placeholder="Primary"></el-dm-multi-select>
-  <el-dm-multi-select color="secondary" placeholder="Secondary"></el-dm-multi-select>
-  <el-dm-multi-select color="success" placeholder="Success"></el-dm-multi-select>
+<ComponentDemo title="Searchable with Clear">
+  <el-dm-select
+    multiple
+    searchable
+    clearable
+    placeholder="Select languages..."
+    options='[{"value":"javascript","label":"JavaScript"},{"value":"typescript","label":"TypeScript"},{"value":"python","label":"Python"},{"value":"rust","label":"Rust"},{"value":"go","label":"Go"}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+<ComponentDemo title="Max Tag Count">
+  <el-dm-select
+    multiple
+    max-tag-count="2"
+    placeholder="Max 2 visible tags..."
+    options='[{"value":"red","label":"Red"},{"value":"green","label":"Green"},{"value":"blue","label":"Blue"},{"value":"yellow","label":"Yellow"}]'
+  ></el-dm-select>
 </ComponentDemo>
 
 <ComponentDemo title="Disabled">
-  <el-dm-multi-select disabled placeholder="Disabled"></el-dm-multi-select>
+  <el-dm-select
+    multiple
+    disabled
+    placeholder="Disabled..."
+  ></el-dm-select>
 </ComponentDemo>
 
 ## Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `placeholder` | `string` | `'Select...'` | Placeholder text when nothing is selected |
+| `multiple` | `boolean` | `false` | Enable multi-select mode |
+| `placeholder` | `string` | `''` | Placeholder text when nothing is selected |
 | `disabled` | `boolean` | `false` | Disable the select |
-| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+| `searchable` | `boolean` | `false` | Enable search filtering |
+| `clearable` | `boolean` | `false` | Show clear button |
+| `max-tag-count` | `number` | `-1` | Max visible tags (-1 = unlimited) |
+| `options` | `string` | `''` | JSON string of options |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
 
-## Slots
+## Events
 
-| Slot | Description |
-|------|-------------|
-| Default | Dropdown options/content |
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when selection changes |
+| `search` | Fired when search text changes |
+| `clear` | Fired when cleared |

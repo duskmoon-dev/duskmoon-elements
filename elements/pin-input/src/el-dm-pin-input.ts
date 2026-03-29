@@ -43,9 +43,38 @@ export class ElDmPinInput extends BaseElement {
   declare disabled: boolean;
   declare masked: boolean;
 
+  #listening = false;
+
   constructor() {
     super();
     this.attachStyles(styles);
+  }
+
+  override update(): void {
+    super.update();
+    if (!this.#listening && this.shadowRoot) {
+      this.#listening = true;
+      this.shadowRoot.addEventListener('input', this.#onInput.bind(this));
+      this.shadowRoot.addEventListener('keydown', this.#onKeydown.bind(this) as EventListener);
+    }
+  }
+
+  #onInput(e: Event): void {
+    const input = e.target as HTMLInputElement;
+    if (!input.classList.contains('pin-input-field')) return;
+    if (input.value.length === 1) {
+      const next = input.nextElementSibling as HTMLInputElement | null;
+      next?.focus();
+    }
+  }
+
+  #onKeydown(e: KeyboardEvent): void {
+    const input = e.target as HTMLInputElement;
+    if (!input.classList.contains('pin-input-field')) return;
+    if (e.key === 'Backspace' && input.value === '') {
+      const prev = input.previousElementSibling as HTMLInputElement | null;
+      prev?.focus();
+    }
   }
 
   render(): string {

@@ -9,8 +9,8 @@ export const headerStyles = css`
     position: sticky;
     top: 0;
     z-index: 5;
-    background: var(--grid-header-bg, var(--dm-color-surface-container, #f2f2f2));
-    border-bottom: 1px solid var(--grid-border-color, var(--dm-color-outline-variant, #ccc));
+    background: var(--grid-header-bg, var(--color-surface-container, #f2f2f2));
+    border-bottom: 1px solid var(--grid-border-color, var(--color-outline-variant, #ccc));
     min-width: fit-content;
   }
 
@@ -20,7 +20,7 @@ export const headerStyles = css`
     gap: 4px;
     padding: var(--grid-cell-padding, 8px 12px);
     font-weight: var(--grid-header-font-weight, 600);
-    color: var(--grid-header-color, var(--dm-color-on-surface, #1a1a1a));
+    color: var(--grid-header-color, var(--color-on-surface, #1a1a1a));
     user-select: none;
     cursor: default;
     position: relative;
@@ -40,7 +40,7 @@ export const headerStyles = css`
   }
 
   .grid-header-cell:focus-visible {
-    outline: var(--grid-focus-ring, 2px solid var(--dm-color-primary, #6750a4));
+    outline: var(--grid-focus-ring, 2px solid var(--color-primary, #6750a4));
     outline-offset: -2px;
   }
 
@@ -56,7 +56,7 @@ export const headerStyles = css`
     align-items: center;
     gap: 2px;
     font-size: 12px;
-    color: var(--dm-color-primary, #6750a4);
+    color: var(--color-primary, #6750a4);
   }
 
   .grid-sort-arrow {
@@ -83,6 +83,6 @@ export const headerStyles = css`
 
   .grid-resize-handle:hover,
   .grid-resize-handle.active {
-    background: var(--dm-color-primary, #6750a4);
+    background: var(--color-primary, #6750a4);
   }
 `;

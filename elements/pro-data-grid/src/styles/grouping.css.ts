@@ -9,10 +9,10 @@ export const groupingStyles = css`
     gap: 8px;
     min-height: 40px;
     padding: 8px 12px;
-    background: var(--dm-surface-variant, #f5f5f5);
-    border-bottom: 1px dashed var(--dm-border, #e0e0e0);
+    background: var(--color-surface-variant, #f5f5f5);
+    border-bottom: 1px dashed var(--color-outline, #e0e0e0);
     font-size: 13px;
-    color: var(--dm-text-secondary, #757575);
+    color: var(--color-on-surface-variant, #757575);
   }
 
   .grid-group-panel-placeholder {
@@ -25,7 +25,7 @@ export const groupingStyles = css`
     align-items: center;
     gap: 4px;
     padding: 2px 8px;
-    background: var(--dm-primary, #1976d2);
+    background: var(--color-primary, #1976d2);
     color: #fff;
     border-radius: 12px;
     font-size: 12px;
@@ -51,14 +51,14 @@ export const groupingStyles = css`
   /* ─── Group Row ──────────────────────────── */
 
   .grid-row[data-group] {
-    background: var(--dm-surface-variant, #f5f5f5);
+    background: var(--color-surface-variant, #f5f5f5);
     font-weight: 600;
     cursor: pointer;
     user-select: none;
   }
 
   .grid-row[data-group]:hover {
-    background: var(--dm-surface-hover, #eeeeee);
+    background: var(--color-surface-container-high, #eeeeee);
   }
 
   .grid-group-cell {
@@ -83,7 +83,7 @@ export const groupingStyles = css`
     align-items: center;
     justify-content: center;
     transition: transform 0.15s ease;
-    color: var(--dm-text-secondary, #757575);
+    color: var(--color-on-surface-variant, #757575);
     font-size: 14px;
   }
 
@@ -102,7 +102,7 @@ export const groupingStyles = css`
     flex-shrink: 0;
     font-size: 12px;
     font-weight: 400;
-    color: var(--dm-text-secondary, #757575);
+    color: var(--color-on-surface-variant, #757575);
     opacity: 0.8;
   }
 
@@ -111,7 +111,7 @@ export const groupingStyles = css`
     gap: 12px;
     font-size: 12px;
     font-weight: 400;
-    color: var(--dm-text-secondary, #757575);
+    color: var(--color-on-surface-variant, #757575);
   }
 
   .grid-group-agg-value {

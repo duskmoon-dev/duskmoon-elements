@@ -3,60 +3,108 @@ title: Tree Select
 description: Hierarchical dropdown for selecting from tree-structured data
 order: 27
 section: input
-component: "@duskmoon-dev/el-tree-select"
+component: "@duskmoon-dev/el-select"
 ---
 
 import ComponentDemo from '../../../components/ComponentDemo.astro';
 
 # Tree Select
 
-A hierarchical dropdown selection component for presenting tree-structured data. Renders a trigger button with a placeholder and a slot for tree-structured options.
+Select from hierarchical tree-structured data. Built on `el-dm-select` with the `tree-data` attribute.
 
 ## Installation
 
 ```bash
-npm install @duskmoon-dev/el-tree-select
+npm install @duskmoon-dev/el-select
 ```
 
 ## Usage
 
 ```javascript
-import { register } from '@duskmoon-dev/el-tree-select';
-register();
+import '@duskmoon-dev/el-select/register';
 ```
 
 ```html
-<el-dm-tree-select placeholder="Select department...">
-  <!-- tree options -->
-</el-dm-tree-select>
+<el-dm-select
+  tree-data
+  placeholder="Select department..."
+  tree-options='[{"value":"eng","label":"Engineering","children":[...]}]'
+></el-dm-select>
 ```
 
 ## Live Demo
 
 <ComponentDemo title="Default">
-  <el-dm-tree-select placeholder="Select department..."></el-dm-tree-select>
+  <el-dm-select
+    tree-data
+    default-expand-all
+    placeholder="Select department..."
+    tree-options='[{"value":"engineering","label":"Engineering","children":[{"value":"frontend","label":"Frontend"},{"value":"backend","label":"Backend"},{"value":"devops","label":"DevOps"}]},{"value":"design","label":"Design","children":[{"value":"ux","label":"UX"},{"value":"ui","label":"UI"}]},{"value":"marketing","label":"Marketing"}]'
+  ></el-dm-select>
 </ComponentDemo>
 
-<ComponentDemo title="Colors">
-  <el-dm-tree-select color="primary" placeholder="Primary"></el-dm-tree-select>
-  <el-dm-tree-select color="secondary" placeholder="Secondary"></el-dm-tree-select>
-  <el-dm-tree-select color="success" placeholder="Success"></el-dm-tree-select>
+<ComponentDemo title="Searchable with Clear">
+  <el-dm-select
+    tree-data
+    searchable
+    clearable
+    default-expand-all
+    placeholder="Search departments..."
+    tree-options='[{"value":"frontend","label":"Frontend","children":[{"value":"react","label":"React"},{"value":"vue","label":"Vue"},{"value":"angular","label":"Angular"}]},{"value":"backend","label":"Backend","children":[{"value":"node","label":"Node.js"},{"value":"python","label":"Python"},{"value":"go","label":"Go"}]}]'
+  ></el-dm-select>
+</ComponentDemo>
+
+<ComponentDemo title="Multi-select Tree with Cascade">
+  <el-dm-select
+    tree-data
+    multiple
+    cascade
+    default-expand-all
+    placeholder="Select with cascade..."
+    tree-options='[{"value":"documents","label":"Documents","children":[{"value":"work","label":"Work"},{"value":"personal","label":"Personal"}]},{"value":"photos","label":"Photos","children":[{"value":"vacation","label":"Vacation"},{"value":"family","label":"Family"}]}]'
+  ></el-dm-select>
 </ComponentDemo>
 
 <ComponentDemo title="Disabled">
-  <el-dm-tree-select disabled placeholder="Disabled"></el-dm-tree-select>
+  <el-dm-select
+    tree-data
+    disabled
+    placeholder="Disabled..."
+  ></el-dm-select>
 </ComponentDemo>
 
 ## Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `placeholder` | `string` | `'Select...'` | Placeholder text when nothing is selected |
+| `tree-data` | `boolean` | `false` | Enable tree-select mode |
+| `placeholder` | `string` | `''` | Placeholder text when nothing is selected |
 | `disabled` | `boolean` | `false` | Disable the select |
-| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color theme |
+| `searchable` | `boolean` | `false` | Enable search filtering |
+| `clearable` | `boolean` | `false` | Show clear button |
+| `cascade` | `boolean` | `false` | Auto-select children when parent selected |
+| `check-strictly` | `boolean` | `false` | Independent parent/child selection |
+| `default-expand-all` | `boolean` | `false` | Expand all tree nodes initially |
+| `multiple` | `boolean` | `false` | Enable multi-select in tree mode |
+| `tree-options` | `string` | `''` | JSON string of tree options |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
 
-## Slots
+## Tree Option Format
 
-| Slot | Description |
-|------|-------------|
-| Default | Tree-structured items/options |
+```typescript
+interface TreeSelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  children?: TreeSelectOption[];
+}
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `change` | Fired when selection changes |
+| `search` | Fired when search text changes |
+| `clear` | Fired when cleared |
+| `expand` | Fired when tree node expanded/collapsed |

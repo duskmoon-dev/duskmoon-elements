@@ -8,13 +8,13 @@ export const gridStyles = css`
     display: block;
     position: relative;
     contain: layout style;
-    border: 1px solid var(--grid-border-color, var(--dm-color-outline-variant, #ccc));
+    border: 1px solid var(--grid-border-color, var(--color-outline-variant, #ccc));
     border-radius: var(--grid-border-radius, 8px);
     overflow: hidden;
-    font-family: var(--dm-font-family, system-ui, sans-serif);
-    font-size: var(--dm-font-size-sm, 14px);
-    color: var(--grid-row-color, var(--dm-color-on-surface, #1a1a1a));
-    background: var(--grid-row-bg, var(--dm-color-surface, #fff));
+    font-family: var(--font-family, system-ui, sans-serif);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--grid-row-color, var(--color-on-surface, #1a1a1a));
+    background: var(--grid-row-bg, var(--color-surface, #fff));
   }
 
   .grid-wrapper {
@@ -57,8 +57,8 @@ export const gridStyles = css`
   .grid-loading-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid var(--dm-color-outline-variant, #ccc);
-    border-top-color: var(--dm-color-primary, #6750a4);
+    border: 3px solid var(--color-outline-variant, #ccc);
+    border-top-color: var(--color-primary, #6750a4);
     border-radius: 50%;
     animation: grid-spin 0.8s linear infinite;
   }
@@ -76,8 +76,8 @@ export const gridStyles = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--dm-color-on-surface-variant, #666);
-    font-size: var(--dm-font-size-md, 16px);
+    color: var(--color-on-surface-variant, #666);
+    font-size: var(--font-size-md, 16px);
     padding: 48px;
     pointer-events: none;
   }

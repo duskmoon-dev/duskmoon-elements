@@ -27,15 +27,15 @@ export const treeExpandStyles = css`
     cursor: pointer;
     border: none;
     background: none;
-    color: var(--dm-text-secondary, #757575);
-    border-radius: var(--dm-radius-sm, 4px);
+    color: var(--color-on-surface-variant, #757575);
+    border-radius: var(--radius-sm, 4px);
     font-size: 12px;
     padding: 0;
     transition: transform 0.15s ease;
   }
 
   .grid-tree-toggle:hover {
-    background: var(--dm-surface-hover, #f5f5f5);
+    background: var(--color-surface-container-high, #f5f5f5);
   }
 
   .grid-tree-toggle[data-expanded] {
@@ -56,7 +56,7 @@ export const treeExpandStyles = css`
   .grid-tree-count {
     flex-shrink: 0;
     font-size: 11px;
-    color: var(--dm-text-secondary, #757575);
+    color: var(--color-on-surface-variant, #757575);
     opacity: 0.7;
   }
 
@@ -77,8 +77,8 @@ export const treeExpandStyles = css`
     justify-content: center;
     border: none;
     background: none;
-    color: var(--dm-text-secondary, #757575);
-    border-radius: var(--dm-radius-sm, 4px);
+    color: var(--color-on-surface-variant, #757575);
+    border-radius: var(--radius-sm, 4px);
     font-size: 14px;
     padding: 0;
     cursor: pointer;
@@ -86,8 +86,8 @@ export const treeExpandStyles = css`
   }
 
   .grid-expand-toggle:hover {
-    background: var(--dm-surface-hover, #f5f5f5);
-    color: var(--dm-primary, #1976d2);
+    background: var(--color-surface-container-high, #f5f5f5);
+    color: var(--color-primary, #1976d2);
   }
 
   .grid-expand-toggle[data-expanded] {
@@ -102,8 +102,8 @@ export const treeExpandStyles = css`
 
   .grid-row-detail {
     overflow: hidden;
-    border-bottom: 1px solid var(--dm-border, #e0e0e0);
-    background: var(--dm-surface, #fff);
+    border-bottom: 1px solid var(--color-outline, #e0e0e0);
+    background: var(--color-surface, #fff);
   }
 
   .grid-row-detail[data-animating] {

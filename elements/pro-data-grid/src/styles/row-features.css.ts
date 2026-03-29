@@ -11,22 +11,22 @@ export const rowFeatureStyles = css`
   .grid-pinned-bottom {
     position: sticky;
     z-index: 2;
-    background: var(--dm-color-surface, #fff);
+    background: var(--color-surface, #fff);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 
   .grid-pinned-top {
     top: 0;
-    border-bottom: 2px solid var(--dm-color-border, #e0e0e0);
+    border-bottom: 2px solid var(--color-outline, #e0e0e0);
   }
 
   .grid-pinned-bottom {
     bottom: 0;
-    border-top: 2px solid var(--dm-color-border, #e0e0e0);
+    border-top: 2px solid var(--color-outline, #e0e0e0);
   }
 
   .grid-row.pinned-row {
-    background: var(--dm-color-surface-alt, #fafafa);
+    background: var(--color-surface-container-high, #fafafa);
     font-weight: 500;
   }
 
@@ -34,11 +34,11 @@ export const rowFeatureStyles = css`
 
   .grid-row.row-dragging {
     opacity: 0.5;
-    outline: 2px dashed var(--dm-color-primary, #3b82f6);
+    outline: 2px dashed var(--color-primary, #3b82f6);
   }
 
   .grid-row.row-drag-over {
-    border-top: 2px solid var(--dm-color-primary, #3b82f6);
+    border-top: 2px solid var(--color-primary, #3b82f6);
   }
 
   .grid-drag-handle {
@@ -47,12 +47,12 @@ export const rowFeatureStyles = css`
     align-items: center;
     justify-content: center;
     width: 24px;
-    color: var(--dm-color-text-muted, #999);
+    color: var(--color-on-surface-variant, #999);
     user-select: none;
   }
 
   .grid-drag-handle:hover {
-    color: var(--dm-color-text, #333);
+    color: var(--color-on-surface, #333);
   }
 
   .grid-drag-handle:active {
@@ -63,9 +63,9 @@ export const rowFeatureStyles = css`
     position: fixed;
     z-index: 1001;
     padding: 4px 12px;
-    background: var(--dm-color-surface, #fff);
-    border: 1px solid var(--dm-color-primary, #3b82f6);
-    border-radius: var(--dm-radius-sm, 4px);
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-primary, #3b82f6);
+    border-radius: var(--radius-sm, 4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-size: 13px;
     pointer-events: none;
@@ -74,11 +74,11 @@ export const rowFeatureStyles = css`
   /* ─── Row Numbers ────────────────────────────── */
 
   .grid-cell.row-number-cell {
-    color: var(--dm-color-text-muted, #999);
+    color: var(--color-on-surface-variant, #999);
     font-size: 12px;
     text-align: center;
     user-select: none;
-    background: var(--dm-color-surface-alt, #fafafa);
+    background: var(--color-surface-container-high, #fafafa);
   }
 
   /* ─── Full Width Rows ────────────────────────── */
@@ -131,6 +131,6 @@ export const rowFeatureStyles = css`
   /* ─── Row Styling ────────────────────────────── */
 
   .grid-row.row-highlight {
-    background: var(--dm-color-primary-light, #eff6ff);
+    background: var(--color-primary-light, #eff6ff);
   }
 `;

@@ -10,30 +10,30 @@ export const selectionStyles = css`
   .grid-cell.cell-selected {
     background: var(
       --grid-range-selection-bg,
-      oklch(from var(--dm-color-primary, #3b82f6) l c h / 0.1)
+      oklch(from var(--color-primary, #3b82f6) l c h / 0.1)
     );
   }
 
   .grid-cell.cell-range-start {
-    outline: 2px solid var(--dm-color-primary, #3b82f6);
+    outline: 2px solid var(--color-primary, #3b82f6);
     outline-offset: -2px;
     z-index: 1;
   }
 
   .grid-cell.cell-range-top {
-    border-top: 2px solid var(--dm-color-primary, #3b82f6);
+    border-top: 2px solid var(--color-primary, #3b82f6);
   }
 
   .grid-cell.cell-range-bottom {
-    border-bottom: 2px solid var(--dm-color-primary, #3b82f6);
+    border-bottom: 2px solid var(--color-primary, #3b82f6);
   }
 
   .grid-cell.cell-range-left {
-    border-left: 2px solid var(--dm-color-primary, #3b82f6);
+    border-left: 2px solid var(--color-primary, #3b82f6);
   }
 
   .grid-cell.cell-range-right {
-    border-right: 2px solid var(--dm-color-primary, #3b82f6);
+    border-right: 2px solid var(--color-primary, #3b82f6);
   }
 
   /* ─── Fill Handle ────────────────────────────── */
@@ -44,8 +44,8 @@ export const selectionStyles = css`
     right: -3px;
     width: 6px;
     height: 6px;
-    background: var(--dm-color-primary, #3b82f6);
-    border: 1px solid var(--dm-color-surface, #fff);
+    background: var(--color-primary, #3b82f6);
+    border: 1px solid var(--color-surface, #fff);
     cursor: crosshair;
     z-index: 2;
   }
@@ -62,9 +62,9 @@ export const selectionStyles = css`
   .grid-cell.fill-preview {
     background: var(
       --grid-range-selection-bg,
-      oklch(from var(--dm-color-primary, #3b82f6) l c h / 0.15)
+      oklch(from var(--color-primary, #3b82f6) l c h / 0.15)
     );
-    border: 1px dashed var(--dm-color-primary, #3b82f6);
+    border: 1px dashed var(--color-primary, #3b82f6);
   }
 
   /* ─── Range Border (applied on the outermost cells) ── */
@@ -72,7 +72,7 @@ export const selectionStyles = css`
   .grid-range-border {
     position: absolute;
     pointer-events: none;
-    border: 2px solid var(--dm-color-primary, #3b82f6);
+    border: 2px solid var(--color-primary, #3b82f6);
     z-index: 1;
   }
 
@@ -80,13 +80,13 @@ export const selectionStyles = css`
 
   @keyframes clipboard-flash {
     0% {
-      outline: 2px dashed var(--dm-color-primary, #3b82f6);
+      outline: 2px dashed var(--color-primary, #3b82f6);
     }
     50% {
       outline: 2px dashed transparent;
     }
     100% {
-      outline: 2px dashed var(--dm-color-primary, #3b82f6);
+      outline: 2px dashed var(--color-primary, #3b82f6);
     }
   }
 

@@ -40,7 +40,6 @@
     { "path": "../../elements/popover" },
     { "path": "../../elements/table" },
     { "path": "../../elements/form-group" },
-    { "path": "../../elements/multi-select" },
     { "path": "../../elements/navigation" },
     { "path": "../../elements/nested-menu" },
     { "path": "../../elements/otp-input" },
@@ -48,7 +47,6 @@
     { "path": "../../elements/segment-control" },
     { "path": "../../elements/theme-controller" },
     { "path": "../../elements/time-input" },
-    { "path": "../../elements/tree-select" },
     { "path": "../../elements/code-engine" }
   ]
 }
