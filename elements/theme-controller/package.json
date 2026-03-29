@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-theme-controller",
-  "version": "0.12.0",
+  "version": "1.0.0",
   "description": "DuskMoon Theme Controller custom element for CSS-based radio theme switching",
   "type": "module",
   "main": "./dist/cjs/index.js",

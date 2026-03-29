@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-code-engine",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "type": "module",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -35,7 +35,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "1.0.0",
     "@duskmoon-dev/code-engine": "^0.3.0"
   },
   "devDependencies": {

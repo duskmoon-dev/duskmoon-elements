@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-segment-control",
-  "version": "0.12.0",
+  "version": "1.0.0",
   "description": "DuskMoon Segment Control custom element for segmented button/toggle groups",
   "type": "module",
   "main": "./dist/cjs/index.js",

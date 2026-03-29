@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/elements",
-  "version": "0.12.0",
+  "version": "1.0.0",
   "description": "All DuskMoon custom elements in one package",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -72,15 +72,15 @@
     "@duskmoon-dev/el-markdown-input": "0.11.2",
     "@duskmoon-dev/el-pro-data-grid": "0.11.2",
     "@duskmoon-dev/el-code-block": "0.11.2",
-    "@duskmoon-dev/el-form-group": "workspace:*",
-    "@duskmoon-dev/el-navigation": "workspace:*",
-    "@duskmoon-dev/el-nested-menu": "workspace:*",
-    "@duskmoon-dev/el-otp-input": "workspace:*",
-    "@duskmoon-dev/el-pin-input": "workspace:*",
-    "@duskmoon-dev/el-segment-control": "workspace:*",
-    "@duskmoon-dev/el-theme-controller": "workspace:*",
-    "@duskmoon-dev/el-time-input": "workspace:*",
-    "@duskmoon-dev/el-code-engine": "workspace:*"
+    "@duskmoon-dev/el-form-group": "1.0.0",
+    "@duskmoon-dev/el-navigation": "1.0.0",
+    "@duskmoon-dev/el-nested-menu": "1.0.0",
+    "@duskmoon-dev/el-otp-input": "1.0.0",
+    "@duskmoon-dev/el-pin-input": "1.0.0",
+    "@duskmoon-dev/el-segment-control": "1.0.0",
+    "@duskmoon-dev/el-theme-controller": "1.0.0",
+    "@duskmoon-dev/el-time-input": "1.0.0",
+    "@duskmoon-dev/el-code-engine": "1.0.0"
   },
   "devDependencies": {
     "typescript": "^6.0.2"
