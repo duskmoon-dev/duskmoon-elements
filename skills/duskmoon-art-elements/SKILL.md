@@ -1,11 +1,11 @@
 ---
 name: duskmoon-art-elements
-description: Use the DuskMoon CSS Art Elements (`<el-dm-art-*>` web components). Use when adding pure CSS art animations to web pages — atom, moon, sun, plasma-ball, gemini-input, synthwave-starfield, and more. Covers all 13 CSS art packages, registration patterns, size variants, and the @layer stripping technique required for Shadow DOM compatibility.
+description: Use the DuskMoon CSS Art Elements (`<el-dm-art-*>` web components). Use when adding pure CSS art animations to web pages — atom, moon, sun, plasma-ball, gemini-input, synthwave-starfield, and more. Covers all 15 CSS art packages, registration patterns, size variants, and the @layer stripping technique required for Shadow DOM compatibility.
 ---
 
 # DuskMoon CSS Art Elements
 
-13 pure CSS art custom elements built on `@duskmoon-dev/el-base`. Each element renders a self-contained CSS animation — no JavaScript logic, no external images.
+15 pure CSS art custom elements built on `@duskmoon-dev/el-base`. Each element renders a self-contained CSS animation — no JavaScript logic, no external images.
 
 ## Installation
 
@@ -84,4 +84,4 @@ Some art pieces (e.g. `gemini-input`) also have `@property` declarations outside
 
 ## References
 
-- [CSS Art catalog](references/css-art-catalog.md) — all 13 CSS art packages with tags and properties
+- [CSS Art catalog](references/css-art-catalog.md) — all 15 CSS art packages with tags and properties

@@ -1,6 +1,6 @@
 # CSS Art Catalog
 
-13 pure CSS art element packages.
+15 pure CSS art element packages.
 
 ## All Packages
 
@@ -10,6 +10,7 @@
 | `@duskmoon-dev/el-art-cat-stargazer` | `<el-dm-art-cat-stargazer>` | `ElDmArtCatStargazer` | `size` |
 | `@duskmoon-dev/el-art-circular-gallery` | `<el-dm-art-circular-gallery>` | `ElDmArtCircularGallery` | `size`, `title`, `count` |
 | `@duskmoon-dev/el-art-color-spin` | `<el-dm-art-color-spin>` | `ElDmArtColorSpin` | `size` |
+| `@duskmoon-dev/el-art-csswitch` | `<el-dm-art-csswitch>` | `ElDmArtCsswitch` | `—` |
 | `@duskmoon-dev/el-art-eclipse` | `<el-dm-art-eclipse>` | `ElDmArtEclipse` | `size` |
 | `@duskmoon-dev/el-art-flower-animation` | `<el-dm-art-flower-animation>` | `ElDmArtFlowerAnimation` | `size` |
 | `@duskmoon-dev/el-art-gemini-input` | `<el-dm-art-gemini-input>` | `ElDmArtGeminiInput` | `size`, `placeholder` |
@@ -17,6 +18,7 @@
 | `@duskmoon-dev/el-art-mountain` | `<el-dm-art-mountain>` | `ElDmArtMountain` | `size`, `variant` |
 | `@duskmoon-dev/el-art-plasma-ball` | `<el-dm-art-plasma-ball>` | `ElDmArtPlasmaBall` | `size` |
 | `@duskmoon-dev/el-art-snow` | `<el-dm-art-snow>` | `ElDmArtSnow` | `count`, `unicode`, `fall` |
+| `@duskmoon-dev/el-art-snowball-preloader` | `<el-dm-art-snowball-preloader>` | `ElDmArtSnowballPreloader` | `size` |
 | `@duskmoon-dev/el-art-sun` | `<el-dm-art-sun>` | `ElDmArtSun` | `size`, `variant`, `rays` |
 | `@duskmoon-dev/el-art-synthwave-starfield` | `<el-dm-art-synthwave-starfield>` | `ElDmArtSynthwaveStarfield` | `size`, `paused` |
 

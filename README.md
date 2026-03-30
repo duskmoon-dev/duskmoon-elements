@@ -59,6 +59,10 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-datepicker](./elements/datepicker) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-datepicker)](https://www.npmjs.com/package/@duskmoon-dev/el-datepicker) | `<el-dm-datepicker>` | Date picker with calendar |
 | [@duskmoon-dev/el-file-upload](./elements/file-upload) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-file-upload)](https://www.npmjs.com/package/@duskmoon-dev/el-file-upload) | `<el-dm-file-upload>` | File upload with drag and drop |
 | [@duskmoon-dev/el-form](./elements/form) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-form)](https://www.npmjs.com/package/@duskmoon-dev/el-form) | `<el-dm-form>` | Form container with validation |
+| [@duskmoon-dev/el-otp-input](./elements/otp-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-otp-input)](https://www.npmjs.com/package/@duskmoon-dev/el-otp-input) | `<el-dm-otp-input>` | OTP verification code input |
+| [@duskmoon-dev/el-pin-input](./elements/pin-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pin-input)](https://www.npmjs.com/package/@duskmoon-dev/el-pin-input) | `<el-dm-pin-input>` | Secure PIN entry |
+| [@duskmoon-dev/el-time-input](./elements/time-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-time-input)](https://www.npmjs.com/package/@duskmoon-dev/el-time-input) | `<el-dm-time-input>` | Time selection input |
+| [@duskmoon-dev/el-form-group](./elements/form-group) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-form-group)](https://www.npmjs.com/package/@duskmoon-dev/el-form-group) | `<el-dm-form-group>` | Form field layout group |
 
 ### Feedback Components
 
@@ -83,6 +87,9 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-pagination](./elements/pagination) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pagination)](https://www.npmjs.com/package/@duskmoon-dev/el-pagination) | `<el-dm-pagination>` | Page navigation |
 | [@duskmoon-dev/el-stepper](./elements/stepper) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-stepper)](https://www.npmjs.com/package/@duskmoon-dev/el-stepper) | `<el-dm-stepper>` | Step indicator |
 | [@duskmoon-dev/el-bottom-navigation](./elements/bottom-navigation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-bottom-navigation)](https://www.npmjs.com/package/@duskmoon-dev/el-bottom-navigation) | `<el-dm-bottom-navigation>` | Mobile bottom nav |
+| [@duskmoon-dev/el-navigation](./elements/navigation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-navigation)](https://www.npmjs.com/package/@duskmoon-dev/el-navigation) | `<el-dm-navigation>` | Navigation layout container |
+| [@duskmoon-dev/el-nested-menu](./elements/nested-menu) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-nested-menu)](https://www.npmjs.com/package/@duskmoon-dev/el-nested-menu) | `<el-dm-nested-menu>` | Sidebar menu with collapsible levels |
+| [@duskmoon-dev/el-segment-control](./elements/segment-control) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-segment-control)](https://www.npmjs.com/package/@duskmoon-dev/el-segment-control) | `<el-dm-segment-control>` | Segmented toggle group |
 
 ### Surface Components
 
@@ -92,6 +99,7 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-accordion](./elements/accordion) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-accordion)](https://www.npmjs.com/package/@duskmoon-dev/el-accordion) | `<el-dm-accordion>` | Collapsible sections |
 | [@duskmoon-dev/el-popover](./elements/popover) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-popover)](https://www.npmjs.com/package/@duskmoon-dev/el-popover) | `<el-dm-popover>` | Floating content |
 | [@duskmoon-dev/el-bottom-sheet](./elements/bottom-sheet) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-bottom-sheet)](https://www.npmjs.com/package/@duskmoon-dev/el-bottom-sheet) | `<el-dm-bottom-sheet>` | Mobile bottom sheet |
+| [@duskmoon-dev/el-theme-controller](./elements/theme-controller) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-theme-controller)](https://www.npmjs.com/package/@duskmoon-dev/el-theme-controller) | `<el-dm-theme-controller>` | CSS-based theme switcher |
 
 ### Data Display Components
 
@@ -102,6 +110,7 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown-input)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
 | [@duskmoon-dev/el-pro-data-grid](./elements/pro-data-grid) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pro-data-grid)](https://www.npmjs.com/package/@duskmoon-dev/el-pro-data-grid) | `<el-dm-pro-data-grid>` | Advanced data grid with sorting, filtering, and grouping |
 | [@duskmoon-dev/el-code-block](./elements/code-block) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-code-block)](https://www.npmjs.com/package/@duskmoon-dev/el-code-block) | `<el-dm-code-block>` | Code block with language badge, title, and copy button |
+| [@duskmoon-dev/el-code-engine](./elements/code-engine) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-code-engine)](https://www.npmjs.com/package/@duskmoon-dev/el-code-engine) | `<el-dm-code-engine>` | Lightweight code editor |
 
 ### CSS Art Components
 
@@ -261,7 +270,7 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 33 element packages total
+│   └── ...                 # 42 element packages total
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
