@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> nav}}
+  {{> page-header}}
+
+  <section>
+    <h2>Basic Circle Menu</h2>
+    <div class="demo-row" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+      <el-dm-circle-menu>
+        <a href="#">A</a>
+        <a href="#">B</a>
+        <a href="#">C</a>
+        <a href="#">D</a>
+        <a href="#">E</a>
+        <a href="#">F</a>
+      </el-dm-circle-menu>
+    </div>
+  </section>
+
+  <section>
+    <h2>Color Variants</h2>
+    <div class="demo-row" style="min-height: 200px; display: flex; gap: 6rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+      <el-dm-circle-menu color="primary">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+      </el-dm-circle-menu>
+
+      <el-dm-circle-menu color="secondary">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+      </el-dm-circle-menu>
+
+      <el-dm-circle-menu color="success">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+      </el-dm-circle-menu>
+
+      <el-dm-circle-menu color="error">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+      </el-dm-circle-menu>
+    </div>
+  </section>
+
+  <section>
+    <h2>Size Variants</h2>
+    <div class="demo-row" style="min-height: 200px; display: flex; gap: 6rem; align-items: center; justify-content: center;">
+      <el-dm-circle-menu size="sm" color="primary">
+        <a href="#">S</a>
+        <a href="#">M</a>
+        <a href="#">L</a>
+      </el-dm-circle-menu>
+
+      <el-dm-circle-menu color="primary">
+        <a href="#">S</a>
+        <a href="#">M</a>
+        <a href="#">L</a>
+      </el-dm-circle-menu>
+
+      <el-dm-circle-menu size="lg" color="primary">
+        <a href="#">S</a>
+        <a href="#">M</a>
+        <a href="#">L</a>
+      </el-dm-circle-menu>
+    </div>
+  </section>
+
+  <section>
+    <h2>Programmatic Control</h2>
+    <div class="demo-row" style="min-height: 200px; display: flex; gap: 2rem; align-items: center; justify-content: center;">
+      <el-dm-circle-menu id="controlled" color="tertiary">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+      </el-dm-circle-menu>
+      <div style="display: flex; gap: 0.5rem;">
+        <el-dm-button onclick="document.getElementById('controlled').show()">Show</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled').hide()">Hide</el-dm-button>
+        <el-dm-button onclick="document.getElementById('controlled').toggle()">Toggle</el-dm-button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module">
+    import '@duskmoon-dev/el-circle-menu/register';
+    import '@duskmoon-dev/el-button/register';
+  </script>
+</body>
+</html>
