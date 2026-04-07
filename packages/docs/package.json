@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
-    "@duskmoon-dev/core": "^1.15.0",
+    "@duskmoon-dev/core": "^1.16.0",
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-alert": "workspace:*",
     "@duskmoon-dev/el-autocomplete": "workspace:*",
@@ -22,6 +22,7 @@
     "@duskmoon-dev/el-button": "workspace:*",
     "@duskmoon-dev/el-card": "workspace:*",
     "@duskmoon-dev/el-cascader": "workspace:*",
+    "@duskmoon-dev/el-circle-menu": "workspace:*",
     "@duskmoon-dev/el-chip": "workspace:*",
     "@duskmoon-dev/el-datepicker": "workspace:*",
     "@duskmoon-dev/el-dialog": "workspace:*",
