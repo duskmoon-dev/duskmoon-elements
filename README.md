@@ -89,6 +89,7 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-bottom-navigation](./elements/bottom-navigation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-bottom-navigation)](https://www.npmjs.com/package/@duskmoon-dev/el-bottom-navigation) | `<el-dm-bottom-navigation>` | Mobile bottom nav |
 | [@duskmoon-dev/el-navigation](./elements/navigation) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-navigation)](https://www.npmjs.com/package/@duskmoon-dev/el-navigation) | `<el-dm-navigation>` | Navigation layout container |
 | [@duskmoon-dev/el-nested-menu](./elements/nested-menu) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-nested-menu)](https://www.npmjs.com/package/@duskmoon-dev/el-nested-menu) | `<el-dm-nested-menu>` | Sidebar menu with collapsible levels |
+| [@duskmoon-dev/el-circle-menu](./elements/circle-menu) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-circle-menu)](https://www.npmjs.com/package/@duskmoon-dev/el-circle-menu) | `<el-dm-circle-menu>` | Radial circular navigation menu |
 | [@duskmoon-dev/el-segment-control](./elements/segment-control) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-segment-control)](https://www.npmjs.com/package/@duskmoon-dev/el-segment-control) | `<el-dm-segment-control>` | Segmented toggle group |
 
 ### Surface Components
@@ -270,7 +271,7 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 42 element packages total
+│   └── ...                 # 43 element packages total
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
