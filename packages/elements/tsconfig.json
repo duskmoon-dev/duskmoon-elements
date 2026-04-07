@@ -47,6 +47,7 @@
     { "path": "../../elements/segment-control" },
     { "path": "../../elements/theme-controller" },
     { "path": "../../elements/time-input" },
-    { "path": "../../elements/code-engine" }
+    { "path": "../../elements/code-engine" },
+    { "path": "../../elements/circle-menu" }
   ]
 }
