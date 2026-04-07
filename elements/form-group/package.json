@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-form-group",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "DuskMoon FormGroup custom element for grouping form fields",
   "type": "module",
   "main": "./dist/cjs/index.js",

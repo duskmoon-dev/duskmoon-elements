@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-circle-menu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "1.1.0",
     "@duskmoon-dev/core": "^1.16.0"
   },
   "devDependencies": {
