@@ -74,6 +74,10 @@ import {
   ElDmBottomNavigation,
   register as registerBottomNavigation,
 } from '@duskmoon-dev/el-bottom-navigation';
+import {
+  ElDmCircleMenu,
+  register as registerCircleMenu,
+} from '@duskmoon-dev/el-circle-menu';
 import { ElDmBreadcrumbs, register as registerBreadcrumbs } from '@duskmoon-dev/el-breadcrumbs';
 import { ElDmDrawer, register as registerDrawer } from '@duskmoon-dev/el-drawer';
 import { ElDmMenu, ElDmMenuItem, register as registerMenu } from '@duskmoon-dev/el-menu';
@@ -175,6 +179,8 @@ export type {
 
 // Navigation elements
 export { ElDmBottomNavigation, registerBottomNavigation };
+export { ElDmCircleMenu, registerCircleMenu };
+export type { CircleMenuColor, CircleMenuSize } from '@duskmoon-dev/el-circle-menu';
 export type { BottomNavigationItem } from '@duskmoon-dev/el-bottom-navigation';
 export { ElDmBreadcrumbs, registerBreadcrumbs };
 export type { BreadcrumbItem, NavigateEventDetail } from '@duskmoon-dev/el-breadcrumbs';
@@ -276,6 +282,7 @@ export function registerAll(): void {
   registerDatepicker();
   // Navigation elements
   registerBottomNavigation();
+  registerCircleMenu();
   registerBreadcrumbs();
   registerDrawer();
   registerMenu();

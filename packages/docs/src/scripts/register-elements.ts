@@ -29,6 +29,7 @@ import { register as registerSelect } from '@duskmoon-dev/el-select';
 // Navigation elements
 import { register as registerBottomNavigation } from '@duskmoon-dev/el-bottom-navigation';
 import { register as registerBreadcrumbs } from '@duskmoon-dev/el-breadcrumbs';
+import { register as registerCircleMenu } from '@duskmoon-dev/el-circle-menu';
 import { register as registerDrawer } from '@duskmoon-dev/el-drawer';
 import { register as registerMenu } from '@duskmoon-dev/el-menu';
 import { register as registerNavbar } from '@duskmoon-dev/el-navbar';
@@ -90,6 +91,7 @@ registerSelect();
 // Navigation elements
 registerBottomNavigation();
 registerBreadcrumbs();
+registerCircleMenu();
 registerDrawer();
 registerMenu();
 registerNavbar();

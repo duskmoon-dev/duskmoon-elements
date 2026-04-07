@@ -1,6 +1,6 @@
 # Element Catalog
 
-42 custom element packages, 50 custom element tags.
+43 custom element packages, 51 custom element tags.
 
 ## By Category
 
@@ -14,12 +14,13 @@
 | `@duskmoon-dev/el-progress` | `<el-dm-progress>` | `ElDmProgress` | — |
 | `@duskmoon-dev/el-tooltip` | `<el-dm-tooltip>` | `ElDmTooltip` | — |
 
-### Navigation (10)
+### Navigation (11)
 
 | Package | Tag | Class | Secondary |
 |---------|-----|-------|-----------|
 | `@duskmoon-dev/el-bottom-navigation` | `<el-dm-bottom-navigation>` | `ElDmBottomNavigation` | — |
 | `@duskmoon-dev/el-breadcrumbs` | `<el-dm-breadcrumbs>` | `ElDmBreadcrumbs` | — |
+| `@duskmoon-dev/el-circle-menu` | `<el-dm-circle-menu>` | `ElDmCircleMenu` | — |
 | `@duskmoon-dev/el-menu` | `<el-dm-menu>` | `ElDmMenu` | `ElDmMenuItem` |
 | `@duskmoon-dev/el-navbar` | `<el-dm-navbar>` | `ElDmNavbar` | — |
 | `@duskmoon-dev/el-pagination` | `<el-dm-pagination>` | `ElDmPagination` | — |
