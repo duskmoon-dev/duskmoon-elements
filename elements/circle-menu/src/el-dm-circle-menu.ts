@@ -50,9 +50,7 @@ export type CircleMenuColor =
 export type CircleMenuSize = 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility
-const coreStyles = circleMenuCSS
-  .replace(/@layer\s+components\s*\{/, '')
-  .replace(/\}\s*$/, '');
+const coreStyles = circleMenuCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
 const styles = css`
   :host {

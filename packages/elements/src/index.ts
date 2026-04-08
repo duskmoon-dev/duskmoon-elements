@@ -74,10 +74,7 @@ import {
   ElDmBottomNavigation,
   register as registerBottomNavigation,
 } from '@duskmoon-dev/el-bottom-navigation';
-import {
-  ElDmCircleMenu,
-  register as registerCircleMenu,
-} from '@duskmoon-dev/el-circle-menu';
+import { ElDmCircleMenu, register as registerCircleMenu } from '@duskmoon-dev/el-circle-menu';
 import { ElDmBreadcrumbs, register as registerBreadcrumbs } from '@duskmoon-dev/el-breadcrumbs';
 import { ElDmDrawer, register as registerDrawer } from '@duskmoon-dev/el-drawer';
 import { ElDmMenu, ElDmMenuItem, register as registerMenu } from '@duskmoon-dev/el-menu';

@@ -81,7 +81,7 @@
     "@duskmoon-dev/el-theme-controller": "1.0.0",
     "@duskmoon-dev/el-time-input": "1.0.0",
     "@duskmoon-dev/el-code-engine": "1.0.0",
-    "@duskmoon-dev/el-circle-menu": "1.0.0"
+    "@duskmoon-dev/el-circle-menu": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^6.0.2"
