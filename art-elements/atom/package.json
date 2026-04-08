@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-art-atom",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Pure CSS atom animation custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
