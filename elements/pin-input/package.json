@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-pin-input",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "DuskMoon PIN Input custom element for secure PIN entry",
   "type": "module",
   "main": "./dist/cjs/index.js",
