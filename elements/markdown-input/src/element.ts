@@ -19,6 +19,7 @@
  * @attr {string}  upload-url   POST endpoint for file uploads
  * @attr {number}  max-words    Soft word cap shown in status bar
  * @attr {boolean} dark         Activates dark Prism theme + dark CSS variable defaults
+ * @attr {boolean} no-preview   Hides the preview tab and toolbar; write-only mode
  *
  * @fires change          `{ value: string }` — on every input
  * @fires upload-start    `{ file: File }` — when a file is accepted
@@ -71,6 +72,7 @@ export class ElDmMarkdownInput extends BaseElement {
     katexCssUrl: { type: String, reflect: true, attribute: 'katex-css-url' },
     mermaidSrc: { type: String, reflect: true, attribute: 'mermaid-src' },
     resize: { type: String, reflect: true, default: 'none' },
+    noPreview: { type: Boolean, reflect: true, attribute: 'no-preview' },
   };
 
   declare name: string;
@@ -87,6 +89,7 @@ export class ElDmMarkdownInput extends BaseElement {
   declare katexCssUrl: string | undefined;
   declare mermaidSrc: string | undefined;
   declare resize: 'none' | 'vertical' | 'horizontal' | 'both';
+  declare noPreview: boolean;
 
   // ── ElementInternals for form association ────────────────────────────
   #internals!: ElementInternals;
@@ -232,6 +235,21 @@ export class ElDmMarkdownInput extends BaseElement {
       }
     }
 
+    // Toggle toolbar visibility when noPreview changes
+    const noPreview = !!(this as unknown as { noPreview: boolean }).noPreview;
+    const toolbar = this.shadowRoot.querySelector('.toolbar');
+    if (noPreview) {
+      toolbar?.setAttribute('hidden', '');
+      // Force back to write tab if preview is currently active
+      if (this.#activeTab === 'preview') {
+        this.#activeTab = 'write';
+        this.#writeArea?.removeAttribute('hidden');
+        this.#previewBody?.setAttribute('hidden', '');
+      }
+    } else {
+      toolbar?.removeAttribute('hidden');
+    }
+
     // Re-render status bar (maxWords may have changed)
     this.#updateStatusBarNow();
   }
@@ -240,10 +258,11 @@ export class ElDmMarkdownInput extends BaseElement {
     const ph = (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
     const disabled = !!(this as unknown as { disabled: boolean }).disabled;
     const readonly = !!(this as unknown as { readonly: boolean }).readonly;
+    const noPreview = !!(this as unknown as { noPreview: boolean }).noPreview;
 
     return `
       <div class="editor">
-        <div class="toolbar" role="tablist" aria-label="Editor mode">
+        <div class="toolbar" role="tablist" aria-label="Editor mode" ${noPreview ? 'hidden' : ''}>
           <button
             class="tab-btn"
             id="tab-write"
@@ -359,7 +378,13 @@ export class ElDmMarkdownInput extends BaseElement {
       }
 
       // Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac) → toggle preview
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+      // Suppressed when no-preview is set.
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.shiftKey &&
+        e.key === 'P' &&
+        !(this as unknown as { noPreview: boolean }).noPreview
+      ) {
         e.preventDefault();
         this.#switchTab(this.#activeTab === 'write' ? 'preview' : 'write');
         return;
@@ -514,6 +539,8 @@ export class ElDmMarkdownInput extends BaseElement {
 
   #switchTab(tab: 'write' | 'preview'): void {
     if (tab === this.#activeTab) return;
+    // Block switching to preview when no-preview mode is active
+    if (tab === 'preview' && (this as unknown as { noPreview: boolean }).noPreview) return;
     this.#activeTab = tab;
 
     const writeBtns = this.shadowRoot.querySelectorAll<HTMLElement>('.tab-btn');

@@ -74,6 +74,7 @@ The Markdown Input component offers:
 | `debounce` | `number` | `300` | Debounce ms for live preview |
 | `katex-css-url` | `string` | CDN URL | Override KaTeX stylesheet location |
 | `mermaid-src` | `string` | CDN URL | Override mermaid.js source URL |
+| `no-preview` | `boolean` | `false` | Hide the preview tab; write-only mode |
 | `resize` | `'none' \| 'vertical' \| 'horizontal' \| 'both'` | `'none'` | Enable user resizing of the editor |
 
 ## Public API
@@ -423,6 +424,24 @@ Use the `resize` attribute to let users drag the editor to their preferred heigh
 ```
 
 Accepted values mirror the CSS `resize` property: `none` (default) | `vertical` | `horizontal` | `both`.
+
+## Write-Only Mode
+
+Use the `no-preview` attribute to hide the toolbar and preview tab entirely. This is useful when the preview is handled externally or not needed:
+
+<ComponentDemo title="Write-Only Mode">
+  <el-dm-markdown-input
+    style="width: 100%;"
+    no-preview
+    placeholder="Write markdown — no preview tab…"
+  ></el-dm-markdown-input>
+</ComponentDemo>
+
+```html
+<el-dm-markdown-input no-preview></el-dm-markdown-input>
+```
+
+When `no-preview` is set, the `Ctrl+Shift+P` toggle shortcut is also disabled.
 
 ## Keyboard Shortcuts
 

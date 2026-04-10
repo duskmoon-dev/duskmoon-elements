@@ -76,6 +76,10 @@ export const elementStyles = css`
     padding: 0 0.5rem;
   }
 
+  .toolbar[hidden] {
+    display: none;
+  }
+
   .tab-btn {
     padding: 0.5rem 0.875rem;
     border: none;

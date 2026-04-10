@@ -717,4 +717,76 @@ describe('ElDmMarkdownInput', () => {
       });
     });
   });
+
+  // ── no-preview mode ──────────────────────────────────────────────
+
+  describe('no-preview mode', () => {
+    test('toolbar is hidden when no-preview is set at creation', () => {
+      const npEl = createElement({ 'no-preview': '' });
+      const toolbar = npEl.shadowRoot!.querySelector('.toolbar');
+      expect(toolbar?.hasAttribute('hidden')).toBe(true);
+      cleanup(npEl);
+    });
+
+    test('preview tab click is ignored in no-preview mode', () => {
+      const npEl = createElement({ 'no-preview': '' });
+      const previewBtn = getTabButton(npEl, 'preview');
+      previewBtn.click();
+      const writeArea = npEl.shadowRoot!.querySelector('.write-area');
+      expect(writeArea?.hasAttribute('hidden')).toBe(false);
+      cleanup(npEl);
+    });
+
+    test('Ctrl+Shift+P does not toggle preview in no-preview mode', () => {
+      const npEl = createElement({ 'no-preview': '' });
+      const ta = getTextarea(npEl);
+      const event = new Event('keydown', { bubbles: true }) as Event & Record<string, unknown>;
+      Object.assign(event, { key: 'P', ctrlKey: true, shiftKey: true });
+      ta.dispatchEvent(event);
+      const preview = npEl.shadowRoot!.querySelector('.preview-body');
+      expect(preview?.hasAttribute('hidden')).toBe(true);
+      cleanup(npEl);
+    });
+
+    test('setting no-preview dynamically hides toolbar', () => {
+      el.setAttribute('no-preview', '');
+      return Promise.resolve().then(() => {
+        const toolbar = el.shadowRoot!.querySelector('.toolbar');
+        expect(toolbar?.hasAttribute('hidden')).toBe(true);
+        cleanup(el);
+      });
+    });
+
+    test('removing no-preview restores toolbar', () => {
+      el.setAttribute('no-preview', '');
+      return Promise.resolve().then(() => {
+        el.removeAttribute('no-preview');
+        return Promise.resolve().then(() => {
+          const toolbar = el.shadowRoot!.querySelector('.toolbar');
+          expect(toolbar?.hasAttribute('hidden')).toBe(false);
+          cleanup(el);
+        });
+      });
+    });
+
+    test('setting no-preview while on preview tab forces back to write', () => {
+      getTabButton(el, 'preview').click();
+      const writeArea = el.shadowRoot!.querySelector('.write-area');
+      expect(writeArea?.hasAttribute('hidden')).toBe(true);
+      el.setAttribute('no-preview', '');
+      return Promise.resolve().then(() => {
+        expect(writeArea?.hasAttribute('hidden')).toBe(false);
+        const preview = el.shadowRoot!.querySelector('.preview-body');
+        expect(preview?.hasAttribute('hidden')).toBe(true);
+        cleanup(el);
+      });
+    });
+
+    test('textarea still works in no-preview mode', () => {
+      const npEl = createElement({ 'no-preview': '' });
+      npEl.setValue('hello');
+      expect(npEl.getValue()).toBe('hello');
+      cleanup(npEl);
+    });
+  });
 });
