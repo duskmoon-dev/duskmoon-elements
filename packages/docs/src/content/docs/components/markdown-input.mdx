@@ -443,6 +443,120 @@ Use the `no-preview` attribute to hide the toolbar and preview tab entirely. Thi
 
 When `no-preview` is set, the `Ctrl+Shift+P` toggle shortcut is also disabled.
 
+## Bottom Toolbar Slots
+
+The status bar supports three named slots for custom toolbar content. Existing functionality (attach button, word count) is shown by default when no slot content is provided.
+
+### Custom Left Side (`bottom-start`)
+
+Replace only the left side of the toolbar:
+
+<ComponentDemo title="Custom Left Side" description="Replace the attach button with custom actions">
+  <el-dm-markdown-input
+    id="slot-start-demo"
+    style="width: 100%; height: 200px;"
+    no-preview
+    placeholder="Left side has custom buttons…"
+  >
+    <div slot="bottom-start" style="display: flex; gap: 0.25rem; align-items: center;">
+      <button type="button" style="padding: 0.25rem 0.5rem; border: 1px solid var(--color-outline, #d0d7de); border-radius: 4px; background: transparent; cursor: pointer; font-size: 0.75rem;">+ New</button>
+      <button type="button" style="padding: 0.25rem 0.5rem; border: 1px solid var(--color-outline, #d0d7de); border-radius: 4px; background: transparent; cursor: pointer; font-size: 0.75rem;">&#128465; Clear</button>
+    </div>
+  </el-dm-markdown-input>
+</ComponentDemo>
+
+```html
+<el-dm-markdown-input placeholder="Left side has custom buttons…">
+  <div slot="bottom-start" style="display: flex; gap: 0.25rem;">
+    <button type="button">+ New</button>
+    <button type="button">🗑 Clear</button>
+  </div>
+</el-dm-markdown-input>
+```
+
+### Custom Right Side (`bottom-end`)
+
+Replace only the right side (word count area):
+
+<ComponentDemo title="Custom Right Side" description="Replace the word count with a submit button">
+  <el-dm-markdown-input
+    id="slot-end-demo"
+    style="width: 100%; height: 200px;"
+    no-preview
+    placeholder="Right side has a submit button…"
+  >
+    <div slot="bottom-end" style="display: flex; gap: 0.5rem; align-items: center;">
+      <span style="font-size: 0.75rem; color: var(--color-on-surface-variant, #656d76);">Draft</span>
+      <button type="button" style="padding: 0.25rem 0.75rem; border: none; border-radius: 4px; background: var(--color-primary, #0969da); color: white; cursor: pointer; font-size: 0.75rem;">Send</button>
+    </div>
+  </el-dm-markdown-input>
+</ComponentDemo>
+
+```html
+<el-dm-markdown-input placeholder="Right side has a submit button…">
+  <div slot="bottom-end" style="display: flex; gap: 0.5rem; align-items: center;">
+    <span>Draft</span>
+    <button type="button">Send</button>
+  </div>
+</el-dm-markdown-input>
+```
+
+### Entire Bottom Bar (`bottom`)
+
+Replace the entire toolbar with custom content:
+
+<ComponentDemo title="Full Custom Toolbar" description="Replace the entire bottom bar">
+  <el-dm-markdown-input
+    id="slot-bottom-demo"
+    style="width: 100%; height: 200px;"
+    no-preview
+    placeholder="Entire bottom bar is custom…"
+  >
+    <div slot="bottom" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div style="display: flex; gap: 0.25rem;">
+        <button type="button" style="padding: 0.25rem 0.5rem; border: 1px solid var(--color-outline, #d0d7de); border-radius: 4px; background: transparent; cursor: pointer; font-size: 1rem; line-height: 1;">+</button>
+        <button type="button" style="padding: 0.25rem 0.5rem; border: 1px solid var(--color-outline, #d0d7de); border-radius: 4px; background: transparent; cursor: pointer; font-size: 1rem; line-height: 1;">&#128465;</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <select style="padding: 0.2rem 0.4rem; border: 1px solid var(--color-outline, #d0d7de); border-radius: 4px; background: transparent; font-size: 0.75rem; cursor: pointer;">
+          <option>Opus 4.6</option>
+          <option>Sonnet 4.6</option>
+          <option>Haiku 4.5</option>
+        </select>
+        <button type="button" style="padding: 0.35rem 0.75rem; border: none; border-radius: 4px; background: var(--color-primary, #0969da); color: white; cursor: pointer; font-size: 0.85rem;">&#9650; Send</button>
+      </div>
+    </div>
+  </el-dm-markdown-input>
+</ComponentDemo>
+
+```html
+<el-dm-markdown-input placeholder="Entire bottom bar is custom…">
+  <div slot="bottom" style="display: flex; justify-content: space-between; width: 100%;">
+    <div>
+      <button type="button">+</button>
+      <button type="button">🗑</button>
+    </div>
+    <div>
+      <select>
+        <option>Opus 4.6</option>
+        <option>Sonnet 4.6</option>
+      </select>
+      <button type="button">▲ Send</button>
+    </div>
+  </div>
+</el-dm-markdown-input>
+```
+
+### Slot Reference
+
+| Slot Name | Replaces | Fallback Content |
+|-----------|----------|------------------|
+| `bottom` | Entire toolbar | Left/right sections with attach button + word count |
+| `bottom-start` | Left side only | Attach files button |
+| `bottom-end` | Right side only | Word/character count |
+
+> **Note:** When `slot="bottom"` is used, it replaces the entire bar including the inner `bottom-start` and `bottom-end` slots. The hidden file `<input>` for uploads always remains functional regardless of slot usage.
+
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
