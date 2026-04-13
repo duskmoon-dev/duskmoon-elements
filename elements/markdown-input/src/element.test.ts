@@ -501,24 +501,22 @@ describe('ElDmMarkdownInput', () => {
   // ── Upload events ─────────────────────────────────────────────────
 
   describe('upload events', () => {
-    test('fires upload-error when no upload-url is set', () => {
-      const errors: Array<{ file: File; error: string }> = [];
-      el.addEventListener('upload-error', ((e: CustomEvent) => {
-        errors.push(e.detail);
+    test('attaches file locally when no upload-url is set', () => {
+      const done: Array<{ file: File; url: string; markdown: string }> = [];
+      el.addEventListener('upload-done', ((e: CustomEvent) => {
+        done.push(e.detail);
       }) as EventListener);
 
-      el.addEventListener('upload-start', () => {});
-
       // Trigger file upload via the element's internal mechanism
-      // We can use the file input change event
       const fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
-      // Mock the files property
       const file = new File(['test'], 'test.png', { type: 'image/png' });
       Object.defineProperty(fileInput, 'files', { value: [file], configurable: true });
       fileInput.dispatchEvent(new Event('change'));
 
-      expect(errors.length).toBe(1);
-      expect(errors[0].error).toBe('no upload-url set');
+      expect(done.length).toBe(1);
+      expect(done[0].url).toBe('');
+      expect(done[0].markdown).toBe('');
+      expect(el.getFiles()).toHaveLength(1);
       cleanup(el);
     });
   });
@@ -892,6 +890,136 @@ describe('ElDmMarkdownInput', () => {
       const fileInput = slottedEl.shadowRoot!.querySelector('.file-input');
       expect(fileInput).toBeTruthy();
       cleanup(slottedEl);
+    });
+  });
+
+  // ── Local file attachment (no upload-url) ─────────────────────────
+
+  describe('local file attachment', () => {
+    function makeFile(name: string, type: string, size = 1024): File {
+      const buf = new ArrayBuffer(size);
+      return new File([buf], name, { type });
+    }
+
+    test('getFiles() returns empty array initially', () => {
+      expect(el.getFiles()).toEqual([]);
+      cleanup(el);
+    });
+
+    test('attaching a file without upload-url stores it locally', () => {
+      const file = makeFile('test.png', 'image/png');
+      // Simulate the file input change event
+      const fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
+
+      // We can't set .files directly, so we call the internal method via event
+      // Instead, test the public API approach — directly call insertFile behavior
+      // by dispatching a custom event through the attach button flow.
+      // The simplest way is to verify getFiles/removeFile API after manual state setup.
+
+      // Verify no upload-url is set
+      expect(el.getAttribute('upload-url')).toBeNull();
+
+      // Emit upload-start then check that upload-done is fired (not upload-error)
+      let doneEmitted = false;
+      let errorEmitted = false;
+      el.addEventListener('upload-done', () => {
+        doneEmitted = true;
+      });
+      el.addEventListener('upload-error', () => {
+        errorEmitted = true;
+      });
+
+      // Trigger the internal startUpload by simulating drop
+      const dropEvent = new Event('drop', { bubbles: true }) as Event & {
+        dataTransfer?: { files: File[] };
+      };
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: { files: [file] },
+      });
+      Object.defineProperty(dropEvent, 'preventDefault', { value: () => {} });
+
+      const writeArea = el.shadowRoot!.querySelector('.write-area');
+      writeArea?.dispatchEvent(dropEvent);
+
+      expect(doneEmitted).toBe(true);
+      expect(errorEmitted).toBe(false);
+      expect(el.getFiles()).toHaveLength(1);
+      expect(el.getFiles()[0].name).toBe('test.png');
+      cleanup(el);
+    });
+
+    test('attached file shows in upload-list', () => {
+      const file = makeFile('doc.pdf', 'application/pdf', 2048);
+      const dropEvent = new Event('drop', { bubbles: true }) as Event & {
+        dataTransfer?: { files: File[] };
+      };
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: { files: [file] },
+      });
+      Object.defineProperty(dropEvent, 'preventDefault', { value: () => {} });
+
+      el.shadowRoot!.querySelector('.write-area')?.dispatchEvent(dropEvent);
+
+      const attachedRow = el.shadowRoot!.querySelector('.upload-attached-row');
+      expect(attachedRow).toBeTruthy();
+      expect(attachedRow?.querySelector('.upload-filename')?.textContent).toBe('doc.pdf');
+      expect(attachedRow?.querySelector('.upload-remove-btn')).toBeTruthy();
+      cleanup(el);
+    });
+
+    test('removeFile() removes a file by index', () => {
+      const file1 = makeFile('a.png', 'image/png');
+      const file2 = makeFile('b.png', 'image/png');
+
+      // Attach two files via drops
+      for (const f of [file1, file2]) {
+        const ev = new Event('drop', { bubbles: true });
+        Object.defineProperty(ev, 'dataTransfer', { value: { files: [f] } });
+        Object.defineProperty(ev, 'preventDefault', { value: () => {} });
+        el.shadowRoot!.querySelector('.write-area')?.dispatchEvent(ev);
+      }
+
+      expect(el.getFiles()).toHaveLength(2);
+      el.removeFile(0);
+      expect(el.getFiles()).toHaveLength(1);
+      expect(el.getFiles()[0].name).toBe('b.png');
+
+      const rows = el.shadowRoot!.querySelectorAll('.upload-attached-row');
+      expect(rows.length).toBe(1);
+      cleanup(el);
+    });
+
+    test('removeFile() with invalid index is a no-op', () => {
+      el.removeFile(-1);
+      el.removeFile(999);
+      expect(el.getFiles()).toEqual([]);
+      cleanup(el);
+    });
+
+    test('getFiles() returns a copy, not the internal array', () => {
+      const file = makeFile('test.png', 'image/png');
+      const ev = new Event('drop', { bubbles: true });
+      Object.defineProperty(ev, 'dataTransfer', { value: { files: [file] } });
+      Object.defineProperty(ev, 'preventDefault', { value: () => {} });
+      el.shadowRoot!.querySelector('.write-area')?.dispatchEvent(ev);
+
+      const files = el.getFiles();
+      files.pop();
+      expect(el.getFiles()).toHaveLength(1);
+      cleanup(el);
+    });
+
+    test('with upload-url set, files are NOT stored locally', () => {
+      const uploadEl = createElement({ 'upload-url': 'https://example.com/upload' });
+      const file = makeFile('test.png', 'image/png');
+      const ev = new Event('drop', { bubbles: true });
+      Object.defineProperty(ev, 'dataTransfer', { value: { files: [file] } });
+      Object.defineProperty(ev, 'preventDefault', { value: () => {} });
+      uploadEl.shadowRoot!.querySelector('.write-area')?.dispatchEvent(ev);
+
+      // Should NOT be in local files (it went through XHR upload path)
+      expect(uploadEl.getFiles()).toHaveLength(0);
+      cleanup(uploadEl);
     });
   });
 });

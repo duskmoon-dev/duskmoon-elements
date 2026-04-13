@@ -54,6 +54,12 @@ const markdownBodySheet = css`
   ${coreMarkdownStyles}
 `;
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export class ElDmMarkdownInput extends BaseElement {
   static formAssociated = true as const;
 
@@ -136,6 +142,8 @@ export class ElDmMarkdownInput extends BaseElement {
 
   // ── Upload state ─────────────────────────────────────────────────────
   #uploadIdCounter = 0;
+  /** Files stored locally for form submission (used when upload-url is not set). */
+  #attachedFiles: File[] = [];
 
   constructor() {
     super();
@@ -724,7 +732,18 @@ export class ElDmMarkdownInput extends BaseElement {
   // ════════════════════════════════════════════════════════════════════
 
   #syncFormValue(): void {
-    this.#internals?.setFormValue(this.#textarea?.value ?? '');
+    const text = this.#textarea?.value ?? '';
+    if (this.#attachedFiles.length === 0) {
+      this.#internals?.setFormValue(text);
+      return;
+    }
+    const name = (this as unknown as { name: string }).name || 'markdown';
+    const fd = new FormData();
+    fd.append(name, text);
+    for (const f of this.#attachedFiles) {
+      fd.append(`${name}_files`, f, f.name);
+    }
+    this.#internals?.setFormValue(fd);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -738,8 +757,11 @@ export class ElDmMarkdownInput extends BaseElement {
     const uploadUrl = (this as unknown as { uploadUrl: string | undefined }).uploadUrl;
 
     if (!uploadUrl) {
-      this.emit('upload-error', { file, error: 'no upload-url set' });
-      this.#showUploadError(file, 'no upload-url set');
+      // No upload endpoint — store file locally for form submission
+      this.#attachedFiles.push(file);
+      this.#addAttachedRow(file, this.#attachedFiles.length - 1, id);
+      this.#syncFormValue();
+      this.emit('upload-done', { file, url: '', markdown: '' });
       return;
     }
 
@@ -798,6 +820,22 @@ export class ElDmMarkdownInput extends BaseElement {
     `;
     this.#uploadList.appendChild(row);
     setTimeout(() => row.remove(), 4000);
+  }
+
+  #addAttachedRow(file: File, index: number, id: string): void {
+    if (!this.#uploadList) return;
+    const row = document.createElement('div');
+    row.className = 'upload-attached-row';
+    row.id = id;
+    row.innerHTML = `
+      <span class="upload-filename">${escapeHtmlStr(file.name)}</span>
+      <span class="upload-attached-size">${formatFileSize(file.size)}</span>
+      <button type="button" class="upload-remove-btn" data-attach-index="${index}" aria-label="Remove ${escapeHtmlStr(file.name)}">&#215;</button>
+    `;
+    row.querySelector('.upload-remove-btn')!.addEventListener('click', () => {
+      this.removeFile(index);
+    });
+    this.#uploadList.appendChild(row);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -1078,6 +1116,34 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#acSuggestions = list;
     this.#acSelectedIndex = list.length > 0 ? 0 : -1;
     this.#updateDropdown();
+  }
+
+  /** Returns a copy of the locally attached files (when no upload-url is set). */
+  getFiles(): File[] {
+    return [...this.#attachedFiles];
+  }
+
+  /** Remove a locally attached file by index and update the form value. */
+  removeFile(index: number): void {
+    if (index < 0 || index >= this.#attachedFiles.length) return;
+    this.#attachedFiles.splice(index, 1);
+    // Re-render all attached rows to keep indices in sync
+    this.#rebuildAttachedRows();
+    this.#syncFormValue();
+  }
+
+  /** Re-render all attached file rows after an index change. */
+  #rebuildAttachedRows(): void {
+    if (!this.#uploadList) return;
+    // Remove all attached rows
+    this.#uploadList
+      .querySelectorAll('.upload-attached-row')
+      .forEach((r) => r.remove());
+    // Re-add with correct indices
+    this.#attachedFiles.forEach((file, i) => {
+      const id = `upload-${++this.#uploadIdCounter}`;
+      this.#addAttachedRow(file, i, id);
+    });
   }
 }
 

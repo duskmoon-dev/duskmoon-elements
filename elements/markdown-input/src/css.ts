@@ -505,6 +505,52 @@ export const elementStyles = css`
     white-space: nowrap;
   }
 
+  /* ── Attached files (local form mode) ────────────────────────────── */
+
+  .upload-attached-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-top: 1px solid var(--md-border);
+    font-size: 0.75rem;
+    color: var(--md-text-muted);
+  }
+
+  .upload-attached-size {
+    white-space: nowrap;
+    color: var(--md-text-muted);
+  }
+
+  .upload-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--md-text-muted);
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    transition:
+      color 150ms ease,
+      background 150ms ease;
+  }
+
+  .upload-remove-btn:hover {
+    color: var(--md-color-error);
+    background: var(--md-bg-hover);
+  }
+
+  .upload-remove-btn:focus-visible {
+    outline: 2px solid var(--md-accent);
+    outline-offset: 1px;
+  }
+
   /* ── Resizable editor ──────────────────────────────────────────────── */
   /* resize attribute mirrors the CSS resize property: vertical | horizontal | both */
   :host([resize='vertical']) .editor {
