@@ -296,7 +296,9 @@ const styles = css`
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
 
   .bar-btn:hover {
@@ -479,9 +481,7 @@ export class ElDmCodeEngine extends BaseElement {
       ? `<span class="lang-badge">${LANG_BADGES[this.language] ?? this.language.toUpperCase()}</span>`
       : '';
     const t = (this as unknown as { title: string }).title;
-    const title = t
-      ? `<span class="topbar-title">${t}</span>`
-      : '';
+    const title = t ? `<span class="topbar-title">${t}</span>` : '';
     return `
       <div class="topbar" part="topbar">
         <slot name="topbar">
@@ -499,9 +499,7 @@ export class ElDmCodeEngine extends BaseElement {
   }
 
   #renderBottombar(): string {
-    const langName = this.language
-      ? (LANG_NAMES[this.language] ?? this.language)
-      : '';
+    const langName = this.language ? (LANG_NAMES[this.language] ?? this.language) : '';
     return `
       <div class="bottombar" part="bottombar">
         <slot name="bottombar">

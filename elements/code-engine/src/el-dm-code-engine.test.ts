@@ -16,7 +16,10 @@ class FakeCompartment {
 
 const fakeEditorState = {
   readOnly: { of: () => ({}) },
-  create: () => ({ doc: { toString: () => '', lines: 0, lineAt: () => ({ number: 1, from: 0 }) }, selection: { main: { head: 0 } } }),
+  create: () => ({
+    doc: { toString: () => '', lines: 0, lineAt: () => ({ number: 1, from: 0 }) },
+    selection: { main: { head: 0 } },
+  }),
 };
 
 mock.module('@duskmoon-dev/code-engine/view', () => ({
@@ -66,7 +69,9 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
-function createElement(attrs: Record<string, string | boolean> = {}): InstanceType<typeof ElDmCodeEngine> {
+function createElement(
+  attrs: Record<string, string | boolean> = {},
+): InstanceType<typeof ElDmCodeEngine> {
   const el = document.createElement('el-dm-code-engine') as InstanceType<typeof ElDmCodeEngine>;
   for (const [key, value] of Object.entries(attrs)) {
     if (typeof value === 'boolean') {
@@ -159,9 +164,9 @@ describe('ElDmCodeEngine', () => {
     it('should have correct data-action attributes on buttons', async () => {
       const el = createElement({ 'show-topbar': true });
       await flush();
-      const actions = Array.from(
-        el.shadowRoot?.querySelectorAll('.bar-btn') ?? []
-      ).map((btn) => btn.getAttribute('data-action'));
+      const actions = Array.from(el.shadowRoot?.querySelectorAll('.bar-btn') ?? []).map((btn) =>
+        btn.getAttribute('data-action'),
+      );
       expect(actions).toEqual(['undo', 'redo', 'wrap', 'copy', 'fullscreen']);
     });
   });
