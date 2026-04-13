@@ -103,6 +103,87 @@ const LANG_LOADERS: Record<string, () => Promise<Extension | null>> = {
   lezer: langLoader(() => import('@duskmoon-dev/code-engine/lang/lezer')),
   caddyfile: langLoader(() => import('@duskmoon-dev/code-engine/lang/caddyfile')),
 };
+
+const LANG_BADGES: Record<string, string> = {
+  javascript: 'JS',
+  typescript: 'TS',
+  python: 'PY',
+  rust: 'RS',
+  go: 'GO',
+  java: 'JAVA',
+  cpp: 'C++',
+  html: 'HTML',
+  css: 'CSS',
+  json: 'JSON',
+  markdown: 'MD',
+  sql: 'SQL',
+  yaml: 'YAML',
+  xml: 'XML',
+  php: 'PHP',
+  elixir: 'EX',
+  erlang: 'ERL',
+  heex: 'HEEX',
+  dart: 'DART',
+  zig: 'ZIG',
+  vue: 'VUE',
+  angular: 'NG',
+  sass: 'SASS',
+  less: 'LESS',
+  wast: 'WAST',
+  lezer: 'LEZER',
+  caddyfile: 'CADDY',
+  jinja: 'JINJA',
+  liquid: 'LIQUID',
+};
+
+const LANG_NAMES: Record<string, string> = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  python: 'Python',
+  rust: 'Rust',
+  go: 'Go',
+  java: 'Java',
+  cpp: 'C++',
+  html: 'HTML',
+  css: 'CSS',
+  json: 'JSON',
+  markdown: 'Markdown',
+  sql: 'SQL',
+  yaml: 'YAML',
+  xml: 'XML',
+  php: 'PHP',
+  elixir: 'Elixir',
+  erlang: 'Erlang',
+  heex: 'HEEx',
+  dart: 'Dart',
+  zig: 'Zig',
+  vue: 'Vue',
+  angular: 'Angular',
+  sass: 'Sass',
+  less: 'Less',
+  wast: 'WAT',
+  lezer: 'Lezer',
+  caddyfile: 'Caddyfile',
+  jinja: 'Jinja',
+  liquid: 'Liquid',
+};
+
+// ── SVG Icons (14×14, stroke-based) ──
+
+const ICON_UNDO = `<svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>`;
+
+const ICON_REDO = `<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+
+const ICON_WRAP = `<svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><path d="M3 12h15a3 3 0 1 1 0 6h-4"/><polyline points="16 16 14 18 16 20"/><line x1="3" y1="18" x2="10" y2="18"/></svg>`;
+
+const ICON_COPY = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+const ICON_CHECK = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+const ICON_FULLSCREEN = `<svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
+
+const ICON_EXIT_FULLSCREEN = `<svg viewBox="0 0 24 24"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
+
 export type CodeEngineTheme = 'duskmoon' | 'sunshine' | 'moonlight' | 'one-dark';
 
 const styles = css`
