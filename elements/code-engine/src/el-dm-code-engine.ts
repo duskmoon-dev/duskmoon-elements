@@ -31,6 +31,7 @@ import type { Extension } from '@duskmoon-dev/code-engine';
 import { EditorView } from '@duskmoon-dev/code-engine/view';
 import { EditorState, Compartment } from '@duskmoon-dev/code-engine/state';
 import { basicSetup } from '@duskmoon-dev/code-engine/setup';
+import { undo, redo } from '@duskmoon-dev/code-engine/commands';
 
 // ── Static theme imports (all 4 are small; avoids runtime bare-specifier issues) ──
 import * as _duskmoonTheme from '@duskmoon-dev/code-engine/theme/duskmoon';
@@ -372,6 +373,11 @@ export class ElDmCodeEngine extends BaseElement {
 
   readonly #langCache = new Map<string, Extension | null>();
 
+  #cursorLine = 1;
+  #cursorCol = 1;
+  #lineCount = 0;
+  #isFullscreen = false;
+
   constructor() {
     super();
     this.attachStyles(styles);
@@ -413,7 +419,7 @@ export class ElDmCodeEngine extends BaseElement {
   }
 
   protected render(): string {
-    return '<div class="cm-host" part="editor"></div>';
+    return `${this.#renderTopbar()}<div class="cm-host" part="editor"></div>${this.#renderBottombar()}`;
   }
 
   protected update(): void {
@@ -427,6 +433,17 @@ export class ElDmCodeEngine extends BaseElement {
     }
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.shadowRoot!.addEventListener('click', (e) => {
+      const btn = (e.target as Element)?.closest('[data-action]');
+      if (btn) {
+        const action = btn.getAttribute('data-action');
+        if (action) this.#handleBarAction(action);
+      }
+    });
+  }
+
   disconnectedCallback(): void {
     // Save current content so it survives a DOM move/reconnect.
     if (this.#editor) {
@@ -435,6 +452,123 @@ export class ElDmCodeEngine extends BaseElement {
       this.#editor = null;
     }
     super.disconnectedCallback();
+  }
+
+  // ── Bar rendering ───────────────────────────────────────────────────
+
+  #renderTopbar(): string {
+    const badge = this.language
+      ? `<span class="lang-badge">${LANG_BADGES[this.language] ?? this.language.toUpperCase()}</span>`
+      : '';
+    const title = (this as unknown as { title: string }).title
+      ? `<span class="topbar-title">${(this as unknown as { title: string }).title}</span>`
+      : '';
+    return `
+      <div class="topbar" part="topbar">
+        <slot name="topbar">
+          <div class="topbar-left">${badge}${title}</div>
+          <div class="topbar-right">
+            <button class="bar-btn" data-action="undo" title="Undo">${ICON_UNDO}</button>
+            <button class="bar-btn" data-action="redo" title="Redo">${ICON_REDO}</button>
+            <button class="bar-btn" data-action="wrap" title="Toggle line wrap">${ICON_WRAP}</button>
+            <button class="bar-btn" data-action="copy" title="Copy">${ICON_COPY}</button>
+            <button class="bar-btn" data-action="fullscreen" title="Toggle fullscreen">${this.#isFullscreen ? ICON_EXIT_FULLSCREEN : ICON_FULLSCREEN}</button>
+          </div>
+        </slot>
+      </div>
+    `;
+  }
+
+  #renderBottombar(): string {
+    const langName = this.language
+      ? (LANG_NAMES[this.language] ?? this.language)
+      : '';
+    return `
+      <div class="bottombar" part="bottombar">
+        <slot name="bottombar">
+          <div class="bottombar-left">
+            <span class="cursor-pos">Ln ${this.#cursorLine}, Col ${this.#cursorCol}</span>
+            <span class="line-count">${this.#lineCount} lines</span>
+          </div>
+          <div class="bottombar-right">
+            <span>UTF-8</span>
+            ${langName ? `<span>${langName}</span>` : ''}
+          </div>
+        </slot>
+      </div>
+    `;
+  }
+
+  // ── Action handlers ─────────────────────────────────────────────────
+
+  #handleBarAction(action: string): void {
+    switch (action) {
+      case 'undo':
+        if (this.#editor) undo(this.#editor);
+        break;
+      case 'redo':
+        if (this.#editor) redo(this.#editor);
+        break;
+      case 'wrap':
+        this.wrap = !this.wrap;
+        break;
+      case 'copy':
+        void this.#handleCopy();
+        break;
+      case 'fullscreen':
+        this.#toggleFullscreen();
+        break;
+    }
+  }
+
+  async #handleCopy(): Promise<void> {
+    const value = this.value;
+    try {
+      await navigator.clipboard.writeText(value);
+      this.emit('copy', { value });
+      this.#showCopyFeedback();
+    } catch {
+      // Clipboard API unavailable
+    }
+  }
+
+  #showCopyFeedback(): void {
+    const btn = this.shadowRoot?.querySelector('[data-action="copy"]');
+    if (!btn) return;
+    btn.innerHTML = ICON_CHECK;
+    btn.setAttribute('title', 'Copied!');
+    setTimeout(() => {
+      btn.innerHTML = ICON_COPY;
+      btn.setAttribute('title', 'Copy');
+    }, 2000);
+  }
+
+  #toggleFullscreen(): void {
+    this.#isFullscreen = !this.#isFullscreen;
+    this.classList.toggle('fullscreen', this.#isFullscreen);
+    // Update fullscreen button icon
+    const btn = this.shadowRoot?.querySelector('[data-action="fullscreen"]');
+    if (btn) {
+      btn.innerHTML = this.#isFullscreen ? ICON_EXIT_FULLSCREEN : ICON_FULLSCREEN;
+      btn.setAttribute('title', this.#isFullscreen ? 'Exit fullscreen' : 'Toggle fullscreen');
+    }
+    this.emit('fullscreen', { active: this.#isFullscreen });
+  }
+
+  // ── Cursor tracking ────────────────────────────────────────────────
+
+  #updateCursorInfo(state: EditorState): void {
+    const pos = state.selection.main.head;
+    const line = state.doc.lineAt(pos);
+    this.#cursorLine = line.number;
+    this.#cursorCol = pos - line.from + 1;
+    this.#lineCount = state.doc.lines;
+
+    // Update bottombar spans directly (avoid full re-render)
+    const cursorEl = this.shadowRoot?.querySelector('.cursor-pos');
+    const lineCountEl = this.shadowRoot?.querySelector('.line-count');
+    if (cursorEl) cursorEl.textContent = `Ln ${this.#cursorLine}, Col ${this.#cursorCol}`;
+    if (lineCountEl) lineCountEl.textContent = `${this.#lineCount} lines`;
   }
 
   // ── Private helpers ──────────────────────────────────────────────────
@@ -461,6 +595,9 @@ export class ElDmCodeEngine extends BaseElement {
             if (update.docChanged) {
               this.emit('input', { value: update.state.doc.toString() });
             }
+            if (update.docChanged || update.selectionSet) {
+              this.#updateCursorInfo(update.state);
+            }
           }),
           EditorView.domEventHandlers({
             blur: () => {
@@ -473,6 +610,8 @@ export class ElDmCodeEngine extends BaseElement {
       parent: host,
       root: this.shadowRoot,
     });
+
+    this.#updateCursorInfo(this.#editor.state);
   }
 
   async #applyConfig(): Promise<void> {
