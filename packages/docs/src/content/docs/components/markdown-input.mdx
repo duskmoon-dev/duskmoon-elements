@@ -93,6 +93,12 @@ insertText(str: string): void
 
 setSuggestions(list: Suggestion[]): void
 // Set autocomplete suggestions for dropdown
+
+getFiles(): File[]
+// Get locally attached files (when no upload-url is set)
+
+removeFile(index: number): void
+// Remove a locally attached file by index
 ```
 
 ### Types
@@ -245,9 +251,16 @@ Word count algorithm: `text.trim().split(/\s+/).filter(Boolean).length`
 
 ## File Upload
 
-### Accepting Files
+File handling works in two modes depending on whether `upload-url` is set:
 
-Configure the `upload-url` attribute to enable file uploads:
+| Mode | `upload-url` | Behavior |
+|------|-------------|----------|
+| **Remote upload** | Set | Files are uploaded via XHR and a markdown link is inserted |
+| **Local attachment** | Not set | Files are stored locally and submitted with the form as multipart data |
+
+### Remote Upload Mode
+
+Configure the `upload-url` attribute to upload files to a server endpoint:
 
 ```html
 <el-dm-markdown-input upload-url="/api/uploads"></el-dm-markdown-input>
@@ -256,6 +269,29 @@ Configure the `upload-url` attribute to enable file uploads:
 The endpoint must:
 - Accept `POST multipart/form-data` with field name `file`
 - Respond with JSON: `{ "url": "https://cdn.example.com/file.png" }`
+
+### Local Attachment Mode (Form Submission)
+
+When no `upload-url` is set, attached files are included as multipart form data when the parent `<form>` is submitted:
+
+```html
+<form method="post" enctype="multipart/form-data">
+  <el-dm-markdown-input name="content"></el-dm-markdown-input>
+  <button type="submit">Submit</button>
+</form>
+```
+
+The form will submit:
+- `content` — the markdown text value
+- `content_files` — each attached file (one entry per file)
+
+Files can be managed via the public API:
+
+```javascript
+const editor = document.querySelector('el-dm-markdown-input');
+editor.getFiles();      // Returns File[] of locally attached files
+editor.removeFile(0);   // Remove file at index 0
+```
 
 ### Accepted File Types
 
