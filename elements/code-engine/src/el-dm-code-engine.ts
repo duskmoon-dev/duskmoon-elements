@@ -144,12 +144,18 @@ export class ElDmCodeEngine extends BaseElement {
     readonly: { type: Boolean, reflect: true },
     theme: { type: String, reflect: true, default: 'duskmoon' },
     wrap: { type: Boolean, reflect: true },
+    showTopbar: { type: Boolean, reflect: true },
+    showBottombar: { type: Boolean, reflect: true },
+    title: { type: String, reflect: true },
   };
 
   declare language: string;
   declare readonly: boolean;
   declare theme: CodeEngineTheme;
   declare wrap: boolean;
+  declare showTopbar: boolean;
+  declare showBottombar: boolean;
+  declare title: string;
 
   #editor: EditorView | null = null;
   #pendingValue: string | null = null;
