@@ -24,6 +24,19 @@
  * @fires change - Fired when editor loses focus, detail: { value: string }
  *
  * @csspart editor - The CodeMirror mount container
+ *
+ * @attr {boolean} show-topbar - Show the topbar
+ * @attr {boolean} show-bottombar - Show the bottombar
+ * @attr {string} title - Title shown in topbar (e.g. filename)
+ *
+ * @fires copy - Fired when copy button is clicked, detail: { value: string }
+ * @fires fullscreen - Fired when fullscreen is toggled, detail: { active: boolean }
+ *
+ * @csspart topbar - The topbar container
+ * @csspart bottombar - The bottombar container
+ *
+ * @slot topbar - Custom topbar content (replaces default)
+ * @slot bottombar - Custom bottombar content (replaces default)
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
@@ -332,15 +345,12 @@ const styles = css`
     inset: 0 !important;
     z-index: 9999 !important;
     min-height: 100vh !important;
+    display: flex;
+    flex-direction: column;
   }
 
   :host(.fullscreen) .cm-host {
     flex: 1;
-  }
-
-  :host(.fullscreen) {
-    display: flex;
-    flex-direction: column;
   }
 `;
 
@@ -377,6 +387,7 @@ export class ElDmCodeEngine extends BaseElement {
   #cursorCol = 1;
   #lineCount = 0;
   #isFullscreen = false;
+  #copyTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     super();
@@ -433,18 +444,25 @@ export class ElDmCodeEngine extends BaseElement {
     }
   }
 
+  #clickHandler = (e: Event) => {
+    const btn = (e.target as Element)?.closest('[data-action]');
+    if (btn) {
+      const action = btn.getAttribute('data-action');
+      if (action) this.#handleBarAction(action);
+    }
+  };
+
   connectedCallback(): void {
     super.connectedCallback();
-    this.shadowRoot!.addEventListener('click', (e) => {
-      const btn = (e.target as Element)?.closest('[data-action]');
-      if (btn) {
-        const action = btn.getAttribute('data-action');
-        if (action) this.#handleBarAction(action);
-      }
-    });
+    this.shadowRoot!.addEventListener('click', this.#clickHandler);
   }
 
   disconnectedCallback(): void {
+    this.shadowRoot!.removeEventListener('click', this.#clickHandler);
+    if (this.#copyTimer) {
+      clearTimeout(this.#copyTimer);
+      this.#copyTimer = null;
+    }
     // Save current content so it survives a DOM move/reconnect.
     if (this.#editor) {
       this.#pendingValue = this.#editor.state.doc.toString();
@@ -460,8 +478,9 @@ export class ElDmCodeEngine extends BaseElement {
     const badge = this.language
       ? `<span class="lang-badge">${LANG_BADGES[this.language] ?? this.language.toUpperCase()}</span>`
       : '';
-    const title = (this as unknown as { title: string }).title
-      ? `<span class="topbar-title">${(this as unknown as { title: string }).title}</span>`
+    const t = (this as unknown as { title: string }).title;
+    const title = t
+      ? `<span class="topbar-title">${t}</span>`
       : '';
     return `
       <div class="topbar" part="topbar">
@@ -525,21 +544,23 @@ export class ElDmCodeEngine extends BaseElement {
     const value = this.value;
     try {
       await navigator.clipboard.writeText(value);
-      this.emit('copy', { value });
-      this.#showCopyFeedback();
     } catch {
-      // Clipboard API unavailable
+      return; // Clipboard API unavailable or denied
     }
+    this.emit('copy', { value });
+    this.#showCopyFeedback();
   }
 
   #showCopyFeedback(): void {
     const btn = this.shadowRoot?.querySelector('[data-action="copy"]');
     if (!btn) return;
+    if (this.#copyTimer) clearTimeout(this.#copyTimer);
     btn.innerHTML = ICON_CHECK;
     btn.setAttribute('title', 'Copied!');
-    setTimeout(() => {
+    this.#copyTimer = setTimeout(() => {
       btn.innerHTML = ICON_COPY;
       btn.setAttribute('title', 'Copy');
+      this.#copyTimer = null;
     }, 2000);
   }
 
