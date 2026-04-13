@@ -310,10 +310,20 @@ export class ElDmMarkdownInput extends BaseElement {
         ></div>
 
         <div class="status-bar">
-          <button class="attach-btn" type="button" aria-label="Attach files" ${disabled || readonly ? 'disabled' : ''}>
-            &#128206; Attach files
-          </button>
-          <span class="status-bar-count" aria-live="polite"></span>
+          <slot name="bottom">
+            <div class="status-bar-start">
+              <slot name="bottom-start">
+                <button class="attach-btn" type="button" aria-label="Attach files" ${disabled || readonly ? 'disabled' : ''}>
+                  &#128206; Attach files
+                </button>
+              </slot>
+            </div>
+            <div class="status-bar-end">
+              <slot name="bottom-end">
+                <span class="status-bar-count" aria-live="polite"></span>
+              </slot>
+            </div>
+          </slot>
           <input
             type="file"
             class="file-input"

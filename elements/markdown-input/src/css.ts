@@ -318,6 +318,31 @@ export const elementStyles = css`
     gap: 0.5rem;
   }
 
+  .status-bar-start,
+  .status-bar-end {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Allow slotted light-DOM children to inherit font and alignment */
+  .status-bar ::slotted(*),
+  .status-bar-start ::slotted(*),
+  .status-bar-end ::slotted(*) {
+    font-size: inherit;
+    font-family: inherit;
+    vertical-align: middle;
+  }
+
+  /* When slot="bottom" is used, the slotted element fills the bar */
+  .status-bar > slot[name="bottom"]::slotted(*) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    gap: 0.5rem;
+  }
+
   .attach-btn {
     display: inline-flex;
     align-items: center;
@@ -352,7 +377,6 @@ export const elementStyles = css`
   }
 
   .status-bar-count {
-    margin-left: auto;
     white-space: nowrap;
   }
 

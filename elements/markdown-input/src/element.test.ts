@@ -789,4 +789,109 @@ describe('ElDmMarkdownInput', () => {
       cleanup(npEl);
     });
   });
+
+  // ── Bottom toolbar slots ──────────────────────────────────────────
+
+  describe('bottom toolbar slots', () => {
+    test('renders bottom, bottom-start, and bottom-end slots in status bar', () => {
+      const bottomSlot = el.shadowRoot!.querySelector('slot[name="bottom"]');
+      const startSlot = el.shadowRoot!.querySelector('slot[name="bottom-start"]');
+      const endSlot = el.shadowRoot!.querySelector('slot[name="bottom-end"]');
+      expect(bottomSlot).toBeTruthy();
+      expect(startSlot).toBeTruthy();
+      expect(endSlot).toBeTruthy();
+      cleanup(el);
+    });
+
+    test('default fallback shows attach button and status count', () => {
+      const attachBtn = el.shadowRoot!.querySelector('.attach-btn');
+      const statusCount = el.shadowRoot!.querySelector('.status-bar-count');
+      expect(attachBtn).toBeTruthy();
+      expect(statusCount).toBeTruthy();
+      cleanup(el);
+    });
+
+    test('status-bar-start and status-bar-end wrappers exist', () => {
+      const start = el.shadowRoot!.querySelector('.status-bar-start');
+      const end = el.shadowRoot!.querySelector('.status-bar-end');
+      expect(start).toBeTruthy();
+      expect(end).toBeTruthy();
+      cleanup(el);
+    });
+
+    test('slotted content replaces bottom-start fallback', () => {
+      const slottedEl = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      const btn = document.createElement('button');
+      btn.slot = 'bottom-start';
+      btn.textContent = 'Custom';
+      slottedEl.appendChild(btn);
+      document.body.appendChild(slottedEl);
+
+      const slot = slottedEl.shadowRoot!.querySelector(
+        'slot[name="bottom-start"]',
+      ) as HTMLSlotElement;
+      const assigned = slot?.assignedNodes?.() ?? [];
+      expect(assigned.length).toBe(1);
+      expect((assigned[0] as HTMLElement).textContent).toBe('Custom');
+      cleanup(slottedEl);
+    });
+
+    test('slotted content replaces bottom-end fallback', () => {
+      const slottedEl = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      const span = document.createElement('span');
+      span.slot = 'bottom-end';
+      span.textContent = 'Info';
+      slottedEl.appendChild(span);
+      document.body.appendChild(slottedEl);
+
+      const slot = slottedEl.shadowRoot!.querySelector(
+        'slot[name="bottom-end"]',
+      ) as HTMLSlotElement;
+      const assigned = slot?.assignedNodes?.() ?? [];
+      expect(assigned.length).toBe(1);
+      expect((assigned[0] as HTMLElement).textContent).toBe('Info');
+      cleanup(slottedEl);
+    });
+
+    test('slot="bottom" replaces entire status bar content', () => {
+      const slottedEl = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      const toolbar = document.createElement('div');
+      toolbar.slot = 'bottom';
+      toolbar.innerHTML = '<button>Send</button>';
+      slottedEl.appendChild(toolbar);
+      document.body.appendChild(slottedEl);
+
+      const slot = slottedEl.shadowRoot!.querySelector(
+        'slot[name="bottom"]',
+      ) as HTMLSlotElement;
+      const assigned = slot?.assignedNodes?.() ?? [];
+      expect(assigned.length).toBe(1);
+      expect((assigned[0] as HTMLElement).querySelector('button')?.textContent).toBe('Send');
+      cleanup(slottedEl);
+    });
+
+    test('file input remains present when slots are overridden', () => {
+      const slottedEl = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      const btn = document.createElement('button');
+      btn.slot = 'bottom-start';
+      slottedEl.appendChild(btn);
+      document.body.appendChild(slottedEl);
+
+      const fileInput = slottedEl.shadowRoot!.querySelector('.file-input');
+      expect(fileInput).toBeTruthy();
+      cleanup(slottedEl);
+    });
+
+    test('file input remains present when bottom slot is overridden', () => {
+      const slottedEl = document.createElement('el-dm-markdown-input') as ElDmMarkdownInput;
+      const toolbar = document.createElement('div');
+      toolbar.slot = 'bottom';
+      slottedEl.appendChild(toolbar);
+      document.body.appendChild(slottedEl);
+
+      const fileInput = slottedEl.shadowRoot!.querySelector('.file-input');
+      expect(fileInput).toBeTruthy();
+      cleanup(slottedEl);
+    });
+  });
 });
