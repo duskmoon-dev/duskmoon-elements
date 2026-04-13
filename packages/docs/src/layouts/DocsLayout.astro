@@ -114,7 +114,7 @@ const version = `v${pkg.version}`;
   .header-nav-link {
     padding: 0.375rem 0.875rem;
     border-radius: 6px;
-    color: var(--color-on-primary, #fff);
+    color: var(--color-primary-content, #fff);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
@@ -124,20 +124,20 @@ const version = `v${pkg.version}`;
 
   .header-nav-link:hover {
     opacity: 1;
-    background-color: color-mix(in srgb, var(--color-on-primary, #fff) 15%, transparent);
+    background-color: color-mix(in srgb, var(--color-primary-content, #fff) 15%, transparent);
   }
 
   .header-nav-link.active {
     opacity: 1;
-    color: var(--color-on-primary, #fff);
-    background-color: color-mix(in srgb, var(--color-on-primary, #fff) 20%, transparent);
+    color: var(--color-primary-content, #fff);
+    background-color: color-mix(in srgb, var(--color-primary-content, #fff) 20%, transparent);
   }
 
   .logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--color-on-primary, #fff);
+    color: var(--color-primary-content, #fff);
     text-decoration: none;
     font-weight: 600;
     font-size: 1.25rem;
@@ -145,7 +145,7 @@ const version = `v${pkg.version}`;
 
   .logo:hover {
     text-decoration: none;
-    color: var(--color-on-primary, #fff);
+    color: var(--color-primary-content, #fff);
     opacity: 0.9;
   }
 
@@ -153,7 +153,7 @@ const version = `v${pkg.version}`;
     padding: 0.125rem 0.5rem;
     border-radius: 4px;
     background: var(--color-secondary, #6c757d);
-    color: var(--color-on-secondary, #fff);
+    color: var(--color-secondary-content, #fff);
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -168,7 +168,7 @@ const version = `v${pkg.version}`;
   }
 
   .github-link {
-    color: var(--color-on-primary, #fff);
+    color: var(--color-primary-content, #fff);
     opacity: 0.75;
     transition: opacity 0.2s;
   }
