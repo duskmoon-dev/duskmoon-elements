@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import Nav from '../components/Nav.astro';
 import MobileNav from '../components/MobileNav.astro';
+import { readFileSync } from 'node:fs';
 
 interface Props {
   title: string;
@@ -12,6 +13,8 @@ interface Props {
 
 const { title, description, currentPath = Astro.url.pathname } = Astro.props;
 const isCssArt = currentPath.includes('/docs/art-elements');
+const pkg = JSON.parse(readFileSync(new URL('../../../base/package.json', import.meta.url), 'utf-8'));
+const version = `v${pkg.version}`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -25,6 +28,7 @@ const isCssArt = currentPath.includes('/docs/art-elements');
       <div class="header-content">
         <a href="/duskmoon-elements/" class="logo">
           <span class="logo-text">DuskMoon Elements</span>
+          <span class="version-chip">{version}</span>
         </a>
         <nav class="header-nav">
           <a
@@ -142,6 +146,18 @@ const isCssArt = currentPath.includes('/docs/art-elements');
   .logo:hover {
     text-decoration: none;
     color: var(--color-primary);
+  }
+
+  .version-chip {
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    white-space: nowrap;
   }
 
   .header-actions {
