@@ -136,6 +136,130 @@ const styles = css`
   .cm-host .cm-editor.cm-focused {
     outline: none;
   }
+
+  /* ── Topbar ────────────────────────────────────────── */
+
+  .topbar {
+    display: none;
+  }
+
+  :host([show-topbar]) .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-bottom: 1px solid var(--dm-border, #e0e0e0);
+    background: var(--dm-surface-container, #f0f0f0);
+    font-size: 0.75rem;
+    color: var(--dm-on-surface, #1a1a1a);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .lang-badge {
+    padding: 0.0625rem 0.375rem;
+    border-radius: var(--dm-radius-sm, 0.25rem);
+    background: var(--dm-primary, #6750a4);
+    color: var(--dm-on-primary, #fff);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .topbar-title {
+    opacity: 0.7;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--dm-radius-sm, 0.25rem);
+    background: transparent;
+    color: var(--dm-on-surface-variant, #555);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .bar-btn:hover {
+    background: var(--dm-surface-container-high, #e0e0e0);
+    color: var(--dm-on-surface, #1a1a1a);
+  }
+
+  .bar-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ── Bottombar ─────────────────────────────────────── */
+
+  .bottombar {
+    display: none;
+  }
+
+  :host([show-bottombar]) .bottombar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.75rem;
+    border-top: 1px solid var(--dm-border, #e0e0e0);
+    background: var(--dm-surface-container-high, #e0e0e0);
+    font-size: 0.625rem;
+    color: var(--dm-on-surface-variant, #555);
+  }
+
+  .bottombar-left,
+  .bottombar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* ── Fullscreen ────────────────────────────────────── */
+
+  :host(.fullscreen) {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    min-height: 100vh !important;
+  }
+
+  :host(.fullscreen) .cm-host {
+    flex: 1;
+  }
+
+  :host(.fullscreen) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export class ElDmCodeEngine extends BaseElement {
