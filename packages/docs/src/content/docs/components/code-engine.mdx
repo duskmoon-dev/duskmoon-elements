@@ -38,6 +38,7 @@ register();
 - **Syntax highlighting** — Dynamic language loading for 30+ languages
 - **Themes** — Built-in duskmoon, sunshine, moonlight, and one-dark themes
 - **`<input>`-like API** — `value` property, `input` and `change` events
+- **Topbar & Bottombar** — Opt-in VS Code-style chrome with quick actions and status
 - **Line wrapping** — Optional via `wrap` attribute
 - **Read-only mode** — Via `readonly` attribute
 - **Shadow DOM** — Fully encapsulated styles
@@ -82,6 +83,49 @@ console.log(greet('World'));"
   ></el-dm-code-engine>
 </ComponentDemo>
 
+## Topbar & Bottombar
+
+The code engine supports opt-in topbar and bottombar that add VS Code-style chrome around the editor. Enable them with `show-topbar` and `show-bottombar` attributes.
+
+### Default Bars
+
+```html
+<el-dm-code-engine
+  language="javascript"
+  title="main.js"
+  show-topbar
+  show-bottombar
+  value="const x = 42;"
+></el-dm-code-engine>
+```
+
+The **topbar** shows a language badge, title, and action buttons:
+- **Undo / Redo** — Triggers CodeMirror's built-in history
+- **Wrap toggle** — Toggles line wrapping on/off
+- **Copy** — Copies editor content to clipboard
+- **Fullscreen** — Expands the editor to fill the viewport
+
+The **bottombar** shows cursor position (`Ln {line}, Col {col}`), line count, encoding (UTF-8), and language name.
+
+### Custom Bars via Slots
+
+Replace default bar content entirely using named slots:
+
+```html
+<el-dm-code-engine language="rust" show-topbar show-bottombar>
+  <div slot="topbar">
+    <span>Custom Toolbar</span>
+    <button>Run</button>
+    <button>Format</button>
+  </div>
+  <div slot="bottombar">
+    <span>Custom Status Bar</span>
+  </div>
+</el-dm-code-engine>
+```
+
+When a slot is populated, the entire default content for that bar is replaced. The bar container (with CSS part and base styling) remains.
+
 ## Properties
 
 | Property | Type | Default | Description |
@@ -91,6 +135,9 @@ console.log(greet('World'));"
 | `readonly` | `boolean` | `false` | Whether the editor is read-only |
 | `theme` | `'duskmoon' \| 'sunshine' \| 'moonlight' \| 'one-dark'` | `'duskmoon'` | Editor color theme |
 | `wrap` | `boolean` | `false` | Enable line wrapping |
+| `show-topbar` | `boolean` | `false` | Show the topbar |
+| `show-bottombar` | `boolean` | `false` | Show the bottombar |
+| `title` | `string` | — | Title displayed in the topbar (e.g. filename) |
 
 ## Supported Languages
 
@@ -104,6 +151,8 @@ Languages are loaded dynamically on demand. Some common options:
 |-------|--------|-------------|
 | `input` | `{ value: string }` | Fired on every document change |
 | `change` | `{ value: string }` | Fired when the editor loses focus |
+| `copy` | `{ value: string }` | Fired when the copy button is clicked |
+| `fullscreen` | `{ active: boolean }` | Fired when fullscreen is toggled |
 
 ### Event Handling
 
@@ -146,10 +195,19 @@ console.log(editor.getValue());
 editor.focus();
 ```
 
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `topbar` | Custom topbar content (replaces default when populated) |
+| `bottombar` | Custom bottombar content (replaces default when populated) |
+
 ## CSS Parts
 
 | Part | Description |
 |------|-------------|
+| `topbar` | The topbar container |
+| `bottombar` | The bottombar container |
 | `editor` | The CodeMirror mount container |
 
 ## Notes
