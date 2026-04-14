@@ -859,9 +859,7 @@ describe('ElDmMarkdownInput', () => {
       slottedEl.appendChild(toolbar);
       document.body.appendChild(slottedEl);
 
-      const slot = slottedEl.shadowRoot!.querySelector(
-        'slot[name="bottom"]',
-      ) as HTMLSlotElement;
+      const slot = slottedEl.shadowRoot!.querySelector('slot[name="bottom"]') as HTMLSlotElement;
       const assigned = slot?.assignedNodes?.() ?? [];
       expect(assigned.length).toBe(1);
       expect((assigned[0] as HTMLElement).querySelector('button')?.textContent).toBe('Send');

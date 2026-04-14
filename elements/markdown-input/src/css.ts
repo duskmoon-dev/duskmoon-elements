@@ -335,7 +335,7 @@ export const elementStyles = css`
   }
 
   /* When slot="bottom" is used, the slotted element fills the bar */
-  .status-bar > slot[name="bottom"]::slotted(*) {
+  .status-bar > slot[name='bottom']::slotted(*) {
     display: flex;
     align-items: center;
     justify-content: space-between;
