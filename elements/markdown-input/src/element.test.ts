@@ -859,9 +859,7 @@ describe('ElDmMarkdownInput', () => {
       slottedEl.appendChild(toolbar);
       document.body.appendChild(slottedEl);
 
-      const slot = slottedEl.shadowRoot!.querySelector(
-        'slot[name="bottom"]',
-      ) as HTMLSlotElement;
+      const slot = slottedEl.shadowRoot!.querySelector('slot[name="bottom"]') as HTMLSlotElement;
       const assigned = slot?.assignedNodes?.() ?? [];
       expect(assigned.length).toBe(1);
       expect((assigned[0] as HTMLElement).querySelector('button')?.textContent).toBe('Send');
@@ -909,7 +907,7 @@ describe('ElDmMarkdownInput', () => {
     test('attaching a file without upload-url stores it locally', () => {
       const file = makeFile('test.png', 'image/png');
       // Simulate the file input change event
-      const fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
+      const _fileInput = el.shadowRoot!.querySelector('.file-input') as HTMLInputElement;
 
       // We can't set .files directly, so we call the internal method via event
       // Instead, test the public API approach — directly call insertFile behavior

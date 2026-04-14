@@ -4,6 +4,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 import Nav from '../components/Nav.astro';
 import MobileNav from '../components/MobileNav.astro';
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 interface Props {
   title: string;
@@ -13,7 +14,7 @@ interface Props {
 
 const { title, description, currentPath = Astro.url.pathname } = Astro.props;
 const isCssArt = currentPath.includes('/docs/art-elements');
-const pkg = JSON.parse(readFileSync(new URL('../../../base/package.json', import.meta.url), 'utf-8'));
+const pkg = JSON.parse(readFileSync(resolve(process.cwd(), '../base/package.json'), 'utf-8'));
 const version = `v${pkg.version}`;
 ---
 

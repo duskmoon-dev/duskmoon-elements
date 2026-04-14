@@ -1136,9 +1136,7 @@ export class ElDmMarkdownInput extends BaseElement {
   #rebuildAttachedRows(): void {
     if (!this.#uploadList) return;
     // Remove all attached rows
-    this.#uploadList
-      .querySelectorAll('.upload-attached-row')
-      .forEach((r) => r.remove());
+    this.#uploadList.querySelectorAll('.upload-attached-row').forEach((r) => r.remove());
     // Re-add with correct indices
     this.#attachedFiles.forEach((file, i) => {
       const id = `upload-${++this.#uploadIdCounter}`;
