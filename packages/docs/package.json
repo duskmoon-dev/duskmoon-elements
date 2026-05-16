@@ -10,8 +10,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.2",
-    "@duskmoon-dev/core": "^1.16.0",
+    "@astrojs/mdx": "^5.0.6",
+    "@duskmoon-dev/core": "^1.16.1",
     "@duskmoon-dev/el-accordion": "workspace:*",
     "@duskmoon-dev/el-alert": "workspace:*",
     "@duskmoon-dev/el-autocomplete": "workspace:*",
@@ -68,10 +68,10 @@
     "@duskmoon-dev/el-art-gemini-input": "workspace:*",
     "@duskmoon-dev/el-art-snowball-preloader": "workspace:*",
     "@duskmoon-dev/el-art-csswitch": "workspace:*",
-    "astro": "^6.0.8",
-    "mermaid": "^11.13.0"
+    "astro": "^6.3.3",
+    "mermaid": "^11.15.0"
   },
   "devDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   }
 }

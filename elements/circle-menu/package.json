@@ -39,11 +39,11 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.1.0",
-    "@duskmoon-dev/core": "^1.16.0"
+    "@duskmoon-dev/el-base": "1.2.1",
+    "@duskmoon-dev/core": "^1.16.1"
   },
   "devDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "publishConfig": {
     "access": "public"
