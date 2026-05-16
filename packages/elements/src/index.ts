@@ -108,7 +108,6 @@ import {
   MarkdownInputHook,
 } from '@duskmoon-dev/el-markdown-input';
 import { ElDmCodeBlock, register as registerCodeBlock } from '@duskmoon-dev/el-code-block';
-import { ElDmCodeEngine, register as registerCodeEngine } from '@duskmoon-dev/el-code-engine';
 
 // New elements
 import { ElDmFormGroup, register as registerFormGroup } from '@duskmoon-dev/el-form-group';
@@ -234,8 +233,7 @@ export type {
 export { ElDmMarkdownInput, registerMarkdownInput, MarkdownInputHook };
 export type { Suggestion } from '@duskmoon-dev/el-markdown-input';
 export { ElDmCodeBlock, registerCodeBlock };
-export { ElDmCodeEngine, registerCodeEngine };
-export type { CodeEngineTheme } from '@duskmoon-dev/el-code-engine';
+export type { ElDmCodeEngine, CodeEngineTheme } from '@duskmoon-dev/el-code-engine';
 
 // New elements
 export { ElDmFormGroup, registerFormGroup };
@@ -250,6 +248,15 @@ export type { SegmentControlColor } from '@duskmoon-dev/el-segment-control';
 export { ElDmThemeController, registerThemeController };
 export { ElDmTimeInput, registerTimeInput };
 export type { TimeInputColor } from '@duskmoon-dev/el-time-input';
+
+/**
+ * Register the optional code engine element without eagerly evaluating its editor stack.
+ */
+export function registerCodeEngine(): void {
+  void import('@duskmoon-dev/el-code-engine')
+    .then(({ register }) => register())
+    .catch(() => undefined);
+}
 
 /**
  * Register all DuskMoon custom elements
