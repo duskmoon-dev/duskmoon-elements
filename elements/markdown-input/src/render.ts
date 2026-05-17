@@ -76,6 +76,7 @@ export async function renderMarkdown(source: string): Promise<string> {
 // ── Mermaid post-render ─────────────────────────────────────────────────
 
 let mermaidIdCounter = 0;
+const bundledMermaidSpecifier = 'mermaid';
 
 /**
  * Detect the current theme by checking `data-theme` on `<html>`.
@@ -116,7 +117,7 @@ export async function renderMermaidBlocks(
   try {
     mermaidModule = mermaidSrc
       ? await import(/* @vite-ignore */ mermaidSrc)
-      : await import('mermaid');
+      : await import(/* @vite-ignore */ bundledMermaidSpecifier);
   } catch (err) {
     console.error('[el-dm-markdown-input] Failed to load mermaid: %o', err);
     blocks.forEach((block) => block.parentElement?.classList.add('mermaid-error'));
