@@ -1,0 +1,324 @@
+---
+title: Chat
+description: Chat primitives for LLM messages, reasoning, tool calls, and typing states
+order: 5
+section: data-display
+component: '@duskmoon-dev/el-chat'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+export const chatRounds = Array.from({ length: 50 }, (_, index) => {
+const round = index + 1;
+const minute = String(round).padStart(2, '0');
+
+return {
+round,
+userTime: `12:${minute}`,
+assistantTime: `12:${String(round + 1).padStart(2, '0')}`,
+userContent: `Round ${round}: can you summarize the current chat component state?`,
+assistantContent: `Round ${round}: the chat demo renders **markdown**, shows avatar metadata, exposes icon quick actions, and keeps the input ready for the next message.`,
+};
+});
+
+# Chat
+
+The Chat components provide styled primitives for LLM-oriented conversations: message bubbles, assistant reasoning, tool calls, and typing indicators.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-chat
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-chat/register';
+```
+
+```html
+<el-dm-chat
+  align="start"
+  color="primary"
+  avatar="AI"
+  author="Assistant"
+  time="Just now"
+  status="sent"
+  content="I can help with **markdown** content."
+>
+</el-dm-chat>
+```
+
+## Live Demo
+
+<ComponentDemo title="Full Conversation">
+  <div style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
+    <div style="display: grid; gap: 0.75rem; max-height: 34rem; overflow-y: auto; padding-right: 0.5rem;">
+      {chatRounds.map((round) => (
+        <>
+          <el-dm-chat
+            align="end"
+            color="primary"
+            variant="filled"
+            avatar="You"
+            author="You"
+            time={round.userTime}
+            status="delivered"
+            actions="Edit, Copy"
+            content={round.userContent}
+          ></el-dm-chat>
+          <el-dm-chat
+            align="start"
+            color="secondary"
+            avatar="AI"
+            author="Assistant"
+            time={round.assistantTime}
+            status="sent"
+            actions="Copy, Regenerate"
+            content={round.assistantContent}
+          ></el-dm-chat>
+        </>
+      ))}
+    </div>
+    <el-dm-chat-input
+      placeholder="Send a message... (Ctrl+Enter to send)"
+      send-label="Send"
+      clear-on-send
+    ></el-dm-chat-input>
+  </div>
+</ComponentDemo>
+
+## Properties
+
+### `el-dm-chat` and `el-dm-chat-bubble`
+
+| Property    | Type                                                                                    | Default   | Description                  |
+| ----------- | --------------------------------------------------------------------------------------- | --------- | ---------------------------- |
+| `align`     | `'start' \| 'end'`                                                                      | `'start'` | Message alignment            |
+| `color`     | `'primary' \| 'secondary' \| 'tertiary' \| 'info' \| 'success' \| 'warning' \| 'error'` | -         | Bubble color                 |
+| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg'`                                                          | -         | Bubble size                  |
+| `variant`   | `'tonal' \| 'filled'`                                                                   | `'tonal'` | Bubble visual style          |
+| `streaming` | `boolean`                                                                               | `false`   | Shows a streaming caret      |
+| `avatar`    | `string`                                                                                | -         | Avatar text fallback         |
+| `author`    | `string`                                                                                | -         | Header author text           |
+| `time`      | `string`                                                                                | -         | Footer timestamp             |
+| `status`    | `string`                                                                                | -         | Footer delivery status       |
+| `actions`   | `string`                                                                                | -         | Comma-separated icon actions |
+| `content`   | `string`                                                                                | -         | Markdown content to render   |
+
+### `el-dm-chat-input`
+
+| Property        | Type      | Default                                    | Description                    |
+| --------------- | --------- | ------------------------------------------ | ------------------------------ |
+| `name`          | `string`  | `''`                                       | Form field name                |
+| `value`         | `string`  | `''`                                       | Markdown input value           |
+| `placeholder`   | `string`  | `'Send a message... (Ctrl+Enter to send)'` | Input placeholder              |
+| `disabled`      | `boolean` | `false`                                    | Disables the input and send    |
+| `readonly`      | `boolean` | `false`                                    | Makes the input read-only      |
+| `send-label`    | `string`  | `'Send'`                                   | Send button label              |
+| `clear-on-send` | `boolean` | `false`                                    | Clears the input after sending |
+
+### `el-dm-chat-reasoning`
+
+| Property  | Type      | Default       | Description                  |
+| --------- | --------- | ------------- | ---------------------------- |
+| `summary` | `string`  | `'Reasoning'` | Default summary label        |
+| `open`    | `boolean` | `false`       | Opens the details by default |
+
+### `el-dm-chat-tool`
+
+| Property | Type                                             | Default     | Description                  |
+| -------- | ------------------------------------------------ | ----------- | ---------------------------- |
+| `name`   | `string`                                         | -           | Tool name                    |
+| `status` | `'pending' \| 'running' \| 'success' \| 'error'` | `'pending'` | Tool call status             |
+| `open`   | `boolean`                                        | `false`     | Opens the details by default |
+
+## Bubble Variants
+
+<ComponentDemo title="Bubble Colors">
+  <div style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
+    <el-dm-chat-bubble color="primary" content="Primary **markdown** response"></el-dm-chat-bubble>
+    <el-dm-chat-bubble color="success" content="Success response"></el-dm-chat-bubble>
+    <el-dm-chat-bubble
+      align="end"
+      color="info"
+      variant="filled"
+      content="Filled info response"
+    ></el-dm-chat-bubble>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat-bubble color="primary" content="Primary **markdown** response"></el-dm-chat-bubble>
+<el-dm-chat-bubble color="success" content="Success response"></el-dm-chat-bubble>
+<el-dm-chat-bubble align="end" color="info" variant="filled" content="Filled info response">
+</el-dm-chat-bubble>
+```
+
+## Markdown Content
+
+Use the `content` attribute or property for markdown-rendered message bodies.
+
+<ComponentDemo title="Markdown Message">
+  <div style="width: min(100%, 42rem);">
+    <el-dm-chat
+      avatar="AI"
+      author="Assistant"
+      time="12:08"
+      status="sent"
+      actions="Copy, Regenerate"
+      content="Rendered **markdown** with `inline code` and [links](https://duskmoon.dev)."
+    ></el-dm-chat>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat
+  avatar="AI"
+  author="Assistant"
+  content="Rendered **markdown** with `inline code`."
+></el-dm-chat>
+```
+
+## Chat Input
+
+<ComponentDemo title="Markdown Chat Input">
+  <div style="width: min(100%, 42rem);">
+    <el-dm-chat-input
+      placeholder="Send a message... (Ctrl+Enter to send)"
+      send-label="Send"
+      clear-on-send
+    ></el-dm-chat-input>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat-input
+  placeholder="Send a message... (Ctrl+Enter to send)"
+  send-label="Send"
+  clear-on-send
+>
+</el-dm-chat-input>
+```
+
+## Status and Quick Actions
+
+<ComponentDemo title="Message Status and Actions">
+  <div style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
+    <el-dm-chat
+      avatar="AI"
+      author="Assistant"
+      time="12:06"
+      status="streaming"
+      streaming
+      actions="Stop, Copy"
+      content="I am writing a response and exposing icon quick actions."
+    ></el-dm-chat>
+    <el-dm-chat
+      align="end"
+      avatar="You"
+      author="You"
+      time="12:07"
+      status="read"
+      actions="Edit, Copy"
+      content="Quick actions should be available on every message."
+    ></el-dm-chat>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat
+  avatar="AI"
+  author="Assistant"
+  time="12:06"
+  status="streaming"
+  actions="Stop, Copy"
+  content="I am writing a response and exposing icon quick actions."
+></el-dm-chat>
+```
+
+## Reasoning
+
+<ComponentDemo title="Reasoning Block">
+  <div style="width: min(100%, 42rem);">
+    <el-dm-chat-reasoning summary="Reasoning" open>
+      Checked the workspace package list, found the missing docs entry, and added the page under
+      Data Display.
+      <el-dm-chat-tool slot="tools" name="package-search" status="success" open>
+        <code slot="call">bunx npm-check-updates --removeRange</code>
+        <code slot="result">Found @duskmoon-dev/core 1.17.0</code>
+      </el-dm-chat-tool>
+    </el-dm-chat-reasoning>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat-reasoning summary="Reasoning" open>
+  Checked package metadata and docs routing before making the change.
+  <el-dm-chat-tool slot="tools" name="package-search" status="success" open>
+    <code slot="call">bunx npm-check-updates --removeRange</code>
+    <code slot="result">Found @duskmoon-dev/core 1.17.0</code>
+  </el-dm-chat-tool>
+</el-dm-chat-reasoning>
+```
+
+## Tool Calls
+
+<ComponentDemo title="Tool Call Status">
+  <div style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
+    <el-dm-chat-tool name="search" status="running" open>
+      <code slot="call">rg "chat" packages/docs</code>
+    </el-dm-chat-tool>
+    <el-dm-chat-tool name="build" status="success" open>
+      <code slot="result">docs build completed</code>
+    </el-dm-chat-tool>
+  </div>
+</ComponentDemo>
+
+```html
+<el-dm-chat-tool name="search" status="running" open>
+  <code slot="call">rg "chat" packages/docs</code>
+</el-dm-chat-tool>
+```
+
+## Slots
+
+| Element                | Slot      | Description                     |
+| ---------------------- | --------- | ------------------------------- |
+| `el-dm-chat`           | default   | Main bubble content             |
+| `el-dm-chat`           | `avatar`  | Avatar shown beside the message |
+| `el-dm-chat`           | `header`  | Metadata above the bubble       |
+| `el-dm-chat`           | `footer`  | Metadata below the bubble       |
+| `el-dm-chat`           | `actions` | Custom quick action controls    |
+| `el-dm-chat-input`     | -         | Uses markdown input internally  |
+| `el-dm-chat-reasoning` | default   | Reasoning body                  |
+| `el-dm-chat-reasoning` | `summary` | Custom summary content          |
+| `el-dm-chat-reasoning` | `tool`    | Single tool call in reasoning   |
+| `el-dm-chat-reasoning` | `tools`   | Tool calls in reasoning         |
+| `el-dm-chat-tool`      | default   | Extra tool body content         |
+| `el-dm-chat-tool`      | `name`    | Custom tool header name         |
+| `el-dm-chat-tool`      | `call`    | Tool call input                 |
+| `el-dm-chat-tool`      | `result`  | Tool result output              |
+
+## CSS Parts
+
+| Part        | Description                  |
+| ----------- | ---------------------------- |
+| `chat`      | Chat row container           |
+| `avatar`    | Avatar wrapper               |
+| `header`    | Header metadata              |
+| `bubble`    | Message bubble               |
+| `footer`    | Footer metadata              |
+| `status`    | Message status               |
+| `actions`   | Quick actions wrapper        |
+| `action`    | Generated icon action button |
+| `content`   | Rendered markdown content    |
+| `input`     | Chat input wrapper           |
+| `editor`    | Markdown input element       |
+| `send`      | Send button                  |
+| `reasoning` | Reasoning details container  |
+| `body`      | Reasoning text body          |
+| `tools`     | Reasoning tool-call wrapper  |
+| `tool`      | Tool details container       |
+| `typing`    | Typing indicator             |

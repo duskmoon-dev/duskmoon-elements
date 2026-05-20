@@ -9,6 +9,7 @@ import mermaid from 'mermaid';
 
 import { register as registerButton } from '@duskmoon-dev/el-button';
 import { register as registerCard } from '@duskmoon-dev/el-card';
+import { register as registerChat } from '@duskmoon-dev/el-chat';
 import { register as registerInput } from '@duskmoon-dev/el-input';
 import { register as registerMarkdown } from '@duskmoon-dev/el-markdown';
 import { register as registerMarkdownInput } from '@duskmoon-dev/el-markdown-input';
@@ -71,6 +72,7 @@ import { register as registerArtCsswitch } from '@duskmoon-dev/el-art-csswitch';
 
 registerButton();
 registerCard();
+registerChat();
 registerInput();
 registerMarkdown();
 registerMarkdownInput();

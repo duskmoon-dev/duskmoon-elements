@@ -34,8 +34,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.2.1",
-    "@duskmoon-dev/core": "^1.16.1"
+    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/core": "1.17.0"
   },
   "devDependencies": {
     "typescript": "^6.0.3"

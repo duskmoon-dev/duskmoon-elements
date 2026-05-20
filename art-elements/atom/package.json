@@ -40,8 +40,8 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.2.1",
-    "@duskmoon-dev/css-art": "^1.16.1"
+    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/css-art": "1.17.0"
   },
   "devDependencies": {
     "typescript": "^6.0.3"

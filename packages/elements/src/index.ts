@@ -124,6 +124,15 @@ import {
   register as registerThemeController,
 } from '@duskmoon-dev/el-theme-controller';
 import { ElDmTimeInput, register as registerTimeInput } from '@duskmoon-dev/el-time-input';
+import {
+  ElDmChat,
+  ElDmChatBubble,
+  ElDmChatInput,
+  ElDmChatReasoning,
+  ElDmChatTool,
+  ElDmChatTyping,
+  register as registerChat,
+} from '@duskmoon-dev/el-chat';
 
 // Re-export all elements
 export { ElDmButton, registerButton };
@@ -248,6 +257,24 @@ export type { SegmentControlColor } from '@duskmoon-dev/el-segment-control';
 export { ElDmThemeController, registerThemeController };
 export { ElDmTimeInput, registerTimeInput };
 export type { TimeInputColor } from '@duskmoon-dev/el-time-input';
+export {
+  ElDmChat,
+  ElDmChatBubble,
+  ElDmChatInput,
+  ElDmChatReasoning,
+  ElDmChatTool,
+  ElDmChatTyping,
+  registerChat,
+};
+export type {
+  ChatAlign,
+  ChatBubbleColor,
+  ChatBubbleSize,
+  ChatBubbleVariant,
+  ChatQuickActionEventDetail,
+  ChatSendEventDetail,
+  ChatToolStatus,
+} from '@duskmoon-dev/el-chat';
 
 /**
  * Register the optional code engine element without eagerly evaluating its editor stack.
@@ -317,4 +344,5 @@ export function registerAll(): void {
   registerSegmentControl();
   registerThemeController();
   registerTimeInput();
+  registerChat();
 }

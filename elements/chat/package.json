@@ -1,7 +1,6 @@
 {
-  "name": "@duskmoon-dev/el-art-gemini-input",
-  "version": "1.4.0",
-  "description": "Pure CSS Gemini-style animated input custom element",
+  "name": "@duskmoon-dev/el-chat",
+  "version": "1.3.0",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -24,10 +23,10 @@
   "scripts": {
     "prebuild": "bun run clean",
     "build": "bun run build:esm && bun run build:cjs && bun run build:types",
-    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base",
-    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-markdown-input --external @duskmoon-dev/el-tooltip",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-markdown-input --external @duskmoon-dev/el-tooltip",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
-    "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --watch",
+    "dev": "bun build ./src/index.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core --external @duskmoon-dev/el-markdown --external @duskmoon-dev/el-markdown-input --external @duskmoon-dev/el-tooltip --watch",
     "clean": "del-cli dist",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
@@ -41,19 +40,22 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "workspace:*",
-    "@duskmoon-dev/css-art": "1.17.0"
+    "@duskmoon-dev/el-markdown": "workspace:*",
+    "@duskmoon-dev/el-markdown-input": "workspace:*",
+    "@duskmoon-dev/el-tooltip": "workspace:*",
+    "@duskmoon-dev/core": "1.17.0"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "6.0.3"
   },
   "publishConfig": {
     "access": "public"
   },
+  "customElements": "custom-elements.json",
   "keywords": [
     "duskmoon-dev",
     "custom-elements",
-    "webcomponents",
-    "css-art",
-    "gemini-input"
+    "web-components",
+    "chat"
   ]
 }

@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.2.1"
+    "@duskmoon-dev/el-base": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^6.0.3"
