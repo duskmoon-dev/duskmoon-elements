@@ -57,5 +57,9 @@
     "pro-data-grid",
     "virtual-scroll",
     "enterprise"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duskmoon-dev/duskmoon-elements.git"
+  }
 }

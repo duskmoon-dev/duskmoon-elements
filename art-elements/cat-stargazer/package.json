@@ -54,5 +54,9 @@
     "webcomponents",
     "css-art",
     "cat-stargazer"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duskmoon-dev/duskmoon-elements.git"
+  }
 }

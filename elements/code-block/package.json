@@ -53,5 +53,9 @@
     "custom-elements",
     "web-components",
     "code-block"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duskmoon-dev/duskmoon-elements.git"
+  }
 }

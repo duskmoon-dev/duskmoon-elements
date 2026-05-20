@@ -55,5 +55,9 @@
     "stepper",
     "wizard",
     "progress-indicator"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duskmoon-dev/duskmoon-elements.git"
+  }
 }
