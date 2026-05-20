@@ -112,7 +112,11 @@ jobs:
         run: bun run build:all
 
       - name: Setup npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+        run: |
+          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish packages (dry-run)
         if: ${{ inputs.dry-run }}
@@ -129,7 +133,7 @@ jobs:
           if npm view @duskmoon-dev/el-base@$NEW_VERSION version >/dev/null 2>&1; then
             echo "  @duskmoon-dev/el-base@$NEW_VERSION already published, skipping"
           else
-            bun publish --access public
+            npm publish --access public --registry=https://registry.npmjs.org/
           fi
           cd ../..
 
@@ -142,7 +146,7 @@ jobs:
               if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
                 echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
               else
-                bun publish --access public
+                npm publish --access public --registry=https://registry.npmjs.org/
               fi
               cd ../..
             fi
@@ -157,7 +161,7 @@ jobs:
               if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
                 echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
               else
-                bun publish --access public
+                npm publish --access public --registry=https://registry.npmjs.org/
               fi
               cd ../..
             fi
@@ -169,7 +173,7 @@ jobs:
           if npm view @duskmoon-dev/elements@$NEW_VERSION version >/dev/null 2>&1; then
             echo "  @duskmoon-dev/elements@$NEW_VERSION already published, skipping"
           else
-            bun publish --access public
+            npm publish --access public --registry=https://registry.npmjs.org/
           fi
           cd ../..
 
@@ -178,7 +182,7 @@ jobs:
           if npm view @duskmoon-dev/art-elements@$NEW_VERSION version >/dev/null 2>&1; then
             echo "  @duskmoon-dev/art-elements@$NEW_VERSION already published, skipping"
           else
-            bun publish --access public
+            npm publish --access public --registry=https://registry.npmjs.org/
           fi
           cd ../..
 
