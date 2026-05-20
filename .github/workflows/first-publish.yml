@@ -1,0 +1,99 @@
+name: First Publish to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package path (e.g. elements/chat)'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.package }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  first-publish:
+    name: First Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build packages
+        run: bun run build:all
+
+      - name: Prepare package for publishing
+        run: |
+          PACKAGE_PATH="${{ inputs.package }}"
+          PACKAGE_JSON="$PACKAGE_PATH/package.json"
+
+          if [ ! -f "$PACKAGE_JSON" ]; then
+            echo "::error::$PACKAGE_JSON not found"
+            exit 1
+          fi
+
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const packagePath = process.env.PACKAGE_PATH;
+          const packageJsonPath = path.join(packagePath, 'package.json');
+          const target = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+          const packageVersions = new Map();
+          for (const scope of ['packages', 'elements', 'art-elements']) {
+            if (!fs.existsSync(scope)) continue;
+            for (const entry of fs.readdirSync(scope, { withFileTypes: true })) {
+              if (!entry.isDirectory()) continue;
+              const file = path.join(scope, entry.name, 'package.json');
+              if (!fs.existsSync(file)) continue;
+              const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+              if (pkg.name && pkg.version) {
+                packageVersions.set(pkg.name, pkg.version);
+              }
+            }
+          }
+
+          for (const field of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
+            const deps = target[field];
+            if (!deps) continue;
+            for (const [name, value] of Object.entries(deps)) {
+              if (value !== 'workspace:*') continue;
+              const version = packageVersions.get(name);
+              if (!version) {
+                throw new Error(`No local package version found for ${name}`);
+              }
+              deps[name] = version;
+            }
+          }
+
+          fs.writeFileSync(packageJsonPath, `${JSON.stringify(target, null, 2)}\n`);
+          console.log(`Prepared ${target.name}@${target.version} for publishing`);
+          NODE
+        env:
+          PACKAGE_PATH: ${{ inputs.package }}
+
+      - name: Publish package
+        run: |
+          PACKAGE_PATH="${{ inputs.package }}"
+          PACKAGE_NAME=$(jq -r '.name' "$PACKAGE_PATH/package.json")
+          PACKAGE_VERSION=$(jq -r '.version' "$PACKAGE_PATH/package.json")
+
+          if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version --registry=https://registry.npmjs.org/ >/dev/null 2>&1; then
+            echo "$PACKAGE_NAME@$PACKAGE_VERSION already published, skipping"
+            exit 0
+          fi
+
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+          cd "$PACKAGE_PATH"
+          npm publish --access public --registry=https://registry.npmjs.org/
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
