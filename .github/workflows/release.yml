@@ -187,8 +187,6 @@ jobs:
           cd ../..
 
           echo "All packages published!"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Commit version bump
         if: ${{ !inputs.dry-run }}
