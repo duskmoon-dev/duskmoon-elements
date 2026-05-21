@@ -78,6 +78,25 @@ describe('ElDmButton', () => {
     expect(button?.getAttribute('type')).toBe('button');
   });
 
+  test('submits external form referenced by form attribute', () => {
+    const form = document.createElement('form');
+    form.id = 'external-form';
+    let submitted = false;
+    form.requestSubmit = () => {
+      submitted = true;
+    };
+    container.appendChild(form);
+
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    el.type = 'submit';
+    el.setAttribute('form', 'external-form');
+    container.appendChild(el);
+
+    el.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    expect(submitted).toBe(true);
+  });
+
   test('supports prefix and suffix slots', () => {
     const el = document.createElement('el-dm-button') as ElDmButton;
     container.appendChild(el);

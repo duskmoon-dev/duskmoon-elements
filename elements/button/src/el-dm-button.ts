@@ -135,16 +135,26 @@ export class ElDmButton extends BaseElement {
 
     // Handle form submission
     if (this.type === 'submit') {
-      const form = this.closest('form');
+      const form = this._getAssociatedForm();
       if (form) {
         form.requestSubmit();
       }
     } else if (this.type === 'reset') {
-      const form = this.closest('form');
+      const form = this._getAssociatedForm();
       if (form) {
         form.reset();
       }
     }
+  }
+
+  private _getAssociatedForm(): HTMLFormElement | null {
+    const formId = this.getAttribute('form');
+    if (formId) {
+      const form = this.ownerDocument.getElementById(formId);
+      return form?.tagName === 'FORM' ? (form as HTMLFormElement) : null;
+    }
+
+    return this.closest('form');
   }
 
   connectedCallback(): void {
