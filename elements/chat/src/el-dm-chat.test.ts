@@ -249,4 +249,27 @@ describe('chat elements', () => {
     const sendEvent = await event;
     expect(sendEvent.detail).toEqual({ value: 'Keyboard send' });
   });
+
+  test('sends from markdown chat input on cmd enter', async () => {
+    const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
+    container.appendChild(el);
+
+    el.setValue('Mac keyboard send');
+
+    const event = new Promise<CustomEvent>((resolve) => {
+      el.addEventListener('send', (sendEvent) => resolve(sendEvent as CustomEvent));
+    });
+
+    el.shadowRoot?.dispatchEvent(
+      new window.KeyboardEvent('keydown', {
+        key: 'Enter',
+        metaKey: true,
+        bubbles: true,
+        composed: true,
+      }),
+    );
+
+    const sendEvent = await event;
+    expect(sendEvent.detail).toEqual({ value: 'Mac keyboard send' });
+  });
 });

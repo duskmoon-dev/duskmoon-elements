@@ -727,7 +727,11 @@ export class ElDmChatInput extends BaseElement {
   static properties = {
     name: { type: String, reflect: true, default: '' },
     value: { type: String },
-    placeholder: { type: String, reflect: true, default: 'Send a message... (Ctrl+Enter to send)' },
+    placeholder: {
+      type: String,
+      reflect: true,
+      default: 'Send a message... (Ctrl/Cmd+Enter to send)',
+    },
     disabled: { type: Boolean, reflect: true },
     readonly: { type: Boolean, reflect: true },
     sendLabel: { type: String, reflect: true, attribute: 'send-label', default: 'Send' },
@@ -782,7 +786,13 @@ export class ElDmChatInput extends BaseElement {
 
   private _handleKeyDown = (event: Event): void => {
     const keyboardEvent = event as KeyboardEvent;
-    if (keyboardEvent.key !== 'Enter' || !keyboardEvent.ctrlKey || keyboardEvent.shiftKey) return;
+    if (
+      keyboardEvent.key !== 'Enter' ||
+      (!keyboardEvent.ctrlKey && !keyboardEvent.metaKey) ||
+      keyboardEvent.shiftKey
+    ) {
+      return;
+    }
     if (this.disabled || this.readonly) return;
 
     keyboardEvent.preventDefault();
@@ -806,7 +816,7 @@ export class ElDmChatInput extends BaseElement {
           part="editor"
           name="${escapeHtml(this.name || '')}"
           value="${escapeHtml(this.value || '')}"
-          placeholder="${escapeHtml(this.placeholder || 'Send a message... (Ctrl+Enter to send)')}"
+          placeholder="${escapeHtml(this.placeholder || 'Send a message... (Ctrl/Cmd+Enter to send)')}"
           resize="vertical"
           no-preview
           ${this.disabled ? 'disabled' : ''}
