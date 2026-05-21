@@ -58,6 +58,7 @@ import { register as registerPinInput } from '@duskmoon-dev/el-pin-input';
 import { register as registerSegmentControl } from '@duskmoon-dev/el-segment-control';
 import { register as registerThemeController } from '@duskmoon-dev/el-theme-controller';
 import { register as registerTimeInput } from '@duskmoon-dev/el-time-input';
+import { register as registerChat } from '@duskmoon-dev/el-chat';
 
 const markdownInputRegisterSpecifier = '@duskmoon-dev/el-markdown-input/register';
 const codeEngineRegisterSpecifier = '@duskmoon-dev/el-code-engine';
@@ -117,3 +118,4 @@ registerPinInput();
 registerSegmentControl();
 registerThemeController();
 registerTimeInput();
+registerChat();
