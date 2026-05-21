@@ -35,7 +35,7 @@ duskmoon-elements/
 │   ├── elements/         # @duskmoon-dev/elements — bundle re-exporting all elements
 │   ├── art-elements/         # @duskmoon-dev/art-elements — bundle re-exporting all CSS art elements
 │   └── docs/             # @duskmoon-dev/docs — Astro documentation site
-├── elements/             # 43 individual element packages (@duskmoon-dev/el-*)
+├── elements/             # 44 individual element packages (@duskmoon-dev/el-*)
 │   ├── button/
 │   ├── card/
 │   ├── input/
@@ -46,8 +46,7 @@ duskmoon-elements/
 │   └── ...
 ├── playground/           # Vite playground for manual testing
 ├── CLAUDE.md             # Project instructions for Claude Code
-├── AGENTS.md             # Conventions for agentic tools
-└── PRD.md                # Product requirements document
+└── AGENTS.md             # Conventions for agentic tools
 ```
 
 ### Build Order
@@ -66,9 +65,10 @@ The core package must build before elements because element packages use TypeScr
 
 | Command | Description |
 |---------|-------------|
-| `bun run build:all` | Build core, then elements, bundle, CSS arts, and CSS arts bundle (sequential) |
+| `bun run build:all` | Build core, then elements, chat, bundle, CSS arts, and CSS arts bundle (sequential) |
+| `bun run build:chat` | Build the `@duskmoon-dev/el-chat` package separately |
 | `bun run build:base` | Build only `@duskmoon-dev/el-base` |
-| `bun run build:elements` | Build all 43 element packages |
+| `bun run build:elements` | Build all 44 element packages |
 | `bun run build:bundle` | Build the `@duskmoon-dev/elements` bundle package |
 | `bun run build:art-elements` | Build all 15 CSS art element packages |
 | `bun run build:art-elements-bundle` | Build the `@duskmoon-dev/art-elements` bundle package |
@@ -91,6 +91,7 @@ The core package must build before elements because element packages use TypeScr
 |---------|-------------|
 | `bun run test` | Run all tests with coverage |
 | `bun run typecheck` | TypeScript type checking across all packages |
+| `bun run lint` | Run ESLint across all packages |
 | `bun run lint:check` | ESLint check (zero warnings) |
 | `bun run lint:fix` | Auto-fix ESLint issues |
 | `bun run format:check` | Prettier check |
@@ -113,7 +114,7 @@ bun run --filter @duskmoon-dev/el-input lint:check
 | `bun run release:dry-run` | Simulate publishing all packages |
 | `bun run release` | Publish core, elements, bundle, CSS arts, and CSS arts bundle to npm |
 | `bun run release:base` | Publish `@duskmoon-dev/el-base` only |
-| `bun run release:elements` | Publish all 43 element packages only |
+| `bun run release:elements` | Publish all 44 element packages (including chat) |
 | `bun run release:bundle` | Publish `@duskmoon-dev/elements` bundle only |
 | `bun run release:art-elements` | Publish CSS art packages only |
 | `bun run release:art-elements-bundle` | Publish `@duskmoon-dev/art-elements` bundle only |

@@ -113,6 +113,12 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-code-block](./elements/code-block) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-code-block)](https://www.npmjs.com/package/@duskmoon-dev/el-code-block) | `<el-dm-code-block>` | Code block with language badge, title, and copy button |
 | [@duskmoon-dev/el-code-engine](./elements/code-engine) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-code-engine)](https://www.npmjs.com/package/@duskmoon-dev/el-code-engine) | `<el-dm-code-engine>` | Lightweight code editor |
 
+### Chat Components
+
+| Package | Version | Element | Description |
+|---------|---------|---------|-------------|
+| [@duskmoon-dev/el-chat](./elements/chat) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-chat)](https://www.npmjs.com/package/@duskmoon-dev/el-chat) | `<el-dm-chat>` + 5 sub-elements | Conversational UI with bubbles, input, reasoning, tool calls, and typing indicator |
+
 ### CSS Art Components
 
 | Package | Version | Element | Description |
@@ -271,7 +277,7 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 43 element packages total
+│   └── ...                 # 44 element packages total
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon
