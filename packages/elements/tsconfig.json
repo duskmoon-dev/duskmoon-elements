@@ -19,6 +19,7 @@
     { "path": "../../elements/alert" },
     { "path": "../../elements/dialog" },
     { "path": "../../elements/badge" },
+    { "path": "../../elements/chart" },
     { "path": "../../elements/chip" },
     { "path": "../../elements/tooltip" },
     { "path": "../../elements/progress" },
