@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-datepicker",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "DuskMoon Datepicker custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/core": "1.17.0",
-    "@duskmoon-dev/el-base": "workspace:*"
+    "@duskmoon-dev/el-base": "1.5.3"
   },
   "devDependencies": {
     "typescript": "^6.0.3"

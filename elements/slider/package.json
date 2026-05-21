@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-slider",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "1.5.3",
     "@duskmoon-dev/core": "1.17.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-art-csswitch",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Pure CSS Nintendo Switch illustration custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -40,7 +40,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "workspace:*",
+    "@duskmoon-dev/el-base": "1.5.3",
     "@duskmoon-dev/css-art": "1.17.0"
   },
   "devDependencies": {
