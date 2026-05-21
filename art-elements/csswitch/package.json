@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-art-csswitch",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Pure CSS Nintendo Switch illustration custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
