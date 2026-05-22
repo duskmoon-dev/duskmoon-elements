@@ -16,14 +16,24 @@
       "types": "./dist/types/register.d.ts",
       "import": "./dist/esm/register.js",
       "require": "./dist/cjs/register.js"
+    },
+    "./el-art-*": {
+      "types": "./dist/types/el-art-*/index.d.ts",
+      "import": "./dist/esm/el-art-*/index.js",
+      "require": "./dist/cjs/el-art-*/index.js"
+    },
+    "./el-art-*/register": {
+      "types": "./dist/types/el-art-*/register.d.ts",
+      "import": "./dist/esm/el-art-*/register.js",
+      "require": "./dist/cjs/el-art-*/register.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "prebuild": "bun run clean",
-    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "generate:entrypoints": "node ../../scripts/generate-bundle-entrypoints.mjs packages/art-elements @duskmoon-dev/el-art-",
+    "build": "bun run clean && bun run build:esm && bun run build:cjs && bun run build:types && bun run generate:entrypoints",
     "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation --external @duskmoon-dev/el-art-gemini-input --external @duskmoon-dev/el-art-snowball-preloader --external @duskmoon-dev/el-art-csswitch",
     "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/el-art-moon --external @duskmoon-dev/el-art-sun --external @duskmoon-dev/el-art-atom --external @duskmoon-dev/el-art-eclipse --external @duskmoon-dev/el-art-mountain --external @duskmoon-dev/el-art-plasma-ball --external @duskmoon-dev/el-art-cat-stargazer --external @duskmoon-dev/el-art-color-spin --external @duskmoon-dev/el-art-synthwave-starfield --external @duskmoon-dev/el-art-circular-gallery --external @duskmoon-dev/el-art-snow --external @duskmoon-dev/el-art-flower-animation --external @duskmoon-dev/el-art-gemini-input --external @duskmoon-dev/el-art-snowball-preloader --external @duskmoon-dev/el-art-csswitch",
     "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
