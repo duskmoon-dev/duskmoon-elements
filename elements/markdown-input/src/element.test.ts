@@ -714,6 +714,25 @@ describe('ElDmMarkdownInput', () => {
         cleanup(attrEl);
       });
     });
+
+    test('falls back to value attribute when property update is not a string', async () => {
+      const attrEl = createElement({ value: 'server markdown' });
+      (attrEl as unknown as { value: unknown }).value = [{ text: 'fragment' }];
+
+      await Promise.resolve();
+
+      expect(attrEl.getValue()).toBe('server markdown');
+      cleanup(attrEl);
+    });
+
+    test('joins simple value fragments into textarea text', async () => {
+      (el as unknown as { value: unknown }).value = ['first ', 2, ' third'];
+
+      await Promise.resolve();
+
+      expect(el.getValue()).toBe('first 2 third');
+      cleanup(el);
+    });
   });
 
   // ── no-preview mode ──────────────────────────────────────────────

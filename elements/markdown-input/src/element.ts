@@ -152,6 +152,28 @@ export class ElDmMarkdownInput extends BaseElement {
     this.attachStyles([elementStyles, markdownBodySheet]);
   }
 
+  #resolveValue(fallback = ''): string {
+    const value = (this as unknown as { value: unknown }).value;
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (
+      Array.isArray(value) &&
+      value.every(
+        (part): part is string | number => typeof part === 'string' || typeof part === 'number',
+      )
+    ) {
+      return value.join('');
+    }
+
+    // Phoenix LiveView can assign fragment objects to custom element properties
+    // during diffs. Prefer the HTML attribute/current editor text over
+    // displaying "[object Object]".
+    return this.getAttribute('value') ?? fallback;
+  }
+
   // ════════════════════════════════════════════════════════════════════
   // Lifecycle
   // ════════════════════════════════════════════════════════════════════
@@ -182,7 +204,7 @@ export class ElDmMarkdownInput extends BaseElement {
       // Restore initial value from reactive prop BEFORE updating status bar,
       // so that required+valueMissing validity is evaluated against the real
       // initial content rather than a transient empty textarea.
-      const initVal = (this as unknown as { value: string }).value ?? '';
+      const initVal = this.#resolveValue();
       if (this.#textarea) {
         this.#textarea.value = initVal;
         this.#syncFormValue();
@@ -217,7 +239,7 @@ export class ElDmMarkdownInput extends BaseElement {
     }
 
     // Sync value if the reactive prop was updated externally (e.g. attributeChangedCallback)
-    const propVal = (this as unknown as { value: string }).value ?? '';
+    const propVal = this.#resolveValue(ta.value);
     if (propVal !== ta.value) {
       ta.value = propVal;
       this.#syncFormValue();
