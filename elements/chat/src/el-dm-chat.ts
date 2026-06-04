@@ -83,6 +83,34 @@ const styles = css`
 
   ${coreStyles}
 
+  :host([variant='filled'][color='primary']) {
+    color: var(--color-primary-content);
+  }
+
+  :host([variant='filled'][color='secondary']) {
+    color: var(--color-secondary-content);
+  }
+
+  :host([variant='filled'][color='tertiary']) {
+    color: var(--color-tertiary-content);
+  }
+
+  :host([variant='filled'][color='info']) {
+    color: var(--color-info-content);
+  }
+
+  :host([variant='filled'][color='success']) {
+    color: var(--color-success-content);
+  }
+
+  :host([variant='filled'][color='warning']) {
+    color: var(--color-warning-content);
+  }
+
+  :host([variant='filled'][color='error']) {
+    color: var(--color-error-content);
+  }
+
   .chat-avatar,
   .chat-header,
   .chat-footer,

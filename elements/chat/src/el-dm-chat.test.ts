@@ -29,6 +29,16 @@ register();
 describe('chat elements', () => {
   let container: HTMLDivElement;
 
+  function getAdoptedCSS(el: HTMLElement): string {
+    return (el.shadowRoot?.adoptedStyleSheets ?? [])
+      .map((sheet) =>
+        Array.from(sheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join('\n'),
+      )
+      .join('\n');
+  }
+
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -65,6 +75,21 @@ describe('chat elements', () => {
     expect(bubble?.classList.contains('chat-bubble-filled')).toBe(true);
     expect(bubble?.classList.contains('chat-bubble-lg')).toBe(true);
     expect(bubble?.classList.contains('chat-bubble-streaming')).toBe(true);
+  });
+
+  test('sets host text color for filled colored bubbles', () => {
+    const el = document.createElement('el-dm-chat') as ElDmChat;
+    el.color = 'primary';
+    el.variant = 'filled';
+    container.appendChild(el);
+
+    const css = getAdoptedCSS(el);
+
+    expect(css).toContain("variant='filled'");
+    expect(css).toContain("color='primary'");
+    expect(css).toContain('--color-primary-content');
+    expect(css).toContain("color='success'");
+    expect(css).toContain('--color-success-content');
   });
 
   test('renders avatar, status, and quick actions', async () => {
