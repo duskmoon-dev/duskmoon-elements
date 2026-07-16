@@ -57,6 +57,18 @@ export type MarkdownTheme = 'github' | 'atom-one-dark' | 'atom-one-light' | 'aut
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = markdownBodyCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
+const FRONT_MATTER_PATTERN = /^(?:\uFEFF)?---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;
+
+function isSupportedColor(value: string): boolean {
+  if (/^#[\da-f]{6}$/i.test(value)) return true;
+
+  const rgb = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.exec(value);
+  if (rgb) return rgb.slice(1).every((channel) => Number(channel) <= 255);
+
+  const hsl = /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.exec(value);
+  return Boolean(hsl && Number(hsl[1]) <= 360 && Number(hsl[2]) <= 100 && Number(hsl[3]) <= 100);
+}
+
 // Create a marked instance with GFM + syntax highlighting
 const markedInstance = new Marked(
   markedHighlight({
@@ -67,8 +79,22 @@ const markedInstance = new Marked(
     },
   }),
   {
+    hooks: {
+      preprocess(markdown) {
+        return markdown.replace(FRONT_MATTER_PATTERN, '');
+      },
+    },
+    renderer: {
+      codespan({ text }) {
+        if (!isSupportedColor(text)) return false;
+
+        return `<code>${text}</code><span class="color-chip" style="--color-chip: ${text}" aria-label="Color ${text}"></span>`;
+      },
+    },
+  },
+  {
     gfm: true,
-    breaks: false,
+    breaks: true,
   },
 );
 
@@ -97,6 +123,17 @@ const baseStyles = css`
   .markdown-body {
     overflow-wrap: break-word;
     word-wrap: break-word;
+  }
+
+  .markdown-body .color-chip {
+    display: inline-block;
+    width: 0.75em;
+    height: 0.75em;
+    margin-left: 0.35em;
+    vertical-align: -0.05em;
+    background-color: var(--color-chip);
+    border: 1px solid var(--color-outline);
+    border-radius: 50%;
   }
 
   /* Mermaid diagrams */

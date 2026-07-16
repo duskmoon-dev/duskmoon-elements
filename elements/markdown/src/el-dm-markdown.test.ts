@@ -82,6 +82,48 @@ describe('ElDmMarkdown', () => {
     // Default theme should be 'auto' or undefined (which defaults to auto)
     expect(el.theme === 'auto' || el.theme === undefined).toBe(true);
   });
+
+  test('renders soft line breaks by default', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+    el.content = 'first line\nsecond line';
+    await Promise.resolve();
+
+    expect(el.shadowRoot?.querySelector('.content')?.innerHTML).toContain(
+      'first line<br>second line',
+    );
+  });
+
+  test('does not render leading YAML front matter as content', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+    el.content = '---\ntitle: Example\ntags:\n  - docs\n---\n# Visible heading';
+    await Promise.resolve();
+
+    const html = el.shadowRoot?.querySelector('.content')?.innerHTML ?? '';
+    expect(html).toContain('<h1>Visible heading</h1>');
+    expect(html).not.toContain('title: Example');
+  });
+
+  test('renders color chips for supported inline color values', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+    el.content = '`#0969DA` `rgb(9, 105, 218)` `hsl(212, 92%, 45%)`';
+    await Promise.resolve();
+
+    const chips = el.shadowRoot?.querySelectorAll('.color-chip') ?? [];
+    expect(chips).toHaveLength(3);
+    expect(chips[0]?.getAttribute('style')).toContain('#0969DA');
+  });
+
+  test('does not render a color chip for ordinary inline code', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+    el.content = '`const value = 1`';
+    await Promise.resolve();
+
+    expect(el.shadowRoot?.querySelector('.color-chip')).toBeNull();
+  });
 });
 
 describe('Theme exports', () => {
