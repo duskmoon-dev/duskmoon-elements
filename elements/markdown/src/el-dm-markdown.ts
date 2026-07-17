@@ -57,10 +57,10 @@ export type MarkdownTheme = 'github' | 'atom-one-dark' | 'atom-one-light' | 'aut
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = markdownBodyCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
 
-const FRONT_MATTER_PATTERN = /^(?:\uFEFF)?---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;
+const FRONT_MATTER_PATTERN = /^(?:\uFEFF)?---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/;
 
 function isSupportedColor(value: string): boolean {
-  if (/^#[\da-f]{6}$/i.test(value)) return true;
+  if (/^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i.test(value)) return true;
 
   const rgb = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.exec(value);
   if (rgb) return rgb.slice(1).every((channel) => Number(channel) <= 255);
@@ -81,14 +81,14 @@ const markedInstance = new Marked(
   {
     hooks: {
       preprocess(markdown) {
-        return markdown.replace(FRONT_MATTER_PATTERN, '');
+        return markdown.replace(FRONT_MATTER_PATTERN, '```yaml\n$1\n```\n\n');
       },
     },
     renderer: {
       codespan({ text }) {
         if (!isSupportedColor(text)) return false;
 
-        return `<code>${text}</code><span class="color-chip" style="--color-chip: ${text}" aria-label="Color ${text}"></span>`;
+        return `<code>${text}<span class="color-chip" style="--color-chip: ${text}" aria-hidden="true"></span></code>`;
       },
     },
   },
@@ -133,7 +133,7 @@ const baseStyles = css`
     vertical-align: -0.05em;
     background-color: var(--color-chip);
     border: 1px solid var(--color-outline);
-    border-radius: 50%;
+    border-radius: 0.2em;
   }
 
   /* Mermaid diagrams */

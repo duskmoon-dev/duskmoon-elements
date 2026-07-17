@@ -150,6 +150,46 @@ describe('renderMarkdown', () => {
     expect(html).toContain('<code>console.log()</code>');
   });
 
+  test('renders leading YAML front matter as a highlighted code block', async () => {
+    const md = '---\ntitle: Global\nlist: [1, 2, 3, 4]\n---\n# Visible heading';
+    const html = await renderMarkdown(md);
+    expect(html).toContain('<h1>Visible heading</h1>');
+    expect(html).toContain('language-yaml');
+    expect(html).toContain('title');
+    expect(html).toContain('Global');
+    expect(html).toContain('list');
+  });
+
+  test('renders soft line breaks by default', async () => {
+    const html = await renderMarkdown('first line\nsecond line');
+    expect(html).toContain('first line<br>\nsecond line');
+  });
+
+  test('renders color chips for supported inline color values', async () => {
+    const html = await renderMarkdown(
+      '`#fc2b00` `#fff` `#FF000080` `rgb(9, 105, 218)` `hsl(212, 92%, 45%)`',
+    );
+    expect(html.match(/class="color-chip"/g)).toHaveLength(5);
+    expect(html).toContain('<code>#fc2b00<span');
+    expect(html).toContain('--color-chip: #fc2b00');
+    expect(html).toContain('--color-chip: #fff');
+    expect(html).toContain('--color-chip: #FF000080');
+    expect(html).toContain('--color-chip: rgb(9, 105, 218)');
+    expect(html).toContain('--color-chip: hsl(212, 92%, 45%)');
+  });
+
+  test('does not render color chips for ordinary, invalid, or fenced code', async () => {
+    const md = '`console.log()` `#ff` `rgb(999, 0, 0)`\n\n```css\n#fc2b00\n```';
+    const html = await renderMarkdown(md);
+    expect(html).not.toContain('class="color-chip"');
+  });
+
+  test('does not allow color values to inject styles or attributes', async () => {
+    const html = await renderMarkdown('`#fff; background-image: url(javascript:alert(1))`');
+    expect(html).not.toContain('class="color-chip"');
+    expect(html).not.toContain('style=');
+  });
+
   test('renders GFM autolinks', async () => {
     const md = 'Visit https://example.com for more';
     const html = await renderMarkdown(md);

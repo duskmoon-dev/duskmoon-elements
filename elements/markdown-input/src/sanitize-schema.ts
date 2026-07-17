@@ -38,7 +38,7 @@ export const sanitizeSchema: Schema = deepMergeSchemas(defaultSchema, {
     // a compromised KaTeX version emits user-controlled content. Acceptable here
     // because KaTeX only renders math expressions (inline $...$ and display $$...$$),
     // not arbitrary user HTML. Do not widen this allowlist without review.
-    span: ['className', 'style'],
+    span: ['className', 'style', 'ariaHidden'],
     // Mermaid placeholder
     code: ['className'],
     // Task list checkboxes (rendered as disabled — no interactive toggling)

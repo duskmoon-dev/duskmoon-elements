@@ -7,6 +7,7 @@ describe('sanitizeSchema', () => {
     expect(spanAttrs).toBeDefined();
     expect(spanAttrs).toContain('className');
     expect(spanAttrs).toContain('style');
+    expect(spanAttrs).toContain('ariaHidden');
   });
 
   test('allows code className for mermaid', () => {

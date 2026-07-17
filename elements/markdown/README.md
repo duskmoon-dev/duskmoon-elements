@@ -68,7 +68,7 @@ import '@duskmoon-dev/el-markdown/register';
 - **GitHub Flavored Markdown**: Tables, task lists, strikethrough, autolinks
 - **Soft Line Breaks**: Single newlines render as line breaks by default
 - **Color Chips**: Supported HEX, RGB, and HSL values in inline code show a color preview
-- **Front Matter**: Leading YAML front matter is treated as metadata and excluded from the output
+- **Front Matter**: Leading YAML front matter renders as a highlighted YAML code block
 - **Syntax Highlighting**: Powered by highlight.js via rehype-highlight
 - **Mermaid Diagrams**: Optional support for flowcharts, sequence diagrams, etc.
 - **Multiple Themes**: GitHub, Atom One Dark, Atom One Light

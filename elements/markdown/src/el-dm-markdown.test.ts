@@ -94,7 +94,7 @@ describe('ElDmMarkdown', () => {
     );
   });
 
-  test('does not render leading YAML front matter as content', async () => {
+  test('renders leading YAML front matter as a highlighted code block', async () => {
     const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
     container.appendChild(el);
     el.content = '---\ntitle: Example\ntags:\n  - docs\n---\n# Visible heading';
@@ -102,18 +102,21 @@ describe('ElDmMarkdown', () => {
 
     const html = el.shadowRoot?.querySelector('.content')?.innerHTML ?? '';
     expect(html).toContain('<h1>Visible heading</h1>');
-    expect(html).not.toContain('title: Example');
+    expect(html).toContain('language-yaml');
+    expect(html).toContain('title');
+    expect(html).toContain('Example');
   });
 
   test('renders color chips for supported inline color values', async () => {
     const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
     container.appendChild(el);
-    el.content = '`#0969DA` `rgb(9, 105, 218)` `hsl(212, 92%, 45%)`';
+    el.content = '`#fff` `#FF000080` `rgb(9, 105, 218)` `hsl(212, 92%, 45%)`';
     await Promise.resolve();
 
     const chips = el.shadowRoot?.querySelectorAll('.color-chip') ?? [];
-    expect(chips).toHaveLength(3);
-    expect(chips[0]?.getAttribute('style')).toContain('#0969DA');
+    expect(chips).toHaveLength(4);
+    expect(chips[0]?.parentElement?.tagName).toBe('CODE');
+    expect(chips[1]?.getAttribute('style')).toContain('#FF000080');
   });
 
   test('does not render a color chip for ordinary inline code', async () => {

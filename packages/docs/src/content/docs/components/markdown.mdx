@@ -41,10 +41,29 @@ import '@duskmoon-dev/el-markdown/register';
 
 ## Live Demo
 
-<ComponentDemo title="Markdown Rendering">
-  <el-dm-markdown content="# Hello World\n\nThis is **bold** and *italic* text.\n\n- List item 1\n- List item 2\n- List item 3" style="width: 100%; max-width: 500px;"></el-dm-markdown>
+<ComponentDemo title="Markdown Rendering with Front Matter, Color Chips, and Soft Breaks">
+  <el-dm-markdown content="---\ntitle: DmMarkdown feature showcase\ntags:\n  - rust\n  - yew\naccent: '#4C86FC'\n---\n# DmMarkdown rendering\n\nDm Markdown renders source text with highlighted front matter and inline color chips.\n\nSoft break, first line\nSoft break, second line\n\n## Inline color chips\n\n| Color | Inline code |\n| --- | --- |\n| Brand blue | `#4C86FC` |\n| White | `#fff` |\n| Black | `#000` |\n| Transparent red | `#FF000080` |" style="width: 100%; max-width: 800px;"></el-dm-markdown>
 </ComponentDemo>
 
+Single newlines render as `<br>` elements because the Markdown renderer enables Marked's `breaks: true` option by default.
+
+````html
+<el-dm-markdown>
+  ---
+  title: DmMarkdown feature showcase
+  tags:
+    - rust
+    - yew
+  accent: '#4C86FC'
+  ---
+  # DmMarkdown rendering
+
+  Soft break, first line
+  Soft break, second line
+
+  Color previews: `#4C86FC`, `#fff`, `#000`, and `#FF000080`.
+</el-dm-markdown>
+````
 
 ## Properties
 
@@ -93,7 +112,7 @@ The component supports GFM features:
 - Footnotes
 - Soft line breaks by default
 - Color previews for HEX, RGB, and HSL values wrapped in backticks
-- Leading YAML front matter (treated as metadata and omitted from the rendered body)
+- Leading YAML front matter rendered as a highlighted code block
 
 <ComponentDemo title="GFM Features">
   <el-dm-markdown content="| Feature | Supported |\n|---------|----------|\n| Tables  | ✅        |\n| Tasks   | ✅        |\n\n- [x] Task 1\n- [ ] Task 2\n\n~~Strikethrough text~~" style="width: 100%; max-width: 400px;"></el-dm-markdown>

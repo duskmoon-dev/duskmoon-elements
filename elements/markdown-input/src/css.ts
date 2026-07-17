@@ -224,6 +224,17 @@ export const elementStyles = css`
     flex-shrink: 0;
   }
 
+  .preview-body .color-chip {
+    display: inline-block;
+    width: 0.75em;
+    height: 0.75em;
+    margin-left: 0.35em;
+    vertical-align: -0.05em;
+    background-color: var(--color-chip);
+    border: 1px solid var(--md-border);
+    border-radius: 0.2em;
+  }
+
   /* ── Preview skeleton (shown while render pipeline loads) ──────────── */
   .preview-skeleton {
     display: flex;

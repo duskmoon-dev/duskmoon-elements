@@ -5,6 +5,7 @@ A form-associated custom element providing a full-featured markdown editor.
 ## Features
 
 - **Write / Preview tabs** — switch between editing and rendered output
+- **Rich preview** — highlighted YAML front matter, inline color chips, and soft line breaks
 - **Syntax highlighting** — backdrop technique with Prism.js (lazy CDN load)
 - **File upload** — drag-and-drop, clipboard paste, or file picker with progress
 - **Autocomplete** — `@mention` and `#reference` with keyboard navigation

@@ -15,6 +15,71 @@ type Processor = {
   process(source: string): Promise<{ toString(): string }>;
 };
 
+type SyntaxNode = {
+  type: string;
+  tagName?: string;
+  lang?: string;
+  value?: string;
+  properties?: Record<string, unknown>;
+  children?: SyntaxNode[];
+};
+
+function renderFrontMatter() {
+  return (tree: SyntaxNode): void => {
+    if (tree.type === 'root' && tree.children) {
+      tree.children = tree.children.map((node) =>
+        node.type === 'yaml' ? { type: 'code', lang: 'yaml', value: node.value } : node,
+      );
+    }
+  };
+}
+
+function isSupportedColor(value: string): boolean {
+  if (/^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i.test(value)) return true;
+
+  const rgb = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.exec(value);
+  if (rgb) return rgb.slice(1).every((channel) => Number(channel) <= 255);
+
+  const hsl = /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.exec(value);
+  return Boolean(hsl && Number(hsl[1]) <= 360 && Number(hsl[2]) <= 100 && Number(hsl[3]) <= 100);
+}
+
+function addColorChips() {
+  return (tree: SyntaxNode): void => {
+    appendColorChips(tree);
+  };
+}
+
+function appendColorChips(node: SyntaxNode): void {
+  if (!node.children) return;
+
+  for (const child of node.children) {
+    const text = child.children?.length === 1 ? child.children[0] : undefined;
+    const color =
+      node.tagName !== 'pre' &&
+      child.type === 'element' &&
+      child.tagName === 'code' &&
+      text?.type === 'text'
+        ? text.value
+        : undefined;
+
+    if (color && isSupportedColor(color)) {
+      child.children?.push({
+        type: 'element',
+        tagName: 'span',
+        properties: {
+          className: ['color-chip'],
+          style: `--color-chip: ${color}`,
+          ariaHidden: 'true',
+        },
+        children: [],
+      });
+    } else {
+      appendColorChips(child);
+    }
+  }
+}
+
 // Store the promise itself so concurrent calls share one build (no duplicate initialization)
 let processorPromise: Promise<Processor> | null = null;
 
@@ -22,8 +87,10 @@ async function buildProcessor(): Promise<Processor> {
   const [
     { unified },
     { default: remarkParse },
+    { default: remarkFrontmatter },
     { default: remarkGfm },
     { default: remarkMath },
+    { default: remarkBreaks },
     { default: remarkRehype },
     { default: rehypeKatex },
     { default: rehypePrismPlus },
@@ -32,8 +99,10 @@ async function buildProcessor(): Promise<Processor> {
   ] = await Promise.all([
     import('unified'),
     import('remark-parse'),
+    import('remark-frontmatter'),
     import('remark-gfm'),
     import('remark-math'),
+    import('remark-breaks'),
     import('remark-rehype'),
     import('rehype-katex'),
     import('rehype-prism-plus'),
@@ -43,11 +112,15 @@ async function buildProcessor(): Promise<Processor> {
 
   return unified()
     .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(renderFrontMatter)
     .use(remarkGfm)
     .use(remarkMath)
+    .use(remarkBreaks)
     .use(remarkRehype, { allowDangerousHtml: false })
     .use(rehypeKatex)
     .use(rehypePrismPlus, { ignoreMissing: true })
+    .use(addColorChips)
     .use(rehypeSanitize, sanitizeSchema)
     .use(rehypeStringify) as unknown as Processor;
 }

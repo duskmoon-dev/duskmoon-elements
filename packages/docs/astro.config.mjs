@@ -14,11 +14,18 @@ export default defineConfig({
     optimizeDeps: {
       include: ['mermaid'],
       // Exclude workspace element packages so Vite resolves them from source
-      exclude: ['@duskmoon-dev/el-markdown-input', '@duskmoon-dev/el-code-engine'],
+      exclude: [
+        '@duskmoon-dev/el-markdown',
+        '@duskmoon-dev/el-markdown-input',
+        '@duskmoon-dev/el-code-engine',
+      ],
     },
     resolve: {
       alias: {
         // Point workspace packages to their TypeScript source for live HMR
+        '@duskmoon-dev/el-markdown': fileURLToPath(
+          new URL('../../elements/markdown/src/index.ts', import.meta.url)
+        ),
         '@duskmoon-dev/el-markdown-input': fileURLToPath(
           new URL('../../elements/markdown-input/src/index.ts', import.meta.url)
         ),
