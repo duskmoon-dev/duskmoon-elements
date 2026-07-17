@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-cascader",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "DuskMoon Cascader custom element for multi-level cascading selection",
   "type": "module",
   "main": "./dist/cjs/index.js",
