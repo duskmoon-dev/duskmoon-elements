@@ -47,25 +47,16 @@ import { basicSetup } from '@duskmoon-dev/code-engine/setup';
 import { undo, redo } from '@duskmoon-dev/code-engine/commands';
 
 // ── Static theme imports (all 4 are small; avoids runtime bare-specifier issues) ──
-import * as _duskmoonTheme from '@duskmoon-dev/code-engine/theme/duskmoon';
-import * as _sunshineTheme from '@duskmoon-dev/code-engine/theme/sunshine';
-import * as _moonlightTheme from '@duskmoon-dev/code-engine/theme/moonlight';
-import * as _oneDarkTheme from '@duskmoon-dev/code-engine/theme/one-dark';
-
-function extractExt(mod: Record<string, unknown>): Extension {
-  const v =
-    mod.default ??
-    Object.values(mod).find((x) => typeof x === 'function' || (x && typeof x !== 'string'));
-  // Theme modules export a factory function (e.g. duskMoon(options?))
-  if (typeof v === 'function') return (v as () => Extension)() as Extension;
-  return (v ?? []) as Extension;
-}
+import { duskMoon } from '@duskmoon-dev/code-engine/theme/duskmoon';
+import { sunshine } from '@duskmoon-dev/code-engine/theme/sunshine';
+import { moonlight } from '@duskmoon-dev/code-engine/theme/moonlight';
+import { oneDark } from '@duskmoon-dev/code-engine/theme/one-dark';
 
 const THEMES: Record<string, Extension> = {
-  duskmoon: extractExt(_duskmoonTheme as unknown as Record<string, unknown>),
-  sunshine: extractExt(_sunshineTheme as unknown as Record<string, unknown>),
-  moonlight: extractExt(_moonlightTheme as unknown as Record<string, unknown>),
-  'one-dark': extractExt(_oneDarkTheme as unknown as Record<string, unknown>),
+  duskmoon: duskMoon(),
+  sunshine,
+  moonlight,
+  'one-dark': oneDark,
 };
 
 // ── Language loaders (literal import paths so bundlers can resolve them) ──

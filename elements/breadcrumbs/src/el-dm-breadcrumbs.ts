@@ -9,6 +9,7 @@
  * @attr {string} items - JSON array of breadcrumb items [{label, href}]
  * @attr {string} separator - Separator character between items (default '/')
  *
+ * @slot item - Declarative server-rendered breadcrumb item
  * @slot separator - Custom separator element to use between items
  *
  * @csspart nav - The navigation container
@@ -102,6 +103,18 @@ const styles = css`
   ::slotted([slot='separator']) {
     display: none;
   }
+
+  ::slotted([slot='item']) {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  ::slotted([slot='item'][aria-current='page']) {
+    color: var(--color-on-surface);
+  }
 `;
 
 export class ElDmBreadcrumbs extends BaseElement {
@@ -115,6 +128,8 @@ export class ElDmBreadcrumbs extends BaseElement {
 
   /** Separator character between items */
   declare separator: string;
+
+  private _itemsObserver?: MutationObserver;
 
   constructor() {
     super();
@@ -160,7 +175,42 @@ export class ElDmBreadcrumbs extends BaseElement {
     return div.innerHTML;
   }
 
+  private _hasDeclarativeItems(): boolean {
+    return this.querySelector('[slot="item"]') !== null;
+  }
+
+  private _syncDeclarativeItems = (): void => {
+    const slot = this.shadowRoot?.querySelector('slot[name="item"]') as HTMLSlotElement | null;
+    const items = slot?.assignedElements() ?? [];
+
+    items.forEach((item, index) => {
+      item.setAttribute('role', 'listitem');
+      if (index === items.length - 1) {
+        item.setAttribute('aria-current', 'page');
+      } else {
+        item.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this._itemsObserver = new MutationObserver(() => this.update());
+    this._itemsObserver.observe(this, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['slot'],
+    });
+  }
+
+  disconnectedCallback(): void {
+    this._itemsObserver?.disconnect();
+    super.disconnectedCallback();
+  }
+
   render(): string {
+    const declarativeItems = this._hasDeclarativeItems();
     const itemsArray = Array.isArray(this.items) ? this.items : [];
     const separatorHtml = this._getSeparatorHtml();
 
@@ -200,7 +250,7 @@ export class ElDmBreadcrumbs extends BaseElement {
     return `
       <nav class="breadcrumbs-nav" part="nav" aria-label="Breadcrumb">
         <ol class="breadcrumbs" part="list">
-          ${itemsHtml}
+          ${declarativeItems ? '<slot name="item"></slot>' : itemsHtml}
         </ol>
         <slot name="separator"></slot>
       </nav>
@@ -209,6 +259,12 @@ export class ElDmBreadcrumbs extends BaseElement {
 
   update(): void {
     super.update();
+
+    const itemSlot = this.shadowRoot?.querySelector('slot[name="item"]');
+    itemSlot?.addEventListener('slotchange', this._syncDeclarativeItems);
+    this._syncDeclarativeItems();
+
+    if (this._hasDeclarativeItems()) return;
 
     // Attach click handlers to all breadcrumb links
     const links = this.shadowRoot?.querySelectorAll('.breadcrumb-link');

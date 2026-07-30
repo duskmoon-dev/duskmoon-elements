@@ -11,6 +11,7 @@
  * @attr {string} theme - Code theme: github, atom-one-dark, atom-one-light (default: auto)
  * @attr {boolean} debug - Enable debug logging
  * @attr {boolean} no-mermaid - Disable mermaid diagram rendering
+ * @attr {boolean} sanitize - Sanitize rendered HTML (default: true)
  * @attr {boolean} streaming - Read-only attribute reflecting streaming state
  *
  * @prop {string} content - Get/set markdown content directly
@@ -44,6 +45,7 @@ import { css as markdownBodyCSS } from '@duskmoon-dev/core/components/markdown-b
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
+import DOMPurify from 'dompurify';
 
 import { github } from './themes/github.js';
 import { atomOneDark } from './themes/atom-one-dark.js';
@@ -67,6 +69,34 @@ function isSupportedColor(value: string): boolean {
 
   const hsl = /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.exec(value);
   return Boolean(hsl && Number(hsl[1]) <= 360 && Number(hsl[2]) <= 100 && Number(hsl[3]) <= 100);
+}
+
+function isSafeUrl(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed) return true;
+
+  try {
+    const url = new URL(trimmed, document.baseURI);
+    return ['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function sanitizeHtml(html: string): string {
+  const template = document.createElement('template');
+  template.innerHTML = DOMPurify.sanitize(html);
+
+  for (const element of template.content.querySelectorAll('*')) {
+    for (const attribute of ['href', 'src', 'xlink:href']) {
+      const value = element.getAttribute(attribute);
+      if (value !== null && !isSafeUrl(value)) {
+        element.removeAttribute(attribute);
+      }
+    }
+  }
+
+  return template.innerHTML;
 }
 
 // Create a marked instance with GFM + syntax highlighting
@@ -233,6 +263,7 @@ export class ElDmMarkdown extends BaseElement {
     theme: { type: String, reflect: true, default: 'auto' },
     debug: { type: Boolean, reflect: true },
     noMermaid: { type: Boolean, reflect: true, attribute: 'no-mermaid' },
+    sanitize: { type: Boolean, reflect: true, default: true },
     streaming: { type: Boolean, reflect: true },
   };
 
@@ -251,6 +282,9 @@ export class ElDmMarkdown extends BaseElement {
 
   /** Disable mermaid rendering */
   declare noMermaid: boolean;
+
+  /** Sanitize rendered HTML. Set false only for trusted content. */
+  declare sanitize: boolean;
 
   /** Streaming state (reflected as attribute) */
   declare streaming: boolean;
@@ -498,7 +532,8 @@ export class ElDmMarkdown extends BaseElement {
     }
 
     try {
-      this._fragment = markedInstance.parse(this._content) as string;
+      const parsed = markedInstance.parse(this._content) as string;
+      this._fragment = this.sanitize ? sanitizeHtml(parsed) : parsed;
       this.update();
 
       // Process mermaid diagrams after render
@@ -638,7 +673,8 @@ export class ElDmMarkdown extends BaseElement {
         );
       }
 
-      this._fragment = markedInstance.parse(fixedContent) as string;
+      const parsed = markedInstance.parse(fixedContent) as string;
+      this._fragment = this.sanitize ? sanitizeHtml(parsed) : parsed;
       this.update();
 
       // Process mermaid diagrams after render (but skip during heavy streaming)

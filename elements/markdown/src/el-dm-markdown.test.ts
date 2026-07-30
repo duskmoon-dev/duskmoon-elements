@@ -127,6 +127,30 @@ describe('ElDmMarkdown', () => {
 
     expect(el.shadowRoot?.querySelector('.color-chip')).toBeNull();
   });
+
+  test('sanitizes raw HTML, event handlers, and unsafe URLs by default', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    container.appendChild(el);
+    el.content =
+      '<img src="javascript:alert(1)" onerror="alert(1)"><script>alert(1)</script>' +
+      '[unsafe](javascript:alert(1))';
+    await Promise.resolve();
+
+    const html = el.shadowRoot?.querySelector('.content')?.innerHTML ?? '';
+    expect(html).not.toContain('<script');
+    expect(html).not.toContain('onerror');
+    expect(html).not.toContain('javascript:');
+  });
+
+  test('allows trusted callers to opt out of sanitization explicitly', async () => {
+    const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+    el.sanitize = false;
+    container.appendChild(el);
+    el.content = '<span data-trusted="true">Trusted</span>';
+    await Promise.resolve();
+
+    expect(el.shadowRoot?.querySelector('[data-trusted="true"]')).not.toBeNull();
+  });
 });
 
 describe('Theme exports', () => {
@@ -224,6 +248,17 @@ describe('Streaming API', () => {
 
     const cursor = el.shadowRoot?.querySelector('.streaming-cursor');
     expect(cursor).toBeNull();
+  });
+
+  test('sanitizes streamed markdown before inserting it into the DOM', async () => {
+    el.startStreaming();
+    el.appendContent('<img src="javascript:alert(1)" onerror="alert(1)">');
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    const html = el.shadowRoot?.querySelector('.content')?.innerHTML ?? '';
+    expect(html).not.toContain('onerror');
+    expect(html).not.toContain('javascript:');
   });
 
   test('emits dm-stream-chunk event', () => {

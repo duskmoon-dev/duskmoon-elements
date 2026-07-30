@@ -13,6 +13,11 @@
  * @attr {string} size - Button size: xs, sm, md, lg
  * @attr {string} color - Color variant: primary, secondary, neutral
  *
+ * @slot prev - Declarative server-rendered previous-page control
+ * @slot previous - Alias for the declarative previous-page control
+ * @slot page - Declarative server-rendered page or ellipsis control
+ * @slot next - Declarative server-rendered next-page control
+ *
  * @csspart container - The pagination container
  * @csspart button - Navigation buttons (first, prev, next, last)
  * @csspart page - Page number buttons
@@ -104,6 +109,36 @@ const styles = css`
     color: var(--color-text-muted, #6b7280);
     font-size: 0.875rem;
     user-select: none;
+  }
+
+  ::slotted([slot='prev']),
+  ::slotted([slot='previous']),
+  ::slotted([slot='page']),
+  ::slotted([slot='next']) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-border, #d1d5db);
+    border-radius: var(--radius-md, 0.375rem);
+    color: var(--color-text, #374151);
+    font: inherit;
+    text-decoration: none;
+  }
+
+  ::slotted([slot='page'][aria-current='page']),
+  ::slotted([slot='page'][data-active='true']) {
+    border-color: var(--color-primary, #3b82f6);
+    background: var(--color-primary, #3b82f6);
+    color: var(--color-primary-contrast, #ffffff);
+  }
+
+  ::slotted([disabled]),
+  ::slotted([aria-disabled='true']) {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   /* Size variants */
@@ -205,6 +240,8 @@ export class ElDmPagination extends BaseElement {
   /** Color variant: primary, secondary, neutral */
   declare color: PaginationColor;
 
+  private _controlsObserver?: MutationObserver;
+
   constructor() {
     super();
     this.attachStyles(styles);
@@ -214,6 +251,18 @@ export class ElDmPagination extends BaseElement {
     super.connectedCallback();
     this.addEventListener('click', this._handleClick.bind(this));
     this.addEventListener('keydown', this._handleKeydown.bind(this));
+    this._controlsObserver = new MutationObserver(() => this.update());
+    this._controlsObserver.observe(this, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['slot'],
+    });
+  }
+
+  disconnectedCallback(): void {
+    this._controlsObserver?.disconnect();
+    super.disconnectedCallback();
   }
 
   /**
@@ -275,6 +324,12 @@ export class ElDmPagination extends BaseElement {
     return pages;
   }
 
+  private _hasDeclarativeControls(): boolean {
+    return (
+      this.querySelector('[slot="prev"], [slot="previous"], [slot="page"], [slot="next"]') !== null
+    );
+  }
+
   /**
    * Navigate to a specific page
    */
@@ -290,6 +345,8 @@ export class ElDmPagination extends BaseElement {
    * Handle click events on pagination buttons
    */
   private _handleClick(event: Event): void {
+    if (this._hasDeclarativeControls()) return;
+
     const target = event.target as HTMLElement;
     const button = target.closest('button');
 
@@ -315,6 +372,8 @@ export class ElDmPagination extends BaseElement {
    * Handle keyboard navigation
    */
   private _handleKeydown(event: KeyboardEvent): void {
+    if (this._hasDeclarativeControls()) return;
+
     switch (event.key) {
       case 'ArrowLeft':
         event.preventDefault();
@@ -336,6 +395,17 @@ export class ElDmPagination extends BaseElement {
   }
 
   render(): string {
+    if (this._hasDeclarativeControls()) {
+      return `
+        <nav class="pagination" part="container" role="navigation" aria-label="Pagination">
+          <slot name="previous"></slot>
+          <slot name="prev"></slot>
+          <slot name="page"></slot>
+          <slot name="next"></slot>
+        </nav>
+      `;
+    }
+
     const total = Math.max(1, this.total);
     const current = Math.min(Math.max(1, this.current), total);
     const pages = this._getPageRange();

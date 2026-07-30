@@ -81,20 +81,27 @@ describe('ElDmButton', () => {
   test('submits external form referenced by form attribute', () => {
     const form = document.createElement('form');
     form.id = 'external-form';
-    let submitted = false;
-    form.requestSubmit = () => {
-      submitted = true;
+    let submitter: HTMLElement | undefined;
+    form.requestSubmit = (button) => {
+      submitter = button;
+      expect(button?.isConnected).toBe(true);
+      expect(button?.form).toBe(form);
     };
     container.appendChild(form);
 
     const el = document.createElement('el-dm-button') as ElDmButton;
     el.type = 'submit';
     el.setAttribute('form', 'external-form');
+    el.setAttribute('name', 'action');
+    el.setAttribute('value', 'save');
     container.appendChild(el);
 
     el.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 
-    expect(submitted).toBe(true);
+    expect(submitter?.getAttribute('name')).toBe('action');
+    expect(submitter?.getAttribute('value')).toBe('save');
+    expect(submitter?.isConnected).toBe(false);
+    expect(form.querySelector('button')).toBeNull();
   });
 
   test('supports prefix and suffix slots', () => {

@@ -55,6 +55,60 @@ describe('ElDmPagination', () => {
     expect(navBtns?.length).toBe(4);
   });
 
+  test('projects declarative server controls and preserves their attributes', () => {
+    const el = createPagination({ total: 3, current: 2 });
+    const previous = document.createElement('a');
+    previous.slot = 'prev';
+    previous.href = '/pages/1';
+    previous.setAttribute('data-phx-link', 'patch');
+    const current = document.createElement('a');
+    current.slot = 'page';
+    current.href = '/pages/2';
+    current.setAttribute('aria-current', 'page');
+    const ellipsis = document.createElement('span');
+    ellipsis.slot = 'page';
+    ellipsis.textContent = '…';
+    const next = document.createElement('a');
+    next.slot = 'next';
+    next.href = '/pages/3';
+    el.append(previous, current, ellipsis, next);
+    container.appendChild(el);
+
+    const pageSlot = el.shadowRoot?.querySelector('slot[name="page"]') as HTMLSlotElement;
+    expect(pageSlot.assignedElements()).toEqual([current, ellipsis]);
+    expect(el.shadowRoot?.querySelector('.nav-btn')).toBeNull();
+    expect(previous.getAttribute('href')).toBe('/pages/1');
+    expect(previous.getAttribute('data-phx-link')).toBe('patch');
+    expect(current.getAttribute('aria-current')).toBe('page');
+  });
+
+  test('does not intercept declarative navigation', () => {
+    const el = createPagination({ total: 3, current: 2 });
+    const next = document.createElement('a');
+    next.slot = 'next';
+    next.href = '/pages/3';
+    el.appendChild(next);
+    container.appendChild(el);
+
+    let changed = false;
+    el.addEventListener('change', () => {
+      changed = true;
+    });
+    const click = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    next.dispatchEvent(click);
+    const keydown = new window.KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true,
+    });
+    next.dispatchEvent(keydown);
+
+    expect(click.defaultPrevented).toBe(false);
+    expect(keydown.defaultPrevented).toBe(false);
+    expect(el.current).toBe(2);
+    expect(changed).toBe(false);
+  });
+
   // --- Properties ---
   test('defaults total to 1', () => {
     const el = createPagination();

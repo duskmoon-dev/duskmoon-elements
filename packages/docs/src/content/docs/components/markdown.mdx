@@ -199,13 +199,14 @@ md.addEventListener('dm-rendered', (event) => {
 
 ## Security
 
-By default, the component sanitizes HTML to prevent XSS attacks. You can disable this for trusted content:
+By default, the component sanitizes HTML to prevent XSS attacks. Trusted callers can disable
+sanitization with the JavaScript property:
 
-````html
-<el-dm-markdown sanitize="false">
-  <div class="custom-html">Custom HTML allowed</div>
-</el-dm-markdown>
-````
+```javascript
+const markdown = document.querySelector('el-dm-markdown');
+markdown.sanitize = false;
+markdown.content = '<div class="custom-html">Trusted HTML</div>';
+```
 
 ⚠️ **Warning**: Only disable sanitization for trusted content sources.
 

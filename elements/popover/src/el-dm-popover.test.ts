@@ -257,6 +257,48 @@ describe('ElDmPopover', () => {
     expect(fired).toBe(true);
   });
 
+  test('uses a focusable descendant for trigger aria and Escape focus restoration', () => {
+    const el = createPopover();
+    const wrapper = document.createElement('span');
+    wrapper.slot = 'trigger';
+    const button = document.createElement('button');
+    button.textContent = 'Open';
+    wrapper.appendChild(button);
+    el.appendChild(wrapper);
+    container.appendChild(el);
+
+    el.show();
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+
+    expect(el.open).toBe(false);
+    expect(document.activeElement).toBe(button);
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  test('Escape focus restoration does not reopen a focus-triggered popover', async () => {
+    const el = createPopover({ trigger: 'focus' });
+    const wrapper = document.createElement('span');
+    wrapper.slot = 'trigger';
+    const button = document.createElement('button');
+    wrapper.appendChild(button);
+    const action = document.createElement('button');
+    action.textContent = 'Popover action';
+    el.appendChild(wrapper);
+    el.appendChild(action);
+    container.appendChild(el);
+
+    button.focus();
+    expect(el.open).toBe(true);
+    action.focus();
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await Promise.resolve();
+
+    expect(document.activeElement).toBe(button);
+    expect(el.open).toBe(false);
+  });
+
   // --- Cleanup ---
   test('removes listeners on disconnect', () => {
     const el = createPopover();
