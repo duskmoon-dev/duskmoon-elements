@@ -116,7 +116,18 @@ breadcrumbs.addEventListener('navigate', (e) => {
 
 | Slot | Description |
 |------|-------------|
+| `item` | Server-rendered breadcrumb item; repeated items retain their native links and attributes |
 | `separator` | Custom separator element between items |
+
+The final declarative `item` receives `aria-current="page"` automatically:
+
+```html
+<el-dm-breadcrumbs>
+  <span slot="item"><a href="/">Home</a></span>
+  <span slot="item"><a href="/components">Components</a></span>
+  <span slot="item">Breadcrumbs</span>
+</el-dm-breadcrumbs>
+```
 
 ## CSS Parts
 

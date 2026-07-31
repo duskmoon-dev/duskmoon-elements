@@ -99,6 +99,27 @@ pagination.addEventListener('change', (e) => {
 });
 ```
 
+## Server-rendered navigation
+
+Use the declarative slots when navigation is owned by the server or router. Supplied links retain
+their `href` and framework-specific attributes, and the component does not intercept navigation.
+
+```html
+<el-dm-pagination>
+  <a slot="prev" href="/posts?page=1">Previous</a>
+  <a slot="page" href="/posts?page=1">1</a>
+  <a slot="page" href="/posts?page=2" aria-current="page">2</a>
+  <span slot="page" aria-hidden="true">…</span>
+  <a slot="next" href="/posts?page=3">Next</a>
+</el-dm-pagination>
+```
+
+| Slot | Description |
+|------|-------------|
+| `prev` / `previous` | Previous-page control |
+| `page` | Numbered page or ellipsis, repeatable in source order |
+| `next` | Next-page control |
+
 ## CSS Parts
 
 | Part | Description |

@@ -137,7 +137,30 @@ export class ElDmButton extends BaseElement {
     if (this.type === 'submit') {
       const form = this._getAssociatedForm();
       if (form) {
-        form.requestSubmit();
+        const submitter = this.ownerDocument.createElement('button');
+        submitter.type = 'submit';
+        submitter.hidden = true;
+
+        for (const attribute of [
+          'name',
+          'value',
+          'formaction',
+          'formenctype',
+          'formmethod',
+          'formnovalidate',
+          'formtarget',
+        ]) {
+          if (this.hasAttribute(attribute)) {
+            submitter.setAttribute(attribute, this.getAttribute(attribute) ?? '');
+          }
+        }
+
+        form.appendChild(submitter);
+        try {
+          form.requestSubmit(submitter);
+        } finally {
+          submitter.remove();
+        }
       }
     } else if (this.type === 'reset') {
       const form = this._getAssociatedForm();

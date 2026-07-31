@@ -6,13 +6,17 @@ import { describe, it, expect, beforeAll, afterEach, mock } from 'bun:test';
 // and DOM structure, so we stub out the editor internals.
 
 class FakeCompartment {
-  of(_ext: unknown) {
+  of(ext: unknown) {
+    configuredExtensions.push(ext);
     return [];
   }
   reconfigure(_ext: unknown) {
     return {};
   }
 }
+
+const configuredExtensions: unknown[] = [];
+const oneDarkExtension = { extension: 'one-dark' };
 
 const fakeEditorState = {
   readOnly: { of: () => ({}) },
@@ -49,10 +53,13 @@ mock.module('@duskmoon-dev/code-engine/commands', () => ({
   redo: () => {},
 }));
 
-mock.module('@duskmoon-dev/code-engine/theme/duskmoon', () => ({ default: () => [] }));
-mock.module('@duskmoon-dev/code-engine/theme/sunshine', () => ({ default: () => [] }));
-mock.module('@duskmoon-dev/code-engine/theme/moonlight', () => ({ default: () => [] }));
-mock.module('@duskmoon-dev/code-engine/theme/one-dark', () => ({ default: () => [] }));
+mock.module('@duskmoon-dev/code-engine/theme/duskmoon', () => ({ duskMoon: () => [] }));
+mock.module('@duskmoon-dev/code-engine/theme/sunshine', () => ({ sunshine: [] }));
+mock.module('@duskmoon-dev/code-engine/theme/moonlight', () => ({ moonlight: [] }));
+mock.module('@duskmoon-dev/code-engine/theme/one-dark', () => ({
+  color: { background: '#282c34' },
+  oneDark: oneDarkExtension,
+}));
 
 // Now import the element class (after mocks are in place)
 const { ElDmCodeEngine } = await import('./el-dm-code-engine.js');
@@ -91,6 +98,15 @@ async function flush(): Promise<void> {
 }
 
 describe('ElDmCodeEngine', () => {
+  it('uses the one-dark extension instead of its exported color map', async () => {
+    configuredExtensions.length = 0;
+    createElement({ theme: 'one-dark' });
+    await flush();
+
+    expect(configuredExtensions).toContain(oneDarkExtension);
+    expect(configuredExtensions).not.toContainEqual({ background: '#282c34' });
+  });
+
   describe('properties', () => {
     it('should have showTopbar default to false', async () => {
       const el = createElement();

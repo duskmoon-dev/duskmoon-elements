@@ -69,6 +69,52 @@ describe('ElDmBreadcrumbs', () => {
     expect(items?.length).toBe(0);
   });
 
+  test('projects declarative server-rendered items without replacing their anchors', () => {
+    const el = createBreadcrumbs();
+    const items = ['/docs', '/docs/components', '/docs/components/breadcrumbs'].map(
+      (href, index) => {
+        const item = document.createElement('span');
+        item.slot = 'item';
+        const link = document.createElement('a');
+        link.href = href;
+        link.setAttribute('data-phx-link', 'patch');
+        link.textContent = `Crumb ${index + 1}`;
+        item.appendChild(link);
+        el.appendChild(item);
+        return item;
+      },
+    );
+    container.appendChild(el);
+
+    const slot = el.shadowRoot?.querySelector('slot[name="item"]') as HTMLSlotElement;
+    expect(slot.assignedElements()).toEqual(items);
+    expect(items[0].querySelector('a')?.getAttribute('href')).toBe('/docs');
+    expect(items[0].querySelector('a')?.getAttribute('data-phx-link')).toBe('patch');
+    expect(items[2].getAttribute('aria-current')).toBe('page');
+    expect(items[0].getAttribute('aria-current')).toBeNull();
+  });
+
+  test('does not intercept declarative item navigation', () => {
+    const el = createBreadcrumbs();
+    const item = document.createElement('span');
+    item.slot = 'item';
+    const link = document.createElement('a');
+    link.href = '/server-page';
+    item.appendChild(link);
+    el.appendChild(item);
+    container.appendChild(el);
+
+    let navigated = false;
+    el.addEventListener('navigate', () => {
+      navigated = true;
+    });
+    const click = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    link.dispatchEvent(click);
+
+    expect(click.defaultPrevented).toBe(false);
+    expect(navigated).toBe(false);
+  });
+
   // --- Item rendering ---
   test('non-last items are rendered as links', () => {
     const el = createBreadcrumbs({ items: sampleItems });

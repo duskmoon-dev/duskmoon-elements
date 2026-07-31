@@ -158,6 +158,7 @@ export class ElDmPopover extends BaseElement {
   private _boundUpdatePosition: () => void;
   private _hoverTimeout: number | null = null;
   private _currentPlacement: PopoverPlacement = 'bottom';
+  private _restoringFocus = false;
 
   constructor() {
     super();
@@ -252,7 +253,7 @@ export class ElDmPopover extends BaseElement {
   }
 
   private _attachTriggerEvents(): void {
-    const triggerEl = this._getTriggerElement();
+    const triggerEl = this._getAssignedTriggerElement();
     if (!triggerEl) return;
 
     // Remove any existing listeners first
@@ -286,13 +287,13 @@ export class ElDmPopover extends BaseElement {
   }
 
   private _removeTriggerListeners(): void {
-    const triggerEl = this._getTriggerElement();
+    const triggerEl = this._getAssignedTriggerElement();
     if (triggerEl) {
       this._detachTriggerEvents(triggerEl);
     }
   }
 
-  private _getTriggerElement(): Element | null {
+  private _getAssignedTriggerElement(): Element | null {
     const triggerSlot = this.shadowRoot?.querySelector(
       'slot[name="trigger"]',
     ) as HTMLSlotElement | null;
@@ -300,6 +301,27 @@ export class ElDmPopover extends BaseElement {
     const assigned = triggerSlot.assignedElements();
     return assigned[0] || null;
   }
+
+  private _getTriggerElement(): Element | null {
+    const assigned = this._getAssignedTriggerElement();
+    if (!assigned) return null;
+
+    if (assigned.matches(this._focusableSelector)) {
+      return assigned;
+    }
+
+    return assigned.querySelector(this._focusableSelector) ?? assigned;
+  }
+
+  private readonly _focusableSelector = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[contenteditable]:not([contenteditable="false"])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
 
   private _handleTriggerClick = (): void => {
     this.toggle();
@@ -333,6 +355,7 @@ export class ElDmPopover extends BaseElement {
   };
 
   private _handleTriggerFocus = (): void => {
+    if (this._restoringFocus) return;
     this.show();
   };
 
@@ -373,7 +396,13 @@ export class ElDmPopover extends BaseElement {
       this.hide();
       // Return focus to trigger element
       const triggerEl = this._getTriggerElement() as HTMLElement | null;
-      triggerEl?.focus?.();
+      if (triggerEl?.focus) {
+        this._restoringFocus = true;
+        triggerEl.focus();
+        queueMicrotask(() => {
+          this._restoringFocus = false;
+        });
+      }
     }
   }
 

@@ -41,6 +41,7 @@
   "dependencies": {
     "@duskmoon-dev/core": "1.17.0",
     "@duskmoon-dev/el-base": "1.5.3",
+    "dompurify": "3.3.3",
     "highlight.js": "11.11.1",
     "marked": "18.0.4",
     "marked-highlight": "2.2.4"
