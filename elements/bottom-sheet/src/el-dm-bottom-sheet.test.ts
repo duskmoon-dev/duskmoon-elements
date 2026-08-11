@@ -131,9 +131,10 @@ describe('ElDmBottomSheet', () => {
     expect(wrapper?.classList.contains('open')).toBe(false);
   });
 
-  test('sheet has show class when open', () => {
+  test('sheet has show class when open', async () => {
     const el = createBottomSheet({ open: true });
     container.appendChild(el);
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     const sheet = el.shadowRoot?.querySelector('.bottomsheet');
     expect(sheet?.classList.contains('show')).toBe(true);
   });
@@ -160,9 +161,10 @@ describe('ElDmBottomSheet', () => {
     expect(backdrop).toBeNull();
   });
 
-  test('backdrop has show class when open', () => {
+  test('backdrop has show class when open', async () => {
     const el = createBottomSheet({ modal: true, open: true });
     container.appendChild(el);
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     const backdrop = el.shadowRoot?.querySelector('.bottomsheet-backdrop');
     expect(backdrop?.classList.contains('show')).toBe(true);
   });

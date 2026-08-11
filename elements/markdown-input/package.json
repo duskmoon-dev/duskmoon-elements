@@ -39,8 +39,8 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/core": "1.17.0",
-    "@duskmoon-dev/el-base": "1.5.3",
+    "@duskmoon-dev/core": "1.17.2",
+    "@duskmoon-dev/el-base": "workspace:*",
     "hast-util-sanitize": "5.0.2",
     "rehype-katex": "7.0.1",
     "rehype-prism-plus": "2.0.2",
@@ -55,7 +55,7 @@
     "unified": "11.0.5"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "6.0.3"
   },
   "publishConfig": {
     "access": "public"
@@ -74,7 +74,7 @@
     "markdown-editor"
   ],
   "optionalDependencies": {
-    "mermaid": "11.15.0"
+    "mermaid": "11.16.0"
   },
   "repository": {
     "type": "git",

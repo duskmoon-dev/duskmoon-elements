@@ -39,15 +39,15 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/core": "1.17.0",
-    "@duskmoon-dev/el-base": "1.5.3",
+    "@duskmoon-dev/core": "1.17.2",
+    "@duskmoon-dev/el-base": "workspace:*",
     "dompurify": "3.3.3",
     "highlight.js": "11.11.1",
-    "marked": "18.0.4",
+    "marked": "18.0.7",
     "marked-highlight": "2.2.4"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
     "mermaid": ">=10.0.0"

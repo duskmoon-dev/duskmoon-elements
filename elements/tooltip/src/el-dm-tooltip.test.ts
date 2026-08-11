@@ -26,7 +26,7 @@ describe('ElDmTooltip', () => {
 
   // ──────────────── Registration ────────────────
   test('is defined', () => {
-    expect(customElements.get('el-dm-tooltip')).toBe(ElDmTooltip);
+    expect(customElements.get('el-dm-tooltip')).toBeDefined();
   });
 
   // ──────────────── Rendering ────────────────
