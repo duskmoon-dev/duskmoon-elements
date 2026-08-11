@@ -78,16 +78,31 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
-          # Helper: update .version and resolve all workspace:* deps to the new version
+          # Helper: update .version and synchronize internal package dependencies.
+          # Match by package name rather than current value so a previous release's
+          # exact version pins cannot become stale on later releases.
           update_pkg() {
             local file="$1"
             jq --arg v "$NEW_VERSION" '
-              .version = $v |
-              if .dependencies then
-                .dependencies |= with_entries(
-                  if .value == "workspace:*" then .value = $v else . end
-                )
-              else . end
+              reduce [
+                "dependencies",
+                "devDependencies",
+                "peerDependencies",
+                "optionalDependencies"
+              ][] as $field (
+                .version = $v;
+                if .[$field] then
+                  .[$field] |= with_entries(
+                    if (.key | test("^@duskmoon-dev/(el-|elements$|art-elements$)")) then
+                      .value = $v
+                    else
+                      .
+                    end
+                  )
+                else
+                  .
+                end
+              )
             ' "$file" > tmp.json && mv tmp.json "$file"
             echo "Updated $file to $NEW_VERSION"
           }
