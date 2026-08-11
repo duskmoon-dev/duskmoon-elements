@@ -119,9 +119,10 @@ button.variant = 'primary';
 
 ### Data Display
 
-| Element | Tag             | Description                                    |
-| ------- | --------------- | ---------------------------------------------- |
-| Table   | `<el-dm-table>` | Data table with sorting, pagination, selection |
+| Element  | Tag                | Description                                    |
+| -------- | ------------------ | ---------------------------------------------- |
+| Datetime | `<el-dm-datetime>` | Display-only ISO date and datetime formatter   |
+| Table    | `<el-dm-table>`    | Data table with sorting, pagination, selection |
 
 ## Re-exported Utilities
 
@@ -147,6 +148,7 @@ If you only need specific elements, install them individually for smaller bundle
 | `@duskmoon-dev/el-button`   | `https://esm.sh/@duskmoon-dev/el-button/register`   |
 | `@duskmoon-dev/el-card`     | `https://esm.sh/@duskmoon-dev/el-card/register`     |
 | `@duskmoon-dev/el-input`    | `https://esm.sh/@duskmoon-dev/el-input/register`    |
+| `@duskmoon-dev/el-datetime` | `https://esm.sh/@duskmoon-dev/el-datetime/register` |
 | `@duskmoon-dev/el-table`    | `https://esm.sh/@duskmoon-dev/el-table/register`    |
 | `@duskmoon-dev/el-tabs`     | `https://esm.sh/@duskmoon-dev/el-tabs/register`     |
 | `@duskmoon-dev/el-markdown` | `https://esm.sh/@duskmoon-dev/el-markdown/register` |

@@ -94,6 +94,11 @@ import { ElDmBottomSheet, register as registerBottomSheet } from '@duskmoon-dev/
 import { ElDmPopover, register as registerPopover } from '@duskmoon-dev/el-popover';
 
 // Data display elements
+import {
+  DEFAULT_DATETIME_FORMAT,
+  ElDmDatetime,
+  register as registerDatetime,
+} from '@duskmoon-dev/el-datetime';
 import { ElDmTable, ElDmTableColumn, register as registerTable } from '@duskmoon-dev/el-table';
 import {
   ElDmProDataGrid,
@@ -218,6 +223,7 @@ export { ElDmPopover, registerPopover };
 export type { PopoverPlacement, PopoverTrigger } from '@duskmoon-dev/el-popover';
 
 // Data display elements
+export { DEFAULT_DATETIME_FORMAT, ElDmDatetime, registerDatetime };
 export { ElDmTable, ElDmTableColumn, registerTable };
 export type {
   TableColumn,
@@ -338,6 +344,7 @@ export function registerAll(): void {
   registerBottomSheet();
   registerPopover();
   // Data display elements
+  registerDatetime();
   registerTable();
   registerProDataGrid();
   registerGridColumn();

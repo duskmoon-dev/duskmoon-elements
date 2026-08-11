@@ -28,6 +28,7 @@
     { "path": "../../elements/file-upload" },
     { "path": "../../elements/autocomplete" },
     { "path": "../../elements/datepicker" },
+    { "path": "../../elements/datetime" },
     { "path": "../../elements/bottom-navigation" },
     { "path": "../../elements/breadcrumbs" },
     { "path": "../../elements/drawer" },

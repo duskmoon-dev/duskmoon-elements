@@ -26,6 +26,7 @@
     "@duskmoon-dev/el-circle-menu": "workspace:*",
     "@duskmoon-dev/el-chip": "workspace:*",
     "@duskmoon-dev/el-datepicker": "workspace:*",
+    "@duskmoon-dev/el-datetime": "workspace:*",
     "@duskmoon-dev/el-dialog": "workspace:*",
     "@duskmoon-dev/el-drawer": "workspace:*",
     "@duskmoon-dev/el-file-upload": "workspace:*",

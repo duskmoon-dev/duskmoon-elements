@@ -1,6 +1,6 @@
 # Element Catalog
 
-44 custom element packages, 57 custom element tags.
+46 custom element packages, 59 custom element tags.
 
 ## By Category
 
@@ -61,10 +61,12 @@
 | `@duskmoon-dev/el-select` | `<el-dm-select>` | `ElDmSelect` | — |
 | `@duskmoon-dev/el-time-input` | `<el-dm-time-input>` | `ElDmTimeInput` | — |
 
-### Data Display (6)
+### Data Display (8)
 
 | Package | Tag | Class | Secondary |
 |---------|-----|-------|-----------|
+| `@duskmoon-dev/el-chart` | `<el-dm-chart>` | `ElDmChart` | — |
+| `@duskmoon-dev/el-datetime` | `<el-dm-datetime>` | `ElDmDatetime` | — |
 | `@duskmoon-dev/el-markdown` | `<el-dm-markdown>` | `ElDmMarkdown` | — |
 | `@duskmoon-dev/el-markdown-input` | `<el-dm-markdown-input>` | `ElDmMarkdownInput` | — |
 | `@duskmoon-dev/el-table` | `<el-dm-table>` | `ElDmTable` | `ElDmTableColumn` |

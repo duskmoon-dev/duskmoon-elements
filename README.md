@@ -106,6 +106,7 @@ bun add @duskmoon-dev/el-button
 
 | Package | Version | Element | Description |
 |---------|---------|---------|-------------|
+| [@duskmoon-dev/el-datetime](./elements/datetime) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-datetime)](https://www.npmjs.com/package/@duskmoon-dev/el-datetime) | `<el-dm-datetime>` | Display-only ISO date and datetime formatter |
 | [@duskmoon-dev/el-table](./elements/table) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-table)](https://www.npmjs.com/package/@duskmoon-dev/el-table) | `<el-dm-table>` | Data table with sorting |
 | [@duskmoon-dev/el-markdown](./elements/markdown) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown) | `<el-dm-markdown>` | Markdown renderer with syntax highlighting |
 | [@duskmoon-dev/el-markdown-input](./elements/markdown-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-markdown-input)](https://www.npmjs.com/package/@duskmoon-dev/el-markdown-input) | `<el-dm-markdown-input>` | Markdown editor with live preview |
@@ -277,7 +278,7 @@ duskmoon-elements/
 │   ├── accordion/          # @duskmoon-dev/el-accordion
 │   ├── alert/              # @duskmoon-dev/el-alert
 │   ├── button/             # @duskmoon-dev/el-button
-│   └── ...                 # 44 element packages total
+│   └── ...                 # 46 element packages total
 ├── art-elements/               # Pure CSS art element packages
 │   ├── atom/               # @duskmoon-dev/el-art-atom
 │   ├── moon/               # @duskmoon-dev/el-art-moon

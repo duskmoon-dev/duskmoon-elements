@@ -23,6 +23,7 @@
       "@duskmoon-dev/el-table": ["./elements/table/src/index.ts"],
       "@duskmoon-dev/el-chart": ["./elements/chart/src/index.ts"],
       "@duskmoon-dev/el-chat": ["./elements/chat/src/index.ts"],
+      "@duskmoon-dev/el-datetime": ["./elements/datetime/src/index.ts"],
       "@duskmoon-dev/elements": ["./packages/elements/src/index.ts"]
     }
   },

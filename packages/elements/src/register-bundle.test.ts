@@ -12,6 +12,7 @@ describe('@duskmoon-dev/elements/register bundle', () => {
     expect(result.success).toBe(true);
     const output = await result.outputs[0].text();
 
+    expect(output).toContain('el-dm-datetime');
     expect(output).not.toContain('node_modules/.bun/d3-selection');
     expect(output).not.toContain('function dispatchEvent(node');
   });

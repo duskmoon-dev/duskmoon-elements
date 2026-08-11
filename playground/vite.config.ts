@@ -27,6 +27,13 @@ const pageData = {
     description:
       'Multi-panel cascading selection for hierarchical data like locations, categories, and organizational structures.',
   },
+  '/datetime.html': {
+    title: 'Datetime',
+    name: 'Datetime',
+    tag: 'el-dm-datetime',
+    description:
+      'Display-only ISO date and datetime formatting with custom tokens and time-zone conversion.',
+  },
   '/input.html': {
     title: 'Input',
     name: 'Input',
@@ -161,6 +168,7 @@ export default defineConfig({
         button: resolve(__dirname, 'button.html'),
         card: resolve(__dirname, 'card.html'),
         cascader: resolve(__dirname, 'cascader.html'),
+        datetime: resolve(__dirname, 'datetime.html'),
         input: resolve(__dirname, 'input.html'),
         markdown: resolve(__dirname, 'markdown.html'),
         'markdown-input': resolve(__dirname, 'markdown-input.html'),

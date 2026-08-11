@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}} {{> page-header}}
+
+    <section>
+      <h2>Default Format</h2>
+      <div class="demo-column">
+        <el-dm-datetime value="2026-08-11T14:30:45"></el-dm-datetime>
+      </div>
+    </section>
+
+    <section>
+      <h2>Custom Formats</h2>
+      <div class="demo-column">
+        <el-dm-datetime
+          value="2026-08-11T14:30:45.123"
+          format="DD/MM/YYYY [at] h:mm:ss.SSS A"
+        ></el-dm-datetime>
+        <el-dm-datetime value="2026-08-11T14:30:45" format="YYYY.MM.DD HH:mm"></el-dm-datetime>
+      </div>
+    </section>
+
+    <section>
+      <h2>Time-Zone Conversion</h2>
+      <div class="demo-column">
+        <span>
+          UTC:
+          <el-dm-datetime
+            value="2026-08-11T14:30:45Z"
+            format="YYYY-MM-DD HH:mm:ss"
+            time-zone="UTC"
+          ></el-dm-datetime>
+        </span>
+        <span>
+          Asia/Shanghai:
+          <el-dm-datetime
+            value="2026-08-11T14:30:45Z"
+            format="YYYY-MM-DD HH:mm:ss"
+            time-zone="Asia/Shanghai"
+          ></el-dm-datetime>
+        </span>
+      </div>
+    </section>
+
+    <script type="module">
+      import { register as registerDatetime } from '../elements/datetime/src/index.ts';
+      registerDatetime();
+    </script>
+  </body>
+</html>

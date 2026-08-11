@@ -1,0 +1,101 @@
+---
+title: Datetime
+description: Display-only ISO date and datetime formatting
+order: 3
+section: data-display
+component: '@duskmoon-dev/el-datetime'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Datetime
+
+`<el-dm-datetime>` renders an ISO date or datetime as formatted, display-only text. It
+uses a semantic `<time>` element internally and does not expose any editing controls.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-datetime
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-datetime/register';
+```
+
+```html
+<el-dm-datetime value="2026-08-11T14:30:45" format="YYYY-MM-DD HH:mm:ss"></el-dm-datetime>
+```
+
+## Live demos
+
+<ComponentDemo title="Date and time">
+  <el-dm-datetime value="2026-08-11T14:30:45" format="YYYY-MM-DD HH:mm:ss"></el-dm-datetime>
+</ComponentDemo>
+
+<ComponentDemo title="Custom format with literal text">
+  <el-dm-datetime value="2026-08-11T14:30:45" format="DD/MM/YYYY [at] h:mm A"></el-dm-datetime>
+</ComponentDemo>
+
+<ComponentDemo title="Time-zone conversion">
+  <el-dm-datetime
+    value="2026-08-11T14:30:45Z"
+    format="YYYY-MM-DD HH:mm:ss"
+    time-zone="Asia/Shanghai"
+  ></el-dm-datetime>
+</ComponentDemo>
+
+## Properties
+
+| Property   | Attribute   | Type     | Default              | Description                                                                 |
+| ---------- | ----------- | -------- | -------------------- | --------------------------------------------------------------------------- |
+| `value`    | `value`     | `string` | `''`                 | ISO date or datetime to display                                             |
+| `format`   | `format`    | `string` | `'YYYY-MM-DD HH:mm'` | Output format                                                               |
+| `timeZone` | `time-zone` | `string` | `''`                 | IANA time zone used for explicit instants; empty uses the browser time zone |
+
+## Format tokens
+
+| Token        | Description                               | Example      |
+| ------------ | ----------------------------------------- | ------------ |
+| `YYYY`, `YY` | Four- or two-digit year                   | `2026`, `26` |
+| `M`, `MM`    | Month without or with zero-padding        | `8`, `08`    |
+| `D`, `DD`    | Day without or with zero-padding          | `1`, `01`    |
+| `H`, `HH`    | 24-hour time without or with zero-padding | `6`, `06`    |
+| `h`, `hh`    | 12-hour time without or with zero-padding | `6`, `06`    |
+| `m`, `mm`    | Minutes without or with zero-padding      | `5`, `05`    |
+| `s`, `ss`    | Seconds without or with zero-padding      | `9`, `09`    |
+| `SSS`        | Milliseconds                              | `123`        |
+| `A`, `a`     | Upper- or lowercase meridiem              | `PM`, `pm`   |
+
+Token letters in ordinary text are interpreted as tokens. Wrap literal text in square
+brackets:
+
+```html
+<el-dm-datetime value="2026-08-11T14:30:45" format="YYYY-MM-DD [at] h:mm A"></el-dm-datetime>
+```
+
+## Input and time-zone behavior
+
+- Accepted values are `YYYY-MM-DD` and ISO datetimes such as `2026-08-11T14:30`,
+  `2026-08-11T14:30:45.123456Z`, or `2026-08-11T14:30:45+08:00`. Fractional
+  seconds are truncated to milliseconds for the `SSS` token.
+- Date-only and offsetless datetime values are wall-clock values; `time-zone` does not
+  shift them.
+- A value with `Z` or an explicit offset represents an instant. It is converted to
+  `time-zone`, or the browser's local time zone when `time-zone` is omitted.
+- Invalid values, impossible dates, and invalid time-zone names render empty content.
+
+Use an explicit `Z` or offset whenever time-zone conversion matters.
+
+## CSS parts
+
+| Part   | Description                   |
+| ------ | ----------------------------- |
+| `time` | The semantic `<time>` element |
+
+## Accessibility
+
+The formatted text remains machine-readable because the original ISO value is retained in
+the inner `<time datetime="...">` attribute.
