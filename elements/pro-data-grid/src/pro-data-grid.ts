@@ -1053,9 +1053,7 @@ export class ElDmProDataGrid extends BaseElement {
     // Handle editor input changes
     this.#body?.addEventListener('input', (e) => {
       const editor = (e.target as HTMLElement).closest('[data-editor]') as
-        | HTMLInputElement
-        | HTMLSelectElement
-        | null;
+        HTMLInputElement | HTMLSelectElement | null;
       if (!editor || !this.#cellEditor.isEditing) return;
 
       if (editor instanceof HTMLInputElement && editor.type === 'checkbox') {
@@ -1227,9 +1225,7 @@ export class ElDmProDataGrid extends BaseElement {
     // Sync selection manager
     this.#selectionManager.mode =
       ((this as unknown as { selectionMode: string }).selectionMode as
-        | 'none'
-        | 'single'
-        | 'multiple') ?? 'none';
+        'none' | 'single' | 'multiple') ?? 'none';
     this.#selectionManager.rowKey = (this as unknown as { rowKey: string }).rowKey ?? 'id';
 
     // Sync row expander configuration

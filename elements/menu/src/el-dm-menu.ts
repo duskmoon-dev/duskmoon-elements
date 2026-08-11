@@ -23,14 +23,7 @@ import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as navigationCSS } from '@duskmoon-dev/core/components/navigation';
 
 export type MenuPlacement =
-  | 'top'
-  | 'bottom'
-  | 'left'
-  | 'right'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom-start'
-  | 'bottom-end';
+  'top' | 'bottom' | 'left' | 'right' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = navigationCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');

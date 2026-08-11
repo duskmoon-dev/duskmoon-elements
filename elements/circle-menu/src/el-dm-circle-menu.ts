@@ -40,13 +40,7 @@ const SIZE_CLASSES: Record<string, string> = {
 };
 
 export type CircleMenuColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'error';
+  'primary' | 'secondary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error';
 export type CircleMenuSize = 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility

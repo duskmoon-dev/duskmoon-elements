@@ -26,13 +26,7 @@ import { css as switchCSS } from '@duskmoon-dev/core/components/switch';
 
 export type SwitchSize = 'sm' | 'md' | 'lg';
 export type SwitchColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+  'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error' | 'info';
 
 // Map of size attribute values to CSS classes
 const SIZE_CLASSES: Record<string, string> = {

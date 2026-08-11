@@ -21,14 +21,7 @@ import { BaseElement, css } from '@duskmoon-dev/el-base';
 export type ChartType = 'bar' | 'line' | 'pie';
 export type ChartVariant = 'plain' | 'outlined' | 'filled';
 export type ChartColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'accent'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+  'primary' | 'secondary' | 'tertiary' | 'accent' | 'success' | 'warning' | 'error' | 'info';
 export type ChartSize = 'sm' | 'md' | 'lg';
 
 export interface ChartDataset {

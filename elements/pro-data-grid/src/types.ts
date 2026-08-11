@@ -156,11 +156,7 @@ export interface EditorParams {
 // ─── Filter Models ───────────────────────────
 
 export type FilterModel =
-  | TextFilterModel
-  | NumberFilterModel
-  | DateFilterModel
-  | SetFilterModel
-  | MultiFilterModel;
+  TextFilterModel | NumberFilterModel | DateFilterModel | SetFilterModel | MultiFilterModel;
 
 export interface TextFilterModel {
   type: 'text';

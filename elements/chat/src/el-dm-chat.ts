@@ -12,13 +12,7 @@ import { register as registerTooltip } from '@duskmoon-dev/el-tooltip';
 
 export type ChatAlign = 'start' | 'end';
 export type ChatBubbleColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'error';
+  'primary' | 'secondary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error';
 export type ChatBubbleSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ChatBubbleVariant = 'tonal' | 'filled';
 export type ChatToolStatus = 'pending' | 'running' | 'success' | 'error';

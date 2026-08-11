@@ -33,13 +33,7 @@ export interface StepData {
 
 export type StepperOrientation = 'horizontal' | 'vertical';
 export type StepperColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+  'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error' | 'info';
 
 const COLOR_MAP: Record<string, string> = {
   primary: 'var(--color-primary)',

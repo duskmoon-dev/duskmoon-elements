@@ -43,13 +43,7 @@ const COLOR_CLASSES: Record<string, string> = {
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 export type TooltipTrigger = 'hover' | 'click' | 'focus';
 export type TooltipColor =
-  | 'primary'
-  | 'secondary'
-  | 'accent'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'error';
+  'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error';
 
 // Strip @layer wrapper for Shadow DOM compatibility
 const coreStyles = tooltipCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');

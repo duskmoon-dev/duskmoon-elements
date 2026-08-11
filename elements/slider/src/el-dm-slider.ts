@@ -28,13 +28,7 @@ import { css as sliderCSS } from '@duskmoon-dev/core/components/slider';
 
 export type SliderSize = 'sm' | 'md' | 'lg';
 export type SliderColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+  'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error' | 'info';
 
 const SIZE_CLASSES: Record<string, string> = {
   sm: 'slider-sm',
