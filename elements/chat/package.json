@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-chat",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -39,10 +39,10 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.6.0",
-    "@duskmoon-dev/el-markdown": "1.6.0",
-    "@duskmoon-dev/el-markdown-input": "1.6.0",
-    "@duskmoon-dev/el-tooltip": "1.6.0",
+    "@duskmoon-dev/el-base": "1.7.0",
+    "@duskmoon-dev/el-markdown": "1.7.0",
+    "@duskmoon-dev/el-markdown-input": "1.7.0",
+    "@duskmoon-dev/el-tooltip": "1.7.0",
     "@duskmoon-dev/core": "1.17.2"
   },
   "devDependencies": {
