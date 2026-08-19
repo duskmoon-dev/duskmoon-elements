@@ -3,6 +3,8 @@
  *
  * A modal dialog built on the native HTML <dialog> element.
  * Uses styles from @duskmoon-dev/core for consistent theming.
+ * HTML Invoker Commands (`command` / `commandfor`) are forwarded to the
+ * inner native dialog so built-in show-modal / close / request-close work.
  *
  * @element el-dm-dialog
  *
@@ -77,6 +79,9 @@ export class ElDmDialog extends BaseElement {
   /** Ignore native close events fired while shadow DOM is being rebuilt. */
   private _syncing = false;
 
+  /** Structural template key — open changes must not rebuild the dialog. */
+  private _structureKey = '';
+
   constructor() {
     super();
     this.attachStyles(styles);
@@ -98,6 +103,10 @@ export class ElDmDialog extends BaseElement {
 
   private _getDialog(): HTMLDialogElement | null {
     return this.query<HTMLDialogElement>('dialog');
+  }
+
+  private _getStructureKey(): string {
+    return [this.size ?? '', this.dismissible ? '1' : '0', this.noDismiss ? '1' : '0'].join('|');
   }
 
   private _getDialogClasses(): string {
@@ -131,20 +140,75 @@ export class ElDmDialog extends BaseElement {
     this.close();
   };
 
+  /**
+   * Forward Invoker Commands to the native <dialog>.
+   * commandfor points at this host; built-in dialog commands must run on the
+   * inner HTMLDialogElement, not via a full show()/close() re-render cycle.
+   */
   private _handleCommand = (event: Event): void => {
+    const dialog = this._getDialog();
+    if (!dialog) return;
+
     const command = 'command' in event ? String((event as { command: string }).command) : '';
+
     switch (command) {
       case 'show-modal':
-        this.show();
+        this._openNativeDialog(dialog, true);
+        break;
+      case 'show':
+        this._openNativeDialog(dialog, false);
         break;
       case 'close':
-        this.close();
+        if (dialog.open) {
+          dialog.close();
+        }
+        break;
+      case 'request-close':
+        this._requestNativeClose(dialog);
         break;
       case 'toggle':
-        this.toggle();
+        if (dialog.open) {
+          dialog.close();
+        } else {
+          this._openNativeDialog(dialog, !this.noBackdrop);
+        }
+        break;
+      default:
         break;
     }
   };
+
+  private _openNativeDialog(dialog: HTMLDialogElement, modal: boolean): void {
+    if (!dialog.open) {
+      if (modal) {
+        dialog.showModal();
+      } else {
+        dialog.show();
+      }
+    }
+
+    if (!this.open) {
+      this.open = true;
+      this.emit('open');
+    }
+  }
+
+  private _requestNativeClose(dialog: HTMLDialogElement): void {
+    if (!dialog.open) return;
+
+    const requestClose = (dialog as HTMLDialogElement & { requestClose?: () => void }).requestClose;
+
+    if (typeof requestClose === 'function') {
+      requestClose.call(dialog);
+      return;
+    }
+
+    const cancel = new Event('cancel', { cancelable: true });
+    const allowed = dialog.dispatchEvent(cancel);
+    if (allowed && !cancel.defaultPrevented) {
+      dialog.close();
+    }
+  }
 
   private _bindDialog(): void {
     const dialog = this._getDialog();
@@ -222,10 +286,17 @@ export class ElDmDialog extends BaseElement {
   }
 
   update(): void {
+    const key = this._getStructureKey();
+    const dialog = this._getDialog();
+    const needsRender = !dialog || key !== this._structureKey;
+
     this._syncing = true;
     try {
-      super.update();
-      this._bindDialog();
+      if (needsRender) {
+        super.update();
+        this._structureKey = key;
+        this._bindDialog();
+      }
       this._syncNativeDialog();
     } finally {
       this._syncing = false;

@@ -11,7 +11,7 @@ import ComponentDemo from '../../../components/ComponentDemo.astro';
 
 # Dialog
 
-`<el-dm-dialog>` wraps a native HTML `<dialog>` and applies `@duskmoon-dev/core` dialog styles. Opening uses `showModal()` so you get the browser's focus trap, Escape handling, and `::backdrop`.
+`<el-dm-dialog>` wraps a native HTML `<dialog>` and applies `@duskmoon-dev/core` dialog styles. Opening uses `showModal()` so you get the browser's focus trap, Escape handling, and `::backdrop`. Invoker Commands (`command` / `commandfor`) are forwarded to the inner native dialog (`show-modal`, `close`, `request-close`).
 
 ## Installation
 

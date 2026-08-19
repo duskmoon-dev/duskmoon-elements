@@ -1,6 +1,6 @@
 # @duskmoon-dev/el-dialog
 
-A modal dialog custom element built on the native HTML `<dialog>` element, styled with `@duskmoon-dev/core`.
+A modal dialog custom element built on the native HTML `<dialog>` element, styled with `@duskmoon-dev/core`. HTML Invoker Commands are forwarded to the inner native dialog.
 
 ## Installation
 

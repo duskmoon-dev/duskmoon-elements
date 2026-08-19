@@ -310,32 +310,81 @@ describe('ElDmDialog', () => {
   });
 
   describe('command invoker', () => {
-    test('show-modal command opens the dialog', async () => {
+    test('show-modal command forwards to the native dialog', async () => {
       const el = createDialog();
+      const dialog = nativeDialog(el);
+      expect(dialog).toBeDefined();
+
+      const spy = spyDialogOpeners();
       el.dispatchEvent(createCommandEvent('show-modal'));
       await nextUpdate();
+
+      expect(spy.counts.showModal).toBe(1);
+      expect(spy.counts.show).toBe(0);
       expect(el.open).toBe(true);
+      expect(dialog?.open).toBe(true);
+      expect(nativeDialog(el)).toBe(dialog);
       el.close();
       await nextUpdate();
+      spy.restore();
     });
 
-    test('close command closes the dialog', async () => {
+    test('close command forwards to the native dialog', async () => {
       const el = createDialog();
       el.show();
       await nextUpdate();
-      el.dispatchEvent(createCommandEvent('close'));
+      const dialog = nativeDialog(el);
+      expect(dialog?.open).toBe(true);
+
+      let nativeCloseCalls = 0;
+      const origClose = HTMLDialogElement.prototype.close;
+      HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement) {
+        nativeCloseCalls += 1;
+        return origClose.call(this);
+      };
+
+      try {
+        el.dispatchEvent(createCommandEvent('close'));
+        await nextUpdate();
+        expect(nativeCloseCalls).toBeGreaterThanOrEqual(1);
+        expect(el.open).toBe(false);
+        expect(nativeDialog(el)).toBe(dialog);
+      } finally {
+        HTMLDialogElement.prototype.close = origClose;
+      }
+    });
+
+    test('request-close command asks the native dialog to close', async () => {
+      const el = createDialog();
+      el.show();
       await nextUpdate();
+      const dialog = nativeDialog(el) as HTMLDialogElement & {
+        requestClose?: () => void;
+      };
+
+      let requestCloseCalls = 0;
+      dialog.requestClose = () => {
+        requestCloseCalls += 1;
+        dialog.close();
+      };
+
+      el.dispatchEvent(createCommandEvent('request-close'));
+      await nextUpdate();
+      expect(requestCloseCalls).toBe(1);
       expect(el.open).toBe(false);
     });
 
-    test('toggle command toggles the dialog', async () => {
+    test('toggle command toggles via the native dialog', async () => {
       const el = createDialog();
+      const dialog = nativeDialog(el);
       el.dispatchEvent(createCommandEvent('toggle'));
       await nextUpdate();
       expect(el.open).toBe(true);
+      expect(nativeDialog(el)).toBe(dialog);
       el.dispatchEvent(createCommandEvent('toggle'));
       await nextUpdate();
       expect(el.open).toBe(false);
+      expect(nativeDialog(el)).toBe(dialog);
     });
   });
 
