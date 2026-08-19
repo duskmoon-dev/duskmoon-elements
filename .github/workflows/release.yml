@@ -33,16 +33,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
+          # Do not set registry-url: it injects NODE_AUTH_TOKEN into
+          # NPM_CONFIG_USERCONFIG and forces legacy token auth over OIDC.
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Ensure npm supports OIDC trusted publishing
         run: |
           npm install -g npm@latest
           npm --version
-          # setup-node may write an empty _authToken; that forces legacy token
-          # auth and blocks OIDC trusted publishing. Keep registry only.
+          # Clear any token-based auth left by the environment / setup-node.
+          unset NODE_AUTH_TOKEN
+          USER_NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          printf 'registry=https://registry.npmjs.org/\n' > "$USER_NPMRC"
           printf 'registry=https://registry.npmjs.org/\n' > "$HOME/.npmrc"
+          echo "Using npmrc: $USER_NPMRC"
+          cat "$USER_NPMRC"
 
       - name: Install dependencies
         run: bun install
@@ -148,9 +153,15 @@ jobs:
       - name: Publish packages
         if: ${{ !inputs.dry-run }}
         env:
-          # Prefer OIDC trusted publishing; do not inject NODE_AUTH_TOKEN.
+          # Prefer OIDC trusted publishing; never inject NODE_AUTH_TOKEN.
           NPM_CONFIG_PROVENANCE: true
         run: |
+          # setup-node may reintroduce these into the job env — clear before publish.
+          unset NODE_AUTH_TOKEN
+          USER_NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          printf 'registry=https://registry.npmjs.org/\n' > "$USER_NPMRC"
+          printf 'registry=https://registry.npmjs.org/\n' > "$HOME/.npmrc"
+
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
           # Publish core first (other packages depend on it)
