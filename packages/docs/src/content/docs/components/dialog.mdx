@@ -1,6 +1,6 @@
 ---
 title: Dialog
-description: Modal dialog component for displaying content requiring user attention
+description: Modal dialog built on the native HTML dialog element with DuskMoonUI styles
 order: 7
 section: feedback
 component: "@duskmoon-dev/el-dialog"
@@ -11,7 +11,7 @@ import ComponentDemo from '../../../components/ComponentDemo.astro';
 
 # Dialog
 
-The Dialog component provides a modal overlay for displaying content that requires user attention.
+`<el-dm-dialog>` wraps a native HTML `<dialog>` and applies `@duskmoon-dev/core` dialog styles. Opening uses `showModal()` so you get the browser's focus trap, Escape handling, and `::backdrop`.
 
 ## Installation
 
@@ -26,6 +26,8 @@ import '@duskmoon-dev/el-dialog/register';
 ```
 
 ```html
+<button command="show-modal" commandfor="my-dialog">Open Dialog</button>
+
 <el-dm-dialog id="my-dialog">
   <span slot="header">Dialog Title</span>
   <p>Dialog content goes here.</p>
@@ -34,8 +36,6 @@ import '@duskmoon-dev/el-dialog/register';
     <el-dm-button variant="primary">Confirm</el-dm-button>
   </div>
 </el-dm-dialog>
-
-<el-dm-button onclick="document.querySelector('#my-dialog').show()">Open Dialog</el-dm-button>
 ```
 
 ## Live Demo
@@ -59,13 +59,15 @@ import '@duskmoon-dev/el-dialog/register';
 | `open` | `boolean` | `false` | Whether the dialog is visible |
 | `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Dialog size |
 | `dismissible` | `boolean` | `true` | Allow closing via backdrop click or Escape |
-| `no-backdrop` | `boolean` | `false` | Hide the backdrop overlay |
+| `no-dismiss` | `boolean` | `false` | Prevent closing via backdrop or Escape |
+| `no-backdrop` | `boolean` | `false` | Open as non-modal (no `::backdrop`) |
 
 ## Methods
 
 | Method | Description |
 |--------|-------------|
-| `show()` | Opens the dialog |
+| `show()` | Opens the dialog as a modal (`showModal()`) |
+| `showModal()` | Alias for `show()` |
 | `close()` | Closes the dialog |
 | `toggle()` | Toggles the dialog state |
 
@@ -110,16 +112,19 @@ dialog.addEventListener('close', () => {
 
 | Part | Description |
 |------|-------------|
-| `dialog` | The dialog container |
-| `backdrop` | The backdrop overlay |
+| `dialog` | The native `<dialog>` element |
+| `box` | Inner `dialog-box` container |
 | `header` | The header section |
+| `title` | The title wrapper |
 | `body` | The body section |
 | `footer` | The footer section |
 | `close` | The close button |
 
+Backdrop styling uses native `::backdrop`. Override `--color-scrim` to change the overlay color.
+
 ## Accessibility
 
-- Uses `role="dialog"` and `aria-modal="true"`
-- Escape key closes dismissible dialogs
-- Focus is trapped within the dialog when open
-- Body scroll is disabled when dialog is open
+- Native `<dialog>` provides `role="dialog"` and modal semantics
+- `showModal()` traps focus and restores it on close
+- Escape fires `cancel`; dismissible dialogs close, `no-dismiss` prevents it
+- Backdrop is native `::backdrop`, not a custom overlay

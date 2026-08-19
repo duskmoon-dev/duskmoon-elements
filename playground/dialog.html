@@ -12,11 +12,25 @@
     <div class="demo-row">
       <el-dm-button onclick="document.getElementById('basic-dialog').show()">Open Dialog</el-dm-button>
       <el-dm-dialog id="basic-dialog">
-        <span slot="title">Dialog Title</span>
+        <span slot="header">Dialog Title</span>
         <p>This is the dialog content. You can put any content here.</p>
         <div slot="footer">
-          <el-dm-button variant="ghost" onclick="document.getElementById('basic-dialog').hide()">Cancel</el-dm-button>
-          <el-dm-button onclick="document.getElementById('basic-dialog').hide()">Confirm</el-dm-button>
+          <el-dm-button variant="ghost" onclick="document.getElementById('basic-dialog').close()">Cancel</el-dm-button>
+          <el-dm-button onclick="document.getElementById('basic-dialog').close()">Confirm</el-dm-button>
+        </div>
+      </el-dm-dialog>
+    </div>
+  </section>
+
+  <section>
+    <h2>Command Invoker</h2>
+    <div class="demo-row">
+      <button command="show-modal" commandfor="command-dialog">Open with command</button>
+      <el-dm-dialog id="command-dialog">
+        <span slot="header">Command Dialog</span>
+        <p>Opened via the HTML command invoker API.</p>
+        <div slot="footer">
+          <button command="close" commandfor="command-dialog">Close</button>
         </div>
       </el-dm-dialog>
     </div>
@@ -29,22 +43,30 @@
       <el-dm-button onclick="document.getElementById('md-dialog').show()">Medium</el-dm-button>
       <el-dm-button onclick="document.getElementById('lg-dialog').show()">Large</el-dm-button>
       <el-dm-button onclick="document.getElementById('xl-dialog').show()">Extra Large</el-dm-button>
+      <el-dm-button onclick="document.getElementById('full-dialog').show()">Fullscreen</el-dm-button>
 
       <el-dm-dialog id="sm-dialog" size="sm">
-        <span slot="title">Small Dialog</span>
+        <span slot="header">Small Dialog</span>
         <p>This is a small dialog.</p>
       </el-dm-dialog>
       <el-dm-dialog id="md-dialog" size="md">
-        <span slot="title">Medium Dialog</span>
+        <span slot="header">Medium Dialog</span>
         <p>This is a medium dialog (default).</p>
       </el-dm-dialog>
       <el-dm-dialog id="lg-dialog" size="lg">
-        <span slot="title">Large Dialog</span>
+        <span slot="header">Large Dialog</span>
         <p>This is a large dialog with more space for content.</p>
       </el-dm-dialog>
       <el-dm-dialog id="xl-dialog" size="xl">
-        <span slot="title">Extra Large Dialog</span>
+        <span slot="header">Extra Large Dialog</span>
         <p>This is an extra large dialog for complex content.</p>
+      </el-dm-dialog>
+      <el-dm-dialog id="full-dialog" size="full">
+        <span slot="header">Fullscreen Dialog</span>
+        <p>This dialog covers the viewport.</p>
+        <div slot="footer">
+          <el-dm-button onclick="document.getElementById('full-dialog').close()">Close</el-dm-button>
+        </div>
       </el-dm-dialog>
     </div>
   </section>
@@ -53,11 +75,11 @@
     <h2>Non-dismissible Dialog</h2>
     <div class="demo-row">
       <el-dm-button onclick="document.getElementById('nodismiss-dialog').show()">Open (Click button to close)</el-dm-button>
-      <el-dm-dialog id="nodismiss-dialog" no-backdrop-dismiss no-escape-dismiss>
-        <span slot="title">Important Action</span>
+      <el-dm-dialog id="nodismiss-dialog" no-dismiss>
+        <span slot="header">Important Action</span>
         <p>You must click the button below to close this dialog.</p>
         <div slot="footer">
-          <el-dm-button onclick="document.getElementById('nodismiss-dialog').hide()">I Understand</el-dm-button>
+          <el-dm-button onclick="document.getElementById('nodismiss-dialog').close()">I Understand</el-dm-button>
         </div>
       </el-dm-dialog>
     </div>

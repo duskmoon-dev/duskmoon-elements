@@ -43,7 +43,7 @@ registerAll();
   <span slot="header">Title</span>
   Dialog content here.
   <div slot="footer">
-    <el-dm-button onclick="this.closest('el-dm-dialog').hide()">Close</el-dm-button>
+    <el-dm-button onclick="this.closest('el-dm-dialog').close()">Close</el-dm-button>
   </div>
 </el-dm-dialog>
 ```
@@ -135,8 +135,8 @@ Style shadow DOM internals from outside using `::part()`:
 el-dm-button::part(button) {
   border-radius: 0;
 }
-el-dm-dialog::part(backdrop) {
-  backdrop-filter: blur(4px);
+el-dm-dialog::part(dialog) {
+  border-radius: 0;
 }
 el-dm-table::part(thead) {
   background: var(--color-surface-container-high);

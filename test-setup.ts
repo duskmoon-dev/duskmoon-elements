@@ -12,6 +12,7 @@ Object.assign(globalThis, {
   document: window.document,
   HTMLElement: window.HTMLElement,
   HTMLDivElement: window.HTMLDivElement,
+  HTMLDialogElement: window.HTMLDialogElement,
   CustomEvent: window.CustomEvent,
   Event: window.Event,
   CSSStyleSheet: window.CSSStyleSheet,

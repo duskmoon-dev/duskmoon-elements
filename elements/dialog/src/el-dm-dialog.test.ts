@@ -3,15 +3,42 @@ import { ElDmDialog, register } from './index';
 
 register();
 
-// Helper to create keyboard events in happy-dom
-function createKeyboardEvent(key: string): KeyboardEvent {
-  const event = new Event('keydown', { bubbles: true }) as KeyboardEvent;
-  Object.defineProperty(event, 'key', { value: key, writable: false });
-  Object.defineProperty(event, 'preventDefault', {
-    value: () => {},
-    writable: false,
+async function nextUpdate(): Promise<void> {
+  await new Promise<void>((resolve) => {
+    queueMicrotask(resolve);
   });
+}
+
+function createCommandEvent(command: string): Event {
+  const event = new Event('command', { bubbles: true, composed: true });
+  Object.defineProperty(event, 'command', { value: command });
   return event;
+}
+
+function spyDialogOpeners(): {
+  counts: { show: number; showModal: number };
+  restore: () => void;
+} {
+  const origShow = HTMLDialogElement.prototype.show;
+  const origShowModal = HTMLDialogElement.prototype.showModal;
+  const counts = { show: 0, showModal: 0 };
+
+  HTMLDialogElement.prototype.show = function show(this: HTMLDialogElement) {
+    counts.show += 1;
+    return origShow.call(this);
+  };
+  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+    counts.showModal += 1;
+    return origShowModal.call(this);
+  };
+
+  return {
+    counts,
+    restore() {
+      HTMLDialogElement.prototype.show = origShow;
+      HTMLDialogElement.prototype.showModal = origShowModal;
+    },
+  };
 }
 
 describe('ElDmDialog', () => {
@@ -23,41 +50,42 @@ describe('ElDmDialog', () => {
   });
 
   afterEach(() => {
-    // Clean up any open dialogs that set body overflow
-    document.body.style.overflow = '';
     container.remove();
   });
 
   function createDialog(attrs: Record<string, unknown> = {}): ElDmDialog {
     const el = document.createElement('el-dm-dialog') as ElDmDialog;
     for (const [key, val] of Object.entries(attrs)) {
-      if (key === 'noBackdrop') {
-        (el as unknown as Record<string, unknown>).noBackdrop = val;
-      } else {
-        (el as unknown as Record<string, unknown>)[key] = val;
-      }
+      (el as unknown as Record<string, unknown>)[key] = val;
     }
     container.appendChild(el);
     return el;
   }
 
-  // ──────────────── Registration ────────────────
+  function nativeDialog(el: ElDmDialog): HTMLDialogElement | null {
+    return el.shadowRoot?.querySelector('dialog') ?? null;
+  }
+
   test('is defined', () => {
     expect(customElements.get('el-dm-dialog')).toBe(ElDmDialog);
   });
 
-  // ──────────────── Rendering ────────────────
   describe('rendering', () => {
-    test('creates a shadow root with dialog role', () => {
+    test('creates a native dialog with dialog class', () => {
       const el = createDialog();
-      const dialog = el.shadowRoot?.querySelector('[role="dialog"]');
+      const dialog = nativeDialog(el);
       expect(dialog).toBeDefined();
+      expect(dialog).toBeInstanceOf(HTMLDialogElement);
+      expect(dialog?.classList.contains('dialog')).toBe(true);
     });
 
-    test('has aria-modal attribute', () => {
+    test('renders duskmoonui dialog structure', () => {
       const el = createDialog();
-      const dialog = el.shadowRoot?.querySelector('[role="dialog"]');
-      expect(dialog?.getAttribute('aria-modal')).toBe('true');
+      expect(el.shadowRoot?.querySelector('.dialog-box')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-header')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-title')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-body')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-footer')).toBeDefined();
     });
 
     test('has header, body, and footer slots', () => {
@@ -67,24 +95,26 @@ describe('ElDmDialog', () => {
       expect(el.shadowRoot?.querySelector('slot[name="footer"]')).toBeDefined();
     });
 
-    test('renders wrapper element', () => {
+    test('does not render a custom backdrop overlay', () => {
       const el = createDialog();
-      expect(el.shadowRoot?.querySelector('.dialog-wrapper')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('.dialog-backdrop')).toBeNull();
+      expect(el.shadowRoot?.querySelector('.dialog-wrapper')).toBeNull();
     });
   });
 
-  // ──────────────── Properties & Defaults ────────────────
   describe('properties', () => {
     test('default dismissible is true', () => {
       const el = createDialog();
       expect(el.dismissible).toBe(true);
     });
 
-    test('reflects open to attribute', () => {
+    test('reflects open to attribute', async () => {
       const el = createDialog();
       el.show();
+      await nextUpdate();
       expect(el.hasAttribute('open')).toBe(true);
       el.close();
+      await nextUpdate();
     });
 
     test('reflects size to attribute', () => {
@@ -93,12 +123,11 @@ describe('ElDmDialog', () => {
     });
   });
 
-  // ──────────────── Size Classes ────────────────
   describe('sizes', () => {
     for (const size of ['sm', 'lg', 'xl', 'full'] as const) {
       test(`applies ${size} size class`, () => {
         const el = createDialog({ size });
-        const dialog = el.shadowRoot?.querySelector('.dialog');
+        const dialog = nativeDialog(el);
         const expectedClass = size === 'full' ? 'dialog-fullscreen' : `dialog-${size}`;
         expect(dialog?.classList.contains(expectedClass)).toBe(true);
       });
@@ -106,26 +135,12 @@ describe('ElDmDialog', () => {
 
     test('md size has no extra class', () => {
       const el = createDialog({ size: 'md' });
-      const dialog = el.shadowRoot?.querySelector('.dialog');
+      const dialog = nativeDialog(el);
       expect(dialog?.classList.contains('dialog-sm')).toBe(false);
       expect(dialog?.classList.contains('dialog-lg')).toBe(false);
     });
   });
 
-  // ──────────────── Backdrop ────────────────
-  describe('backdrop', () => {
-    test('shows backdrop by default', () => {
-      const el = createDialog();
-      expect(el.shadowRoot?.querySelector('.dialog-backdrop')).toBeDefined();
-    });
-
-    test('hides backdrop when no-backdrop is set', () => {
-      const el = createDialog({ noBackdrop: true });
-      expect(el.shadowRoot?.querySelector('.dialog-backdrop')).toBeNull();
-    });
-  });
-
-  // ──────────────── Close Button ────────────────
   describe('close button', () => {
     test('shows close button when dismissible', () => {
       const el = createDialog({ dismissible: true });
@@ -143,144 +158,207 @@ describe('ElDmDialog', () => {
       expect(closeBtn?.getAttribute('aria-label')).toBe('Close');
     });
 
-    test('clicking close button closes dialog', () => {
+    test('clicking close button closes dialog', async () => {
       const el = createDialog({ dismissible: true });
       el.show();
+      await nextUpdate();
       const closeBtn = el.shadowRoot?.querySelector('.dialog-close');
       closeBtn?.dispatchEvent(new Event('click'));
+      await nextUpdate();
       expect(el.open).toBe(false);
     });
   });
 
-  // ──────────────── Show/Close/Toggle ────────────────
   describe('show/close/toggle', () => {
-    test('show() sets open to true', () => {
+    test('show() sets open and calls showModal()', async () => {
+      const spy = spyDialogOpeners();
       const el = createDialog();
       el.show();
+      await nextUpdate();
+      const dialog = nativeDialog(el);
       expect(el.open).toBe(true);
       expect(el.hasAttribute('open')).toBe(true);
+      expect(dialog?.open).toBe(true);
+      expect(spy.counts.showModal).toBe(1);
+      expect(spy.counts.show).toBe(0);
       el.close();
+      await nextUpdate();
+      spy.restore();
     });
 
-    test('close() sets open to false', () => {
+    test('showModal() is an alias for show()', async () => {
+      const el = createDialog();
+      el.showModal();
+      await nextUpdate();
+      expect(el.open).toBe(true);
+      expect(nativeDialog(el)?.open).toBe(true);
+      el.close();
+      await nextUpdate();
+    });
+
+    test('no-backdrop uses show() instead of showModal()', async () => {
+      const spy = spyDialogOpeners();
+      const el = createDialog({ noBackdrop: true });
+      el.show();
+      await nextUpdate();
+      expect(nativeDialog(el)?.open).toBe(true);
+      expect(spy.counts.show).toBe(1);
+      expect(spy.counts.showModal).toBe(0);
+      el.close();
+      await nextUpdate();
+      spy.restore();
+    });
+
+    test('close() sets open to false', async () => {
       const el = createDialog();
       el.show();
+      await nextUpdate();
       el.close();
+      await nextUpdate();
       expect(el.open).toBe(false);
+      expect(nativeDialog(el)?.open).toBe(false);
     });
 
-    test('toggle() switches open state', () => {
+    test('toggle() switches open state', async () => {
       const el = createDialog();
       el.toggle();
+      await nextUpdate();
       expect(el.open).toBe(true);
       el.toggle();
+      await nextUpdate();
       expect(el.open).toBe(false);
     });
 
-    test('wrapper has open class when initially open', () => {
+    test('initially open dialog calls showModal()', () => {
+      const spy = spyDialogOpeners();
       const el = createDialog({ open: true });
-      const wrapper = el.shadowRoot?.querySelector('.dialog-wrapper');
-      expect(wrapper?.classList.contains('open')).toBe(true);
+      expect(nativeDialog(el)?.open).toBe(true);
+      expect(spy.counts.showModal).toBe(1);
       el.close();
-    });
-
-    test('close() sets open property to false', () => {
-      const el = createDialog({ open: true });
-      el.close();
-      expect(el.open).toBe(false);
+      spy.restore();
     });
   });
 
-  // ──────────────── Events ────────────────
   describe('events', () => {
-    test('show() emits open event', () => {
+    test('show() emits open event', async () => {
       const el = createDialog();
       let opened = false;
       el.addEventListener('open', () => {
         opened = true;
       });
       el.show();
+      await nextUpdate();
       expect(opened).toBe(true);
       el.close();
+      await nextUpdate();
     });
 
-    test('close() emits close event', () => {
+    test('close() emits close event', async () => {
       const el = createDialog();
       el.show();
+      await nextUpdate();
       let closed = false;
       el.addEventListener('close', () => {
         closed = true;
       });
       el.close();
+      await nextUpdate();
       expect(closed).toBe(true);
     });
   });
 
-  // ──────────────── Body Overflow ────────────────
-  describe('body overflow', () => {
-    test('show() sets body overflow to hidden', () => {
-      const el = createDialog();
-      el.show();
-      expect(document.body.style.overflow).toBe('hidden');
-      el.close();
-    });
-
-    test('close() restores body overflow', () => {
-      const el = createDialog();
-      el.show();
-      el.close();
-      expect(document.body.style.overflow).toBe('');
-    });
-  });
-
-  // ──────────────── Escape Key ────────────────
   describe('escape key', () => {
-    test('Escape closes dismissible dialog', () => {
+    test('cancel event closes dismissible dialog', async () => {
       const el = createDialog({ dismissible: true });
       el.show();
-      document.dispatchEvent(createKeyboardEvent('Escape'));
+      await nextUpdate();
+      const dialog = nativeDialog(el);
+      const cancel = new Event('cancel', { cancelable: true });
+      dialog?.dispatchEvent(cancel);
+      dialog?.dispatchEvent(new Event('close'));
+      await nextUpdate();
       expect(el.open).toBe(false);
     });
 
-    test('Escape does not close non-dismissible dialog', () => {
+    test('cancel event is prevented on non-dismissible dialog', async () => {
       const el = createDialog({ dismissible: false });
       el.show();
-      document.dispatchEvent(createKeyboardEvent('Escape'));
+      await nextUpdate();
+      const dialog = nativeDialog(el);
+      const cancel = new Event('cancel', { cancelable: true });
+      dialog?.dispatchEvent(cancel);
+      expect(cancel.defaultPrevented).toBe(true);
       expect(el.open).toBe(true);
-      el.close(); // cleanup
+      el.close();
+      await nextUpdate();
     });
   });
 
-  // ──────────────── Backdrop Click ────────────────
   describe('backdrop click', () => {
-    test('clicking backdrop closes dismissible dialog', () => {
+    test('clicking the dialog element closes dismissible dialog', async () => {
       const el = createDialog({ dismissible: true });
       el.show();
-      const backdrop = el.shadowRoot?.querySelector('.dialog-backdrop');
-      // Simulate click where target === currentTarget (click on backdrop itself)
-      const event = new Event('click');
-      Object.defineProperty(event, 'target', { value: backdrop });
-      Object.defineProperty(event, 'currentTarget', { value: backdrop });
-      backdrop?.dispatchEvent(event);
+      await nextUpdate();
+      const dialog = nativeDialog(el);
+      const event = new Event('click', { bubbles: true });
+      Object.defineProperty(event, 'target', { value: dialog });
+      Object.defineProperty(event, 'currentTarget', { value: dialog });
+      dialog?.dispatchEvent(event);
+      await nextUpdate();
       expect(el.open).toBe(false);
     });
   });
 
-  // ──────────────── CSS Parts ────────────────
-  describe('CSS parts', () => {
-    test('exposes wrapper part', () => {
+  describe('command invoker', () => {
+    test('show-modal command opens the dialog', async () => {
       const el = createDialog();
-      expect(el.shadowRoot?.querySelector('[part="wrapper"]')).toBeDefined();
+      el.dispatchEvent(createCommandEvent('show-modal'));
+      await nextUpdate();
+      expect(el.open).toBe(true);
+      el.close();
+      await nextUpdate();
     });
 
-    test('exposes dialog part', () => {
+    test('close command closes the dialog', async () => {
       const el = createDialog();
-      expect(el.shadowRoot?.querySelector('[part="dialog"]')).toBeDefined();
+      el.show();
+      await nextUpdate();
+      el.dispatchEvent(createCommandEvent('close'));
+      await nextUpdate();
+      expect(el.open).toBe(false);
+    });
+
+    test('toggle command toggles the dialog', async () => {
+      const el = createDialog();
+      el.dispatchEvent(createCommandEvent('toggle'));
+      await nextUpdate();
+      expect(el.open).toBe(true);
+      el.dispatchEvent(createCommandEvent('toggle'));
+      await nextUpdate();
+      expect(el.open).toBe(false);
+    });
+  });
+
+  describe('CSS parts', () => {
+    test('exposes dialog part on the native dialog', () => {
+      const el = createDialog();
+      const dialog = el.shadowRoot?.querySelector('[part="dialog"]');
+      expect(dialog?.tagName.toLowerCase()).toBe('dialog');
+    });
+
+    test('exposes box part', () => {
+      const el = createDialog();
+      expect(el.shadowRoot?.querySelector('[part="box"]')).toBeDefined();
     });
 
     test('exposes header part', () => {
       const el = createDialog();
       expect(el.shadowRoot?.querySelector('[part="header"]')).toBeDefined();
+    });
+
+    test('exposes title part', () => {
+      const el = createDialog();
+      expect(el.shadowRoot?.querySelector('[part="title"]')).toBeDefined();
     });
 
     test('exposes body part', () => {
@@ -292,23 +370,10 @@ describe('ElDmDialog', () => {
       const el = createDialog();
       expect(el.shadowRoot?.querySelector('[part="footer"]')).toBeDefined();
     });
-
-    test('exposes backdrop part', () => {
-      const el = createDialog();
-      expect(el.shadowRoot?.querySelector('[part="backdrop"]')).toBeDefined();
-    });
   });
 
-  // ──────────────── Animation Styles ────────────────
-  describe('animation styles', () => {
-    test('has animationStyles stylesheet attached', () => {
-      const el = createDialog();
-      const sheets = el.shadowRoot?.adoptedStyleSheets ?? [];
-      // animationStyles is the second sheet (after component styles)
-      expect(sheets.length).toBeGreaterThanOrEqual(2);
-    });
-
-    test('animationStyles includes prefers-reduced-motion rule', () => {
+  describe('styles', () => {
+    test('includes native dialog core styles', () => {
       const el = createDialog();
       const sheets = el.shadowRoot?.adoptedStyleSheets ?? [];
       const allCSS = sheets
@@ -318,18 +383,8 @@ describe('ElDmDialog', () => {
             .join('\n'),
         )
         .join('\n');
+      expect(allCSS).toContain('dialog.dialog');
       expect(allCSS).toContain('prefers-reduced-motion');
-    });
-  });
-
-  // ──────────────── Disconnected Callback ────────────────
-  describe('cleanup', () => {
-    test('disconnectedCallback restores body overflow', () => {
-      const el = createDialog();
-      el.show();
-      expect(document.body.style.overflow).toBe('hidden');
-      el.remove();
-      expect(document.body.style.overflow).toBe('');
     });
   });
 });

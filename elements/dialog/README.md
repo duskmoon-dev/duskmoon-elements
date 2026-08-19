@@ -1,6 +1,6 @@
 # @duskmoon-dev/el-dialog
 
-A modal dialog component built with Web Components.
+A modal dialog custom element built on the native HTML `<dialog>` element, styled with `@duskmoon-dev/core`.
 
 ## Installation
 
@@ -17,6 +17,8 @@ import '@duskmoon-dev/el-dialog/register';
 ```
 
 ```html
+<button command="show-modal" commandfor="myDialog">Open Dialog</button>
+
 <el-dm-dialog id="myDialog">
   <span slot="header">Dialog Title</span>
   <p>Dialog content goes here.</p>
@@ -46,6 +48,7 @@ customElements.define('my-dialog', ElDmDialog);
 | `sm` | Small dialog |
 | `md` | Medium dialog (default) |
 | `lg` | Large dialog |
+| `xl` | Extra large dialog |
 | `full` | Full-screen dialog |
 
 ## Attributes
@@ -53,9 +56,19 @@ customElements.define('my-dialog', ElDmDialog);
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `open` | `boolean` | `false` | Whether the dialog is open |
-| `size` | `string` | `'md'` | Size: `sm`, `md`, `lg`, `full` |
-| `dismissible` | `boolean` | `true` | Allow closing via backdrop/escape |
-| `no-backdrop` | `boolean` | `false` | Hide the backdrop |
+| `size` | `string` | `'md'` | Size: `sm`, `md`, `lg`, `xl`, `full` |
+| `dismissible` | `boolean` | `true` | Allow closing via backdrop/Escape |
+| `no-dismiss` | `boolean` | `false` | Prevent closing via backdrop or Escape |
+| `no-backdrop` | `boolean` | `false` | Open as non-modal (`show()` instead of `showModal()`) |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Opens the dialog as a modal |
+| `showModal()` | Alias for `show()` |
+| `close()` | Closes the dialog |
+| `toggle()` | Toggles the dialog state |
 
 ## Slots
 
@@ -69,13 +82,15 @@ customElements.define('my-dialog', ElDmDialog);
 
 | Part | Description |
 |------|-------------|
-| `dialog` | The dialog element |
-| `backdrop` | The backdrop overlay |
-| `content` | The content wrapper |
+| `dialog` | The native `<dialog>` element |
+| `box` | Inner `dialog-box` container |
 | `header` | The header section |
+| `title` | The title wrapper |
 | `body` | The body section |
 | `footer` | The footer section |
 | `close` | The close button |
+
+The backdrop is the native `::backdrop` pseudo-element. Tune it with `--color-scrim`.
 
 ## Events
 
@@ -89,7 +104,7 @@ customElements.define('my-dialog', ElDmDialog);
 ### Basic Dialog
 
 ```html
-<el-dm-button onclick="document.querySelector('#dialog').open = true">
+<el-dm-button onclick="document.querySelector('#dialog').show()">
   Open Dialog
 </el-dm-button>
 
@@ -97,7 +112,7 @@ customElements.define('my-dialog', ElDmDialog);
   <span slot="header">Confirmation</span>
   <p>Are you sure you want to proceed?</p>
   <div slot="footer">
-    <el-dm-button variant="ghost" onclick="this.closest('el-dm-dialog').open = false">
+    <el-dm-button variant="ghost" onclick="this.closest('el-dm-dialog').close()">
       Cancel
     </el-dm-button>
     <el-dm-button variant="primary">
@@ -113,13 +128,14 @@ customElements.define('my-dialog', ElDmDialog);
 <el-dm-dialog size="sm">Small dialog</el-dm-dialog>
 <el-dm-dialog size="md">Medium dialog</el-dm-dialog>
 <el-dm-dialog size="lg">Large dialog</el-dm-dialog>
+<el-dm-dialog size="xl">Extra large dialog</el-dm-dialog>
 <el-dm-dialog size="full">Full-screen dialog</el-dm-dialog>
 ```
 
 ### Non-Dismissible
 
 ```html
-<el-dm-dialog dismissible="false">
+<el-dm-dialog no-dismiss>
   <span slot="header">Required Action</span>
   <p>You must complete this action.</p>
   <div slot="footer">
@@ -133,13 +149,9 @@ customElements.define('my-dialog', ElDmDialog);
 ```javascript
 const dialog = document.querySelector('el-dm-dialog');
 
-// Open
-dialog.open = true;
+dialog.show();
+dialog.close();
 
-// Close
-dialog.open = false;
-
-// Listen for events
 dialog.addEventListener('close', () => {
   console.log('Dialog closed');
 });
