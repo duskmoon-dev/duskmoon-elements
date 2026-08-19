@@ -31,23 +31,29 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          # Do not set registry-url: it injects NODE_AUTH_TOKEN into
-          # NPM_CONFIG_USERCONFIG and forces legacy token auth over OIDC.
+          # Do not set registry-url: it writes _authToken=${NODE_AUTH_TOKEN}
+          # into NPM_CONFIG_USERCONFIG and blocks OIDC trusted publishing.
           node-version: '24'
 
       - name: Ensure npm supports OIDC trusted publishing
         run: |
-          npm install -g npm@latest
+          # Pin a known-good OIDC-capable CLI (11.5.1+). Avoid relying on whatever
+          # ships with the runner / latest major if it regresses.
+          npm install -g npm@11.6.2
           npm --version
-          # Clear any token-based auth left by the environment / setup-node.
-          unset NODE_AUTH_TOKEN
-          USER_NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
-          printf 'registry=https://registry.npmjs.org/\n' > "$USER_NPMRC"
-          printf 'registry=https://registry.npmjs.org/\n' > "$HOME/.npmrc"
-          echo "Using npmrc: $USER_NPMRC"
-          cat "$USER_NPMRC"
+          node --version
+
+          # Any leftover token auth (empty or not) short-circuits the OIDC path.
+          unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG
+          rm -f "$HOME/.npmrc" "$RUNNER_TEMP/.npmrc" || true
+
+          echo "OIDC env present: ACTIONS_ID_TOKEN_REQUEST_URL=${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
+          echo "OIDC env present: ACTIONS_ID_TOKEN_REQUEST_TOKEN=${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+yes}"
+          echo "NPM_CONFIG_USERCONFIG=${NPM_CONFIG_USERCONFIG:-<unset>}"
+          echo "NODE_AUTH_TOKEN set: ${NODE_AUTH_TOKEN:+yes}${NODE_AUTH_TOKEN:-no}"
+          ls -la "$HOME/.npmrc" 2>/dev/null || echo "No ~/.npmrc (good for OIDC)"
 
       - name: Install dependencies
         run: bun install
@@ -153,75 +159,59 @@ jobs:
       - name: Publish packages
         if: ${{ !inputs.dry-run }}
         env:
-          # Prefer OIDC trusted publishing; never inject NODE_AUTH_TOKEN.
+          # Prefer OIDC trusted publishing; never inject NODE_AUTH_TOKEN / NPM_TOKEN.
           NPM_CONFIG_PROVENANCE: true
         run: |
-          # setup-node may reintroduce these into the job env — clear before publish.
-          unset NODE_AUTH_TOKEN
-          USER_NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
-          printf 'registry=https://registry.npmjs.org/\n' > "$USER_NPMRC"
-          printf 'registry=https://registry.npmjs.org/\n' > "$HOME/.npmrc"
+          # Bulletproof: strip token auth so npm CLI initiates the OIDC exchange.
+          unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG
+          rm -f "$HOME/.npmrc" "$RUNNER_TEMP/.npmrc" || true
+
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+            echo "::error::GitHub OIDC env vars missing. Ensure permissions.id-token: write is set."
+            exit 1
+          fi
+
+          publish_one() {
+            local dir="$1"
+            local name="$2"
+            local version="$3"
+            echo "Publishing $name@$version..."
+            (
+              cd "$dir"
+              if npm view "$name@$version" version >/dev/null 2>&1; then
+                echo "  $name@$version already published, skipping"
+                exit 0
+              fi
+              # env -u keeps child npm free of empty token placeholders.
+              if ! env -u NODE_AUTH_TOKEN -u NPM_TOKEN -u NPM_CONFIG_USERCONFIG \
+                npm publish --access public --provenance --loglevel=verbose \
+                --registry=https://registry.npmjs.org/; then
+                echo "::error::npm publish failed for $name@$version"
+                echo "--- npm debug log (tail) ---"
+                ls -1t "$HOME/.npm/_logs"/*-debug-*.log 2>/dev/null | head -1 | xargs -I{} sh -c 'rg -n "oidc|OIDC|auth|ENEEDAUTH|404|trusted" {} | tail -80 || tail -80 {}'
+                exit 1
+              fi
+            )
+          }
 
           NEW_VERSION="${{ steps.version.outputs.new }}"
 
-          # Publish core first (other packages depend on it)
-          echo "Publishing @duskmoon-dev/el-base..."
-          cd packages/base
-          if npm view @duskmoon-dev/el-base@$NEW_VERSION version >/dev/null 2>&1; then
-            echo "  @duskmoon-dev/el-base@$NEW_VERSION already published, skipping"
-          else
-            npm publish --access public --provenance --registry=https://registry.npmjs.org/
-          fi
-          cd ../..
+          publish_one packages/base "@duskmoon-dev/el-base" "$NEW_VERSION"
 
-          # Publish all element packages
           for pkg in elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
-              echo "Publishing $FULL_PKG_NAME..."
-              cd "$pkg"
-              if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
-                echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
-              else
-                npm publish --access public --provenance --registry=https://registry.npmjs.org/
-              fi
-              cd ../..
+              publish_one "$pkg" "$(jq -r '.name' "$pkg/package.json")" "$NEW_VERSION"
             fi
           done
 
-          # Publish all CSS art packages
           for pkg in art-elements/*; do
             if [ -f "$pkg/package.json" ]; then
-              FULL_PKG_NAME=$(jq -r '.name' "$pkg/package.json")
-              echo "Publishing $FULL_PKG_NAME..."
-              cd "$pkg"
-              if npm view $FULL_PKG_NAME@$NEW_VERSION version >/dev/null 2>&1; then
-                echo "  $FULL_PKG_NAME@$NEW_VERSION already published, skipping"
-              else
-                npm publish --access public --provenance --registry=https://registry.npmjs.org/
-              fi
-              cd ../..
+              publish_one "$pkg" "$(jq -r '.name' "$pkg/package.json")" "$NEW_VERSION"
             fi
           done
 
-          # Publish bundle packages last (depend on all elements/arts)
-          echo "Publishing @duskmoon-dev/elements..."
-          cd packages/elements
-          if npm view @duskmoon-dev/elements@$NEW_VERSION version >/dev/null 2>&1; then
-            echo "  @duskmoon-dev/elements@$NEW_VERSION already published, skipping"
-          else
-            npm publish --access public --provenance --registry=https://registry.npmjs.org/
-          fi
-          cd ../..
-
-          echo "Publishing @duskmoon-dev/art-elements..."
-          cd packages/art-elements
-          if npm view @duskmoon-dev/art-elements@$NEW_VERSION version >/dev/null 2>&1; then
-            echo "  @duskmoon-dev/art-elements@$NEW_VERSION already published, skipping"
-          else
-            npm publish --access public --provenance --registry=https://registry.npmjs.org/
-          fi
-          cd ../..
+          publish_one packages/elements "@duskmoon-dev/elements" "$NEW_VERSION"
+          publish_one packages/art-elements "@duskmoon-dev/art-elements" "$NEW_VERSION"
 
           echo "All packages published!"
 
