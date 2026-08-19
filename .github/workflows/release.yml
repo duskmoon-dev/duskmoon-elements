@@ -188,7 +188,7 @@ jobs:
                 --registry=https://registry.npmjs.org/; then
                 echo "::error::npm publish failed for $name@$version"
                 echo "--- npm debug log (tail) ---"
-                ls -1t "$HOME/.npm/_logs"/*-debug-*.log 2>/dev/null | head -1 | xargs -I{} sh -c 'rg -n "oidc|OIDC|auth|ENEEDAUTH|404|trusted" {} | tail -80 || tail -80 {}'
+                ls -1t "$HOME/.npm/_logs"/*-debug-*.log 2>/dev/null | head -1 | xargs -I{} sh -c 'grep -nE "oidc|OIDC|auth|ENEEDAUTH|404|trusted" {} | tail -80 || tail -80 {}'
                 exit 1
               fi
             )
