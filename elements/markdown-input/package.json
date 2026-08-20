@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/core": "1.18.0",
+    "@duskmoon-dev/core": "1.18.1",
     "@duskmoon-dev/el-base": "1.7.1",
     "hast-util-sanitize": "5.0.2",
     "rehype-katex": "7.0.1",
@@ -74,7 +74,7 @@
     "markdown-editor"
   ],
   "optionalDependencies": {
-    "mermaid": "11.16.0"
+    "mermaid": "11.17.0"
   },
   "repository": {
     "type": "git",
