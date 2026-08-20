@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-badge",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.7.0",
+    "@duskmoon-dev/el-base": "1.7.1",
     "@duskmoon-dev/core": "1.18.0"
   },
   "devDependencies": {
