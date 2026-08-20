@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "1.7.0",
-    "@duskmoon-dev/css-art": "1.17.2"
+    "@duskmoon-dev/css-art": "1.18.0"
   },
   "devDependencies": {
     "typescript": "6.0.3"

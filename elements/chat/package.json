@@ -43,7 +43,7 @@
     "@duskmoon-dev/el-markdown": "1.7.0",
     "@duskmoon-dev/el-markdown-input": "1.7.0",
     "@duskmoon-dev/el-tooltip": "1.7.0",
-    "@duskmoon-dev/core": "1.17.2"
+    "@duskmoon-dev/core": "1.18.0"
   },
   "devDependencies": {
     "typescript": "6.0.3"
