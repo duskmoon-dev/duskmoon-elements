@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-autocomplete",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "DuskMoon Autocomplete custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/core": "1.18.1",
-    "@duskmoon-dev/el-base": "1.7.1"
+    "@duskmoon-dev/el-base": "1.7.2"
   },
   "devDependencies": {
     "typescript": "6.0.3"
