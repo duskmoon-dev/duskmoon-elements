@@ -8,7 +8,7 @@ component: '@duskmoon-dev/el-chat'
 
 import ComponentDemo from '../../../components/ComponentDemo.astro';
 
-export const chatRounds = Array.from({ length: 50 }, (_, index) => {
+export const chatRounds = Array.from({ length: 12 }, (_, index) => {
 const round = index + 1;
 const minute = String(round).padStart(2, '0');
 
@@ -23,7 +23,7 @@ assistantContent: `Round ${round}: the chat demo renders **markdown**, shows ava
 
 # Chat
 
-The Chat components provide styled primitives for LLM-oriented conversations: message bubbles, assistant reasoning, tool calls, and typing indicators.
+The Chat components provide styled primitives for LLM-oriented conversations: scrollable transcripts, message bubbles, assistant reasoning, tool calls, and typing indicators.
 
 ## Installation
 
@@ -54,7 +54,11 @@ import '@duskmoon-dev/el-chat/register';
 
 <ComponentDemo title="Full Conversation">
   <div style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
-    <div style="display: grid; gap: 0.75rem; max-height: 34rem; overflow-y: auto; padding-right: 0.5rem;">
+    <el-dm-chat-scroll
+      label="Example conversation"
+      indicator-label="Assistant replies"
+      style="height: 34rem;"
+    >
       {chatRounds.map((round) => (
         <>
           <el-dm-chat
@@ -70,6 +74,7 @@ import '@duskmoon-dev/el-chat/register';
           ></el-dm-chat>
           <el-dm-chat
             align="start"
+            timeline={round.round}
             color="secondary"
             avatar="AI"
             author="Assistant"
@@ -80,7 +85,7 @@ import '@duskmoon-dev/el-chat/register';
           ></el-dm-chat>
         </>
       ))}
-    </div>
+    </el-dm-chat-scroll>
     <el-dm-chat-input
       placeholder="Send a message... (Ctrl+Enter to send)"
       send-label="Send"
@@ -89,23 +94,52 @@ import '@duskmoon-dev/el-chat/register';
   </div>
 </ComponentDemo>
 
+## Scroll-Driven Transcript
+
+Wrap messages in `el-dm-chat-scroll` and assign each assistant message a unique `timeline` from
+`1` through `24`. User messages remain in the transcript but do not receive indicators. The rail
+uses DuskMoonUI Scroll-Driven Animations when supported; its buttons remain a functional fallback
+and always scroll only the transcript panel.
+
+Give the wrapper an explicit height so its body can overflow.
+
+```html
+<el-dm-chat-scroll style="height: 22rem">
+  <el-dm-chat timeline="1" author="Assistant" content="First assistant reply"></el-dm-chat>
+  <el-dm-chat align="end" author="You" content="A user message"></el-dm-chat>
+  <el-dm-chat timeline="2" author="Assistant" content="Second assistant reply"></el-dm-chat>
+</el-dm-chat-scroll>
+```
+
 ## Properties
 
 ### `el-dm-chat` and `el-dm-chat-bubble`
 
-| Property    | Type                                                                                    | Default   | Description                  |
-| ----------- | --------------------------------------------------------------------------------------- | --------- | ---------------------------- |
-| `align`     | `'start' \| 'end'`                                                                      | `'start'` | Message alignment            |
-| `color`     | `'primary' \| 'secondary' \| 'tertiary' \| 'info' \| 'success' \| 'warning' \| 'error'` | -         | Bubble color                 |
-| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg'`                                                          | -         | Bubble size                  |
-| `variant`   | `'tonal' \| 'filled'`                                                                   | `'tonal'` | Bubble visual style          |
-| `streaming` | `boolean`                                                                               | `false`   | Shows a streaming caret      |
-| `avatar`    | `string`                                                                                | -         | Avatar text fallback         |
-| `author`    | `string`                                                                                | -         | Header author text           |
-| `time`      | `string`                                                                                | -         | Footer timestamp             |
-| `status`    | `string`                                                                                | -         | Footer delivery status       |
-| `actions`   | `string`                                                                                | -         | Comma-separated icon actions |
-| `content`   | `string`                                                                                | -         | Markdown content to render   |
+| Property    | Type                                                                                    | Default   | Description                                     |
+| ----------- | --------------------------------------------------------------------------------------- | --------- | ----------------------------------------------- |
+| `align`     | `'start' \| 'end'`                                                                      | `'start'` | Message alignment                               |
+| `color`     | `'primary' \| 'secondary' \| 'tertiary' \| 'info' \| 'success' \| 'warning' \| 'error'` | -         | Bubble color                                    |
+| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg'`                                                          | -         | Bubble size                                     |
+| `variant`   | `'tonal' \| 'filled'`                                                                   | `'tonal'` | Bubble visual style                             |
+| `streaming` | `boolean`                                                                               | `false`   | Shows a streaming caret                         |
+| `avatar`    | `string`                                                                                | -         | Avatar text fallback                            |
+| `author`    | `string`                                                                                | -         | Header author text                              |
+| `time`      | `string`                                                                                | -         | Footer timestamp                                |
+| `status`    | `string`                                                                                | -         | Footer delivery status                          |
+| `actions`   | `string`                                                                                | -         | Comma-separated icon actions                    |
+| `content`   | `string`                                                                                | -         | Markdown content to render                      |
+| `timeline`  | `1` through `24`                                                                        | -         | Assistant indicator mapping (`el-dm-chat` only) |
+
+### `el-dm-chat-scroll`
+
+| Property          | Type     | Default               | Description                            |
+| ----------------- | -------- | --------------------- | -------------------------------------- |
+| `label`           | `string` | `'Conversation'`      | Accessible transcript-region label     |
+| `indicator-label` | `string` | `'Assistant replies'` | Indicator navigation and button prefix |
+
+Timeline values must be unique. When duplicate values are supplied, the last eligible assistant
+message wins. The generated `navigate` event is cancelable and contains
+`{ timeline, index, target }`.
 
 ### `el-dm-chat-input`
 
@@ -240,27 +274,40 @@ Use the `content` attribute or property for markdown-rendered message bodies.
 
 ## Reasoning
 
-<ComponentDemo title="Reasoning Block">
+Place reasoning and tool elements inside a message with the `reasoning` and `tools` slots. They
+render before the final markdown answer, and a streaming caret stays attached to that final answer.
+
+<ComponentDemo title="Reasoning Inside a Message">
   <div style="width: min(100%, 42rem);">
-    <el-dm-chat-reasoning summary="Reasoning" open>
-      Checked the workspace package list, found the missing docs entry, and added the page under
-      Data Display.
-      <el-dm-chat-tool slot="tools" name="package-search" status="success" open>
-        <code slot="call">bunx npm-check-updates --removeRange</code>
-        <code slot="result">Found @duskmoon-dev/core 1.17.0</code>
+    <el-dm-chat
+      avatar="AI"
+      author="Assistant"
+      status="streaming"
+      streaming
+      content="The chat element now supports **in-panel navigation** and nested LLM details."
+    >
+      <el-dm-chat-reasoning slot="reasoning" summary="Reasoning" open>
+        Checked the current DuskMoonUI chat contract before updating the custom element.
+        <el-dm-chat-tool slot="tools" name="package-search" status="success" open>
+          <code slot="call">npm info @duskmoon-dev/core version</code>
+          <code slot="result">1.18.1</code>
+        </el-dm-chat-tool>
+      </el-dm-chat-reasoning>
+      <el-dm-chat-tool slot="tools" name="focused-tests" status="success" open>
+        <code slot="result">Chat tests passed</code>
       </el-dm-chat-tool>
-    </el-dm-chat-reasoning>
+    </el-dm-chat>
   </div>
 </ComponentDemo>
 
 ```html
-<el-dm-chat-reasoning summary="Reasoning" open>
-  Checked package metadata and docs routing before making the change.
-  <el-dm-chat-tool slot="tools" name="package-search" status="success" open>
-    <code slot="call">bunx npm-check-updates --removeRange</code>
-    <code slot="result">Found @duskmoon-dev/core 1.17.0</code>
-  </el-dm-chat-tool>
-</el-dm-chat-reasoning>
+<el-dm-chat streaming content="The final **answer** streams here.">
+  <el-dm-chat-reasoning slot="reasoning" summary="Reasoning" open>
+    Checked package metadata before making the change.
+    <el-dm-chat-tool slot="tools" name="package-search" status="success"></el-dm-chat-tool>
+  </el-dm-chat-reasoning>
+  <el-dm-chat-tool slot="tools" name="build" status="success"></el-dm-chat-tool>
+</el-dm-chat>
 ```
 
 ## Tool Calls
@@ -284,41 +331,62 @@ Use the `content` attribute or property for markdown-rendered message bodies.
 
 ## Slots
 
-| Element                | Slot      | Description                     |
-| ---------------------- | --------- | ------------------------------- |
-| `el-dm-chat`           | default   | Main bubble content             |
-| `el-dm-chat`           | `avatar`  | Avatar shown beside the message |
-| `el-dm-chat`           | `header`  | Metadata above the bubble       |
-| `el-dm-chat`           | `footer`  | Metadata below the bubble       |
-| `el-dm-chat`           | `actions` | Custom quick action controls    |
-| `el-dm-chat-input`     | -         | Uses markdown input internally  |
-| `el-dm-chat-reasoning` | default   | Reasoning body                  |
-| `el-dm-chat-reasoning` | `summary` | Custom summary content          |
-| `el-dm-chat-reasoning` | `tool`    | Single tool call in reasoning   |
-| `el-dm-chat-reasoning` | `tools`   | Tool calls in reasoning         |
-| `el-dm-chat-tool`      | default   | Extra tool body content         |
-| `el-dm-chat-tool`      | `name`    | Custom tool header name         |
-| `el-dm-chat-tool`      | `call`    | Tool call input                 |
-| `el-dm-chat-tool`      | `result`  | Tool result output              |
+| Element                | Slot        | Description                             |
+| ---------------------- | ----------- | --------------------------------------- |
+| `el-dm-chat-scroll`    | default     | Direct `el-dm-chat` transcript rows     |
+| `el-dm-chat`           | default     | Final markdown bubble content           |
+| `el-dm-chat`           | `reasoning` | Reasoning shown before the final answer |
+| `el-dm-chat`           | `tool`      | Single direct tool call                 |
+| `el-dm-chat`           | `tools`     | Direct tool calls                       |
+| `el-dm-chat`           | `avatar`    | Avatar shown beside the message         |
+| `el-dm-chat`           | `header`    | Metadata above the bubble               |
+| `el-dm-chat`           | `footer`    | Metadata below the bubble               |
+| `el-dm-chat`           | `actions`   | Custom quick action controls            |
+| `el-dm-chat-bubble`    | `reasoning` | Reasoning shown before the final answer |
+| `el-dm-chat-bubble`    | `tool`      | Single direct tool call                 |
+| `el-dm-chat-bubble`    | `tools`     | Direct tool calls                       |
+| `el-dm-chat-input`     | -           | Uses markdown input internally          |
+| `el-dm-chat-reasoning` | default     | Reasoning body                          |
+| `el-dm-chat-reasoning` | `summary`   | Custom summary content                  |
+| `el-dm-chat-reasoning` | `tool`      | Single tool call in reasoning           |
+| `el-dm-chat-reasoning` | `tools`     | Tool calls in reasoning                 |
+| `el-dm-chat-tool`      | default     | Extra tool body content                 |
+| `el-dm-chat-tool`      | `name`      | Custom tool header name                 |
+| `el-dm-chat-tool`      | `call`      | Tool call input                         |
+| `el-dm-chat-tool`      | `result`    | Tool result output                      |
 
 ## CSS Parts
 
-| Part        | Description                  |
-| ----------- | ---------------------------- |
-| `chat`      | Chat row container           |
-| `avatar`    | Avatar wrapper               |
-| `header`    | Header metadata              |
-| `bubble`    | Message bubble               |
-| `footer`    | Footer metadata              |
-| `status`    | Message status               |
-| `actions`   | Quick actions wrapper        |
-| `action`    | Generated icon action button |
-| `content`   | Rendered markdown content    |
-| `input`     | Chat input wrapper           |
-| `editor`    | Markdown input element       |
-| `send`      | Send button                  |
-| `reasoning` | Reasoning details container  |
-| `body`      | Reasoning text body          |
-| `tools`     | Reasoning tool-call wrapper  |
-| `tool`      | Tool details container       |
-| `typing`    | Typing indicator             |
+| Part             | Description                      |
+| ---------------- | -------------------------------- |
+| `scroll`         | Scrollable transcript region     |
+| `track`          | Sticky indicator rail            |
+| `indicator`      | Generated assistant-reply button |
+| `body`           | Transcript or reasoning body     |
+| `chat`           | Chat row container               |
+| `avatar`         | Avatar wrapper                   |
+| `header`         | Header metadata                  |
+| `bubble`         | Message bubble                   |
+| `bubble-content` | Final answer inside the bubble   |
+| `footer`         | Footer metadata                  |
+| `status`         | Message status                   |
+| `actions`        | Quick actions wrapper            |
+| `action`         | Generated icon action button     |
+| `content`        | Rendered markdown content        |
+| `input`          | Chat input wrapper               |
+| `editor`         | Markdown input element           |
+| `send`           | Send button                      |
+| `reasoning`      | Reasoning details container      |
+| `tools`          | Reasoning tool-call wrapper      |
+| `tool`           | Tool details container           |
+| `typing`         | Typing indicator                 |
+
+## Events
+
+| Element             | Event          | Detail                        |
+| ------------------- | -------------- | ----------------------------- |
+| `el-dm-chat-scroll` | `navigate`     | `{ timeline, index, target }` |
+| `el-dm-chat`        | `quick-action` | `{ action, label }`           |
+| `el-dm-chat-input`  | `send`         | `{ value }`                   |
+
+Cancel `navigate` with `event.preventDefault()` to replace the built-in in-panel scrolling.

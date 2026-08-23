@@ -9,18 +9,29 @@ import {
   ElDmChatBubble,
   ElDmChatInput,
   ElDmChatReasoning,
+  ElDmChatScroll,
   ElDmChatTool,
   ElDmChatTyping,
 } from './el-dm-chat.js';
 
-export { ElDmChat, ElDmChatBubble, ElDmChatInput, ElDmChatReasoning, ElDmChatTool, ElDmChatTyping };
+export {
+  ElDmChat,
+  ElDmChatBubble,
+  ElDmChatInput,
+  ElDmChatReasoning,
+  ElDmChatScroll,
+  ElDmChatTool,
+  ElDmChatTyping,
+};
 export type {
   ChatAlign,
   ChatBubbleColor,
   ChatBubbleSize,
   ChatBubbleVariant,
+  ChatNavigateEventDetail,
   ChatQuickActionEventDetail,
   ChatSendEventDetail,
+  ChatTimeline,
   ChatToolStatus,
 } from './el-dm-chat.js';
 
@@ -39,6 +50,9 @@ export function register(): void {
   }
   if (!customElements.get('el-dm-chat-reasoning')) {
     customElements.define('el-dm-chat-reasoning', ElDmChatReasoning);
+  }
+  if (!customElements.get('el-dm-chat-scroll')) {
+    customElements.define('el-dm-chat-scroll', ElDmChatScroll);
   }
   if (!customElements.get('el-dm-chat-tool')) {
     customElements.define('el-dm-chat-tool', ElDmChatTool);

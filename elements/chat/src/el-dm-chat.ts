@@ -15,7 +15,37 @@ export type ChatBubbleColor =
   'primary' | 'secondary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error';
 export type ChatBubbleSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ChatBubbleVariant = 'tonal' | 'filled';
+export type ChatTimeline =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | 21
+  | 22
+  | 23
+  | 24;
 export type ChatToolStatus = 'pending' | 'running' | 'success' | 'error';
+export interface ChatNavigateEventDetail {
+  timeline: ChatTimeline;
+  index: number;
+  target: ElDmChat;
+}
 export interface ChatQuickActionEventDetail {
   action: string;
   label: string;
@@ -32,6 +62,8 @@ interface MarkdownInputElement extends HTMLElement {
 
 interface MarkdownElement extends HTMLElement {
   content: string;
+  setContent(content: string): void;
+  startStreaming(): void;
 }
 
 const ALIGN_CLASSES: Record<string, string> = {
@@ -64,6 +96,16 @@ const TOOL_STATUS_CLASSES: Record<string, string> = {
 };
 
 const coreStyles = chatCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+const timelineHostStyles = Array.from({ length: 24 }, (_, index) => {
+  const timeline = index + 1;
+  return `
+    slot::slotted(el-dm-chat:not([align='end'])[timeline='${timeline}']) {
+      view-timeline-name: --chat-${timeline};
+      view-timeline-axis: block;
+      scroll-margin-block-start: 0.5rem;
+    }
+  `;
+}).join('\n');
 
 const styles = css`
   :host {
@@ -207,6 +249,17 @@ const styles = css`
     font-family: inherit;
   }
 
+  slot[name='reasoning']::slotted(el-dm-chat-reasoning),
+  slot[name='tool']::slotted(el-dm-chat-tool),
+  slot[name='tools']::slotted(el-dm-chat-tool) {
+    width: 100%;
+    max-width: none;
+  }
+
+  .chat-bubble-content.chat-bubble-streaming:has(.chat-markdown:not([hidden]))::after {
+    content: none;
+  }
+
   .chat-reasoning {
     padding-inline: 1rem;
   }
@@ -224,7 +277,7 @@ const styles = css`
   .chat-reasoning-tools {
     display: grid;
     gap: 0.5rem;
-    padding-bottom: 0.75rem;
+    font-style: normal;
   }
 
   .chat-reasoning-body ::slotted(el-dm-chat-tool),
@@ -314,6 +367,33 @@ const styles = css`
   }
 `;
 
+const scrollStyles = css`
+  :host {
+    display: block;
+    min-height: 0;
+    font-family: inherit;
+  }
+
+  ${coreStyles}
+
+  ${timelineHostStyles}
+
+  .chat-scroll {
+    width: 100%;
+    height: 100%;
+    max-height: inherit;
+  }
+
+  .chat-scroll.chat-scroll-empty {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  .chat-scroll-track[hidden] {
+    display: none;
+  }
+`;
+
 function getChatClasses(align: ChatAlign | undefined): string {
   return ['chat', ALIGN_CLASSES[align || 'start'] || 'chat-start'].join(' ');
 }
@@ -322,7 +402,6 @@ function getBubbleClasses(
   color: ChatBubbleColor | undefined,
   size: ChatBubbleSize | undefined,
   variant: ChatBubbleVariant | undefined,
-  streaming: boolean,
 ): string {
   const classes = ['chat-bubble'];
 
@@ -338,11 +417,11 @@ function getBubbleClasses(
     classes.push('chat-bubble-filled');
   }
 
-  if (streaming) {
-    classes.push('chat-bubble-streaming');
-  }
-
   return classes.join(' ');
+}
+
+function isChatTimeline(value: unknown): value is ChatTimeline {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 24;
 }
 
 function syncSlotContent(shadowRoot: ShadowRoot): void {
@@ -414,7 +493,39 @@ function renderMarkdownContent(content: string | undefined): string {
   `;
 }
 
-function syncMarkdownContent(shadowRoot: ShadowRoot, content: string | undefined): void {
+function renderBubbleContent(content: string | undefined, streaming: boolean): string {
+  return `
+    <slot name="reasoning"></slot>
+    <slot name="tool"></slot>
+    <slot name="tools"></slot>
+    <div
+      class="chat-bubble-content ${streaming ? 'chat-bubble-streaming' : ''}"
+      part="bubble-content"
+    >
+      ${renderMarkdownContent(content)}
+    </div>
+  `;
+}
+
+function updateMarkdownElement(
+  markdown: MarkdownElement,
+  content: string,
+  streaming: boolean,
+): void {
+  if (streaming) {
+    markdown.startStreaming();
+    markdown.setContent(content);
+  } else {
+    markdown.content = content;
+  }
+  markdown.setAttribute('content', content);
+}
+
+function syncMarkdownContent(
+  shadowRoot: ShadowRoot,
+  content: string | undefined,
+  streaming: boolean,
+): void {
   const markdown = shadowRoot.querySelector<MarkdownElement>('el-dm-markdown');
   const slot = shadowRoot.querySelector<HTMLSlotElement>('.chat-slot-content slot');
   const slotContent = shadowRoot.querySelector<HTMLElement>('.chat-slot-content');
@@ -422,8 +533,7 @@ function syncMarkdownContent(shadowRoot: ShadowRoot, content: string | undefined
   if (!markdown || !slot || !slotContent) return;
 
   if (content) {
-    markdown.content = content;
-    markdown.setAttribute('content', content);
+    updateMarkdownElement(markdown, content, streaming);
     markdown.hidden = false;
     slotContent.hidden = true;
     return;
@@ -439,8 +549,7 @@ function syncMarkdownContent(shadowRoot: ShadowRoot, content: string | undefined
     .trim();
 
   if (textContent && !hasElementContent) {
-    markdown.content = textContent;
-    markdown.setAttribute('content', textContent);
+    updateMarkdownElement(markdown, textContent, streaming);
     markdown.hidden = false;
     slotContent.hidden = true;
     return;
@@ -463,6 +572,7 @@ export class ElDmChat extends BaseElement {
     status: { type: String, reflect: true },
     actions: { type: String, reflect: true },
     content: { type: String, reflect: true },
+    timeline: { type: Number, reflect: true },
   };
 
   declare align: ChatAlign;
@@ -476,6 +586,7 @@ export class ElDmChat extends BaseElement {
   declare status: string;
   declare actions: string;
   declare content: string;
+  declare timeline: ChatTimeline;
 
   constructor() {
     super();
@@ -499,7 +610,7 @@ export class ElDmChat extends BaseElement {
 
   private _handleSlotChange = (): void => {
     syncSlotContent(this.shadowRoot);
-    syncMarkdownContent(this.shadowRoot, this.content);
+    syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   };
 
   private _handleClick = (event: Event): void => {
@@ -563,21 +674,22 @@ export class ElDmChat extends BaseElement {
   protected update(): void {
     super.update();
     syncSlotContent(this.shadowRoot);
-    syncMarkdownContent(this.shadowRoot, this.content);
+    syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   }
 
   render(): string {
     const avatar = this.avatar ? escapeHtml(this.avatar) : '';
+    const timeline = isChatTimeline(this.timeline) ? ` data-chat-tl="${this.timeline}"` : '';
 
     return `
-      <div class="${getChatClasses(this.align)}" part="chat">
+      <div class="${getChatClasses(this.align)}" part="chat"${timeline}>
         <div class="chat-avatar ${this.avatar ? 'has-content' : ''}" part="avatar">
           ${avatar}
           <slot name="avatar"></slot>
         </div>
         ${this._renderHeader()}
-        <div class="${getBubbleClasses(this.color, this.size, this.variant, this.streaming)}" part="bubble">
-          ${renderMarkdownContent(this.content)}
+        <div class="${getBubbleClasses(this.color, this.size, this.variant)}" part="bubble">
+          ${renderBubbleContent(this.content, this.streaming)}
         </div>
         ${this._renderFooter()}
         ${this._renderActions()}
@@ -612,7 +724,7 @@ export class ElDmChatBubble extends BaseElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.shadowRoot.addEventListener('slotchange', this._handleSlotChange);
-    syncMarkdownContent(this.shadowRoot, this.content);
+    syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   }
 
   disconnectedCallback(): void {
@@ -621,19 +733,252 @@ export class ElDmChatBubble extends BaseElement {
   }
 
   private _handleSlotChange = (): void => {
-    syncMarkdownContent(this.shadowRoot, this.content);
+    syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   };
 
   protected update(): void {
     super.update();
-    syncMarkdownContent(this.shadowRoot, this.content);
+    syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   }
 
   render(): string {
     return `
       <div class="${getChatClasses(this.align)}" part="chat">
-        <div class="${getBubbleClasses(this.color, this.size, this.variant, this.streaming)}" part="bubble">
-          ${renderMarkdownContent(this.content)}
+        <div class="${getBubbleClasses(this.color, this.size, this.variant)}" part="bubble">
+          ${renderBubbleContent(this.content, this.streaming)}
+        </div>
+      </div>
+    `;
+  }
+}
+
+interface ChatScrollTarget {
+  timeline: ChatTimeline;
+  index: number;
+  target: ElDmChat;
+}
+
+let chatScrollSequence = 0;
+
+export class ElDmChatScroll extends BaseElement {
+  static properties = {
+    label: { type: String, reflect: true, default: 'Conversation' },
+    indicatorLabel: {
+      type: String,
+      reflect: true,
+      attribute: 'indicator-label',
+      default: 'Assistant replies',
+    },
+  };
+
+  declare label: string;
+  declare indicatorLabel: string;
+
+  private readonly _generatedIdPrefix = `el-dm-chat-scroll-${++chatScrollSequence}`;
+  private _targets = new Map<ChatTimeline, ChatScrollTarget>();
+  private _targetSignature = '';
+  private _observer?: MutationObserver;
+  private _motionQuery?: MediaQueryList;
+  private _timelineAnimationFrame?: number;
+  private _timelineAnimations: Animation[] = [];
+
+  constructor() {
+    super();
+    this.attachStyles(scrollStyles);
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.shadowRoot.addEventListener('slotchange', this._handleSlotChange);
+    this.shadowRoot.addEventListener('click', this._handleClick);
+    this._observer = new MutationObserver(this._syncIndicators);
+    this._observer.observe(this, {
+      attributes: true,
+      attributeFilter: ['align', 'id', 'timeline'],
+      childList: true,
+      subtree: true,
+    });
+    this._motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    this._motionQuery.addEventListener('change', this._handleMotionChange);
+    this._syncIndicators();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.shadowRoot.removeEventListener('slotchange', this._handleSlotChange);
+    this.shadowRoot.removeEventListener('click', this._handleClick);
+    this._observer?.disconnect();
+    this._motionQuery?.removeEventListener('change', this._handleMotionChange);
+    this._clearTimelineAnimations();
+  }
+
+  protected update(): void {
+    super.update();
+    this._targetSignature = '';
+    this._syncIndicators();
+  }
+
+  private _handleSlotChange = (): void => {
+    this._syncIndicators();
+  };
+
+  private _handleMotionChange = (): void => {
+    this._syncTimelineAnimations();
+  };
+
+  private _getTargets(): ChatScrollTarget[] {
+    const slot = this.shadowRoot.querySelector<HTMLSlotElement>('.chat-scroll-body slot');
+    if (!slot) return [];
+
+    const candidates = slot
+      .assignedElements({ flatten: true })
+      .filter((element): element is ElDmChat => element instanceof ElDmChat)
+      .filter((message) => message.align !== 'end' && isChatTimeline(message.timeline))
+      .map((target) => ({ timeline: target.timeline, target }));
+    const lastTargetByTimeline = new Map(
+      candidates.map(({ timeline, target }) => [timeline, target] as const),
+    );
+
+    return candidates
+      .filter(({ timeline, target }) => lastTargetByTimeline.get(timeline) === target)
+      .map(({ timeline, target }, index) => ({ timeline, target, index }));
+  }
+
+  private _syncIndicators = (): void => {
+    const scroller = this.shadowRoot.querySelector<HTMLElement>('.chat-scroll');
+    const track = this.shadowRoot.querySelector<HTMLElement>('.chat-scroll-track');
+    if (!scroller || !track) return;
+
+    const targets = this._getTargets();
+    for (const { timeline, target } of targets) {
+      if (!target.id) {
+        target.id = `${this._generatedIdPrefix}-reply-${timeline}`;
+      }
+    }
+
+    const signature = [
+      this.indicatorLabel || 'Assistant replies',
+      ...targets.map(({ timeline, target }) => `${timeline}:${target.id}`),
+    ].join('|');
+    this._targets = new Map(targets.map((target) => [target.timeline, target]));
+    scroller.classList.toggle('chat-scroll-empty', targets.length === 0);
+    track.hidden = targets.length === 0;
+
+    if (signature === this._targetSignature && track.childElementCount === targets.length) return;
+
+    this._targetSignature = signature;
+    track.innerHTML = targets
+      .map(({ timeline, target, index }) => {
+        const targetId = escapeHtml(target.id);
+        const label = escapeHtml(`${this.indicatorLabel || 'Assistant replies'}: ${index + 1}`);
+        return `<button type="button" class="chat-scroll-indicator" part="indicator" data-chat-tl="${timeline}" data-chat-target="${targetId}" aria-controls="${targetId}" aria-label="${label}"></button>`;
+      })
+      .join('');
+    this._syncTimelineAnimations();
+  };
+
+  private _clearTimelineAnimations(): void {
+    if (this._timelineAnimationFrame !== undefined) {
+      cancelAnimationFrame(this._timelineAnimationFrame);
+      this._timelineAnimationFrame = undefined;
+    }
+    for (const animation of this._timelineAnimations) {
+      animation.cancel();
+    }
+    this._timelineAnimations = [];
+  }
+
+  private _syncTimelineAnimations(): void {
+    this._clearTimelineAnimations();
+
+    const buttons = Array.from(
+      this.shadowRoot.querySelectorAll<HTMLButtonElement>('.chat-scroll-indicator'),
+    );
+    for (const button of buttons) {
+      button.style.removeProperty('animation-name');
+    }
+
+    const prefersReducedMotion =
+      this._motionQuery?.matches ?? window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || typeof ViewTimeline === 'undefined') return;
+
+    this._timelineAnimationFrame = requestAnimationFrame(() => {
+      this._timelineAnimationFrame = undefined;
+      if (this._motionQuery?.matches) return;
+
+      for (const button of buttons) {
+        const timeline = Number(button.dataset.chatTl);
+        if (!isChatTimeline(timeline)) continue;
+
+        const mapping = this._targets.get(timeline);
+        const cssAnimation = button
+          .getAnimations()
+          .find(
+            (animation) =>
+              (animation as CSSAnimation).animationName === 'chat-scroll-indicator-activate',
+          );
+        if (!mapping || !cssAnimation || cssAnimation.timeline) continue;
+
+        // Named CSS timelines can remain tree-scoped at nested Shadow DOM boundaries.
+        // Reuse DuskMoonUI's computed keyframes on a native ViewTimeline when that happens.
+        const keyframes = (cssAnimation.effect as KeyframeEffect | null)?.getKeyframes();
+        if (!keyframes?.length) continue;
+
+        cssAnimation.cancel();
+        button.style.animationName = 'none';
+        const animation = button.animate(keyframes, {
+          duration: 1,
+          fill: 'both',
+          timeline: new ViewTimeline({ subject: mapping.target, axis: 'block' }),
+          rangeStart: 'entry 0%',
+          rangeEnd: 'exit 100%',
+        });
+        this._timelineAnimations.push(animation);
+      }
+    });
+  }
+
+  private _handleClick = (event: Event): void => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>(
+      '.chat-scroll-indicator',
+    );
+    if (!button) return;
+
+    const timeline = Number(button.dataset.chatTl);
+    if (!isChatTimeline(timeline)) return;
+
+    const mapping = this._targets.get(timeline);
+    const scroller = this.shadowRoot.querySelector<HTMLElement>('.chat-scroll');
+    if (!mapping || !scroller || mapping.target.id !== button.dataset.chatTarget) return;
+
+    event.preventDefault();
+    const shouldNavigate = this.emit<ChatNavigateEventDetail>(
+      'navigate',
+      {
+        timeline,
+        index: mapping.index,
+        target: mapping.target,
+      },
+      { cancelable: true },
+    );
+    if (!shouldNavigate) return;
+
+    const top =
+      scroller.scrollTop +
+      mapping.target.getBoundingClientRect().top -
+      scroller.getBoundingClientRect().top;
+    scroller.scrollTo({ top });
+  };
+
+  render(): string {
+    const label = escapeHtml(this.label || 'Conversation');
+    const indicatorLabel = escapeHtml(this.indicatorLabel || 'Assistant replies');
+
+    return `
+      <div class="chat-scroll" part="scroll" role="region" aria-label="${label}" tabindex="0">
+        <nav class="chat-scroll-track" part="track" aria-label="${indicatorLabel}"></nav>
+        <div class="chat-scroll-body" part="body">
+          <slot></slot>
         </div>
       </div>
     `;
@@ -662,10 +1007,10 @@ export class ElDmChatReasoning extends BaseElement {
         </summary>
         <div class="chat-reasoning-body" part="body">
           <slot></slot>
-        </div>
-        <div class="chat-reasoning-tools" part="tools">
-          <slot name="tool"></slot>
-          <slot name="tools"></slot>
+          <div class="chat-reasoning-tools" part="tools">
+            <slot name="tool"></slot>
+            <slot name="tools"></slot>
+          </div>
         </div>
       </details>
     `;

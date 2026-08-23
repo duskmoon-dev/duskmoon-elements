@@ -118,7 +118,7 @@ bun add @duskmoon-dev/el-button
 
 | Package | Version | Element | Description |
 |---------|---------|---------|-------------|
-| [@duskmoon-dev/el-chat](./elements/chat) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-chat)](https://www.npmjs.com/package/@duskmoon-dev/el-chat) | `<el-dm-chat>` + 5 sub-elements | Conversational UI with bubbles, input, reasoning, tool calls, and typing indicator |
+| [@duskmoon-dev/el-chat](./elements/chat) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-chat)](https://www.npmjs.com/package/@duskmoon-dev/el-chat) | `<el-dm-chat>` + 6 sub-elements | Conversational UI with transcript navigation, bubbles, input, reasoning, tool calls, and typing indicator |
 
 ### CSS Art Components
 

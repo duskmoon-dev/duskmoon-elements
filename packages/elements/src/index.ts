@@ -135,6 +135,7 @@ import {
   ElDmChatBubble,
   ElDmChatInput,
   ElDmChatReasoning,
+  ElDmChatScroll,
   ElDmChatTool,
   ElDmChatTyping,
   register as registerChat,
@@ -279,6 +280,7 @@ export {
   ElDmChatBubble,
   ElDmChatInput,
   ElDmChatReasoning,
+  ElDmChatScroll,
   ElDmChatTool,
   ElDmChatTyping,
   registerChat,
@@ -288,8 +290,10 @@ export type {
   ChatBubbleColor,
   ChatBubbleSize,
   ChatBubbleVariant,
+  ChatNavigateEventDetail,
   ChatQuickActionEventDetail,
   ChatSendEventDetail,
+  ChatTimeline,
   ChatToolStatus,
 } from '@duskmoon-dev/el-chat';
 

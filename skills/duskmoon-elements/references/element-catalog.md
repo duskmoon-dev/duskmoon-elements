@@ -1,6 +1,6 @@
 # Element Catalog
 
-46 custom element packages, 59 custom element tags.
+46 custom element packages, 60 custom element tags.
 
 ## By Category
 
@@ -78,7 +78,7 @@
 
 | Package | Tag | Class | Secondary |
 |---------|-----|-------|-----------|
-| `@duskmoon-dev/el-chat` | `<el-dm-chat>` | `ElDmChat` | `ElDmChatBubble`, `ElDmChatInput`, `ElDmChatReasoning`, `ElDmChatTool`, `ElDmChatTyping` |
+| `@duskmoon-dev/el-chat` | `<el-dm-chat>` | `ElDmChat` | `ElDmChatScroll`, `ElDmChatBubble`, `ElDmChatInput`, `ElDmChatReasoning`, `ElDmChatTool`, `ElDmChatTyping` |
 
 ## Multi-Element Packages
 
@@ -92,4 +92,4 @@ These packages register more than one custom element tag:
 | `el-tabs` | `el-dm-tabs`, `el-dm-tab`, `el-dm-tab-panel` |
 | `el-table` | `el-dm-table`, `el-dm-table-column` |
 | `el-pro-data-grid` | `el-dm-pro-data-grid`, `el-dm-grid-column`, `el-dm-grid-column-group` |
-| `el-chat` | `el-dm-chat`, `el-dm-chat-bubble`, `el-dm-chat-input`, `el-dm-chat-reasoning`, `el-dm-chat-tool`, `el-dm-chat-typing` |
+| `el-chat` | `el-dm-chat`, `el-dm-chat-scroll`, `el-dm-chat-bubble`, `el-dm-chat-input`, `el-dm-chat-reasoning`, `el-dm-chat-tool`, `el-dm-chat-typing` |
