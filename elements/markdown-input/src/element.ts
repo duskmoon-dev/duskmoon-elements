@@ -81,6 +81,10 @@ export class ElDmMarkdownInput extends BaseElement {
     noPreview: { type: Boolean, reflect: true, attribute: 'no-preview' },
   };
 
+  static override get observedAttributes(): string[] {
+    return [...super.observedAttributes, 'id'];
+  }
+
   declare name: string;
   declare value: string;
   declare placeholder: string;
@@ -188,6 +192,14 @@ export class ElDmMarkdownInput extends BaseElement {
     super.disconnectedCallback();
   }
 
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (name === 'id' && oldValue !== newValue && this.isConnected) {
+      this.#syncEditorIdentity();
+    }
+  }
+
   // ════════════════════════════════════════════════════════════════════
   // Rendering — override update() to protect the textarea after init
   // ════════════════════════════════════════════════════════════════════
@@ -229,6 +241,7 @@ export class ElDmMarkdownInput extends BaseElement {
     // Sync simple attributes
     const placeholder =
       (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
+    this.#syncEditorIdentity();
     ta.placeholder = placeholder;
     ta.disabled = !!(this as unknown as { disabled: boolean }).disabled;
     ta.readOnly = !!(this as unknown as { readonly: boolean }).readonly;
@@ -284,7 +297,21 @@ export class ElDmMarkdownInput extends BaseElement {
     this.#updateStatusBarNow();
   }
 
+  #syncEditorIdentity(): void {
+    const ta = this.#textarea;
+    if (!ta) return;
+
+    const editorId = this.id;
+    const name = (this as unknown as { name: string }).name || '';
+    if (editorId) ta.id = editorId;
+    else ta.removeAttribute('id');
+    if (name) ta.name = name;
+    else ta.removeAttribute('name');
+  }
+
   protected override render(): string {
+    const editorId = this.id;
+    const name = (this as unknown as { name: string }).name || '';
     const ph = (this as unknown as { placeholder: string }).placeholder ?? 'Write markdown\u2026';
     const disabled = !!(this as unknown as { disabled: boolean }).disabled;
     const readonly = !!(this as unknown as { readonly: boolean }).readonly;
@@ -316,6 +343,8 @@ export class ElDmMarkdownInput extends BaseElement {
         <div class="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
           <div class="render-layer" aria-hidden="true"></div>
           <textarea
+            ${editorId ? `id="${escapeHtmlStr(editorId)}"` : ''}
+            ${name ? `name="${escapeHtmlStr(name)}"` : ''}
             aria-label="Markdown editor"
             aria-haspopup="listbox"
             aria-expanded="false"

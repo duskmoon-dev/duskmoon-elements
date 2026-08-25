@@ -760,6 +760,10 @@ export class ElDmChatInput extends BaseElement {
     clearOnSend: { type: Boolean, reflect: true, attribute: 'clear-on-send' },
   };
 
+  static override get observedAttributes(): string[] {
+    return [...super.observedAttributes, 'id'];
+  }
+
   declare name: string;
   declare value: string;
   declare placeholder: string;
@@ -786,6 +790,14 @@ export class ElDmChatInput extends BaseElement {
     this.shadowRoot.removeEventListener('keydown', this._handleKeyDown);
   }
 
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (name === 'id' && oldValue !== newValue && this.isConnected) {
+      this._syncEditorId();
+    }
+  }
+
   getValue(): string {
     return this._getInput()?.getValue() ?? this.value ?? '';
   }
@@ -797,6 +809,14 @@ export class ElDmChatInput extends BaseElement {
 
   private _getInput(): MarkdownInputElement | null {
     return this.shadowRoot.querySelector<MarkdownInputElement>('el-dm-markdown-input');
+  }
+
+  private _syncEditorId(): void {
+    const input = this._getInput();
+    if (!input) return;
+
+    if (this.id) input.id = `${this.id}-editor`;
+    else input.removeAttribute('id');
   }
 
   private _handleClick = (event: Event): void => {
@@ -831,11 +851,14 @@ export class ElDmChatInput extends BaseElement {
   }
 
   render(): string {
+    const editorId = this.id ? `${this.id}-editor` : '';
+
     return `
       <div class="chat-input" part="input">
         <el-dm-markdown-input
           class="chat-input-editor"
           part="editor"
+          ${editorId ? `id="${escapeHtml(editorId)}"` : ''}
           name="${escapeHtml(this.name || '')}"
           value="${escapeHtml(this.value || '')}"
           placeholder="${escapeHtml(this.placeholder || 'Send a message... (Ctrl/Cmd+Enter to send)')}"
