@@ -24,6 +24,30 @@ describe('ElDmChip', () => {
     return el;
   }
 
+  function dispatchSlottedClick(
+    el: ElDmChip,
+    slottedContent: HTMLElement,
+    controlSelector: string,
+    slotSelector = 'slot:not([name])',
+  ): MouseEvent {
+    const click = new window.MouseEvent('click', {
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+    });
+    const slot = el.shadowRoot?.querySelector(slotSelector);
+    const control = el.shadowRoot?.querySelector(controlSelector);
+    if (!slot || !control) throw new Error('Expected slotted chip control');
+
+    // happy-dom does not route light-DOM events through assigned shadow slots.
+    // Model Chromium's composed path so the delegation contract stays covered.
+    Object.defineProperty(click, 'composedPath', {
+      value: () => [slottedContent, slot, control, el.shadowRoot, el, document, window],
+    });
+    slot.dispatchEvent(click);
+    return click;
+  }
+
   // ──────────────── Registration ────────────────
   test('is defined', () => {
     expect(customElements.get('el-dm-chip')).toBe(ElDmChip);
@@ -36,16 +60,12 @@ describe('ElDmChip', () => {
       expect(el.shadowRoot?.querySelector('.chip')).toBeDefined();
     });
 
-    test('has button role', () => {
+    test('does not make display chips interactive', () => {
       const el = createChip();
       const chip = el.shadowRoot?.querySelector('.chip');
-      expect(chip?.getAttribute('role')).toBe('button');
-    });
-
-    test('has tabindex 0', () => {
-      const el = createChip();
-      const chip = el.shadowRoot?.querySelector('.chip');
-      expect(chip?.getAttribute('tabindex')).toBe('0');
+      expect(chip?.tagName).toBe('SPAN');
+      expect(chip?.hasAttribute('role')).toBe(false);
+      expect(chip?.hasAttribute('tabindex')).toBe(false);
     });
 
     test('has icon and default slots', () => {
@@ -100,6 +120,24 @@ describe('ElDmChip', () => {
     test('reflects deletable to attribute', () => {
       const el = createChip({ deletable: true });
       expect(el.hasAttribute('deletable')).toBe(true);
+    });
+
+    test('reflects semantic mode properties', () => {
+      const el = createChip({
+        href: '/filters/active',
+        target: '_blank',
+        rel: 'noopener',
+        clickable: true,
+        selectable: true,
+        deleteLabel: 'Remove filter',
+      });
+
+      expect(el.getAttribute('href')).toBe('/filters/active');
+      expect(el.getAttribute('target')).toBe('_blank');
+      expect(el.getAttribute('rel')).toBe('noopener');
+      expect(el.hasAttribute('clickable')).toBe(true);
+      expect(el.hasAttribute('selectable')).toBe(true);
+      expect(el.getAttribute('delete-label')).toBe('Remove filter');
     });
   });
 
@@ -187,7 +225,10 @@ describe('ElDmChip', () => {
   describe('deletable', () => {
     test('shows delete button when deletable', () => {
       const el = createChip({ deletable: true });
-      expect(el.shadowRoot?.querySelector('.chip-delete')).toBeDefined();
+      const deleteButton = el.shadowRoot?.querySelector('.chip-delete');
+
+      expect(deleteButton).toBeDefined();
+      expect(deleteButton?.getAttribute('aria-label')).toBe('Remove chip');
     });
 
     test('does not show delete button by default', () => {
@@ -209,51 +250,90 @@ describe('ElDmChip', () => {
 
   // ──────────────── Click Events ────────────────
   describe('click events', () => {
-    test('emits click event on chip click', () => {
-      const el = createChip();
-      let clicked = false;
+    test('keeps the native click and emits dm-click once for an action chip', () => {
+      const el = createChip({ clickable: true });
+      let clicks = 0;
+      let dmClicks = 0;
       el.addEventListener('click', () => {
-        clicked = true;
+        clicks += 1;
       });
-      const chip = el.shadowRoot?.querySelector('.chip');
-      chip?.dispatchEvent(new Event('click'));
-      expect(clicked).toBe(true);
+      el.addEventListener('dm-click', (event) => {
+        dmClicks += 1;
+        expect(event.bubbles).toBe(true);
+        expect(event.composed).toBe(true);
+        expect(event.cancelable).toBe(true);
+      });
+
+      el.shadowRoot?.querySelector<HTMLButtonElement>('button.chip')?.click();
+
+      expect(clicks).toBe(1);
+      expect(dmClicks).toBe(1);
     });
 
-    test('does not emit click event when disabled', () => {
-      const el = createChip({ disabled: true });
-      let clicked = false;
+    test('does not emit click events when an action chip is disabled', () => {
+      const el = createChip({ clickable: true, disabled: true });
+      let clicks = 0;
+      let dmClicks = 0;
       el.addEventListener('click', () => {
-        clicked = true;
+        clicks += 1;
       });
-      const chip = el.shadowRoot?.querySelector('.chip');
-      chip?.dispatchEvent(new Event('click'));
-      expect(clicked).toBe(false);
+      el.addEventListener('dm-click', () => {
+        dmClicks += 1;
+      });
+
+      const button = el.shadowRoot?.querySelector<HTMLButtonElement>('button.chip');
+      expect(button?.disabled).toBe(true);
+      button?.click();
+
+      expect(clicks).toBe(0);
+      expect(dmClicks).toBe(0);
     });
   });
 
   // ──────────────── Delete Events ────────────────
   describe('delete events', () => {
-    test('emits delete event on delete button click', () => {
+    test('emits dm-delete and the legacy delete alias once', () => {
       const el = createChip({ deletable: true });
-      let deleted = false;
-      el.addEventListener('delete', () => {
-        deleted = true;
+      let dmDeleted = 0;
+      let deleted = 0;
+      let clicked = 0;
+      el.addEventListener('dm-delete', (event) => {
+        dmDeleted += 1;
+        expect(event.bubbles).toBe(true);
+        expect(event.composed).toBe(true);
+        expect(event.cancelable).toBe(true);
       });
-      const deleteBtn = el.shadowRoot?.querySelector('.chip-delete');
-      deleteBtn?.dispatchEvent(new Event('click', { bubbles: true }));
-      expect(deleted).toBe(true);
+      el.addEventListener('delete', () => {
+        deleted += 1;
+      });
+      el.addEventListener('click', () => {
+        clicked += 1;
+      });
+
+      el.shadowRoot?.querySelector<HTMLButtonElement>('.chip-delete')?.click();
+
+      expect(dmDeleted).toBe(1);
+      expect(deleted).toBe(1);
+      expect(clicked).toBe(0);
     });
 
     test('does not emit delete event when disabled', () => {
       const el = createChip({ deletable: true, disabled: true });
-      let deleted = false;
-      el.addEventListener('delete', () => {
-        deleted = true;
+      let dmDeleted = 0;
+      let deleted = 0;
+      el.addEventListener('dm-delete', () => {
+        dmDeleted += 1;
       });
-      const deleteBtn = el.shadowRoot?.querySelector('.chip-delete');
-      deleteBtn?.dispatchEvent(new Event('click', { bubbles: true }));
-      expect(deleted).toBe(false);
+      el.addEventListener('delete', () => {
+        deleted += 1;
+      });
+
+      const deleteButton = el.shadowRoot?.querySelector<HTMLButtonElement>('.chip-delete');
+      expect(deleteButton?.disabled).toBe(true);
+      deleteButton?.click();
+
+      expect(dmDeleted).toBe(0);
+      expect(deleted).toBe(0);
     });
   });
 
@@ -264,14 +344,13 @@ describe('ElDmChip', () => {
       expect(el.hasAttribute('disabled')).toBe(true);
     });
 
-    test('blocks click events', () => {
-      const el = createChip({ disabled: true });
-      let clicked = false;
-      el.addEventListener('click', () => {
-        clicked = true;
-      });
-      el.shadowRoot?.querySelector('.chip')?.dispatchEvent(new Event('click'));
-      expect(clicked).toBe(false);
+    test('renders a disabled link without a focusable anchor', () => {
+      const el = createChip({ href: '/filters', disabled: true });
+      const chip = el.shadowRoot?.querySelector('.chip');
+
+      expect(chip?.tagName).toBe('SPAN');
+      expect(chip?.getAttribute('aria-disabled')).toBe('true');
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
     });
   });
 
@@ -288,5 +367,227 @@ describe('ElDmChip', () => {
     expect(chip?.classList.contains('chip-success')).toBe(true);
     expect(chip?.classList.contains('chip-lg')).toBe(true);
     expect(chip?.classList.contains('chip-selected')).toBe(true);
+  });
+
+  // Accessibility regression coverage for https://github.com/duskmoon-dev/duskmoon-elements/issues/74
+  describe('semantic modes', () => {
+    test('renders href as a native anchor', () => {
+      const el = createChip({ href: '/filters/active', target: '_blank', rel: 'noopener' });
+      const link = el.shadowRoot?.querySelector('a.chip');
+
+      expect(link?.getAttribute('href')).toBe('/filters/active');
+      expect(link?.getAttribute('target')).toBe('_blank');
+      expect(link?.getAttribute('rel')).toBe('noopener');
+      expect(link?.classList.contains('chip-clickable')).toBe(true);
+      expect(link?.querySelector('a, button')).toBeNull();
+    });
+
+    test('emits dm-click when a link is activated', () => {
+      const el = createChip({ href: '#filters' });
+      let dmClicks = 0;
+      el.addEventListener('dm-click', () => {
+        dmClicks += 1;
+      });
+
+      el.shadowRoot?.querySelector<HTMLAnchorElement>('a.chip')?.click();
+
+      expect(dmClicks).toBe(1);
+    });
+
+    test('handles a cancelable link click from slotted label content', () => {
+      const el = createChip({ href: '#filters' });
+      const label = document.createElement('span');
+      label.textContent = 'Filters';
+      el.appendChild(label);
+      let dmClicks = 0;
+      el.addEventListener('dm-click', (event) => {
+        dmClicks += 1;
+        event.preventDefault();
+      });
+      const click = dispatchSlottedClick(el, label, 'a.chip');
+
+      expect(dmClicks).toBe(1);
+      expect(click.defaultPrevented).toBe(true);
+    });
+
+    test('escapes link attributes without injecting markup', () => {
+      const hostile = '"><img src=x onerror=alert(1)>';
+      const el = createChip({ href: hostile, target: hostile, rel: hostile });
+      const link = el.shadowRoot?.querySelector('a.chip');
+
+      expect(link?.getAttribute('href')).toBe(hostile);
+      expect(link?.getAttribute('target')).toBe(hostile);
+      expect(link?.getAttribute('rel')).toBe(hostile);
+      expect(el.shadowRoot?.querySelector('img')).toBeNull();
+    });
+
+    test('renders clickable as a native action button', () => {
+      const el = createChip({ clickable: true });
+      const button = el.shadowRoot?.querySelector('button.chip');
+
+      expect(button?.getAttribute('type')).toBe('button');
+      expect(button?.hasAttribute('aria-pressed')).toBe(false);
+      expect(button?.querySelector('a, button')).toBeNull();
+    });
+
+    test('emits dm-click from slotted clickable content', () => {
+      const el = createChip({ clickable: true });
+      const label = document.createElement('span');
+      label.textContent = 'Run action';
+      el.appendChild(label);
+      let dmClicks = 0;
+      el.addEventListener('dm-click', () => {
+        dmClicks += 1;
+      });
+
+      dispatchSlottedClick(el, label, 'button.chip');
+
+      expect(dmClicks).toBe(1);
+    });
+
+    test('toggles a selectable button and emits one dm-change event', async () => {
+      const el = createChip({ selectable: true });
+      const button = el.shadowRoot?.querySelector('button.chip');
+      let changes = 0;
+      let detail: { selected: boolean } | undefined;
+      el.addEventListener('dm-change', (event) => {
+        changes += 1;
+        detail = (event as CustomEvent<{ selected: boolean }>).detail;
+        expect(event.bubbles).toBe(true);
+        expect(event.composed).toBe(true);
+      });
+
+      expect(button?.getAttribute('type')).toBe('button');
+      expect(button?.getAttribute('aria-pressed')).toBe('false');
+
+      (button as HTMLButtonElement | null)?.focus();
+      (button as HTMLButtonElement | null)?.click();
+      await Promise.resolve();
+
+      expect(el.selected).toBe(true);
+      const updatedButton = el.shadowRoot?.querySelector('button.chip');
+      expect(updatedButton?.getAttribute('aria-pressed')).toBe('true');
+      expect(el.shadowRoot?.activeElement).toBe(updatedButton);
+      expect(detail).toEqual({ selected: true });
+      expect(changes).toBe(1);
+    });
+
+    test('does not toggle or emit from a disabled selectable button', () => {
+      const el = createChip({ selectable: true, disabled: true });
+      let changes = 0;
+      el.addEventListener('dm-change', () => {
+        changes += 1;
+      });
+
+      const button = el.shadowRoot?.querySelector<HTMLButtonElement>('button.chip');
+      expect(button?.disabled).toBe(true);
+      button?.click();
+
+      expect(el.hasAttribute('selected')).toBe(false);
+      expect(changes).toBe(0);
+    });
+
+    test('toggles selection from slotted icon content', async () => {
+      const el = createChip({ selectable: true });
+      const icon = document.createElement('span');
+      icon.slot = 'icon';
+      icon.textContent = '✓';
+      el.appendChild(icon);
+      let changes = 0;
+      el.addEventListener('dm-change', () => {
+        changes += 1;
+      });
+
+      dispatchSlottedClick(el, icon, 'button.chip', 'slot[name="icon"]');
+      await Promise.resolve();
+
+      expect(el.selected).toBe(true);
+      expect(changes).toBe(1);
+    });
+
+    test('renders deletable with a native custom-labeled delete button', () => {
+      const hostileLabel = 'Remove "<img src=x>';
+      const el = createChip({ deletable: true, deleteLabel: hostileLabel });
+      const chip = el.shadowRoot?.querySelector('.chip');
+      const button = el.shadowRoot?.querySelector('button.chip-delete');
+
+      expect(chip?.tagName).toBe('SPAN');
+      expect(chip?.hasAttribute('role')).toBe(false);
+      expect(button?.getAttribute('type')).toBe('button');
+      expect(button?.getAttribute('aria-label')).toBe(hostileLabel);
+      expect(button?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+      expect(el.shadowRoot?.querySelector('img')).toBeNull();
+    });
+
+    test('uses deletable before link, selectable, and clickable modes', () => {
+      const el = createChip({
+        deletable: true,
+        href: '/filters',
+        selectable: true,
+        clickable: true,
+      });
+
+      expect(el.shadowRoot?.querySelector('.chip')?.tagName).toBe('SPAN');
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+      expect(el.shadowRoot?.querySelector('button.chip')).toBeNull();
+      expect(el.shadowRoot?.querySelectorAll('button')).toHaveLength(1);
+    });
+
+    test('does not activate lower-precedence modes from a deletable label click', () => {
+      const el = createChip({
+        deletable: true,
+        href: '#filters',
+        selectable: true,
+        clickable: true,
+      });
+      let dmClicks = 0;
+      let changes = 0;
+      el.addEventListener('dm-click', () => {
+        dmClicks += 1;
+      });
+      el.addEventListener('dm-change', () => {
+        changes += 1;
+      });
+
+      el.shadowRoot?.querySelector<HTMLElement>('.chip')?.click();
+
+      expect(dmClicks).toBe(0);
+      expect(changes).toBe(0);
+      expect(el.hasAttribute('selected')).toBe(false);
+    });
+
+    test('uses link before selectable and clickable modes', () => {
+      const el = createChip({ href: '/filters', selectable: true, clickable: true });
+
+      expect(el.shadowRoot?.querySelector('a.chip')).toBeDefined();
+      expect(el.shadowRoot?.querySelector('button')).toBeNull();
+    });
+
+    test('preserves an explicit host role without duplicating it in shadow DOM', () => {
+      const el = document.createElement('el-dm-chip') as ElDmChip;
+      el.setAttribute('role', 'option');
+      el.setAttribute('aria-selected', 'false');
+      container.appendChild(el);
+
+      expect(el.getAttribute('role')).toBe('option');
+      expect(el.getAttribute('aria-selected')).toBe('false');
+      expect(el.shadowRoot?.querySelector('[role]')).toBeNull();
+    });
+
+    test('does not duplicate dm-click listeners across rerenders', async () => {
+      const el = createChip({ clickable: true });
+      let clicks = 0;
+      el.addEventListener('dm-click', () => {
+        clicks += 1;
+      });
+
+      el.color = 'primary';
+      await Promise.resolve();
+      el.color = 'success';
+      await Promise.resolve();
+      el.shadowRoot?.querySelector<HTMLButtonElement>('button.chip')?.click();
+
+      expect(clicks).toBe(1);
+    });
   });
 });

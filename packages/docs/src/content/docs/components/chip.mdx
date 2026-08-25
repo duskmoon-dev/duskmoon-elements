@@ -3,15 +3,14 @@ title: Chip
 description: Chip component for tags, filters, and selections
 order: 9
 section: feedback
-component: "@duskmoon-dev/el-chip"
+component: '@duskmoon-dev/el-chip'
 ---
 
 import ComponentDemo from '../../../components/ComponentDemo.astro';
 
-
 # Chip
 
-The Chip component displays compact elements representing tags, filters, or selections.
+The Chip component displays compact tags, links, actions, filters, and removable selections.
 
 ## Installation
 
@@ -38,17 +37,58 @@ import '@duskmoon-dev/el-chip/register';
   <el-dm-chip color="success">Success</el-dm-chip>
 </ComponentDemo>
 
+## Properties and Attributes
 
-## Properties
+| Property      | Attribute      | Type                                                                                    | Default         | Description                                              |
+| ------------- | -------------- | --------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------- |
+| `variant`     | `variant`      | `'filled' \| 'outlined' \| 'soft'`                                                      | `'filled'`      | Visual style                                             |
+| `color`       | `color`        | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | -               | Chip color                                               |
+| `size`        | `size`         | `'sm' \| 'md' \| 'lg'`                                                                  | `'md'`          | Chip size                                                |
+| `href`        | `href`         | `string`                                                                                | -               | Enables link mode and sets the link destination          |
+| `target`      | `target`       | `string`                                                                                | -               | Link browsing context; used only with `href`             |
+| `rel`         | `rel`          | `string`                                                                                | -               | Link relationship; used only with `href`                 |
+| `clickable`   | `clickable`    | `boolean`                                                                               | `false`         | Enables action-button mode                               |
+| `selectable`  | `selectable`   | `boolean`                                                                               | `false`         | Enables toggle-button mode                               |
+| `deletable`   | `deletable`    | `boolean`                                                                               | `false`         | Shows a delete button                                    |
+| `deleteLabel` | `delete-label` | `string`                                                                                | `'Remove chip'` | Accessible name for the delete button                    |
+| `selected`    | `selected`     | `boolean`                                                                               | `false`         | Selected state; toggled automatically in selectable mode |
+| `disabled`    | `disabled`     | `boolean`                                                                               | `false`         | Disables the active interaction mode                     |
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `variant` | `'filled' \| 'outlined' \| 'soft'` | `'filled'` | Visual style |
-| `color` | `'primary' \| 'secondary' \| 'tertiary' \| 'success' \| 'warning' \| 'error' \| 'info'` | - | Chip color |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Chip size |
-| `deletable` | `boolean` | `false` | Shows delete button |
-| `selected` | `boolean` | `false` | Selected state |
-| `disabled` | `boolean` | `false` | Disabled state |
+## Semantic Modes
+
+<ComponentDemo title="Chip Modes">
+  <el-dm-chip>Display</el-dm-chip>
+  <el-dm-chip href="#events">Link</el-dm-chip>
+  <el-dm-chip clickable>Clickable</el-dm-chip>
+  <el-dm-chip selectable selected>
+    Selectable
+  </el-dm-chip>
+  <el-dm-chip deletable delete-label="Remove TypeScript filter">
+    Deletable
+  </el-dm-chip>
+</ComponentDemo>
+
+```html
+<!-- Display: a non-focusable span -->
+<el-dm-chip>Release 1.8</el-dm-chip>
+
+<!-- Link: a native anchor -->
+<el-dm-chip href="/releases" target="_blank" rel="noopener">Releases</el-dm-chip>
+
+<!-- Clickable: a native action button -->
+<el-dm-chip clickable>Refresh</el-dm-chip>
+
+<!-- Selectable: a native toggle button -->
+<el-dm-chip selectable selected>TypeScript</el-dm-chip>
+
+<!-- Deletable: a label with a native delete button -->
+<el-dm-chip deletable delete-label="Remove TypeScript filter">TypeScript</el-dm-chip>
+```
+
+When multiple mode attributes are present, the mode precedence is `deletable` → `href` →
+`selectable` → `clickable` → display. This prevents nested interactive controls. Prefer one mode
+attribute per chip unless you intentionally rely on this precedence. The `target` and `rel`
+properties apply only when `href` wins.
 
 ## Colors
 
@@ -70,9 +110,15 @@ import '@duskmoon-dev/el-chip/register';
 ## Variants
 
 <ComponentDemo title="Chip Variants">
-  <el-dm-chip variant="filled" color="primary">Filled</el-dm-chip>
-  <el-dm-chip variant="outlined" color="primary">Outlined</el-dm-chip>
-  <el-dm-chip variant="soft" color="primary">Soft</el-dm-chip>
+  <el-dm-chip variant="filled" color="primary">
+    Filled
+  </el-dm-chip>
+  <el-dm-chip variant="outlined" color="primary">
+    Outlined
+  </el-dm-chip>
+  <el-dm-chip variant="soft" color="primary">
+    Soft
+  </el-dm-chip>
 </ComponentDemo>
 
 ```html
@@ -98,59 +144,110 @@ import '@duskmoon-dev/el-chip/register';
 ## Deletable
 
 <ComponentDemo title="Deletable Chips">
-  <el-dm-chip deletable color="primary">Deletable</el-dm-chip>
-  <el-dm-chip deletable color="secondary">Remove me</el-dm-chip>
+  <el-dm-chip deletable color="primary" delete-label="Remove Primary tag">
+    Primary
+  </el-dm-chip>
+  <el-dm-chip deletable color="secondary" delete-label="Remove Secondary tag">
+    Secondary
+  </el-dm-chip>
 </ComponentDemo>
 
 ```html
-<el-dm-chip deletable>Deletable</el-dm-chip>
+<el-dm-chip deletable delete-label="Remove Web Components tag">Web Components</el-dm-chip>
 ```
 
-## Selected State
+## Selectable State
 
 <ComponentDemo title="Selected Chips">
-  <el-dm-chip>Unselected</el-dm-chip>
-  <el-dm-chip selected>Selected</el-dm-chip>
+  <el-dm-chip selectable>Unselected</el-dm-chip>
+  <el-dm-chip selectable selected>
+    Selected
+  </el-dm-chip>
 </ComponentDemo>
 
 ```html
-<el-dm-chip>Unselected</el-dm-chip>
-<el-dm-chip selected>Selected</el-dm-chip>
+<el-dm-chip selectable>Unselected</el-dm-chip> <el-dm-chip selectable selected>Selected</el-dm-chip>
+```
+
+Selectable chips toggle `selected` themselves and reflect the new state through `aria-pressed`
+and the `dm-change` event.
+
+## Disabled
+
+<ComponentDemo title="Disabled Chips">
+  <el-dm-chip href="/releases" disabled>
+    Disabled link
+  </el-dm-chip>
+  <el-dm-chip clickable disabled>
+    Disabled action
+  </el-dm-chip>
+  <el-dm-chip selectable disabled>
+    Disabled choice
+  </el-dm-chip>
+  <el-dm-chip deletable disabled>
+    Protected tag
+  </el-dm-chip>
+</ComponentDemo>
+
+```html
+<el-dm-chip href="/releases" disabled>Disabled link</el-dm-chip>
+<el-dm-chip clickable disabled>Disabled action</el-dm-chip>
+<el-dm-chip selectable disabled>Disabled choice</el-dm-chip>
+<el-dm-chip deletable disabled>Protected tag</el-dm-chip>
 ```
 
 ## Events
 
-| Event | Description |
-|-------|-------------|
-| `click` | Fired when chip is clicked |
-| `delete` | Fired when delete button is clicked |
+| Event       | Detail                  | Description                                      |
+| ----------- | ----------------------- | ------------------------------------------------ |
+| `dm-click`  | -                       | Fired when a link or clickable chip is activated |
+| `dm-change` | `{ selected: boolean }` | Fired after a selectable chip toggles            |
+| `dm-delete` | -                       | Fired when the delete button is activated        |
+| `delete`    | -                       | Deprecated alias emitted with `dm-delete`        |
+
+These custom events bubble, cross the shadow boundary, and are cancelable. Canceling `dm-click`
+prevents link navigation. Native `click` events from the rendered anchor or button are also
+available. Disabled chips do not emit action events.
 
 ### Event Handling
 
 ```javascript
 const chip = document.querySelector('el-dm-chip');
-chip.addEventListener('delete', () => {
+const filterInput = document.querySelector('#filter-input');
+chip.addEventListener('dm-delete', () => {
   chip.remove();
+  filterInput?.focus();
 });
 ```
 
+The component emits the removal request but never removes itself. If the application removes the
+focused chip, it must move focus to the next logical chip, the previous chip, or the owning input.
+
+Use `dm-delete` for new integrations. The unprefixed `delete` event is retained only as a
+deprecated compatibility alias.
+
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot    | Description  |
+| ------- | ------------ |
 | default | Chip content |
-| `icon` | Leading icon |
+| `icon`  | Leading icon |
 
 ## CSS Parts
 
-| Part | Description |
-|------|-------------|
-| `chip` | The chip container |
-| `icon` | The icon container |
-| `delete` | The delete button |
+| Part     | Description        |
+| -------- | ------------------ |
+| `chip`   | The chip container |
+| `icon`   | The icon container |
+| `delete` | The delete button  |
 
 ## Accessibility
 
-- Uses `role="button"` for interactive chips
-- Keyboard accessible with focus states
-- Deletable chips have accessible delete buttons
+- Display chips render as plain, non-focusable spans.
+- Link, clickable, and selectable modes use native anchors or buttons for built-in keyboard and
+  focus behavior.
+- Selectable chips expose `aria-pressed` and retain focus after their selected state changes.
+- Deletable chips use a focusable native button. Customize its accessible name with
+  `delete-label`; the visual delete icon is hidden from assistive technology.
+- Disabled buttons use the native `disabled` state. Disabled links render as noninteractive spans
+  with `aria-disabled="true"`, and disabled deletable chips disable their delete button.

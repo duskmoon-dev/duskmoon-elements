@@ -9,7 +9,13 @@
  * @attr {string} variant - Chip variant: filled, outlined, soft
  * @attr {string} color - Chip color: primary, secondary, tertiary, success, warning, error, info
  * @attr {string} size - Chip size: sm, md, lg
+ * @attr {string} href - Renders the chip as a semantic link
+ * @attr {string} target - Link browsing context
+ * @attr {string} rel - Link relationship
+ * @attr {boolean} clickable - Renders the chip as an action button
+ * @attr {boolean} selectable - Renders the chip as a toggle button
  * @attr {boolean} deletable - Whether the chip shows a delete button
+ * @attr {string} delete-label - Accessible name for the delete button
  * @attr {boolean} selected - Whether the chip is in selected state
  * @attr {boolean} disabled - Whether the chip is disabled
  *
@@ -20,8 +26,11 @@
  * @csspart icon - The icon container
  * @csspart delete - The delete button
  *
- * @fires delete - Fired when delete button is clicked
- * @fires click - Fired when chip is clicked
+ * @fires dm-click - Fired when a clickable or linked chip is activated
+ * @fires dm-change - Fired when a selectable chip changes state
+ * @fires dm-delete - Fired when the delete button is activated
+ * @fires delete - Deprecated alias for dm-delete
+ * @fires click - Native click event from link and button modes
  */
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
@@ -48,6 +57,24 @@ const SIZE_CLASSES: Record<string, string> = {
   md: '',
   lg: 'chip-lg',
 };
+
+const DELETE_ICON = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function matchesSelector(target: EventTarget, selector: string): target is Element {
+  return (
+    typeof (target as Partial<Element>).matches === 'function' &&
+    (target as Element).matches(selector)
+  );
+}
 
 export type ChipVariant = 'filled' | 'outlined' | 'soft';
 export type ChipColor =
@@ -78,11 +105,28 @@ const styles = css`
     border-radius: 9999px;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    cursor: pointer;
+    cursor: default;
     transition: all 150ms ease;
     background-color: var(--color-surface-variant);
     color: var(--color-on-surface);
     border: 1px solid transparent;
+  }
+
+  a.chip,
+  button.chip {
+    appearance: none;
+    text-decoration: none;
+  }
+
+  .chip-clickable {
+    cursor: pointer;
+  }
+
+  a.chip:focus-visible,
+  button.chip:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: none;
   }
 
   .chip:hover {
@@ -166,17 +210,28 @@ const styles = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1rem;
-    height: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
     margin-left: 0.25rem;
     margin-right: -0.25rem;
+    border: 0;
     border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
     opacity: 0.7;
     transition: opacity 150ms ease;
   }
 
   .chip-delete:hover {
+    opacity: 1;
+  }
+
+  .chip-delete:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
     opacity: 1;
   }
 
@@ -191,7 +246,18 @@ export class ElDmChip extends BaseElement {
     variant: { type: String, reflect: true, default: 'filled' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
+    href: { type: String, reflect: true },
+    target: { type: String, reflect: true },
+    rel: { type: String, reflect: true },
+    clickable: { type: Boolean, reflect: true },
+    selectable: { type: Boolean, reflect: true },
     deletable: { type: Boolean, reflect: true },
+    deleteLabel: {
+      type: String,
+      reflect: true,
+      attribute: 'delete-label',
+      default: 'Remove chip',
+    },
     selected: { type: Boolean, reflect: true },
     disabled: { type: Boolean, reflect: true },
   };
@@ -199,7 +265,13 @@ export class ElDmChip extends BaseElement {
   declare variant: ChipVariant;
   declare color: ChipColor;
   declare size: ChipSize;
+  declare href: string | undefined;
+  declare target: string | undefined;
+  declare rel: string | undefined;
+  declare clickable: boolean;
+  declare selectable: boolean;
   declare deletable: boolean;
+  declare deleteLabel: string;
   declare selected: boolean;
   declare disabled: boolean;
 
@@ -208,18 +280,55 @@ export class ElDmChip extends BaseElement {
     this.attachStyles(styles);
   }
 
-  private _handleDelete(event: Event): void {
-    event.stopPropagation();
-    if (!this.disabled) {
-      this.emit('delete');
-    }
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.shadowRoot.addEventListener('click', this._handleShadowClick);
   }
 
-  private _handleClick(): void {
-    if (!this.disabled) {
-      this.emit('click');
-    }
+  disconnectedCallback(): void {
+    this.shadowRoot.removeEventListener('click', this._handleShadowClick);
+    super.disconnectedCallback();
   }
+
+  private _handleShadowClick = (event: Event): void => {
+    const eventPath = event.composedPath();
+    const deleteButton = eventPath.find((target) => matchesSelector(target, '.chip-delete')) as
+      HTMLButtonElement | undefined;
+
+    if (deleteButton) {
+      event.stopPropagation();
+      if (this.disabled || deleteButton.disabled) return;
+
+      this.emit('dm-delete');
+      this.emit('delete');
+      return;
+    }
+
+    const chip = eventPath.find((target) => matchesSelector(target, '.chip')) as
+      HTMLElement | undefined;
+    if (!chip) return;
+
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (this.deletable) return;
+
+    if (this.hasAttribute('href')) {
+      if (!this.emit('dm-click')) event.preventDefault();
+      return;
+    }
+
+    if (this.selectable) {
+      this.selected = !this.selected;
+      this.emit('dm-change', { selected: this.selected });
+      return;
+    }
+
+    if (this.clickable && !this.emit('dm-click')) event.preventDefault();
+  };
 
   private _getChipClasses(): string {
     const classes = ['chip'];
@@ -240,31 +349,103 @@ export class ElDmChip extends BaseElement {
       classes.push('chip-selected');
     }
 
+    if (
+      !this.disabled &&
+      !this.deletable &&
+      (this.hasAttribute('href') || this.selectable || this.clickable)
+    ) {
+      classes.push('chip-clickable');
+    }
+
     return classes.join(' ');
+  }
+
+  private _renderContent(): string {
+    return `
+      <span class="chip-icon" part="icon">
+        <slot name="icon"></slot>
+      </span>
+      <slot></slot>
+    `;
   }
 
   render(): string {
     const chipClasses = this._getChipClasses();
-    const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+    const content = this._renderContent();
+
+    if (this.deletable) {
+      const deleteLabel = escapeHtml(this.deleteLabel || 'Remove chip');
+      return `
+        <span class="${chipClasses}" part="chip"${this.disabled ? ' aria-disabled="true"' : ''}>
+          ${content}
+          <button
+            class="chip-delete"
+            part="delete"
+            type="button"
+            aria-label="${deleteLabel}"
+            ${this.disabled ? 'disabled' : ''}
+          >${DELETE_ICON}</button>
+        </span>
+      `;
+    }
+
+    if (this.hasAttribute('href')) {
+      if (this.disabled) {
+        return `
+          <span class="${chipClasses}" part="chip" aria-disabled="true">${content}</span>
+        `;
+      }
+
+      const href = escapeHtml(this.href ?? '');
+      const target = this.target ? ` target="${escapeHtml(this.target)}"` : '';
+      const rel = this.rel ? ` rel="${escapeHtml(this.rel)}"` : '';
+      return `
+        <a class="${chipClasses}" part="chip" href="${href}"${target}${rel}>${content}</a>
+      `;
+    }
+
+    if (this.selectable) {
+      return `
+        <button
+          class="${chipClasses}"
+          part="chip"
+          type="button"
+          aria-pressed="${this.selected ? 'true' : 'false'}"
+          ${this.disabled ? 'disabled' : ''}
+        >${content}</button>
+      `;
+    }
+
+    if (this.clickable) {
+      return `
+        <button
+          class="${chipClasses}"
+          part="chip"
+          type="button"
+          ${this.disabled ? 'disabled' : ''}
+        >${content}</button>
+      `;
+    }
 
     return `
-      <span class="${chipClasses}" part="chip" role="${this.getAttribute('role') || 'button'}" tabindex="0"${this.selected ? ' aria-selected="true"' : ''}>
-        <span class="chip-icon" part="icon">
-          <slot name="icon"></slot>
-        </span>
-        <slot></slot>
-        ${this.deletable ? `<span class="chip-delete" part="delete">${deleteIcon}</span>` : ''}
+      <span class="${chipClasses}" part="chip">
+        ${content}
       </span>
     `;
   }
 
-  update(): void {
+  protected override update(): void {
+    const activeElement = this.shadowRoot.activeElement;
+    const activeSelector = activeElement?.classList.contains('chip-delete')
+      ? '.chip-delete'
+      : activeElement?.matches('a.chip, button.chip')
+        ? '.chip'
+        : undefined;
+
     super.update();
 
-    const chip = this.shadowRoot?.querySelector('.chip');
-    chip?.addEventListener('click', this._handleClick.bind(this));
-
-    const deleteBtn = this.shadowRoot?.querySelector('.chip-delete');
-    deleteBtn?.addEventListener('click', this._handleDelete.bind(this));
+    if (activeSelector) {
+      this.shadowRoot.querySelector<HTMLElement>(activeSelector)?.focus();
+    }
   }
 }

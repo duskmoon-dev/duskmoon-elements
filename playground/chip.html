@@ -1,75 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  {{> head}}
-</head>
-<body>
-  {{> nav}}
-  {{> page-header}}
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}} {{> page-header}}
 
-  <section>
-    <h2>Chip Colors</h2>
-    <div class="demo-row">
-      <el-dm-chip color="primary">Primary</el-dm-chip>
-      <el-dm-chip color="secondary">Secondary</el-dm-chip>
-      <el-dm-chip color="tertiary">Tertiary</el-dm-chip>
-      <el-dm-chip color="success">Success</el-dm-chip>
-      <el-dm-chip color="warning">Warning</el-dm-chip>
-      <el-dm-chip color="error">Error</el-dm-chip>
-      <el-dm-chip color="info">Info</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Chip Colors</h2>
+      <div class="demo-row">
+        <el-dm-chip color="primary">Primary</el-dm-chip>
+        <el-dm-chip color="secondary">Secondary</el-dm-chip>
+        <el-dm-chip color="tertiary">Tertiary</el-dm-chip>
+        <el-dm-chip color="success">Success</el-dm-chip>
+        <el-dm-chip color="warning">Warning</el-dm-chip>
+        <el-dm-chip color="error">Error</el-dm-chip>
+        <el-dm-chip color="info">Info</el-dm-chip>
+      </div>
+    </section>
 
-  <section>
-    <h2>Chip Variants</h2>
-    <div class="demo-row">
-      <el-dm-chip variant="filled">Filled</el-dm-chip>
-      <el-dm-chip variant="outlined">Outlined</el-dm-chip>
-      <el-dm-chip variant="soft">Soft</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Chip Variants</h2>
+      <div class="demo-row">
+        <el-dm-chip variant="filled">Filled</el-dm-chip>
+        <el-dm-chip variant="outlined">Outlined</el-dm-chip>
+        <el-dm-chip variant="soft">Soft</el-dm-chip>
+      </div>
+    </section>
 
-  <section>
-    <h2>Chip Sizes</h2>
-    <div class="demo-row">
-      <el-dm-chip size="sm">Small</el-dm-chip>
-      <el-dm-chip size="md">Medium</el-dm-chip>
-      <el-dm-chip size="lg">Large</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Chip Sizes</h2>
+      <div class="demo-row">
+        <el-dm-chip size="sm">Small</el-dm-chip>
+        <el-dm-chip size="md">Medium</el-dm-chip>
+        <el-dm-chip size="lg">Large</el-dm-chip>
+      </div>
+    </section>
 
-  <section>
-    <h2>Dismissible Chips</h2>
-    <div class="demo-row">
-      <el-dm-chip dismissible>Click X to remove</el-dm-chip>
-      <el-dm-chip dismissible color="success">Success</el-dm-chip>
-      <el-dm-chip dismissible color="error">Error</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Semantic Modes</h2>
+      <div class="demo-row">
+        <span class="demo-label">Display:</span>
+        <el-dm-chip id="display-chip">Static label</el-dm-chip>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Link:</span>
+        <el-dm-chip id="link-chip" href="#chip-event-log">Jump to event log</el-dm-chip>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Clickable:</span>
+        <el-dm-chip id="clickable-chip" clickable color="primary">Run action</el-dm-chip>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Selectable:</span>
+        <el-dm-chip id="selectable-chip" selectable color="secondary">Toggle filter</el-dm-chip>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Deletable:</span>
+        <el-dm-chip
+          id="deletable-chip"
+          deletable
+          delete-label="Remove Web Components tag"
+          color="success"
+          >Web Components</el-dm-chip
+        >
+      </div>
+    </section>
 
-  <section>
-    <h2>Clickable Chips</h2>
-    <div class="demo-row">
-      <el-dm-chip clickable>Clickable</el-dm-chip>
-      <el-dm-chip clickable color="primary">Primary</el-dm-chip>
-      <el-dm-chip clickable selected>Selected</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Disabled Modes</h2>
+      <div class="demo-row">
+        <el-dm-chip id="disabled-link-chip" href="#chip-event-log" disabled
+          >Disabled link</el-dm-chip
+        >
+        <el-dm-chip id="disabled-clickable-chip" clickable disabled>Disabled action</el-dm-chip>
+        <el-dm-chip id="disabled-selectable-chip" selectable disabled>Disabled choice</el-dm-chip>
+        <el-dm-chip id="disabled-deletable-chip" deletable disabled>Protected tag</el-dm-chip>
+      </div>
+    </section>
 
-  <section>
-    <h2>Use Cases</h2>
-    <div class="demo-row">
-      <el-dm-chip size="sm">JavaScript</el-dm-chip>
-      <el-dm-chip size="sm">TypeScript</el-dm-chip>
-      <el-dm-chip size="sm">React</el-dm-chip>
-      <el-dm-chip size="sm">Vue</el-dm-chip>
-      <el-dm-chip size="sm" dismissible>Web Components</el-dm-chip>
-    </div>
-  </section>
+    <section>
+      <h2>Mode Precedence</h2>
+      <p>
+        <code>deletable</code> wins over <code>href</code>, <code>selectable</code>, and
+        <code>clickable</code>.
+      </p>
+      <div class="demo-row">
+        <el-dm-chip
+          id="precedence-chip"
+          deletable
+          href="#chip-event-log"
+          selectable
+          clickable
+          delete-label="Remove mixed-mode example"
+          color="warning"
+          >Deletable wins</el-dm-chip
+        >
+      </div>
+    </section>
 
-  <script type="module">
-    import { register as registerChip } from '../elements/chip/src/index.ts';
-    registerChip();
-  </script>
-</body>
+    <section>
+      <h2>Use Cases</h2>
+      <div class="demo-row">
+        <el-dm-chip size="sm">JavaScript</el-dm-chip>
+        <el-dm-chip size="sm">TypeScript</el-dm-chip>
+        <el-dm-chip size="sm">React</el-dm-chip>
+        <el-dm-chip size="sm">Vue</el-dm-chip>
+        <el-dm-chip size="sm" deletable delete-label="Remove Web Components tag"
+          >Web Components</el-dm-chip
+        >
+      </div>
+    </section>
+
+    <section>
+      <h2>Event Log</h2>
+      <pre
+        id="chip-event-log"
+        role="status"
+        aria-live="polite"
+        style="
+          min-height: 4rem;
+          margin: 0;
+          padding: 0.75rem;
+          white-space: pre-wrap;
+          background: var(--color-surface-container);
+          border-radius: 0.5rem;
+        "
+      >
+No events yet.</pre>
+    </section>
+
+    <script type="module">
+      import { register as registerChip } from '../elements/chip/src/index.ts';
+      registerChip();
+
+      const eventLog = document.getElementById('chip-event-log');
+
+      function logEvent(message) {
+        const previous = eventLog.textContent === 'No events yet.' ? '' : eventLog.textContent;
+        eventLog.textContent = `${message}${previous ? `\n${previous}` : ''}`;
+      }
+
+      document.getElementById('link-chip').addEventListener('dm-click', () => {
+        logEvent('dm-click: link-chip');
+      });
+
+      document.getElementById('clickable-chip').addEventListener('dm-click', () => {
+        logEvent('dm-click: clickable-chip');
+      });
+
+      document.getElementById('selectable-chip').addEventListener('dm-change', (event) => {
+        logEvent(`dm-change: selected=${event.detail.selected}`);
+      });
+
+      const deletableChip = document.getElementById('deletable-chip');
+      deletableChip.addEventListener('dm-delete', () => {
+        logEvent('dm-delete: deletable-chip');
+      });
+      deletableChip.addEventListener('delete', () => {
+        logEvent('delete (deprecated alias): deletable-chip');
+      });
+
+      const precedenceChip = document.getElementById('precedence-chip');
+      for (const eventName of ['dm-click', 'dm-change', 'dm-delete', 'delete']) {
+        precedenceChip.addEventListener(eventName, () => {
+          logEvent(`${eventName}: precedence-chip`);
+        });
+      }
+    </script>
+  </body>
 </html>
