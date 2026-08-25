@@ -27,6 +27,13 @@ const pageData = {
     description:
       'Multi-panel cascading selection for hierarchical data like locations, categories, and organizational structures.',
   },
+  '/chip.html': {
+    title: 'Chip',
+    name: 'Chip',
+    tag: 'el-dm-chip',
+    description:
+      'Accessible chip component with display, link, action, selection, deletion, and disabled modes.',
+  },
   '/datetime.html': {
     title: 'Datetime',
     name: 'Datetime',
@@ -185,6 +192,7 @@ export default defineConfig({
         button: resolve(import.meta.dirname, 'button.html'),
         card: resolve(import.meta.dirname, 'card.html'),
         cascader: resolve(import.meta.dirname, 'cascader.html'),
+        chip: resolve(import.meta.dirname, 'chip.html'),
         datetime: resolve(import.meta.dirname, 'datetime.html'),
         input: resolve(import.meta.dirname, 'input.html'),
         markdown: resolve(import.meta.dirname, 'markdown.html'),
