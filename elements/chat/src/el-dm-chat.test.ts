@@ -252,6 +252,27 @@ describe('chat elements', () => {
     expect(el.getValue()).toBe('');
   });
 
+  test('forwards chat input id and name to the markdown textarea', () => {
+    const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
+    el.name = 'content';
+    container.appendChild(el);
+
+    const input = el.shadowRoot?.querySelector('el-dm-markdown-input');
+    const textarea = input?.shadowRoot?.querySelector('textarea');
+
+    expect(textarea?.hasAttribute('id')).toBe(false);
+    expect(textarea?.getAttribute('name')).toBe('content');
+
+    el.id = 'message-input';
+    expect(textarea?.id).toBe('message-input-editor');
+
+    el.id = 'renamed-input';
+    expect(textarea?.id).toBe('renamed-input-editor');
+
+    el.removeAttribute('id');
+    expect(textarea?.hasAttribute('id')).toBe(false);
+  });
+
   test('sends from markdown chat input on ctrl enter', async () => {
     const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
     container.appendChild(el);
