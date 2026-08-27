@@ -425,8 +425,56 @@ describe('chat elements', () => {
     button?.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
 
     const sendEvent = await event;
-    expect(sendEvent.detail).toEqual({ value: 'Hello **world**' });
+    expect(sendEvent.detail).toEqual({ value: 'Hello **world**', files: [] });
     expect(el.getValue()).toBe('');
+  });
+
+  test('exposes and clears local attachments without traversing shadow roots', () => {
+    const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
+    container.appendChild(el);
+
+    const input = el.shadowRoot?.querySelector('el-dm-markdown-input');
+    const file = new File(['image'], 'photo.png', { type: 'image/png' });
+    const dropEvent = new Event('drop', { bubbles: true });
+    Object.defineProperty(dropEvent, 'dataTransfer', { value: { files: [file] } });
+
+    input?.shadowRoot?.querySelector('.write-area')?.dispatchEvent(dropEvent);
+
+    const files = el.getFiles();
+    expect(files).toEqual([file]);
+    files.pop();
+    expect(el.getFiles()).toEqual([file]);
+
+    el.clearFiles();
+
+    expect(el.getFiles()).toEqual([]);
+    expect(input?.shadowRoot?.querySelectorAll('.upload-attached-row')).toHaveLength(0);
+  });
+
+  test('emits attached files and clears them after sending', async () => {
+    const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
+    el.clearOnSend = true;
+    container.appendChild(el);
+    el.setValue('Describe this image');
+
+    const input = el.shadowRoot?.querySelector('el-dm-markdown-input');
+    const file = new File(['image'], 'photo.png', { type: 'image/png' });
+    const dropEvent = new Event('drop', { bubbles: true });
+    Object.defineProperty(dropEvent, 'dataTransfer', { value: { files: [file] } });
+    input?.shadowRoot?.querySelector('.write-area')?.dispatchEvent(dropEvent);
+
+    const event = new Promise<CustomEvent>((resolve) => {
+      el.addEventListener('send', (sendEvent) => resolve(sendEvent as CustomEvent));
+    });
+
+    el.shadowRoot
+      ?.querySelector('.chat-send')
+      ?.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
+
+    const sendEvent = await event;
+    expect(sendEvent.detail).toEqual({ value: 'Describe this image', files: [file] });
+    expect(el.getValue()).toBe('');
+    expect(el.getFiles()).toEqual([]);
   });
 
   test('forwards chat input id and name to the markdown textarea', () => {
@@ -470,7 +518,7 @@ describe('chat elements', () => {
     );
 
     const sendEvent = await event;
-    expect(sendEvent.detail).toEqual({ value: 'Keyboard send' });
+    expect(sendEvent.detail).toEqual({ value: 'Keyboard send', files: [] });
   });
 
   test('sends from markdown chat input on cmd enter', async () => {
@@ -493,6 +541,6 @@ describe('chat elements', () => {
     );
 
     const sendEvent = await event;
-    expect(sendEvent.detail).toEqual({ value: 'Mac keyboard send' });
+    expect(sendEvent.detail).toEqual({ value: 'Mac keyboard send', files: [] });
   });
 });

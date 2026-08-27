@@ -143,15 +143,18 @@ message wins. The generated `navigate` event is cancelable and contains
 
 ### `el-dm-chat-input`
 
-| Property        | Type      | Default                                    | Description                    |
-| --------------- | --------- | ------------------------------------------ | ------------------------------ |
-| `name`          | `string`  | `''`                                       | Form field name                |
-| `value`         | `string`  | `''`                                       | Markdown input value           |
-| `placeholder`   | `string`  | `'Send a message... (Ctrl+Enter to send)'` | Input placeholder              |
-| `disabled`      | `boolean` | `false`                                    | Disables the input and send    |
-| `readonly`      | `boolean` | `false`                                    | Makes the input read-only      |
-| `send-label`    | `string`  | `'Send'`                                   | Send button label              |
-| `clear-on-send` | `boolean` | `false`                                    | Clears the input after sending |
+| Property        | Type      | Default                                    | Description                               |
+| --------------- | --------- | ------------------------------------------ | ----------------------------------------- |
+| `name`          | `string`  | `''`                                       | Form field name                           |
+| `value`         | `string`  | `''`                                       | Markdown input value                      |
+| `placeholder`   | `string`  | `'Send a message... (Ctrl+Enter to send)'` | Input placeholder                         |
+| `disabled`      | `boolean` | `false`                                    | Disables the input and send               |
+| `readonly`      | `boolean` | `false`                                    | Makes the input read-only                 |
+| `send-label`    | `string`  | `'Send'`                                   | Send button label                         |
+| `clear-on-send` | `boolean` | `false`                                    | Clears text and local files after sending |
+
+Local attachments are exposed directly on the chat input. `getFiles()` returns a snapshot, and
+`clearFiles()` removes all locally attached files.
 
 ### `el-dm-chat-reasoning`
 
@@ -234,6 +237,14 @@ Use the `content` attribute or property for markdown-rendered message bodies.
   clear-on-send
 >
 </el-dm-chat-input>
+
+<script>
+  document.querySelector('el-dm-chat-input').addEventListener('send', (event) => {
+    const { value, files } = event.detail;
+    // Encode or upload the File objects before forwarding a serializable payload.
+    console.log(value, files);
+  });
+</script>
 ```
 
 ## Status and Quick Actions
@@ -387,6 +398,6 @@ render before the final markdown answer, and a streaming caret stays attached to
 | ------------------- | -------------- | ----------------------------- |
 | `el-dm-chat-scroll` | `navigate`     | `{ timeline, index, target }` |
 | `el-dm-chat`        | `quick-action` | `{ action, label }`           |
-| `el-dm-chat-input`  | `send`         | `{ value }`                   |
+| `el-dm-chat-input`  | `send`         | `{ value, files }`            |
 
 Cancel `navigate` with `event.preventDefault()` to replace the built-in in-panel scrolling.
