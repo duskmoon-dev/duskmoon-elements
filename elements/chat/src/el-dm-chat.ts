@@ -52,12 +52,15 @@ export interface ChatQuickActionEventDetail {
 }
 export interface ChatSendEventDetail {
   value: string;
+  files: File[];
 }
 
 interface MarkdownInputElement extends HTMLElement {
   value: string;
   getValue(): string;
   setValue(value: string): void;
+  getFiles(): File[];
+  removeFile(index: number): void;
 }
 
 interface MarkdownElement extends HTMLElement {
@@ -1152,6 +1155,19 @@ export class ElDmChatInput extends BaseElement {
     this._getInput()?.setValue(value);
   }
 
+  getFiles(): File[] {
+    return this._getInput()?.getFiles() ?? [];
+  }
+
+  clearFiles(): void {
+    const input = this._getInput();
+    if (!input) return;
+
+    for (let index = input.getFiles().length - 1; index >= 0; index--) {
+      input.removeFile(index);
+    }
+  }
+
   private _getInput(): MarkdownInputElement | null {
     return this.shadowRoot.querySelector<MarkdownInputElement>('el-dm-markdown-input');
   }
@@ -1188,10 +1204,12 @@ export class ElDmChatInput extends BaseElement {
 
   private _send(): void {
     const value = this.getValue();
-    this.emit<ChatSendEventDetail>('send', { value });
+    const files = this.getFiles();
+    this.emit<ChatSendEventDetail>('send', { value, files });
 
     if (this.clearOnSend) {
       this.setValue('');
+      this.clearFiles();
     }
   }
 
