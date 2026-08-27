@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-time-input",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "DuskMoon TimeInput custom element for time selection",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.7.3",
+    "@duskmoon-dev/el-base": "1.7.4",
     "@duskmoon-dev/core": "1.18.2"
   },
   "devDependencies": {

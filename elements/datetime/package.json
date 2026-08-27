@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-datetime",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "Display-only DuskMoon custom element for formatting ISO dates and datetimes",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -40,7 +40,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.7.3"
+    "@duskmoon-dev/el-base": "1.7.4"
   },
   "devDependencies": {
     "typescript": "6.0.3"
