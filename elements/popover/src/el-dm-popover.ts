@@ -66,11 +66,13 @@ const styles = css`
   .popover-content {
     position: fixed;
     min-width: 8rem;
+    visibility: hidden;
     pointer-events: none;
     font-family: inherit;
   }
 
   .popover-content.show {
+    visibility: visible;
     pointer-events: auto;
   }
 
