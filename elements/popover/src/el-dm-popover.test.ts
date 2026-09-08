@@ -148,6 +148,18 @@ describe('ElDmPopover', () => {
   });
 
   // --- Visibility ---
+  test('hides closed content and only reveals it while open', () => {
+    const el = createPopover();
+    container.appendChild(el);
+    const panel = el.shadowRoot!.querySelector('.popover-content') as HTMLElement;
+
+    expect(getComputedStyle(panel).visibility).toBe('hidden');
+    el.show();
+    expect(getComputedStyle(panel).visibility).toBe('visible');
+    el.hide();
+    expect(getComputedStyle(panel).visibility).toBe('hidden');
+  });
+
   test('panel is not visible by default', () => {
     const el = createPopover();
     container.appendChild(el);
