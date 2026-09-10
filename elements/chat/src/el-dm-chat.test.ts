@@ -163,6 +163,25 @@ describe('chat elements', () => {
     expect(quickActionEvent.detail).toEqual({ action: 'copy', label: 'Copy' });
   });
 
+  test('shows and hides actions when slotted actions change', async () => {
+    const el = document.createElement('el-dm-chat') as ElDmChat;
+    container.appendChild(el);
+
+    const action = document.createElement('span');
+    action.slot = 'actions';
+    action.textContent = 'Custom action';
+    el.appendChild(action);
+    await Promise.resolve();
+
+    const actions = el.shadowRoot?.querySelector('.chat-actions');
+    expect(actions?.classList.contains('has-content')).toBe(true);
+
+    action.remove();
+    await Promise.resolve();
+
+    expect(actions?.classList.contains('has-content')).toBe(false);
+  });
+
   test('renders standalone bubble', () => {
     const el = document.createElement('el-dm-chat-bubble') as ElDmChatBubble;
     el.color = 'success';

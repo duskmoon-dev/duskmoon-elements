@@ -443,6 +443,17 @@ function syncSlotContent(shadowRoot: ShadowRoot): void {
   });
 }
 
+function syncActionsContent(shadowRoot: ShadowRoot): void {
+  const actions = shadowRoot.querySelector<HTMLElement>('.chat-actions');
+  const slot = shadowRoot.querySelector<HTMLSlotElement>('slot[name="actions"]');
+  if (!actions || !slot) return;
+
+  const hasContent = Boolean(
+    actions.querySelector('.chat-action') || slot.assignedElements({ flatten: true }).length,
+  );
+  actions.classList.toggle('has-content', hasContent);
+}
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll('&', '&amp;')
@@ -603,6 +614,7 @@ export class ElDmChat extends BaseElement {
     this.shadowRoot.addEventListener('slotchange', this._handleSlotChange);
     this.shadowRoot.addEventListener('click', this._handleClick);
     syncSlotContent(this.shadowRoot);
+    syncActionsContent(this.shadowRoot);
   }
 
   disconnectedCallback(): void {
@@ -613,6 +625,7 @@ export class ElDmChat extends BaseElement {
 
   private _handleSlotChange = (): void => {
     syncSlotContent(this.shadowRoot);
+    syncActionsContent(this.shadowRoot);
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   };
 
@@ -677,6 +690,7 @@ export class ElDmChat extends BaseElement {
   protected update(): void {
     super.update();
     syncSlotContent(this.shadowRoot);
+    syncActionsContent(this.shadowRoot);
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   }
 
