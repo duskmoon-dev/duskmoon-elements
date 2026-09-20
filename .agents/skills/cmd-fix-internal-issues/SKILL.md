@@ -1,3 +1,8 @@
+---
+name: cmd-fix-internal-issues
+description: Process open duskmoon-elements GitHub issues labeled `internal request` with isolated worktrees and one pull request per actionable issue. Use when asked to fix internal request issues.
+---
+
 # Fix Internal Request Issues
 
 Find all open GitHub issues labeled `internal request` (excluding those labeled `unable to resolve`), then fix each one in an isolated git worktree and open a PR.

@@ -1,14 +1,13 @@
 ---
-description: Bump @duskmoon-dev/core and @duskmoon-dev/css-art to latest npm versions across the monorepo, build, fix any breakage, then sync element packages to match upstream component additions/removals/API changes.
+name: cmd-sync-duskmoonui
+description: Bump @duskmoon-dev/core and @duskmoon-dev/css-art to their latest npm versions, fix resulting build breakage, and sync element packages with upstream public API changes.
 ---
+
+# Sync DuskMoonUI Dependencies and Elements
 
 ## Input
 
-```text
-$ARGUMENTS
-```
-
-If empty, sync both packages. Supports `--only=core` or `--only=css-art` to restrict to one package.
+The user may optionally specify `--only=core` or `--only=css-art` to restrict the sync to one package. If no restriction is provided, sync both packages.
 
 ## Steps
 
@@ -72,7 +71,7 @@ For each package, identify:
 
 | Category | Action required |
 |----------|----------------|
-| New component in `@duskmoon-dev/core` | Add a corresponding `elements/` package via `/create_element` |
+| New component in `@duskmoon-dev/core` | Add a corresponding `elements/` package with the `create-element` skill |
 | Removed component from `@duskmoon-dev/core` | Remove the corresponding `elements/` package (delete folder, remove from workspace) |
 | New art module in `@duskmoon-dev/css-art` | Add a corresponding `art-elements/` package |
 | Removed art module | Remove the corresponding `art-elements/` package |
@@ -87,7 +86,7 @@ Ignore internal implementation details that don't affect the public surface.
 Apply the changes identified in step 4 in this order:
 
 1. **Remove** packages for deleted upstream components — delete the folder and remove from `bun workspaces` in root `package.json`.
-2. **Add** packages for new upstream components — use the `/create_element` skill for each, following existing naming conventions (`el-dm-<name>`, package `@duskmoon-dev/el-<name>`).
+2. **Add** packages for new upstream components — use the `create-element` skill for each, following existing naming conventions (`el-dm-<name>`, package `@duskmoon-dev/el-<name>`).
 3. **Update** existing packages for API changes — fix renamed props, changed method signatures, or renamed CSS classes.
 
 ### 6. Final verify

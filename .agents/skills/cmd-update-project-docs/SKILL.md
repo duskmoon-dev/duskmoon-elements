@@ -1,14 +1,11 @@
 ---
-description: Update project documentation files in docs/, skills/, and README.md to reflect current codebase state.
+name: cmd-update-project-docs
+description: Update project documentation in docs/, skills/, and README.md to reflect the current codebase state. Use when asked to audit or refresh these project docs.
 ---
 
-## User Input
+## Request Scope
 
-```text
-$ARGUMENTS
-```
-
-If the user specifies file names (e.g., `development`, `duskmoon-elements`, `duskmoon-art-elements`, `readme`, `css-art-catalog`), update only those files. If empty, update all files in `docs/`, `skills/duskmoon-elements/`, `skills/duskmoon-art-elements/`, and `README.md`.
+Use the user's request to determine which documentation files to update. If the user specifies file names (for example, `development`, `duskmoon-elements`, `duskmoon-art-elements`, `readme`, or `css-art-catalog`), update only those files. If no files are specified, update all files in `docs/`, `skills/duskmoon-elements/`, `skills/duskmoon-art-elements/`, and `README.md`.
 
 ## Goal
 
