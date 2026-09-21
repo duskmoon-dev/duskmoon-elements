@@ -1,0 +1,64 @@
+---
+title: Sidebar Layout
+description: Responsive persistent sidebar and content grid
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-sidebar-layout'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Sidebar Layout
+
+Responsive persistent sidebar and content grid. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-sidebar-layout
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-sidebar-layout/register';
+```
+
+```html
+<el-dm-sidebar-layout position="start">
+  <nav slot="sidebar" aria-label="Workspace">...</nav>
+  <main>Workspace content</main>
+</el-dm-sidebar-layout>
+```
+
+## Live Demo
+
+<ComponentDemo title="Sidebar Layout">
+  <el-dm-sidebar-layout position="start">
+    <nav slot="sidebar" aria-label="Workspace">
+      ...
+    </nav>
+    <main>Workspace content</main>
+  </el-dm-sidebar-layout>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-sidebar-layout/register');</script>
+
+## Properties
+
+| Property         | Type               | Default   | Description               |
+| ---------------- | ------------------ | --------- | ------------------------- |
+| `position`       | `'start' \| 'end'` | `'start'` | Logical sidebar placement |
+| `compact`        | `boolean`          | `false`   | Use compact sidebar width |
+| `sidebar-hidden` | `boolean`          | `false`   | Hide the sidebar          |
+
+## Slots
+
+| Slot      | Description                |
+| --------- | -------------------------- |
+| `sidebar` | Persistent sidebar content |
+| Default   | Main content               |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

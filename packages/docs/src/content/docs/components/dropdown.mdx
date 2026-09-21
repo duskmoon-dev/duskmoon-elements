@@ -1,0 +1,33 @@
+---
+title: Dropdown
+description: Native Popover disclosure positioned relative to its trigger
+order: 28
+section: navigation
+component: '@duskmoon-dev/el-dropdown'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Dropdown
+
+Dropdown uses the native Popover API for visibility, light dismissal, Escape handling, and focus restoration.
+
+```bash
+npm install @duskmoon-dev/el-dropdown
+```
+
+```javascript
+import '@duskmoon-dev/el-dropdown/register';
+```
+
+<ComponentDemo title="Native dropdown">
+  <el-dm-dropdown trigger-label="Project actions" placement="block-end">
+    <a href="#open">Open project</a>
+    <br />
+    <button type="button">Archive</button>
+  </el-dm-dropdown>
+</ComponentDemo>
+
+Use the `trigger` slot to replace the trigger label. `placement` accepts `block-start`, `block-end`, `inline-start`, or `inline-end`. The `show()`, `hide()`, and `toggle()` methods delegate directly to the native Popover.
+
+<script>import('@duskmoon-dev/el-dropdown/register');</script>

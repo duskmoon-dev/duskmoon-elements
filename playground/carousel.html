@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carousel - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .demo-card {
+        min-width: 14rem;
+        min-height: 6rem;
+        padding: 1rem;
+        background: var(--color-surface-container);
+        border-radius: var(--radius-md);
+      }
+    </style>
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Carousel</h1>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-carousel align="center" aria-label="Cards"
+            ><article class="demo-card">One</article>
+            <article class="demo-card">Two</article>
+            <article class="demo-card">Three</article></el-dm-carousel
+          >
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-carousel/register';
+    </script>
+  </body>
+</html>

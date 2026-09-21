@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Horizontal Join</h2>
+      <el-dm-join aria-label="View density"
+        ><button type="button">Comfortable</button><button type="button">Compact</button
+        ><button type="button">List</button></el-dm-join
+      >
+    </section>
+    <section>
+      <h2>Vertical Join</h2>
+      <el-dm-join orientation="vertical"
+        ><button type="button">Newest</button><button type="button">Popular</button
+        ><button type="button" disabled>Archived</button></el-dm-join
+      >
+    </section>
+    <script type="module">
+      import { register } from '../elements/join/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

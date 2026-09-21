@@ -1,0 +1,57 @@
+---
+title: Loading
+description: CSS-only activity indicator
+order: 30
+section: feedback
+component: '@duskmoon-dev/el-loading'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Loading
+
+CSS-only activity indicator using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-loading
+```
+
+```javascript
+import '@duskmoon-dev/el-loading/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Loading">
+  <el-dm-loading
+    shape="spinner"
+    color="primary"
+    role="status"
+    aria-label="Saving changes"
+  ></el-dm-loading>
+</ComponentDemo>
+
+```html
+<el-dm-loading
+  shape="spinner"
+  color="primary"
+  role="status"
+  aria-label="Saving changes"
+></el-dm-loading>
+```
+
+## Properties
+
+| Property | Type          | Default | Description     |
+| -------- | ------------- | ------- | --------------- | ----------- | --------------- | ------ | -------------- |
+| `shape`  | `'spinner'    | 'dots'  | 'bars'`         | `'spinner'` | Indicator shape |
+| `size`   | `'xs'         | 'sm'    | 'md'            | 'lg'        | 'xl'`           | `'md'` | Indicator size |
+| `color`  | `theme color` | `—`     | Indicator color |
+
+## Composition and accessibility
+
+The element does not own request state, disabling, or `aria-busy`. Give standalone indicators `role="status"` and an accessible name; use `aria-hidden="true"` when decorative.
+
+<script>import('@duskmoon-dev/el-loading/register');</script>

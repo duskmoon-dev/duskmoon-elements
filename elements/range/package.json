@@ -1,0 +1,57 @@
+{
+  "name": "@duskmoon-dev/el-range",
+  "version": "1.7.6",
+  "description": "DuskMoon native range input custom element",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./register": {
+      "types": "./dist/types/register.d.ts",
+      "import": "./dist/esm/register.js",
+      "require": "./dist/cjs/register.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "bun run clean",
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/esm --format esm --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:cjs": "bun build ./src/index.ts ./src/register.ts --outdir ./dist/cjs --format cjs --sourcemap --external @duskmoon-dev/el-base --external @duskmoon-dev/core",
+    "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
+    "clean": "del-cli dist",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.ts' '*.json'",
+    "format:check": "prettier --check 'src/**/*.ts' '*.json'",
+    "lint:check": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@duskmoon-dev/el-base": "1.7.6",
+    "@duskmoon-dev/core": "1.19.9"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "duskmoon-dev",
+    "custom-elements",
+    "range",
+    "form"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duskmoon-dev/duskmoon-elements.git"
+  }
+}

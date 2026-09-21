@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Native Dropdown</h2>
+      <el-dm-dropdown trigger-label="Project actions"
+        ><a href="#open">Open project</a><br /><button type="button">
+          Archive
+        </button></el-dm-dropdown
+      >
+    </section>
+    <section>
+      <h2>Logical Placement</h2>
+      <el-dm-dropdown placement="inline-end"
+        ><span slot="trigger">More</span>
+        <p>Popover content</p></el-dm-dropdown
+      >
+    </section>
+    <script type="module">
+      import { register } from '../elements/dropdown/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

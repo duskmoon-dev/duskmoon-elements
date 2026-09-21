@@ -1,0 +1,50 @@
+---
+title: Radial Progress
+description: Determinate circular percentage progress
+order: 30
+section: feedback
+component: '@duskmoon-dev/el-radial-progress'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Radial Progress
+
+Determinate circular percentage progress using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-radial-progress
+```
+
+```javascript
+import '@duskmoon-dev/el-radial-progress/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Radial Progress">
+  <el-dm-radial-progress value="68" aria-label="Upload progress">
+    68%
+  </el-dm-radial-progress>
+</ComponentDemo>
+
+```html
+<el-dm-radial-progress value="68" aria-label="Upload progress">68%</el-dm-radial-progress>
+```
+
+## Properties
+
+| Property | Type          | Default     | Description                         |
+| -------- | ------------- | ----------- | ----------------------------------- | ----- | ------ | --------- |
+| `value`  | `number`      | `0`         | Current value, clamped to the range |
+| `max`    | `number`      | `100`       | Maximum value                       |
+| `size`   | `'md'         | 'sm'        | 'lg'                                | 'xl'` | `'md'` | Ring size |
+| `color`  | `theme color` | `'primary'` | Ring color                          |
+
+## Composition and accessibility
+
+The element normalizes `value`, drives the CSS percentage, and exposes matching progressbar ARIA values. Provide `aria-label` or `aria-labelledby` on the host.
+
+<script>import('@duskmoon-dev/el-radial-progress/register');</script>

@@ -1,0 +1,81 @@
+---
+title: Home Page
+description: Responsive public application shell with adaptive navigation
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-home-page'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Home Page
+
+Responsive public application shell with adaptive navigation. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-home-page
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-home-page/register';
+```
+
+```html
+<el-dm-home-page>
+  <span slot="header">DuskMoon</span>
+  <nav slot="navigation">...</nav>
+  <button slot="menu-trigger" popovertarget="home-menu">Menu</button>
+  <div slot="mobile-menu" id="home-menu" popover>...</div>
+  <section slot="hero"><h1>Build in moonlight.</h1></section>
+  <main slot="main">Page content</main>
+  <span slot="footer">© DuskMoon</span>
+</el-dm-home-page>
+```
+
+## Live Demo
+
+<ComponentDemo title="Home Page">
+  <el-dm-home-page>
+    <span slot="header">DuskMoon</span>
+    <nav slot="navigation">...</nav>
+    <button slot="menu-trigger" popovertarget="home-menu">
+      Menu
+    </button>
+    <div slot="mobile-menu" id="home-menu" popover>
+      ...
+    </div>
+    <section slot="hero">
+      <h1>Build in moonlight.</h1>
+    </section>
+    <main slot="main">Page content</main>
+    <span slot="footer">© DuskMoon</span>
+  </el-dm-home-page>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-home-page/register');</script>
+
+## Properties
+
+This element is deliberately state-free. Navigation and popover state remain application- or browser-owned.
+
+## Slots
+
+| Slot           | Description                       |
+| -------------- | --------------------------------- |
+| `header`       | Header/appbar content             |
+| `navigation`   | Wide-screen primary navigation    |
+| `actions`      | Wide-screen actions               |
+| `menu-trigger` | Compact-width menu trigger        |
+| `mobile-menu`  | Compact-width native popover menu |
+| `hero`         | Responsive hero region            |
+| `main`         | Main content                      |
+| `footer`       | Footer content                    |
+| Default        | Additional main content           |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

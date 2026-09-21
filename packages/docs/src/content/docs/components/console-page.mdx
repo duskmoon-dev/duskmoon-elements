@@ -1,0 +1,78 @@
+---
+title: Console Page
+description: Responsive console shell with expanded, compact, hidden, and mobile navigation states
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-console-page'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Console Page
+
+Responsive console shell with expanded, compact, hidden, and mobile navigation states. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-console-page
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-console-page/register';
+```
+
+```html
+<el-dm-console-page>
+  <header slot="appbar">Console</header>
+  <button slot="menu-trigger">Menu</button>
+  <button slot="sidebar-toggle">Toggle sidebar</button>
+  <strong slot="sidebar-header">Workspace</strong>
+  <nav slot="sidebar" aria-label="Workspace">...</nav>
+  <main slot="main">Dashboard content</main>
+</el-dm-console-page>
+```
+
+## Live Demo
+
+<ComponentDemo title="Console Page">
+  <el-dm-console-page>
+    <header slot="appbar">Console</header>
+    <button slot="menu-trigger">Menu</button>
+    <button slot="sidebar-toggle">Toggle sidebar</button>
+    <strong slot="sidebar-header">Workspace</strong>
+    <nav slot="sidebar" aria-label="Workspace">
+      ...
+    </nav>
+    <main slot="main">Dashboard content</main>
+  </el-dm-console-page>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-console-page/register');</script>
+
+## Properties
+
+| Property         | Type      | Default | Description                     |
+| ---------------- | --------- | ------- | ------------------------------- |
+| `compact`        | `boolean` | `false` | Use the icon-rail sidebar width |
+| `sidebar-hidden` | `boolean` | `false` | Hide the persistent sidebar     |
+
+## Slots
+
+| Slot             | Description                       |
+| ---------------- | --------------------------------- |
+| `appbar`         | Top application bar               |
+| `menu-trigger`   | Compact-width navigation trigger  |
+| `sidebar-toggle` | Wide-screen sidebar state control |
+| `sidebar-header` | Sidebar heading or brand          |
+| `sidebar`        | Sidebar navigation body           |
+| `sidebar-footer` | Sidebar footer                    |
+| `main`           | Main application content          |
+| `mobile-menu`    | Compact-width native popover menu |
+| Default          | Additional main content           |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Checkbox Swap</h2>
+      <div class="demo-row">
+        <el-dm-swap aria-label="Toggle navigation"
+          ><span slot="off">☰</span><span slot="on">×</span></el-dm-swap
+        ><el-dm-swap aria-label="Use dark appearance" rotate
+          ><span slot="off">☀️</span><span slot="on">🌙</span></el-dm-swap
+        >
+      </div>
+    </section>
+    <script type="module">
+      import { register } from '../elements/swap/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kbd - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .demo-card {
+        min-width: 14rem;
+        min-height: 6rem;
+        padding: 1rem;
+        background: var(--color-surface-container);
+        border-radius: var(--radius-md);
+      }
+    </style>
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Kbd</h1>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <p>Press <el-dm-kbd>Ctrl</el-dm-kbd> + <el-dm-kbd>K</el-dm-kbd> to search.</p>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-kbd/register';
+    </script>
+  </body>
+</html>

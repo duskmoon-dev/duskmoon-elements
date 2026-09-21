@@ -1,0 +1,58 @@
+---
+title: Diff
+description: Before-and-after content comparison
+order: 30
+section: data-display
+component: '@duskmoon-dev/el-diff'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Diff
+
+Before-and-after content comparison using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-diff
+```
+
+```javascript
+import '@duskmoon-dev/el-diff/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Diff">
+  <el-dm-diff position="50" aria-label="Landscape comparison">
+    <img slot="before" src="/before.jpg" alt="Landscape before editing" />
+    <span slot="before-label">Before</span>
+    <img slot="after" src="/after.jpg" alt="Landscape after editing" />
+    <span slot="after-label">After</span>
+  </el-dm-diff>
+</ComponentDemo>
+
+```html
+<el-dm-diff position="50" aria-label="Landscape comparison">
+  <img slot="before" src="/before.jpg" alt="Landscape before editing" />
+  <span slot="before-label">Before</span>
+  <img slot="after" src="/after.jpg" alt="Landscape after editing" />
+  <span slot="after-label">After</span>
+</el-dm-diff>
+```
+
+## Properties
+
+| Property   | Type          | Default    | Description                                      |
+| ---------- | ------------- | ---------- | ------------------------------------------------ |
+| `position` | `number`      | `50`       | Before layer reveal percentage, clamped to 0–100 |
+| `ratio`    | `string`      | `'16 / 9'` | CSS aspect ratio                                 |
+| `static`   | `boolean`     | `false`    | Show layers side by side                         |
+| `color`    | `theme color` | `—`        | Foreground color                                 |
+
+## Composition and accessibility
+
+The `before`, `after`, `before-label`, and `after-label` slots map to the upstream composition. A separate range input can update `position`; the element does not create application state.
+
+<script>import('@duskmoon-dev/el-diff/register');</script>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar Layout - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Sidebar Layout</h1>
+      <p>Responsive persistent sidebar and content grid.</p>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-sidebar-layout position="start">
+            <nav slot="sidebar" aria-label="Workspace">...</nav>
+            <main>Workspace content</main>
+          </el-dm-sidebar-layout>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-sidebar-layout/register';
+    </script>
+  </body>
+</html>

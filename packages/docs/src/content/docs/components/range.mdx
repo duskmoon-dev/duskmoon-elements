@@ -1,0 +1,28 @@
+---
+title: Range
+description: Native range input with browser-owned interaction
+order: 32
+section: input
+component: '@duskmoon-dev/el-range'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Range
+
+Range delegates pointer, keyboard, bounds, and stepping behavior to `input[type="range"]`.
+
+<ComponentDemo title="Volume">
+  <el-dm-range
+    aria-label="Volume"
+    min="0"
+    max="100"
+    step="5"
+    value="50"
+    color="primary"
+  ></el-dm-range>
+</ComponentDemo>
+
+Properties are `value`, `min`, `max`, `step`, `name`, `disabled`, `size`, and `color`. Do not add a static `aria-valuenow`; the native input exposes its current value.
+
+<script>import('@duskmoon-dev/el-range/register');</script>

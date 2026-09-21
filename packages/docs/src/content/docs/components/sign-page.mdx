@@ -1,0 +1,69 @@
+---
+title: Sign Page
+description: Responsive authentication page shell
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-sign-page'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Sign Page
+
+Responsive authentication page shell. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-sign-page
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-sign-page/register';
+```
+
+```html
+<el-dm-sign-page>
+  <section slot="aside">
+    <h1>Welcome back</h1>
+    <p>Secure access to your workspace.</p>
+  </section>
+  <form>
+    <h2>Sign in</h2>
+    ...
+  </form>
+</el-dm-sign-page>
+```
+
+## Live Demo
+
+<ComponentDemo title="Sign Page">
+  <el-dm-sign-page>
+    <section slot="aside">
+      <h1>Welcome back</h1>
+      <p>Secure access to your workspace.</p>
+    </section>
+    <form>
+      <h2>Sign in</h2>...
+    </form>
+  </el-dm-sign-page>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-sign-page/register');</script>
+
+## Properties
+
+This element has no state properties. Form validation and submission remain application-owned.
+
+## Slots
+
+| Slot    | Description                                |
+| ------- | ------------------------------------------ |
+| `aside` | Brand, illustration, or supporting content |
+| Default | Authentication form content                |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

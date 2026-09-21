@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diff - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .demo-card {
+        min-width: 14rem;
+        min-height: 6rem;
+        padding: 1rem;
+        background: var(--color-surface-container);
+        border-radius: var(--radius-md);
+      }
+    </style>
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Diff</h1>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-diff position="45" aria-label="Color comparison"
+            ><div slot="before" style="height: 16rem; background: var(--color-primary)"></div>
+            <span slot="before-label">Before</span>
+            <div slot="after" style="height: 16rem; background: var(--color-secondary)"></div>
+            <span slot="after-label">After</span></el-dm-diff
+          >
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-diff/register';
+    </script>
+  </body>
+</html>

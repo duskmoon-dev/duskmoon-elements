@@ -1,0 +1,24 @@
+---
+title: Link
+description: Theme-aware semantic navigation link
+order: 29
+section: navigation
+component: '@duskmoon-dev/el-link'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Link
+
+Link renders a native anchor for navigation. Use a button for actions such as save or submit.
+
+<ComponentDemo title="Text links">
+  <el-dm-link href="#primary">Primary link</el-dm-link>
+  <el-dm-link href="#secondary" color="secondary" hover>
+    Secondary hover link
+  </el-dm-link>
+</ComponentDemo>
+
+`href`, `target`, `rel`, and `download` map to the anchor. `color` accepts `primary`, `secondary`, `tertiary`, `neutral`, or `inherit`; `hover` reveals the underline on interaction.
+
+<script>import('@duskmoon-dev/el-link/register');</script>

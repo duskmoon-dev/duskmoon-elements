@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Checkbox Filters</h2>
+      <el-dm-filter-group color="secondary"
+        ><label><input type="checkbox" name="category" value="news" checked /> News</label
+        ><label><input type="checkbox" name="category" value="events" /> Events</label
+        ><label
+          ><input type="checkbox" name="category" value="guides" /> Guides</label
+        ></el-dm-filter-group
+      >
+    </section>
+    <section>
+      <h2>Radio Filters</h2>
+      <el-dm-filter-group
+        ><label><input type="radio" name="status" value="all" checked /> All</label
+        ><label><input type="radio" name="status" value="open" /> Open</label></el-dm-filter-group
+      >
+    </section>
+    <script type="module">
+      import { register } from '../elements/filter-group/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

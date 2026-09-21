@@ -1,0 +1,72 @@
+---
+title: Megamenu
+description: Grouped site navigation backed by the native Popover API
+order: 40
+section: navigation
+component: '@duskmoon-dev/el-megamenu'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Megamenu
+
+Grouped site navigation backed by the native Popover API. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-megamenu
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-megamenu/register';
+```
+
+```html
+<el-dm-megamenu trigger-label="Open products menu">
+  <span slot="trigger">Products</span>
+  <section>
+    <h2>Platform</h2>
+    <a href="#">Overview</a>
+  </section>
+  <nav slot="mobile" aria-label="Products"><a href="#">Overview</a></nav>
+</el-dm-megamenu>
+```
+
+## Live Demo
+
+<ComponentDemo title="Megamenu">
+  <el-dm-megamenu trigger-label="Open products menu">
+    <span slot="trigger">Products</span>
+    <section>
+      <h2>Platform</h2>
+      <a href="#">Overview</a>
+    </section>
+    <nav slot="mobile" aria-label="Products">
+      <a href="#">Overview</a>
+    </nav>
+  </el-dm-megamenu>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-megamenu/register');</script>
+
+## Properties
+
+| Property        | Type      | Default       | Description                      |
+| --------------- | --------- | ------------- | -------------------------------- |
+| `trigger-label` | `string`  | `'Open menu'` | Accessible trigger label         |
+| `full`          | `boolean` | `false`       | Use the full-width panel variant |
+
+## Slots
+
+| Slot      | Description                      |
+| --------- | -------------------------------- |
+| `trigger` | Trigger label/content            |
+| Default   | Panel groups and links           |
+| `mobile`  | Small-screen navigation fallback |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

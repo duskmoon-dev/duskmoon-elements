@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Native Toggle Switches</h2>
+      <div class="demo-row">
+        <el-dm-toggle-switch color="primary">Notifications</el-dm-toggle-switch
+        ><el-dm-toggle-switch checked color="secondary" size="sm">Auto-save</el-dm-toggle-switch
+        ><el-dm-toggle-switch disabled>Unavailable</el-dm-toggle-switch>
+      </div>
+    </section>
+    <script type="module">
+      import { register } from '../elements/toggle-switch/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

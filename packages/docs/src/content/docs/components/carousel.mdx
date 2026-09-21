@@ -1,0 +1,53 @@
+---
+title: Carousel
+description: Native scrolling, scroll-snapping content carousel
+order: 30
+section: data-display
+component: '@duskmoon-dev/el-carousel'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Carousel
+
+Native scrolling, scroll-snapping content carousel using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-carousel
+```
+
+```javascript
+import '@duskmoon-dev/el-carousel/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Carousel">
+  <el-dm-carousel align="center" aria-label="Project summaries">
+    <article>Observatory</article>
+    <article>Moon atlas</article>
+  </el-dm-carousel>
+</ComponentDemo>
+
+```html
+<el-dm-carousel align="center" aria-label="Project summaries">
+  <article>Observatory</article>
+  <article>Moon atlas</article>
+</el-dm-carousel>
+```
+
+## Properties
+
+| Property      | Type          | Default     | Description      |
+| ------------- | ------------- | ----------- | ---------------- | ----------- | ------------------- |
+| `orientation` | `'horizontal' | 'vertical'` | `'horizontal'`   | Scroll axis |
+| `align`       | `'start'      | 'center'    | 'end'`           | `'start'`   | Item snap alignment |
+| `color`       | `theme color` | `—`         | Foreground color |
+
+## Composition and accessibility
+
+Each direct child is a carousel item. The internal scroller is keyboard focusable and retains its native scrollbar.
+
+<script>import('@duskmoon-dev/el-carousel/register');</script>

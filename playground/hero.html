@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hero - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Hero</h1>
+      <p>Layer foreground content over an optional decorative visual.</p>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-hero align="start">
+            <div slot="overlay" aria-hidden="true"></div>
+            <div>
+              <h2>See the signal.</h2>
+              <p>Foreground content remains readable.</p>
+            </div>
+          </el-dm-hero>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-hero/register';
+    </script>
+  </body>
+</html>

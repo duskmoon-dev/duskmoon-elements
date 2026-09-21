@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section style="position: relative; min-height: 18rem">
+      <h2>Contained Speed Dial</h2>
+      <el-dm-fab contained label="Create"
+        ><span slot="trigger">＋</span><button type="button">New message</button
+        ><button type="button">Upload file</button></el-dm-fab
+      >
+    </section>
+    <script type="module">
+      import { register } from '../elements/fab/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

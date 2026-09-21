@@ -1,0 +1,53 @@
+---
+title: Stack
+description: Overlaps arbitrary children in one intrinsic grid area
+order: 30
+section: surfaces
+component: '@duskmoon-dev/el-stack'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Stack
+
+Overlaps arbitrary children in one intrinsic grid area using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-stack
+```
+
+```javascript
+import '@duskmoon-dev/el-stack/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Stack">
+  <el-dm-stack direction="bottom">
+    <article>Current review</article>
+    <div aria-hidden="true"></div>
+    <div aria-hidden="true"></div>
+  </el-dm-stack>
+</ComponentDemo>
+
+```html
+<el-dm-stack direction="bottom">
+  <article>Current review</article>
+  <div aria-hidden="true"></div>
+  <div aria-hidden="true"></div>
+</el-dm-stack>
+```
+
+## Properties
+
+| Property    | Type   | Default  | Description |
+| ----------- | ------ | -------- | ----------- | ------ | ---------- | -------------------------- |
+| `direction` | `'top' | 'bottom' | 'start'     | 'end'` | `'bottom'` | Direction of offset layers |
+
+## Composition and accessibility
+
+The first child is the foreground layer. Mark empty decorative backing layers `aria-hidden="true"`.
+
+<script>import('@duskmoon-dev/el-stack/register');</script>

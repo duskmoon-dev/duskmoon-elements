@@ -1,0 +1,23 @@
+---
+title: Toggle Switch
+description: Compact native checkbox switch
+order: 34
+section: input
+component: '@duskmoon-dev/el-toggle-switch'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Toggle Switch
+
+Toggle Switch wraps a native checkbox with `role="switch"`; the browser owns activation and checked state.
+
+<ComponentDemo title="Notifications">
+  <el-dm-toggle-switch name="notifications" value="enabled" color="primary" checked>
+    Enable notifications
+  </el-dm-toggle-switch>
+</ComponentDemo>
+
+Properties include `checked`, `disabled`, `required`, `name`, `value`, `size` (`xs`, `sm`, `md`, `lg`), `color`, and `ghost`.
+
+<script>import('@duskmoon-dev/el-toggle-switch/register');</script>

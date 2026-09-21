@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Megamenu - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Megamenu</h1>
+      <p>Grouped site navigation backed by the native Popover API.</p>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-megamenu trigger-label="Open products menu">
+            <span slot="trigger">Products</span>
+            <section>
+              <h2>Platform</h2>
+              <a href="#">Overview</a>
+            </section>
+            <nav slot="mobile" aria-label="Products"><a href="#">Overview</a></nav>
+          </el-dm-megamenu>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-megamenu/register';
+    </script>
+  </body>
+</html>

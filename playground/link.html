@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Links</h2>
+      <div class="demo-row">
+        <el-dm-link href="#primary">Primary</el-dm-link
+        ><el-dm-link href="#secondary" color="secondary">Secondary</el-dm-link
+        ><el-dm-link href="#hover" color="tertiary" hover>Hover underline</el-dm-link
+        ><el-dm-link href="#neutral" color="neutral">Neutral</el-dm-link>
+      </div>
+    </section>
+    <script type="module">
+      import { register } from '../elements/link/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

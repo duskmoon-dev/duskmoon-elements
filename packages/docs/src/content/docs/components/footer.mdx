@@ -1,0 +1,66 @@
+---
+title: Footer
+description: Responsive, semantic footer composition
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-footer'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Footer
+
+Responsive, semantic footer composition. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-footer
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-footer/register';
+```
+
+```html
+<el-dm-footer>
+  <nav aria-label="Product"><strong>Product</strong><a href="#">Overview</a></nav>
+  <nav aria-label="Company"><strong>Company</strong><a href="#">About</a></nav>
+</el-dm-footer>
+```
+
+## Live Demo
+
+<ComponentDemo title="Footer">
+  <el-dm-footer>
+    <nav aria-label="Product">
+      <strong>Product</strong>
+      <a href="#">Overview</a>
+    </nav>
+    <nav aria-label="Company">
+      <strong>Company</strong>
+      <a href="#">About</a>
+    </nav>
+  </el-dm-footer>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-footer/register');</script>
+
+## Properties
+
+| Property    | Type                                   | Default  | Description               |
+| ----------- | -------------------------------------- | -------- | ------------------------- |
+| `centered`  | `boolean`                              | `false`  | Center placement and text |
+| `direction` | `'auto' \| 'horizontal' \| 'vertical'` | `'auto'` | Control group flow        |
+
+## Slots
+
+| Slot    | Description                                                   |
+| ------- | ------------------------------------------------------------- |
+| Default | Semantic footer groups, preferably `nav`, `section`, or `div` |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

@@ -1,0 +1,49 @@
+---
+title: Mask
+description: Reusable clipping shapes for images and content
+order: 30
+section: data-display
+component: '@duskmoon-dev/el-mask'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Mask
+
+Reusable clipping shapes for images and content using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-mask
+```
+
+```javascript
+import '@duskmoon-dev/el-mask/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Mask">
+  <el-dm-mask shape="hexagon">
+    <img src="/portrait.jpg" alt="Portrait" />
+  </el-dm-mask>
+</ComponentDemo>
+
+```html
+<el-dm-mask shape="hexagon">
+  <img src="/portrait.jpg" alt="Portrait" />
+</el-dm-mask>
+```
+
+## Properties
+
+| Property | Type      | Default    | Description |
+| -------- | --------- | ---------- | ----------- | --------- | --------- | ----------- | ---------- | -------------- |
+| `shape`  | `'circle' | 'squircle' | 'square'    | 'diamond' | 'hexagon' | 'triangle'` | `'circle'` | Clipping shape |
+
+## Composition and accessibility
+
+Size the host with CSS. Images in the default slot fill the mask and use `object-fit: cover`.
+
+<script>import('@duskmoon-dev/el-mask/register');</script>

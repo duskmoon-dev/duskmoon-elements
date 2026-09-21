@@ -1,0 +1,31 @@
+---
+title: File Input
+description: Native browser file picker with DuskMoon styling
+order: 30
+section: input
+component: '@duskmoon-dev/el-file-input'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# File Input
+
+File Input keeps file selection browser-owned. `accept` is only a picker hint; validate content and size on the server.
+
+```bash
+npm install @duskmoon-dev/el-file-input
+```
+
+<ComponentDemo title="Attachment picker">
+  <el-dm-file-input
+    aria-label="Attachment"
+    accept=".pdf,image/*"
+    multiple
+    required
+    color="primary"
+  ></el-dm-file-input>
+</ComponentDemo>
+
+Properties include `name`, `accept`, `multiple`, `required`, `disabled`, `size` (`xs`, `sm`, `md`, `lg`), `color`, and `ghost`. Read the browser-owned selection from `element.files`.
+
+<script>import('@duskmoon-dev/el-file-input/register');</script>

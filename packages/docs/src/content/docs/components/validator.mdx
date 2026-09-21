@@ -1,0 +1,27 @@
+---
+title: Validator
+description: Native and application-owned validation presentation
+order: 35
+section: input
+component: '@duskmoon-dev/el-validator'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Validator
+
+Validator presents validation state; it does not validate remote data, create messages, set ARIA, or announce errors.
+
+<ComponentDemo title="Server-owned error">
+  <el-dm-validator state="error">
+    <input class="validator" required aria-invalid="true" aria-describedby="username-error" />
+    <small slot="hint">Use a unique username.</small>
+    <small id="username-error" slot="error">
+      This username is already registered.
+    </small>
+  </el-dm-validator>
+</ComponentDemo>
+
+Use native constraints on the control. `state` accepts `error`, `success`, `warning`, or `info` for explicit application/server presentation. The application remains responsible for useful messages and `aria-invalid`.
+
+<script>import('@duskmoon-dev/el-validator/register');</script>

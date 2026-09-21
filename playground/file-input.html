@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Native Pickers</h2>
+      <div class="demo-row">
+        <el-dm-file-input aria-label="Image" accept="image/*" color="primary"></el-dm-file-input
+        ><el-dm-file-input aria-label="Multiple attachments" multiple size="lg"></el-dm-file-input
+        ><el-dm-file-input aria-label="Disabled" disabled></el-dm-file-input>
+      </div>
+    </section>
+    <script type="module">
+      import { register } from '../elements/file-input/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

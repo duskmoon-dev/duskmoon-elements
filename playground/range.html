@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Native Ranges</h2>
+      <div class="demo-row">
+        <el-dm-range aria-label="Volume" value="50" color="primary"></el-dm-range
+        ><el-dm-range
+          aria-label="Stepped"
+          min="0"
+          max="20"
+          step="2"
+          value="10"
+          size="sm"
+          color="secondary"
+        ></el-dm-range
+        ><el-dm-range aria-label="Disabled" disabled></el-dm-range>
+      </div>
+    </section>
+    <script type="module">
+      import { register } from '../elements/range/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

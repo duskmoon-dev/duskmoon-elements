@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Home Page</h1>
+      <p>Responsive public application shell with adaptive navigation.</p>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-home-page>
+            <span slot="header">DuskMoon</span>
+            <nav slot="navigation">...</nav>
+            <button slot="menu-trigger" popovertarget="home-menu">Menu</button>
+            <div slot="mobile-menu" id="home-menu" popover>...</div>
+            <section slot="hero"><h1>Build in moonlight.</h1></section>
+            <main slot="main">Page content</main>
+            <span slot="footer">© DuskMoon</span>
+          </el-dm-home-page>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-home-page/register';
+    </script>
+  </body>
+</html>

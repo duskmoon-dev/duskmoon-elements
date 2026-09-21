@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indicator - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .demo-card {
+        min-width: 14rem;
+        min-height: 6rem;
+        padding: 1rem;
+        background: var(--color-surface-container);
+        border-radius: var(--radius-md);
+      }
+    </style>
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Indicator</h1>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-indicator
+            ><el-dm-badge slot="indicator" color="error">4</el-dm-badge
+            ><el-dm-button aria-label="Inbox, 4 unread messages"
+              >Inbox</el-dm-button
+            ></el-dm-indicator
+          >
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-indicator/register';
+    </script>
+  </body>
+</html>

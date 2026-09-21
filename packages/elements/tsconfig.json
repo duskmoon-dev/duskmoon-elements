@@ -10,47 +10,212 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"],
   "references": [
-    { "path": "../base" },
-    { "path": "../../elements/button" },
-    { "path": "../../elements/card" },
-    { "path": "../../elements/input" },
-    { "path": "../../elements/markdown" },
-    { "path": "../../elements/switch" },
-    { "path": "../../elements/alert" },
-    { "path": "../../elements/dialog" },
-    { "path": "../../elements/badge" },
-    { "path": "../../elements/chart" },
-    { "path": "../../elements/chip" },
-    { "path": "../../elements/tooltip" },
-    { "path": "../../elements/progress" },
-    { "path": "../../elements/form" },
-    { "path": "../../elements/slider" },
-    { "path": "../../elements/file-upload" },
-    { "path": "../../elements/autocomplete" },
-    { "path": "../../elements/datepicker" },
-    { "path": "../../elements/datetime" },
-    { "path": "../../elements/bottom-navigation" },
-    { "path": "../../elements/breadcrumbs" },
-    { "path": "../../elements/drawer" },
-    { "path": "../../elements/menu" },
-    { "path": "../../elements/navbar" },
-    { "path": "../../elements/pagination" },
-    { "path": "../../elements/stepper" },
-    { "path": "../../elements/tabs" },
-    { "path": "../../elements/accordion" },
-    { "path": "../../elements/bottom-sheet" },
-    { "path": "../../elements/popover" },
-    { "path": "../../elements/table" },
-    { "path": "../../elements/form-group" },
-    { "path": "../../elements/navigation" },
-    { "path": "../../elements/nested-menu" },
-    { "path": "../../elements/otp-input" },
-    { "path": "../../elements/pin-input" },
-    { "path": "../../elements/segment-control" },
-    { "path": "../../elements/theme-controller" },
-    { "path": "../../elements/time-input" },
-    { "path": "../../elements/code-engine" },
-    { "path": "../../elements/circle-menu" },
-    { "path": "../../elements/chat" }
+    {
+      "path": "../base"
+    },
+    {
+      "path": "../../elements/button"
+    },
+    {
+      "path": "../../elements/card"
+    },
+    {
+      "path": "../../elements/input"
+    },
+    {
+      "path": "../../elements/markdown"
+    },
+    {
+      "path": "../../elements/switch"
+    },
+    {
+      "path": "../../elements/alert"
+    },
+    {
+      "path": "../../elements/dialog"
+    },
+    {
+      "path": "../../elements/badge"
+    },
+    {
+      "path": "../../elements/chart"
+    },
+    {
+      "path": "../../elements/chip"
+    },
+    {
+      "path": "../../elements/tooltip"
+    },
+    {
+      "path": "../../elements/progress"
+    },
+    {
+      "path": "../../elements/form"
+    },
+    {
+      "path": "../../elements/slider"
+    },
+    {
+      "path": "../../elements/file-upload"
+    },
+    {
+      "path": "../../elements/autocomplete"
+    },
+    {
+      "path": "../../elements/datepicker"
+    },
+    {
+      "path": "../../elements/datetime"
+    },
+    {
+      "path": "../../elements/bottom-navigation"
+    },
+    {
+      "path": "../../elements/breadcrumbs"
+    },
+    {
+      "path": "../../elements/drawer"
+    },
+    {
+      "path": "../../elements/menu"
+    },
+    {
+      "path": "../../elements/navbar"
+    },
+    {
+      "path": "../../elements/pagination"
+    },
+    {
+      "path": "../../elements/stepper"
+    },
+    {
+      "path": "../../elements/tabs"
+    },
+    {
+      "path": "../../elements/accordion"
+    },
+    {
+      "path": "../../elements/bottom-sheet"
+    },
+    {
+      "path": "../../elements/popover"
+    },
+    {
+      "path": "../../elements/table"
+    },
+    {
+      "path": "../../elements/form-group"
+    },
+    {
+      "path": "../../elements/navigation"
+    },
+    {
+      "path": "../../elements/nested-menu"
+    },
+    {
+      "path": "../../elements/otp-input"
+    },
+    {
+      "path": "../../elements/pin-input"
+    },
+    {
+      "path": "../../elements/segment-control"
+    },
+    {
+      "path": "../../elements/theme-controller"
+    },
+    {
+      "path": "../../elements/time-input"
+    },
+    {
+      "path": "../../elements/code-engine"
+    },
+    {
+      "path": "../../elements/circle-menu"
+    },
+    {
+      "path": "../../elements/chat"
+    },
+    {
+      "path": "../../elements/carousel"
+    },
+    {
+      "path": "../../elements/console-page"
+    },
+    {
+      "path": "../../elements/countdown"
+    },
+    {
+      "path": "../../elements/diff"
+    },
+    {
+      "path": "../../elements/dropdown"
+    },
+    {
+      "path": "../../elements/fab"
+    },
+    {
+      "path": "../../elements/file-input"
+    },
+    {
+      "path": "../../elements/filter-group"
+    },
+    {
+      "path": "../../elements/footer"
+    },
+    {
+      "path": "../../elements/hero"
+    },
+    {
+      "path": "../../elements/home-page"
+    },
+    {
+      "path": "../../elements/indicator"
+    },
+    {
+      "path": "../../elements/join"
+    },
+    {
+      "path": "../../elements/kbd"
+    },
+    {
+      "path": "../../elements/link"
+    },
+    {
+      "path": "../../elements/loading"
+    },
+    {
+      "path": "../../elements/mask"
+    },
+    {
+      "path": "../../elements/megamenu"
+    },
+    {
+      "path": "../../elements/radial-progress"
+    },
+    {
+      "path": "../../elements/range"
+    },
+    {
+      "path": "../../elements/sidebar-layout"
+    },
+    {
+      "path": "../../elements/sign-page"
+    },
+    {
+      "path": "../../elements/stack"
+    },
+    {
+      "path": "../../elements/stat"
+    },
+    {
+      "path": "../../elements/swap"
+    },
+    {
+      "path": "../../elements/toggle-switch"
+    },
+    {
+      "path": "../../elements/validator"
+    }
   ]
 }

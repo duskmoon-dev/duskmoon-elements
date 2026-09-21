@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    {{> nav}}{{> page-header}}
+    <section>
+      <h2>Application Error</h2>
+      <el-dm-validator state="error"
+        ><input
+          class="input validator"
+          required
+          aria-invalid="true"
+          aria-describedby="username-error"
+        /><small slot="hint">Use a unique username.</small
+        ><small id="username-error" slot="error"
+          >This username is already registered.</small
+        ></el-dm-validator
+      >
+    </section>
+    <script type="module">
+      import { register } from '../elements/validator/src/index.ts';
+      register();
+    </script>
+  </body>
+</html>

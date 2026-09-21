@@ -1,0 +1,33 @@
+---
+title: FAB
+description: Floating action button and native Popover speed dial
+order: 29
+section: input
+component: '@duskmoon-dev/el-fab'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# FAB
+
+FAB owns placement and uses native Popover state for its action list. Applications supply action semantics and handlers.
+
+```bash
+npm install @duskmoon-dev/el-fab
+```
+
+<ComponentDemo title="Contained speed dial">
+  <div style="position: relative; min-height: 12rem; width: 100%;">
+    <el-dm-fab contained label="Create">
+      <span slot="trigger" aria-hidden="true">
+        ＋
+      </span>
+      <button type="button">New message</button>
+      <button type="button">Upload file</button>
+    </el-dm-fab>
+  </div>
+</ComponentDemo>
+
+`start`, `contained`, and `extended` select Core layout variants. `disabled` disables the native trigger. `show()` and `hide()` delegate to the native Popover.
+
+<script>import('@duskmoon-dev/el-fab/register');</script>

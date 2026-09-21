@@ -1,0 +1,25 @@
+---
+title: Join
+description: Visually join adjacent native controls
+order: 36
+section: input
+component: '@duskmoon-dev/el-join'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Join
+
+Join collapses adjacent borders without changing child semantics or interaction.
+
+<ComponentDemo title="Joined actions">
+  <el-dm-join aria-label="View density">
+    <button type="button">Comfortable</button>
+    <button type="button">Compact</button>
+    <button type="button">List</button>
+  </el-dm-join>
+</ComponentDemo>
+
+Set `orientation="vertical"` for a vertical group. Add the appropriate `role` and accessible label for the meaning of your composition.
+
+<script>import('@duskmoon-dev/el-join/register');</script>

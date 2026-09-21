@@ -1,0 +1,24 @@
+---
+title: Swap
+description: Checkbox-driven visual state indicator
+order: 33
+section: input
+component: '@duskmoon-dev/el-swap'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Swap
+
+Swap uses a native checkbox as its state authority. The `on` and `off` slots are non-interactive indicators, not nested controls.
+
+<ComponentDemo title="Navigation indicator">
+  <el-dm-swap aria-label="Toggle navigation" rotate>
+    <span slot="off">☰</span>
+    <span slot="on">×</span>
+  </el-dm-swap>
+</ComponentDemo>
+
+`checked`, `disabled`, `name`, and `value` map to the checkbox. `rotate` enables the rotation treatment. `active` is a presentation-only override and should not contradict interactive state.
+
+<script>import('@duskmoon-dev/el-swap/register');</script>

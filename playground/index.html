@@ -1,288 +1,430 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  {{> head}}
-</head>
-<body>
-  <h1>DuskMoon Elements</h1>
-  <p class="subtitle">Interactive playground for DuskMoon custom elements. Select an element to explore its features.</p>
+  <head>
+    {{> head}}
+  </head>
+  <body>
+    <h1>DuskMoon Elements</h1>
+    <p class="subtitle">
+      Interactive playground for DuskMoon custom elements. Select an element to explore its
+      features.
+    </p>
 
-  <h2 class="section-heading">Elements</h2>
-  <div class="elements-grid">
-    <a href="alert.html" class="element-card">
-      <h2>Alert <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-alert&gt;</code>
-      <p>Alert component with info, success, warning, and error types.</p>
-    </a>
+    <h2 class="section-heading">Elements</h2>
+    <div class="elements-grid">
+      <a href="alert.html" class="element-card">
+        <h2>Alert <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-alert&gt;</code>
+        <p>Alert component with info, success, warning, and error types.</p>
+      </a>
 
-    <a href="autocomplete.html" class="element-card">
-      <h2>Autocomplete <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-autocomplete&gt;</code>
-      <p>Searchable dropdown with filtering, multiple selection, and descriptions.</p>
-    </a>
+      <a href="autocomplete.html" class="element-card">
+        <h2>Autocomplete <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-autocomplete&gt;</code>
+        <p>Searchable dropdown with filtering, multiple selection, and descriptions.</p>
+      </a>
 
-    <a href="badge.html" class="element-card">
-      <h2>Badge <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-badge&gt;</code>
-      <p>Badge component with colors, variants, sizes, and pill shape.</p>
-    </a>
+      <a href="badge.html" class="element-card">
+        <h2>Badge <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-badge&gt;</code>
+        <p>Badge component with colors, variants, sizes, and pill shape.</p>
+      </a>
 
-    <a href="button.html" class="element-card">
-      <h2>Button <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-button&gt;</code>
-      <p>Button component with variants, sizes, loading states, and icon slots.</p>
-    </a>
+      <a href="button.html" class="element-card">
+        <h2>Button <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-button&gt;</code>
+        <p>Button component with variants, sizes, loading states, and icon slots.</p>
+      </a>
 
-    <a href="card.html" class="element-card">
-      <h2>Card <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-card&gt;</code>
-      <p>Card container with header, content, footer, and media slots.</p>
-    </a>
+      <a href="card.html" class="element-card">
+        <h2>Card <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-card&gt;</code>
+        <p>Card container with header, content, footer, and media slots.</p>
+      </a>
 
-    <a href="cascader.html" class="element-card">
-      <h2>Cascader <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-cascader&gt;</code>
-      <p>Multi-panel cascading selection for hierarchical data like locations.</p>
-    </a>
+      <a href="cascader.html" class="element-card">
+        <h2>Cascader <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-cascader&gt;</code>
+        <p>Multi-panel cascading selection for hierarchical data like locations.</p>
+      </a>
 
-    <a href="chip.html" class="element-card">
-      <h2>Chip <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-chip&gt;</code>
-      <p>Chip component for tags, filters, and selections with dismiss option.</p>
-    </a>
+      <a href="chip.html" class="element-card">
+        <h2>Chip <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-chip&gt;</code>
+        <p>Chip component for tags, filters, and selections with dismiss option.</p>
+      </a>
 
-    <a href="circle-menu.html" class="element-card">
-      <h2>Circle Menu <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-circle-menu&gt;</code>
-      <p>Radial circular navigation menu with hamburger toggle and color variants.</p>
-    </a>
+      <a href="circle-menu.html" class="element-card">
+        <h2>Circle Menu <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-circle-menu&gt;</code>
+        <p>Radial circular navigation menu with hamburger toggle and color variants.</p>
+      </a>
 
-    <a href="datepicker.html" class="element-card">
-      <h2>Datepicker <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-datepicker&gt;</code>
-      <p>Calendar picker with date/time selection and range support.</p>
-    </a>
+      <a href="datepicker.html" class="element-card">
+        <h2>Datepicker <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-datepicker&gt;</code>
+        <p>Calendar picker with date/time selection and range support.</p>
+      </a>
 
-    <a href="datetime.html" class="element-card">
-      <h2>Datetime <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-datetime&gt;</code>
-      <p>Display-only ISO date and datetime formatting with time-zone support.</p>
-    </a>
+      <a href="datetime.html" class="element-card">
+        <h2>Datetime <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-datetime&gt;</code>
+        <p>Display-only ISO date and datetime formatting with time-zone support.</p>
+      </a>
 
-    <a href="dialog.html" class="element-card">
-      <h2>Dialog <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-dialog&gt;</code>
-      <p>Modal dialog with header, content, and footer slots.</p>
-    </a>
+      <a href="dialog.html" class="element-card">
+        <h2>Dialog <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-dialog&gt;</code>
+        <p>Modal dialog with header, content, and footer slots.</p>
+      </a>
 
-    <a href="file-upload.html" class="element-card">
-      <h2>File Upload <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-file-upload&gt;</code>
-      <p>Drag-and-drop file upload with previews and validation.</p>
-    </a>
+      <a href="file-upload.html" class="element-card">
+        <h2>File Upload <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-file-upload&gt;</code>
+        <p>Drag-and-drop file upload with previews and validation.</p>
+      </a>
 
-    <a href="form.html" class="element-card">
-      <h2>Form <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-form&gt;</code>
-      <p>Form wrapper with validation states and disabled support.</p>
-    </a>
+      <a href="form.html" class="element-card">
+        <h2>Form <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-form&gt;</code>
+        <p>Form wrapper with validation states and disabled support.</p>
+      </a>
 
-    <a href="input.html" class="element-card">
-      <h2>Input <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-input&gt;</code>
-      <p>Input component with validation, types, prefix/suffix slots, and states.</p>
-    </a>
+      <a href="input.html" class="element-card">
+        <h2>Input <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-input&gt;</code>
+        <p>Input component with validation, types, prefix/suffix slots, and states.</p>
+      </a>
 
-    <a href="markdown.html" class="element-card">
-      <h2>Markdown <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-markdown&gt;</code>
-      <p>Markdown renderer with syntax highlighting and theme support.</p>
-    </a>
+      <a href="markdown.html" class="element-card">
+        <h2>Markdown <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-markdown&gt;</code>
+        <p>Markdown renderer with syntax highlighting and theme support.</p>
+      </a>
 
-    <a href="markdown-input.html" class="element-card">
-      <h2>Markdown Input <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-markdown-input&gt;</code>
-      <p>Markdown editor with syntax highlighting, preview, file upload, and autocomplete.</p>
-    </a>
+      <a href="markdown-input.html" class="element-card">
+        <h2>Markdown Input <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-markdown-input&gt;</code>
+        <p>Markdown editor with syntax highlighting, preview, file upload, and autocomplete.</p>
+      </a>
 
-    <a href="progress.html" class="element-card">
-      <h2>Progress <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-progress&gt;</code>
-      <p>Progress bar with determinate and indeterminate states.</p>
-    </a>
+      <a href="progress.html" class="element-card">
+        <h2>Progress <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-progress&gt;</code>
+        <p>Progress bar with determinate and indeterminate states.</p>
+      </a>
 
-    <a href="select.html" class="element-card">
-      <h2>Select <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-select&gt;</code>
-      <p>Select component with single, multi-select, and tree-select modes.</p>
-    </a>
+      <a href="select.html" class="element-card">
+        <h2>Select <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-select&gt;</code>
+        <p>Select component with single, multi-select, and tree-select modes.</p>
+      </a>
 
-    <a href="slider.html" class="element-card">
-      <h2>Slider <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-slider&gt;</code>
-      <p>Range slider with min/max, step, and value display options.</p>
-    </a>
+      <a href="slider.html" class="element-card">
+        <h2>Slider <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-slider&gt;</code>
+        <p>Range slider with min/max, step, and value display options.</p>
+      </a>
 
-    <a href="switch.html" class="element-card">
-      <h2>Switch <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-switch&gt;</code>
-      <p>Toggle switch with label text for on/off states.</p>
-    </a>
+      <a href="switch.html" class="element-card">
+        <h2>Switch <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-switch&gt;</code>
+        <p>Toggle switch with label text for on/off states.</p>
+      </a>
 
-    <a href="tooltip.html" class="element-card">
-      <h2>Tooltip <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-tooltip&gt;</code>
-      <p>Tooltip component with positions and trigger options.</p>
-    </a>
+      <a href="tooltip.html" class="element-card">
+        <h2>Tooltip <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-tooltip&gt;</code>
+        <p>Tooltip component with positions and trigger options.</p>
+      </a>
 
-    <a href="accordion.html" class="element-card">
-      <h2>Accordion <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-accordion&gt;</code>
-      <p>Expandable panels for organizing content into collapsible sections.</p>
-    </a>
+      <a href="accordion.html" class="element-card">
+        <h2>Accordion <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-accordion&gt;</code>
+        <p>Expandable panels for organizing content into collapsible sections.</p>
+      </a>
 
-    <a href="bottom-navigation.html" class="element-card">
-      <h2>Bottom Navigation <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-bottom-navigation&gt;</code>
-      <p>Mobile bottom navigation bar with icons and labels.</p>
-    </a>
+      <a href="bottom-navigation.html" class="element-card">
+        <h2>Bottom Navigation <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-bottom-navigation&gt;</code>
+        <p>Mobile bottom navigation bar with icons and labels.</p>
+      </a>
 
-    <a href="bottom-sheet.html" class="element-card">
-      <h2>Bottom Sheet <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-bottom-sheet&gt;</code>
-      <p>Mobile-friendly sliding panel from the bottom with snap points.</p>
-    </a>
+      <a href="bottom-sheet.html" class="element-card">
+        <h2>Bottom Sheet <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-bottom-sheet&gt;</code>
+        <p>Mobile-friendly sliding panel from the bottom with snap points.</p>
+      </a>
 
-    <a href="breadcrumbs.html" class="element-card">
-      <h2>Breadcrumbs <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-breadcrumbs&gt;</code>
-      <p>Hierarchical navigation showing the current page location.</p>
-    </a>
+      <a href="breadcrumbs.html" class="element-card">
+        <h2>Breadcrumbs <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-breadcrumbs&gt;</code>
+        <p>Hierarchical navigation showing the current page location.</p>
+      </a>
 
-    <a href="drawer.html" class="element-card">
-      <h2>Drawer <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-drawer&gt;</code>
-      <p>Side navigation panel that slides in from left or right.</p>
-    </a>
+      <a href="drawer.html" class="element-card">
+        <h2>Drawer <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-drawer&gt;</code>
+        <p>Side navigation panel that slides in from left or right.</p>
+      </a>
 
-    <a href="menu.html" class="element-card">
-      <h2>Menu <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-menu&gt;</code>
-      <p>Dropdown menu with keyboard navigation and nested items.</p>
-    </a>
+      <a href="menu.html" class="element-card">
+        <h2>Menu <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-menu&gt;</code>
+        <p>Dropdown menu with keyboard navigation and nested items.</p>
+      </a>
 
-    <a href="navbar.html" class="element-card">
-      <h2>Navbar <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-navbar&gt;</code>
-      <p>Primary navigation bar with brand, links, and hamburger menu.</p>
-    </a>
+      <a href="navbar.html" class="element-card">
+        <h2>Navbar <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-navbar&gt;</code>
+        <p>Primary navigation bar with brand, links, and hamburger menu.</p>
+      </a>
 
-    <a href="pagination.html" class="element-card">
-      <h2>Pagination <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-pagination&gt;</code>
-      <p>Page navigation with previous/next and page number buttons.</p>
-    </a>
+      <a href="pagination.html" class="element-card">
+        <h2>Pagination <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-pagination&gt;</code>
+        <p>Page navigation with previous/next and page number buttons.</p>
+      </a>
 
-    <a href="popover.html" class="element-card">
-      <h2>Popover <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-popover&gt;</code>
-      <p>Contextual overlay with flexible positioning and triggers.</p>
-    </a>
+      <a href="popover.html" class="element-card">
+        <h2>Popover <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-popover&gt;</code>
+        <p>Contextual overlay with flexible positioning and triggers.</p>
+      </a>
 
-    <a href="stepper.html" class="element-card">
-      <h2>Stepper <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-stepper&gt;</code>
-      <p>Multi-step progress indicator for wizards and workflows.</p>
-    </a>
+      <a href="stepper.html" class="element-card">
+        <h2>Stepper <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-stepper&gt;</code>
+        <p>Multi-step progress indicator for wizards and workflows.</p>
+      </a>
 
-    <a href="tabs.html" class="element-card">
-      <h2>Tabs <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-tabs&gt;</code>
-      <p>Tab navigation with panels for organizing content sections.</p>
-    </a>
+      <a href="tabs.html" class="element-card">
+        <h2>Tabs <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-tabs&gt;</code>
+        <p>Tab navigation with panels for organizing content sections.</p>
+      </a>
 
-    <a href="pro-data-grid.html" class="element-card">
-      <h2>Pro Data Grid <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-pro-data-grid&gt;</code>
-      <p>Enterprise-grade data grid with virtual scrolling, sorting, filtering, editing, and grouping.</p>
-    </a>
-  </div>
+      <a href="pro-data-grid.html" class="element-card">
+        <h2>Pro Data Grid <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-pro-data-grid&gt;</code>
+        <p>
+          Enterprise-grade data grid with virtual scrolling, sorting, filtering, editing, and
+          grouping.
+        </p>
+      </a>
 
-  <h2 class="section-heading">CSS Art</h2>
-  <div class="elements-grid">
-    <a href="art-moon.html" class="element-card">
-      <h2>Moon <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-moon&gt;</code>
-      <p>Pure CSS moon with full and crescent variants and optional glow.</p>
-    </a>
+      <a href="carousel.html" class="element-card"
+        ><h2>Carousel <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-carousel&gt;</code>
+        <p>Scrollable content carousel with orientation, alignment, and color variants.</p></a
+      >
+      <a href="console-page.html" class="element-card"
+        ><h2>Console Page <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-console-page&gt;</code>
+        <p>Responsive application shell with persistent and compact sidebar states.</p></a
+      >
+      <a href="countdown.html" class="element-card"
+        ><h2>Countdown <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-countdown&gt;</code>
+        <p>Accessible countdown display with size and semantic color variants.</p></a
+      >
+      <a href="diff.html" class="element-card"
+        ><h2>Diff <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-diff&gt;</code>
+        <p>Before-and-after comparison surface with labels and positioning control.</p></a
+      >
+      <a href="dropdown.html" class="element-card"
+        ><h2>Dropdown <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-dropdown&gt;</code>
+        <p>Native popover dropdown with CSS anchor positioning.</p></a
+      >
+      <a href="fab.html" class="element-card"
+        ><h2>FAB <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-fab&gt;</code>
+        <p>Floating action button and speed-dial composition.</p></a
+      >
+      <a href="file-input.html" class="element-card"
+        ><h2>File Input <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-file-input&gt;</code>
+        <p>Native file input with DuskMoon sizes, colors, and validation styling.</p></a
+      >
+      <a href="filter-group.html" class="element-card"
+        ><h2>Filter Group <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-filter-group&gt;</code>
+        <p>Native checkbox-backed filter chip group.</p></a
+      >
+      <a href="footer.html" class="element-card"
+        ><h2>Footer <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-footer&gt;</code>
+        <p>Responsive footer composition with navigation and content slots.</p></a
+      >
+      <a href="hero.html" class="element-card"
+        ><h2>Hero <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-hero&gt;</code>
+        <p>Responsive hero composition with content and overlay regions.</p></a
+      >
+      <a href="home-page.html" class="element-card"
+        ><h2>Home Page <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-home-page&gt;</code>
+        <p>Responsive landing-page shell with header, hero, content, and footer slots.</p></a
+      >
+      <a href="indicator.html" class="element-card"
+        ><h2>Indicator <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-indicator&gt;</code>
+        <p>Positions status badges around slotted content.</p></a
+      >
+      <a href="join.html" class="element-card"
+        ><h2>Join <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-join&gt;</code>
+        <p>Visually joins related controls horizontally or vertically.</p></a
+      >
+      <a href="kbd.html" class="element-card"
+        ><h2>Keyboard Key <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-kbd&gt;</code>
+        <p>Keyboard-key presentation with size and semantic color variants.</p></a
+      >
+      <a href="link.html" class="element-card"
+        ><h2>Link <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-link&gt;</code>
+        <p>Accessible native link with DuskMoon color and hover variants.</p></a
+      >
+      <a href="loading.html" class="element-card"
+        ><h2>Loading <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-loading&gt;</code>
+        <p>CSS-only activity indicators with accessible labeling.</p></a
+      >
+      <a href="mask.html" class="element-card"
+        ><h2>Mask <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-mask&gt;</code>
+        <p>Applies geometric masks to images and other content.</p></a
+      >
+      <a href="megamenu.html" class="element-card"
+        ><h2>Megamenu <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-megamenu&gt;</code>
+        <p>Responsive grouped navigation composed with native popovers.</p></a
+      >
+      <a href="radial-progress.html" class="element-card"
+        ><h2>Radial Progress <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-radial-progress&gt;</code>
+        <p>Determinate circular progress indicator.</p></a
+      >
+      <a href="range.html" class="element-card"
+        ><h2>Range <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-range&gt;</code>
+        <p>Native range input with DuskMoon styling and form behavior.</p></a
+      >
+      <a href="sidebar-layout.html" class="element-card"
+        ><h2>Sidebar Layout <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-sidebar-layout&gt;</code>
+        <p>Responsive content layout with configurable sidebar placement.</p></a
+      >
+      <a href="sign-page.html" class="element-card"
+        ><h2>Sign Page <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-sign-page&gt;</code>
+        <p>Responsive authentication-page shell with optional aside content.</p></a
+      >
+      <a href="stack.html" class="element-card"
+        ><h2>Stack <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-stack&gt;</code>
+        <p>Layers slotted content with configurable alignment.</p></a
+      >
+      <a href="stat.html" class="element-card"
+        ><h2>Stat <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-stat&gt;</code>
+        <p>Structured metric display with figure, value, description, and actions.</p></a
+      >
+      <a href="swap.html" class="element-card"
+        ><h2>Swap <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-swap&gt;</code>
+        <p>Native checkbox-backed visual state swap.</p></a
+      >
+      <a href="toggle-switch.html" class="element-card"
+        ><h2>Toggle Switch <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-toggle-switch&gt;</code>
+        <p>Compact native checkbox toggle control.</p></a
+      >
+      <a href="validator.html" class="element-card"
+        ><h2>Validator <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-validator&gt;</code>
+        <p>Opt-in native validation presentation and hint composition.</p></a
+      >
+    </div>
 
-    <a href="art-sun.html" class="element-card">
-      <h2>Sun <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-sun&gt;</code>
-      <p>Pure CSS sun with day and sunset variants, rays, and pulse animation.</p>
-    </a>
+    <h2 class="section-heading">CSS Art</h2>
+    <div class="elements-grid">
+      <a href="art-moon.html" class="element-card">
+        <h2>Moon <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-moon&gt;</code>
+        <p>Pure CSS moon with full and crescent variants and optional glow.</p>
+      </a>
 
-    <a href="art-atom.html" class="element-card">
-      <h2>Atom <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-atom&gt;</code>
-      <p>Pure CSS atom with animated orbiting electrons.</p>
-    </a>
+      <a href="art-sun.html" class="element-card">
+        <h2>Sun <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-sun&gt;</code>
+        <p>Pure CSS sun with day and sunset variants, rays, and pulse animation.</p>
+      </a>
 
-    <a href="art-eclipse.html" class="element-card">
-      <h2>Eclipse <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-eclipse&gt;</code>
-      <p>Pure CSS solar eclipse with layered corona glow effect.</p>
-    </a>
+      <a href="art-atom.html" class="element-card">
+        <h2>Atom <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-atom&gt;</code>
+        <p>Pure CSS atom with animated orbiting electrons.</p>
+      </a>
 
-    <a href="art-mountain.html" class="element-card">
-      <h2>Mountain <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-mountain&gt;</code>
-      <p>Pure CSS mountain landscape with single and range variants.</p>
-    </a>
+      <a href="art-eclipse.html" class="element-card">
+        <h2>Eclipse <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-eclipse&gt;</code>
+        <p>Pure CSS solar eclipse with layered corona glow effect.</p>
+      </a>
 
-    <a href="art-plasma-ball.html" class="element-card">
-      <h2>Plasma Ball <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-plasma-ball&gt;</code>
-      <p>Pure CSS plasma ball with animated electric rays and switch.</p>
-    </a>
+      <a href="art-mountain.html" class="element-card">
+        <h2>Mountain <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-mountain&gt;</code>
+        <p>Pure CSS mountain landscape with single and range variants.</p>
+      </a>
 
-    <a href="art-cat-stargazer.html" class="element-card">
-      <h2>Cat Stargazer <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-cat-stargazer&gt;</code>
-      <p>Pure CSS cat gazing at the moon on a starry night.</p>
-    </a>
+      <a href="art-plasma-ball.html" class="element-card">
+        <h2>Plasma Ball <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-plasma-ball&gt;</code>
+        <p>Pure CSS plasma ball with animated electric rays and switch.</p>
+      </a>
 
-    <a href="art-color-spin.html" class="element-card">
-      <h2>Color Spin <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-color-spin&gt;</code>
-      <p>Pure CSS animated spinning color wheel.</p>
-    </a>
+      <a href="art-cat-stargazer.html" class="element-card">
+        <h2>Cat Stargazer <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-cat-stargazer&gt;</code>
+        <p>Pure CSS cat gazing at the moon on a starry night.</p>
+      </a>
 
-    <a href="art-synthwave-starfield.html" class="element-card">
-      <h2>Synthwave Starfield <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-synthwave-starfield&gt;</code>
-      <p>Pure CSS retro synthwave scene with grid and animated stars.</p>
-    </a>
+      <a href="art-color-spin.html" class="element-card">
+        <h2>Color Spin <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-color-spin&gt;</code>
+        <p>Pure CSS animated spinning color wheel.</p>
+      </a>
 
-    <a href="art-circular-gallery.html" class="element-card">
-      <h2>Circular Gallery <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-circular-gallery&gt;</code>
-      <p>Pure CSS circular rotating image gallery.</p>
-    </a>
+      <a href="art-synthwave-starfield.html" class="element-card">
+        <h2>Synthwave Starfield <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-synthwave-starfield&gt;</code>
+        <p>Pure CSS retro synthwave scene with grid and animated stars.</p>
+      </a>
 
-    <a href="art-snow.html" class="element-card">
-      <h2>Snow <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-snow&gt;</code>
-      <p>Pure CSS animated snowfall with configurable flake count.</p>
-    </a>
+      <a href="art-circular-gallery.html" class="element-card">
+        <h2>Circular Gallery <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-circular-gallery&gt;</code>
+        <p>Pure CSS circular rotating image gallery.</p>
+      </a>
 
-    <a href="art-gemini-input.html" class="element-card">
-      <h2>Gemini Input <span class="arrow">&rarr;</span></h2>
-      <code>&lt;el-dm-art-gemini-input&gt;</code>
-      <p>Gemini-style animated gradient input built entirely with CSS.</p>
-    </a>
-  </div>
+      <a href="art-snow.html" class="element-card">
+        <h2>Snow <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-snow&gt;</code>
+        <p>Pure CSS animated snowfall with configurable flake count.</p>
+      </a>
 
-  {{> footer}}
-</body>
+      <a href="art-gemini-input.html" class="element-card">
+        <h2>Gemini Input <span class="arrow">&rarr;</span></h2>
+        <code>&lt;el-dm-art-gemini-input&gt;</code>
+        <p>Gemini-style animated gradient input built entirely with CSS.</p>
+      </a>
+    </div>
+
+    {{> footer}}
+  </body>
 </html>

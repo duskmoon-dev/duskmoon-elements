@@ -1,0 +1,66 @@
+---
+title: Hero
+description: Layer foreground content over an optional decorative visual
+order: 40
+section: surfaces
+component: '@duskmoon-dev/el-hero'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Hero
+
+Layer foreground content over an optional decorative visual. The element wraps the public Core CSS contract in Shadow DOM without taking ownership of application state.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-hero
+```
+
+## Usage
+
+```javascript
+import '@duskmoon-dev/el-hero/register';
+```
+
+```html
+<el-dm-hero align="start">
+  <div slot="overlay" aria-hidden="true"></div>
+  <div>
+    <h2>See the signal.</h2>
+    <p>Foreground content remains readable.</p>
+  </div>
+</el-dm-hero>
+```
+
+## Live Demo
+
+<ComponentDemo title="Hero">
+  <el-dm-hero align="start">
+    <div slot="overlay" aria-hidden="true"></div>
+    <div>
+      <h2>See the signal.</h2>
+      <p>Foreground content remains readable.</p>
+    </div>
+  </el-dm-hero>
+</ComponentDemo>
+
+<script>import('@duskmoon-dev/el-hero/register');</script>
+
+## Properties
+
+| Property | Type                           | Default    | Description               |
+| -------- | ------------------------------ | ---------- | ------------------------- |
+| `align`  | `'start' \| 'center' \| 'end'` | `'center'` | Logical content alignment |
+
+## Slots
+
+| Slot      | Description                      |
+| --------- | -------------------------------- |
+| Default   | Foreground hero content          |
+| `overlay` | Decorative background or overlay |
+
+## CSS Parts
+
+Every structural wrapper is exposed with a matching CSS part name for targeted customization.

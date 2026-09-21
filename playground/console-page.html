@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Console Page - DuskMoon Elements Playground</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--#include file="partials/header.html" -->
+    <main class="container">
+      <h1>Console Page</h1>
+      <p>Responsive console shell with expanded, compact, hidden, and mobile navigation states.</p>
+      <section class="demo-section">
+        <h2>Basic usage</h2>
+        <div class="demo-box">
+          <el-dm-console-page>
+            <header slot="appbar">Console</header>
+            <button slot="menu-trigger">Menu</button>
+            <button slot="sidebar-toggle">Toggle sidebar</button>
+            <strong slot="sidebar-header">Workspace</strong>
+            <nav slot="sidebar" aria-label="Workspace">...</nav>
+            <main slot="main">Dashboard content</main>
+          </el-dm-console-page>
+        </div>
+      </section>
+    </main>
+    <script type="module">
+      import '@duskmoon-dev/el-console-page/register';
+    </script>
+  </body>
+</html>

@@ -141,6 +141,41 @@ import {
   register as registerChat,
 } from '@duskmoon-dev/el-chat';
 
+// DuskMoonUI 1.19 component elements
+import { ElDmCarousel, register as registerCarousel } from '@duskmoon-dev/el-carousel';
+import { ElDmConsolePage, register as registerConsolePage } from '@duskmoon-dev/el-console-page';
+import { ElDmCountdown, register as registerCountdown } from '@duskmoon-dev/el-countdown';
+import { ElDmDiff, register as registerDiff } from '@duskmoon-dev/el-diff';
+import { ElDmDropdown, register as registerDropdown } from '@duskmoon-dev/el-dropdown';
+import { ElDmFab, register as registerFab } from '@duskmoon-dev/el-fab';
+import { ElDmFileInput, register as registerFileInput } from '@duskmoon-dev/el-file-input';
+import { ElDmFilterGroup, register as registerFilterGroup } from '@duskmoon-dev/el-filter-group';
+import { ElDmFooter, register as registerFooter } from '@duskmoon-dev/el-footer';
+import { ElDmHero, register as registerHero } from '@duskmoon-dev/el-hero';
+import { ElDmHomePage, register as registerHomePage } from '@duskmoon-dev/el-home-page';
+import { ElDmIndicator, register as registerIndicator } from '@duskmoon-dev/el-indicator';
+import { ElDmJoin, register as registerJoin } from '@duskmoon-dev/el-join';
+import { ElDmKbd, register as registerKbd } from '@duskmoon-dev/el-kbd';
+import { ElDmLink, register as registerLink } from '@duskmoon-dev/el-link';
+import { ElDmLoading, register as registerLoading } from '@duskmoon-dev/el-loading';
+import { ElDmMask, register as registerMask } from '@duskmoon-dev/el-mask';
+import { ElDmMegamenu, register as registerMegamenu } from '@duskmoon-dev/el-megamenu';
+import {
+  ElDmRadialProgress,
+  register as registerRadialProgress,
+} from '@duskmoon-dev/el-radial-progress';
+import { ElDmRange, register as registerRange } from '@duskmoon-dev/el-range';
+import {
+  ElDmSidebarLayout,
+  register as registerSidebarLayout,
+} from '@duskmoon-dev/el-sidebar-layout';
+import { ElDmSignPage, register as registerSignPage } from '@duskmoon-dev/el-sign-page';
+import { ElDmStack, register as registerStack } from '@duskmoon-dev/el-stack';
+import { ElDmStat, register as registerStat } from '@duskmoon-dev/el-stat';
+import { ElDmSwap, register as registerSwap } from '@duskmoon-dev/el-swap';
+import { ElDmToggleSwitch, register as registerToggleSwitch } from '@duskmoon-dev/el-toggle-switch';
+import { ElDmValidator, register as registerValidator } from '@duskmoon-dev/el-validator';
+
 // Re-export all elements
 export { ElDmButton, registerButton };
 export { ElDmCard, registerCard };
@@ -297,6 +332,35 @@ export type {
   ChatToolStatus,
 } from '@duskmoon-dev/el-chat';
 
+// DuskMoonUI 1.19 component elements
+export { ElDmCarousel, registerCarousel };
+export { ElDmConsolePage, registerConsolePage };
+export { ElDmCountdown, registerCountdown };
+export { ElDmDiff, registerDiff };
+export { ElDmDropdown, registerDropdown };
+export { ElDmFab, registerFab };
+export { ElDmFileInput, registerFileInput };
+export { ElDmFilterGroup, registerFilterGroup };
+export { ElDmFooter, registerFooter };
+export { ElDmHero, registerHero };
+export { ElDmHomePage, registerHomePage };
+export { ElDmIndicator, registerIndicator };
+export { ElDmJoin, registerJoin };
+export { ElDmKbd, registerKbd };
+export { ElDmLink, registerLink };
+export { ElDmLoading, registerLoading };
+export { ElDmMask, registerMask };
+export { ElDmMegamenu, registerMegamenu };
+export { ElDmRadialProgress, registerRadialProgress };
+export { ElDmRange, registerRange };
+export { ElDmSidebarLayout, registerSidebarLayout };
+export { ElDmSignPage, registerSignPage };
+export { ElDmStack, registerStack };
+export { ElDmStat, registerStat };
+export { ElDmSwap, registerSwap };
+export { ElDmToggleSwitch, registerToggleSwitch };
+export { ElDmValidator, registerValidator };
+
 /**
  * Register the optional code engine element without eagerly evaluating its editor stack.
  */
@@ -368,4 +432,31 @@ export function registerAll(): void {
   registerThemeController();
   registerTimeInput();
   registerChat();
+  registerCarousel();
+  registerConsolePage();
+  registerCountdown();
+  registerDiff();
+  registerDropdown();
+  registerFab();
+  registerFileInput();
+  registerFilterGroup();
+  registerFooter();
+  registerHero();
+  registerHomePage();
+  registerIndicator();
+  registerJoin();
+  registerKbd();
+  registerLink();
+  registerLoading();
+  registerMask();
+  registerMegamenu();
+  registerRadialProgress();
+  registerRange();
+  registerSidebarLayout();
+  registerSignPage();
+  registerStack();
+  registerStat();
+  registerSwap();
+  registerToggleSwitch();
+  registerValidator();
 }

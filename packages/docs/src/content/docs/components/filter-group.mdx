@@ -1,0 +1,31 @@
+---
+title: Filter Group
+description: Native radio and checkbox filters in a chip layout
+order: 31
+section: input
+component: '@duskmoon-dev/el-filter-group'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Filter Group
+
+Supply real labelled radio buttons or checkboxes. Their checked, disabled, keyboard, reset, and submission behavior remains native.
+
+<ComponentDemo title="Category filters">
+  <el-dm-filter-group color="secondary">
+    <label>
+      <input type="checkbox" name="category" value="news" checked /> News
+    </label>
+    <label>
+      <input type="checkbox" name="category" value="events" /> Events
+    </label>
+    <label>
+      <input type="checkbox" name="category" value="guides" /> Guides
+    </label>
+  </el-dm-filter-group>
+</ComponentDemo>
+
+`color` accepts `primary`, `secondary`, `tertiary`, `info`, `success`, `warning`, or `error`. The element does not execute a query or keep a second selection state.
+
+<script>import('@duskmoon-dev/el-filter-group/register');</script>

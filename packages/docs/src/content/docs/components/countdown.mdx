@@ -1,0 +1,52 @@
+---
+title: Countdown
+description: Composable countdown display with tabular numerals
+order: 30
+section: data-display
+component: '@duskmoon-dev/el-countdown'
+---
+
+import ComponentDemo from '../../../components/ComponentDemo.astro';
+
+# Countdown
+
+Composable countdown display with tabular numerals using the public DuskMoon Core 1.19.9 CSS contract.
+
+## Installation
+
+```bash
+npm install @duskmoon-dev/el-countdown
+```
+
+```javascript
+import '@duskmoon-dev/el-countdown/register';
+```
+
+## Live Demo
+
+<ComponentDemo title="Countdown">
+  <el-dm-countdown animated aria-label="Time remaining">
+    <span class="countdown-value">02</span> minutes
+  </el-dm-countdown>
+</ComponentDemo>
+
+```html
+<el-dm-countdown animated aria-label="Time remaining">
+  <span class="countdown-value">02</span> minutes
+</el-dm-countdown>
+```
+
+## Properties
+
+| Property     | Type          | Default | Description                 |
+| ------------ | ------------- | ------- | --------------------------- | ------ | ---------- |
+| `size`       | `'sm'         | 'md'    | 'lg'`                       | `'md'` | Value size |
+| `color`      | `theme color` | `—`     | Text color                  |
+| `animated`   | `boolean`     | `false` | Enable tick animation class |
+| `transition` | `boolean`     | `false` | Enable color transitions    |
+
+## Composition and accessibility
+
+Application code owns the timer and accessible announcement. Mark direct numeric children with `class="countdown-value"`; add `countdown-tick` while a value changes.
+
+<script>import('@duskmoon-dev/el-countdown/register');</script>
