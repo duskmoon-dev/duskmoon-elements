@@ -1,6 +1,7 @@
 ---
 name: cmd-update-project-docs
 description: Update project documentation in docs/, skills/, and README.md to reflect the current codebase state. Use when asked to audit or refresh these project docs.
+disable-model-invocation: true
 ---
 
 ## Request Scope

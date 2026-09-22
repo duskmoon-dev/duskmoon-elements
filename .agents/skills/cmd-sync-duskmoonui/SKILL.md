@@ -1,6 +1,7 @@
 ---
 name: cmd-sync-duskmoonui
 description: Bump @duskmoon-dev/core and @duskmoon-dev/css-art to their latest npm versions, fix resulting build breakage, and sync element packages with upstream public API changes.
+disable-model-invocation: true
 ---
 
 # Sync DuskMoonUI Dependencies and Elements
