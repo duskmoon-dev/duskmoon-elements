@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-megamenu",
-  "version": "1.7.6",
+  "version": "1.8.0",
   "description": "DuskMoon Native popover megamenu composition custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.7.6",
+    "@duskmoon-dev/el-base": "1.8.0",
     "@duskmoon-dev/core": "1.19.9"
   },
   "devDependencies": {
