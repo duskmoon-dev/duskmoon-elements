@@ -140,6 +140,20 @@ describe('ElDmMarkdownInput', () => {
   // ── Attribute reflection ──────────────────────────────────────────
 
   describe('attribute reflection', () => {
+    test('auto-grow attribute and property stay in sync without replacing the textarea', async () => {
+      const textarea = getTextarea(el);
+      el.setAttribute('auto-grow', '');
+      await Promise.resolve();
+      expect(el.autoGrow).toBe(true);
+      expect(getTextarea(el)).toBe(textarea);
+
+      el.autoGrow = false;
+      await Promise.resolve();
+      expect(el.hasAttribute('auto-grow')).toBe(false);
+      expect(getTextarea(el)).toBe(textarea);
+      cleanup(el);
+    });
+
     test('placeholder attribute updates textarea placeholder', () => {
       el.setAttribute('placeholder', 'Type here...');
       // Trigger microtask for batched update
@@ -571,6 +585,20 @@ describe('ElDmMarkdownInput', () => {
   // ── Render layer (replaces old scroll sync / backdrop) ───────────
 
   describe('render layer', () => {
+    test('auto-grow updates the height-driving mirror immediately for input and setValue', () => {
+      el.autoGrow = true;
+      const textarea = getTextarea(el);
+      const renderLayer = el.shadowRoot!.querySelector('.render-layer')!;
+
+      textarea.value = 'A long line that can wrap across multiple visual rows';
+      textarea.dispatchEvent(new Event('input'));
+      expect(renderLayer.textContent).toContain(textarea.value);
+
+      el.setValue('First line\nSecond line');
+      expect(renderLayer.textContent).toContain('First line\nSecond line');
+      cleanup(el);
+    });
+
     test('render-layer exists and backdrop is removed', () => {
       const renderLayer = el.shadowRoot!.querySelector('.render-layer');
       const backdrop = el.shadowRoot!.querySelector('.backdrop');

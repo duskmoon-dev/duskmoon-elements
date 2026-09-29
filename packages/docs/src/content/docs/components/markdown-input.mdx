@@ -251,6 +251,7 @@ The Markdown Input component offers:
 | `katex-css-url` | `string` | CDN URL | Override KaTeX stylesheet location |
 | `mermaid-src` | `string` | CDN URL | Override mermaid.js source URL |
 | `no-preview` | `boolean` | `false` | Hide the preview tab; write-only mode |
+| `auto-grow` | `boolean` | `false` | Grow the write area with content up to its maximum height |
 | `resize` | `'none' \| 'vertical' \| 'horizontal' \| 'both'` | `'none'` | Enable user resizing of the editor |
 
 ## Public API
@@ -568,6 +569,8 @@ el-dm-markdown-input {
   --md-text-muted: #656d76;
   --md-accent: #0969da;
   --md-radius: 6px;
+  --md-editor-min-height: 12rem;
+  --md-editor-max-height: 24rem;
   --md-upload-bar: #0969da;
 }
 
@@ -595,6 +598,8 @@ el-dm-markdown-input[dark] {
 | `--md-text-muted` | `#656d76` | `#8b949e` | Muted text color |
 | `--md-accent` | `#0969da` | `#58a6ff` | Active tab color |
 | `--md-radius` | `6px` | `6px` | Border radius |
+| `--md-editor-min-height` | `12rem` | `12rem` | Minimum editor height, including toolbar and status bar |
+| `--md-editor-max-height` | `24rem` | `24rem` | Maximum editor height when `auto-grow` is enabled |
 | `--md-upload-bar` | `#0969da` | `#58a6ff` | Upload progress bar color |
 
 ## Dark Mode
@@ -614,6 +619,20 @@ el-dm-markdown-input[dark] {
 ```
 
 The component uses DuskMoon Moonlight theme colors by default in dark mode.
+
+## Editor Height and Auto-Growth
+
+The editor keeps its existing 12rem minimum height by default. Set `--md-editor-min-height` on the element to make it more compact. Add `auto-grow` to expand the write area as text is entered; the write area scrolls after the editor reaches `--md-editor-max-height`. Wrapped lines also contribute to growth. Both properties include the toolbar and status bar in the editor's total height.
+
+```html
+<el-dm-markdown-input
+  no-preview
+  auto-grow
+  style="--md-editor-min-height: 4.5rem; --md-editor-max-height: 18rem;"
+></el-dm-markdown-input>
+```
+
+The JavaScript property is `editor.autoGrow = true`. Remove the attribute or set the property to `false` to restore the regular editor sizing behavior.
 
 ## Resizable Editor
 

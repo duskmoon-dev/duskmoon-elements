@@ -448,6 +448,28 @@ describe('chat elements', () => {
     expect(el.getValue()).toBe('');
   });
 
+  test('forwards auto-grow without replacing the editor or its content', () => {
+    const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
+    container.appendChild(el);
+    el.setValue('Draft message');
+
+    const input = el.shadowRoot?.querySelector('el-dm-markdown-input');
+    expect(input?.hasAttribute('auto-grow')).toBe(false);
+    expect(input?.getAttribute('resize')).toBe('vertical');
+
+    el.setAttribute('auto-grow', '');
+    expect(el.shadowRoot?.querySelector('el-dm-markdown-input')).toBe(input);
+    expect(input?.hasAttribute('auto-grow')).toBe(true);
+    expect(input?.getAttribute('resize')).toBe('none');
+    expect(el.getValue()).toBe('Draft message');
+
+    el.removeAttribute('auto-grow');
+    expect(input?.hasAttribute('auto-grow')).toBe(false);
+    expect(input?.getAttribute('resize')).toBe('vertical');
+    expect(getAdoptedCSS(el)).toContain('--dm-chat-editor-min-height');
+    expect(getAdoptedCSS(el)).toContain('--dm-chat-editor-max-height');
+  });
+
   test('exposes and clears local attachments without traversing shadow roots', () => {
     const el = document.createElement('el-dm-chat-input') as ElDmChatInput;
     container.appendChild(el);

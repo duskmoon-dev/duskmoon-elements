@@ -58,7 +58,17 @@ export const elementStyles = css`
     color: var(--md-text);
     overflow: hidden;
     height: inherit;
-    min-height: 12rem;
+    min-height: var(--md-editor-min-height, 12rem);
+  }
+
+  :host([auto-grow]) .editor {
+    height: auto;
+    max-height: var(--md-editor-max-height, 24rem);
+  }
+
+  :host([auto-grow]) .write-area {
+    flex: 0 1 auto;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .editor:focus-within {
@@ -149,6 +159,11 @@ export const elementStyles = css`
     word-wrap: break-word;
     overflow-wrap: break-word;
     color: var(--md-text);
+  }
+
+  :host([auto-grow]) .render-layer,
+  :host([auto-grow]) textarea {
+    overflow-wrap: anywhere;
   }
 
   /*
