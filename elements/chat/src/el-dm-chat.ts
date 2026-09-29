@@ -332,7 +332,9 @@ const styles = css`
   .chat-input-editor {
     display: block;
     width: 100%;
-    min-height: 12rem;
+    min-height: var(--dm-chat-editor-min-height, 12rem);
+    --md-editor-min-height: var(--dm-chat-editor-min-height, 12rem);
+    --md-editor-max-height: var(--dm-chat-editor-max-height, 24rem);
     --md-radius: 6px;
   }
 
@@ -1123,7 +1125,7 @@ export class ElDmChatInput extends BaseElement {
   };
 
   static override get observedAttributes(): string[] {
-    return [...super.observedAttributes, 'id'];
+    return [...super.observedAttributes, 'id', 'auto-grow'];
   }
 
   declare name: string;
@@ -1157,6 +1159,11 @@ export class ElDmChatInput extends BaseElement {
 
     if (name === 'id' && oldValue !== newValue && this.isConnected) {
       this._syncEditorId();
+    }
+    if (name === 'auto-grow' && oldValue !== newValue) {
+      const input = this._getInput();
+      input?.toggleAttribute('auto-grow', newValue !== null);
+      input?.setAttribute('resize', newValue !== null ? 'none' : 'vertical');
     }
   }
 
@@ -1239,8 +1246,9 @@ export class ElDmChatInput extends BaseElement {
           name="${escapeHtml(this.name || '')}"
           value="${escapeHtml(this.value || '')}"
           placeholder="${escapeHtml(this.placeholder || 'Send a message... (Ctrl/Cmd+Enter to send)')}"
-          resize="vertical"
+          resize="${this.hasAttribute('auto-grow') ? 'none' : 'vertical'}"
           no-preview
+          ${this.hasAttribute('auto-grow') ? 'auto-grow' : ''}
           ${this.disabled ? 'disabled' : ''}
           ${this.readonly ? 'readonly' : ''}
         >

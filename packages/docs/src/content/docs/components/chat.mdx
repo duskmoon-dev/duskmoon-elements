@@ -143,18 +143,23 @@ message wins. The generated `navigate` event is cancelable and contains
 
 ### `el-dm-chat-input`
 
-| Property        | Type      | Default                                    | Description                               |
-| --------------- | --------- | ------------------------------------------ | ----------------------------------------- |
-| `name`          | `string`  | `''`                                       | Form field name                           |
-| `value`         | `string`  | `''`                                       | Markdown input value                      |
-| `placeholder`   | `string`  | `'Send a message... (Ctrl+Enter to send)'` | Input placeholder                         |
-| `disabled`      | `boolean` | `false`                                    | Disables the input and send               |
-| `readonly`      | `boolean` | `false`                                    | Makes the input read-only                 |
-| `send-label`    | `string`  | `'Send'`                                   | Send button label                         |
-| `clear-on-send` | `boolean` | `false`                                    | Clears text and local files after sending |
+| Property        | Type      | Default                                    | Description                                           |
+| --------------- | --------- | ------------------------------------------ | ----------------------------------------------------- |
+| `name`          | `string`  | `''`                                       | Form field name                                       |
+| `value`         | `string`  | `''`                                       | Markdown input value                                  |
+| `placeholder`   | `string`  | `'Send a message... (Ctrl+Enter to send)'` | Input placeholder                                     |
+| `disabled`      | `boolean` | `false`                                    | Disables the input and send                           |
+| `readonly`      | `boolean` | `false`                                    | Makes the input read-only                             |
+| `send-label`    | `string`  | `'Send'`                                   | Send button label                                     |
+| `clear-on-send` | `boolean` | `false`                                    | Clears text and local files after sending             |
+| `auto-grow`     | `boolean` | `false`                                    | Grow the editor with content up to its maximum height |
 
 Local attachments are exposed directly on the chat input. `getFiles()` returns a snapshot, and
 `clearFiles()` removes all locally attached files.
+
+Set `--dm-chat-editor-min-height` on the chat input to size both the outer editor and its nested
+markdown editor. The default is `12rem`. With `auto-grow`, the editor expands as text is entered,
+then its write area scrolls at `--dm-chat-editor-max-height` (default `24rem`).
 
 ### `el-dm-chat-reasoning`
 
@@ -245,6 +250,15 @@ Use the `content` attribute or property for markdown-rendered message bodies.
     console.log(value, files);
   });
 </script>
+```
+
+For a compact composer that starts around two to three lines:
+
+```html
+<el-dm-chat-input
+  auto-grow
+  style="--dm-chat-editor-min-height: 4.5rem; --dm-chat-editor-max-height: 16rem"
+></el-dm-chat-input>
 ```
 
 ## Status and Quick Actions

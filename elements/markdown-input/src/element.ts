@@ -20,6 +20,7 @@
  * @attr {number}  max-words    Soft word cap shown in status bar
  * @attr {boolean} dark         Activates dark Prism theme + dark CSS variable defaults
  * @attr {boolean} no-preview   Hides the preview tab and toolbar; write-only mode
+ * @attr {boolean} auto-grow    Grows the write area with content up to --md-editor-max-height
  *
  * @fires change          `{ value: string }` — on every input
  * @fires upload-start    `{ file: File }` — when a file is accepted
@@ -79,6 +80,7 @@ export class ElDmMarkdownInput extends BaseElement {
     mermaidSrc: { type: String, reflect: true, attribute: 'mermaid-src' },
     resize: { type: String, reflect: true, default: 'none' },
     noPreview: { type: Boolean, reflect: true, attribute: 'no-preview' },
+    autoGrow: { type: Boolean, reflect: true, attribute: 'auto-grow' },
   };
 
   static override get observedAttributes(): string[] {
@@ -100,6 +102,7 @@ export class ElDmMarkdownInput extends BaseElement {
   declare mermaidSrc: string | undefined;
   declare resize: 'none' | 'vertical' | 'horizontal' | 'both';
   declare noPreview: boolean;
+  declare autoGrow: boolean;
 
   // ── ElementInternals for form association ────────────────────────────
   #internals!: ElementInternals;
@@ -594,6 +597,13 @@ export class ElDmMarkdownInput extends BaseElement {
 
   #scheduleHighlight(): void {
     if (this.#highlightTimer !== null) clearTimeout(this.#highlightTimer);
+    if (this.autoGrow) {
+      this.#highlightTimer = null;
+      if (this.#renderLayer && this.#textarea) {
+        this.#renderLayer.innerHTML = highlightMarkdown(this.#textarea.value);
+      }
+      return;
+    }
     this.#highlightTimer = setTimeout(() => {
       this.#highlightTimer = null;
       if (this.#renderLayer && this.#textarea) {
