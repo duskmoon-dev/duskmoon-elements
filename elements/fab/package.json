@@ -1,6 +1,6 @@
 {
   "name": "@duskmoon-dev/el-fab",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "DuskMoon floating action button custom element",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -35,7 +35,7 @@
     "lint:check": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@duskmoon-dev/el-base": "1.8.2",
+    "@duskmoon-dev/el-base": "1.9.0",
     "@duskmoon-dev/core": "1.20.3"
   },
   "devDependencies": {
