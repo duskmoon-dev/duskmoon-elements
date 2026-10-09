@@ -142,6 +142,47 @@ describe('ElDmMarkdown', () => {
     expect(html).not.toContain('javascript:');
   });
 
+  test('rejects custom elements even when prototype checks are polluted', async () => {
+    const originalTagCheck = Object.getOwnPropertyDescriptor(Object.prototype, 'tagNameCheck');
+    const originalAttributeCheck = Object.getOwnPropertyDescriptor(
+      Object.prototype,
+      'attributeNameCheck',
+    );
+
+    try {
+      Object.defineProperty(Object.prototype, 'tagNameCheck', {
+        value: /.*/,
+        configurable: true,
+      });
+      Object.defineProperty(Object.prototype, 'attributeNameCheck', {
+        value: /.*/,
+        configurable: true,
+      });
+
+      const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
+      container.appendChild(el);
+      el.content =
+        '<x-x onfocus="alert(1)" tabindex="0" autofocus>Unsafe</x-x><p data-safe="true">Safe</p>';
+      await Promise.resolve();
+
+      const content = el.shadowRoot?.querySelector('.content');
+      expect(content?.querySelector('x-x') === null).toBe(true);
+      expect(content?.querySelector('[onfocus]')).toBeNull();
+      expect(content?.querySelector('[data-safe]')?.textContent).toBe('Safe');
+    } finally {
+      if (originalTagCheck) {
+        Object.defineProperty(Object.prototype, 'tagNameCheck', originalTagCheck);
+      } else {
+        Reflect.deleteProperty(Object.prototype, 'tagNameCheck');
+      }
+      if (originalAttributeCheck) {
+        Object.defineProperty(Object.prototype, 'attributeNameCheck', originalAttributeCheck);
+      } else {
+        Reflect.deleteProperty(Object.prototype, 'attributeNameCheck');
+      }
+    }
+  });
+
   test('allows trusted callers to opt out of sanitization explicitly', async () => {
     const el = document.createElement('el-dm-markdown') as ElDmMarkdown;
     el.sanitize = false;
