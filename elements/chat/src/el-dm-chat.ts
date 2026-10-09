@@ -799,7 +799,6 @@ export class ElDmChatScroll extends BaseElement {
   private _observer?: MutationObserver;
   private _motionQuery?: MediaQueryList;
   private _timelineAnimationFrame?: number;
-  private _timelineAnimations: Animation[] = [];
 
   constructor() {
     super();
@@ -810,6 +809,10 @@ export class ElDmChatScroll extends BaseElement {
     super.connectedCallback();
     this.shadowRoot.addEventListener('slotchange', this._handleSlotChange);
     this.shadowRoot.addEventListener('click', this._handleClick);
+    this.shadowRoot.addEventListener('pointerover', this._handleIndicatorStateChange);
+    this.shadowRoot.addEventListener('pointerout', this._handleIndicatorStateChange);
+    this.shadowRoot.addEventListener('focusin', this._handleIndicatorStateChange);
+    this.shadowRoot.addEventListener('focusout', this._handleIndicatorStateChange);
     this._observer = new MutationObserver(this._syncIndicators);
     this._observer.observe(this, {
       attributes: true,
@@ -826,9 +829,13 @@ export class ElDmChatScroll extends BaseElement {
     super.disconnectedCallback();
     this.shadowRoot.removeEventListener('slotchange', this._handleSlotChange);
     this.shadowRoot.removeEventListener('click', this._handleClick);
+    this.shadowRoot.removeEventListener('pointerover', this._handleIndicatorStateChange);
+    this.shadowRoot.removeEventListener('pointerout', this._handleIndicatorStateChange);
+    this.shadowRoot.removeEventListener('focusin', this._handleIndicatorStateChange);
+    this.shadowRoot.removeEventListener('focusout', this._handleIndicatorStateChange);
     this._observer?.disconnect();
     this._motionQuery?.removeEventListener('change', this._handleMotionChange);
-    this._clearTimelineAnimations();
+    this._cancelTimelineFrame();
   }
 
   protected update(): void {
@@ -843,6 +850,12 @@ export class ElDmChatScroll extends BaseElement {
 
   private _handleMotionChange = (): void => {
     this._syncTimelineAnimations();
+  };
+
+  private _handleIndicatorStateChange = (event: Event): void => {
+    if ((event.target as Element | null)?.closest('.chat-scroll-indicator')) {
+      this._syncTimelineAnimations();
+    }
   };
 
   private _getTargets(): ChatScrollTarget[] {
@@ -896,27 +909,19 @@ export class ElDmChatScroll extends BaseElement {
     this._syncTimelineAnimations();
   };
 
-  private _clearTimelineAnimations(): void {
+  private _cancelTimelineFrame(): void {
     if (this._timelineAnimationFrame !== undefined) {
       cancelAnimationFrame(this._timelineAnimationFrame);
       this._timelineAnimationFrame = undefined;
     }
-    for (const animation of this._timelineAnimations) {
-      animation.cancel();
-    }
-    this._timelineAnimations = [];
   }
 
   private _syncTimelineAnimations(): void {
-    this._clearTimelineAnimations();
+    this._cancelTimelineFrame();
 
     const buttons = Array.from(
       this.shadowRoot.querySelectorAll<HTMLButtonElement>('.chat-scroll-indicator'),
     );
-    for (const button of buttons) {
-      button.style.removeProperty('animation-name');
-    }
-
     const prefersReducedMotion =
       this._motionQuery?.matches ?? window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || typeof ViewTimeline === 'undefined') return;
@@ -931,7 +936,7 @@ export class ElDmChatScroll extends BaseElement {
 
         const mapping = this._targets.get(timeline);
         const cssAnimation = button
-          .getAnimations()
+          .getAnimations({ subtree: true })
           .find(
             (animation) =>
               (animation as CSSAnimation).animationName === 'chat-scroll-indicator-activate',
@@ -939,20 +944,8 @@ export class ElDmChatScroll extends BaseElement {
         if (!mapping || !cssAnimation || cssAnimation.timeline) continue;
 
         // Named CSS timelines can remain tree-scoped at nested Shadow DOM boundaries.
-        // Reuse DuskMoonUI's computed keyframes on a native ViewTimeline when that happens.
-        const keyframes = (cssAnimation.effect as KeyframeEffect | null)?.getKeyframes();
-        if (!keyframes?.length) continue;
-
-        cssAnimation.cancel();
-        button.style.animationName = 'none';
-        const animation = button.animate(keyframes, {
-          duration: 1,
-          fill: 'both',
-          timeline: new ViewTimeline({ subject: mapping.target, axis: 'block' }),
-          rangeStart: 'entry 0%',
-          rangeEnd: 'exit 100%',
-        });
-        this._timelineAnimations.push(animation);
+        // Keep Core's pseudo-element effect and CSS hover/focus overrides intact.
+        cssAnimation.timeline = new ViewTimeline({ subject: mapping.target, axis: 'block' });
       }
     });
   }

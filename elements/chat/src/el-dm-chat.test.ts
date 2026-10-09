@@ -402,6 +402,86 @@ describe('chat elements', () => {
     expect(buttons?.[0]?.dataset.chatTarget).toBe(last.id);
   });
 
+  test('bridges pseudo-element timelines and restores them after indicator hover', async () => {
+    const originalTimeline = Object.getOwnPropertyDescriptor(globalThis, 'ViewTimeline');
+    const originalRequestFrame = globalThis.requestAnimationFrame;
+    const originalCancelFrame = globalThis.cancelAnimationFrame;
+    const timelines: { subject: Element; axis: string }[] = [];
+    let frame: FrameRequestCallback | undefined;
+    const runFrame = () => {
+      if (!frame) throw new Error('Expected a timeline animation frame');
+      const callback = frame;
+      frame = undefined;
+      callback(0);
+    };
+    Object.defineProperty(globalThis, 'ViewTimeline', {
+      configurable: true,
+      value: class {
+        constructor(options: { subject: Element; axis: string }) {
+          timelines.push(options);
+        }
+      },
+    });
+    globalThis.requestAnimationFrame = (callback) => {
+      frame = callback;
+      return 1;
+    };
+    globalThis.cancelAnimationFrame = () => {
+      frame = undefined;
+    };
+
+    const el = document.createElement('el-dm-chat-scroll') as ElDmChatScroll;
+    try {
+      const assistant = document.createElement('el-dm-chat') as ElDmChat;
+      assistant.timeline = 1;
+      el.append(assistant);
+      container.append(el);
+      await Promise.resolve();
+
+      const button = el.shadowRoot.querySelector<HTMLButtonElement>('.chat-scroll-indicator')!;
+      const effect = { pseudoElement: '::before' };
+      let animation = {
+        animationName: 'chat-scroll-indicator-activate',
+        effect,
+        timeline: null,
+      } as unknown as CSSAnimation;
+      const getAnimations = mock((options?: GetAnimationsOptions) =>
+        options?.subtree ? [animation] : [],
+      );
+      button.getAnimations = getAnimations;
+      runFrame();
+
+      expect(getAnimations).toHaveBeenCalledWith({ subtree: true });
+      expect(timelines).toEqual([{ subject: assistant, axis: 'block' }]);
+      expect(animation.timeline).not.toBeNull();
+      expect(animation.effect).toBe(effect);
+      expect(button.style.animationName).toBe('');
+
+      // Core recreates the CSS animation after its hover override ends.
+      animation = { ...animation, timeline: null } as CSSAnimation;
+      button.dispatchEvent(new Event('pointerout', { bubbles: true }));
+      runFrame();
+      expect(animation.timeline).not.toBeNull();
+      expect(timelines).toHaveLength(2);
+
+      // A working native timeline remains in place on subsequent state changes.
+      const timeline = animation.timeline;
+      button.dispatchEvent(new Event('focusout', { bubbles: true }));
+      runFrame();
+      expect(animation.timeline).toBe(timeline);
+      expect(timelines).toHaveLength(2);
+    } finally {
+      el.remove();
+      globalThis.requestAnimationFrame = originalRequestFrame;
+      globalThis.cancelAnimationFrame = originalCancelFrame;
+      if (originalTimeline) {
+        Object.defineProperty(globalThis, 'ViewTimeline', originalTimeline);
+      } else {
+        Reflect.deleteProperty(globalThis, 'ViewTimeline');
+      }
+    }
+  });
+
   test('renders tool call status', () => {
     const el = document.createElement('el-dm-chat-tool') as ElDmChatTool;
     el.name = 'search';
