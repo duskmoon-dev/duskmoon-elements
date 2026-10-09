@@ -60,7 +60,6 @@ bun add @duskmoon-dev/el-button
 | [@duskmoon-dev/el-file-upload](./elements/file-upload) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-file-upload)](https://www.npmjs.com/package/@duskmoon-dev/el-file-upload) | `<el-dm-file-upload>` | File upload with drag and drop |
 | [@duskmoon-dev/el-form](./elements/form) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-form)](https://www.npmjs.com/package/@duskmoon-dev/el-form) | `<el-dm-form>` | Form container with validation |
 | [@duskmoon-dev/el-otp-input](./elements/otp-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-otp-input)](https://www.npmjs.com/package/@duskmoon-dev/el-otp-input) | `<el-dm-otp-input>` | OTP verification code input |
-| [@duskmoon-dev/el-pin-input](./elements/pin-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-pin-input)](https://www.npmjs.com/package/@duskmoon-dev/el-pin-input) | `<el-dm-pin-input>` | Secure PIN entry |
 | [@duskmoon-dev/el-time-input](./elements/time-input) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-time-input)](https://www.npmjs.com/package/@duskmoon-dev/el-time-input) | `<el-dm-time-input>` | Time selection input |
 | [@duskmoon-dev/el-form-group](./elements/form-group) | [![npm](https://img.shields.io/npm/v/@duskmoon-dev/el-form-group)](https://www.npmjs.com/package/@duskmoon-dev/el-form-group) | `<el-dm-form-group>` | Form field layout group |
 

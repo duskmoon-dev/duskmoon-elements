@@ -70,7 +70,6 @@ Apply theme via `data-theme` attribute on HTML element:
 - `file-upload` - Drag-and-drop file uploader
 - `rating` - Star/heart ratings
 - `otp-input` - OTP verification: `otp-input`, `otp-input-field`
-- `pin-input` - PIN entry: `pin-input`, `pin-input-masked`
 - `multi-select` - Multiple selection: `multi-select`, `multi-select-tag`
 - `tree-select` - Hierarchical dropdown: `tree-select`, `tree-select-node`
 - `form-group` - Form layout: `form-group`, `form-label`, `helper-text`, `fieldset`
@@ -389,7 +388,6 @@ All components available for individual import:
 | `@duskmoon-dev/core/components/navigation` | Navigation (Navbar/Tabs/Menu) |
 | `@duskmoon-dev/core/components/nested-menu` | Nested Menu |
 | `@duskmoon-dev/core/components/otp-input` | OTP Input |
-| `@duskmoon-dev/core/components/pin-input` | PIN Input |
 | `@duskmoon-dev/core/components/popover` | Popover |
 | `@duskmoon-dev/core/components/progress` | Progress |
 | `@duskmoon-dev/core/components/radio` | Radio |

@@ -57,7 +57,6 @@
 | `@duskmoon-dev/el-form` | `<el-dm-form>` | `ElDmForm` | — |
 | `@duskmoon-dev/el-form-group` | `<el-dm-form-group>` | `ElDmFormGroup` | — |
 | `@duskmoon-dev/el-otp-input` | `<el-dm-otp-input>` | `ElDmOtpInput` | — |
-| `@duskmoon-dev/el-pin-input` | `<el-dm-pin-input>` | `ElDmPinInput` | — |
 | `@duskmoon-dev/el-select` | `<el-dm-select>` | `ElDmSelect` | — |
 | `@duskmoon-dev/el-time-input` | `<el-dm-time-input>` | `ElDmTimeInput` | — |
 

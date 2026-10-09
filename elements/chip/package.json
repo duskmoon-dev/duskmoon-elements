@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@duskmoon-dev/el-base": "1.8.1",
-    "@duskmoon-dev/core": "1.19.9"
+    "@duskmoon-dev/core": "1.20.3"
   },
   "devDependencies": {
     "typescript": "6.0.3"

@@ -120,7 +120,6 @@ import { ElDmFormGroup, register as registerFormGroup } from '@duskmoon-dev/el-f
 import { ElDmNavigation, register as registerNavigation } from '@duskmoon-dev/el-navigation';
 import { ElDmNestedMenu, register as registerNestedMenu } from '@duskmoon-dev/el-nested-menu';
 import { ElDmOtpInput, register as registerOtpInput } from '@duskmoon-dev/el-otp-input';
-import { ElDmPinInput, register as registerPinInput } from '@duskmoon-dev/el-pin-input';
 import {
   ElDmSegmentControl,
   register as registerSegmentControl,
@@ -303,8 +302,6 @@ export { ElDmNavigation, registerNavigation };
 export { ElDmNestedMenu, registerNestedMenu };
 export { ElDmOtpInput, registerOtpInput };
 export type { OtpInputColor } from '@duskmoon-dev/el-otp-input';
-export { ElDmPinInput, registerPinInput };
-export type { PinInputColor } from '@duskmoon-dev/el-pin-input';
 export { ElDmSegmentControl, registerSegmentControl };
 export type { SegmentControlColor } from '@duskmoon-dev/el-segment-control';
 export { ElDmThemeController, registerThemeController };
@@ -427,7 +424,6 @@ export function registerAll(): void {
   registerNavigation();
   registerNestedMenu();
   registerOtpInput();
-  registerPinInput();
   registerSegmentControl();
   registerThemeController();
   registerTimeInput();
