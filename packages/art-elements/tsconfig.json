@@ -5,6 +5,8 @@
     "outDir": "./dist/types",
     "declaration": true,
     "declarationMap": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
     "composite": true
   },
   "include": ["src/**/*.ts"],
