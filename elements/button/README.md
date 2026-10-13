@@ -64,13 +64,15 @@ import '@duskmoon-dev/el-button/register';
 
 ## Attributes
 
-| Attribute  | Type    | Default   | Description                         |
-| ---------- | ------- | --------- | ----------------------------------- |
-| `variant`  | string  | `primary` | Button variant                      |
-| `size`     | string  | `md`      | Button size                         |
-| `disabled` | boolean | `false`   | Disable the button                  |
-| `type`     | string  | `button`  | Button type (button, submit, reset) |
-| `loading`  | boolean | `false`   | Show loading spinner                |
+| Attribute         | Type    | Default   | Description                                  |
+| ----------------- | ------- | --------- | -------------------------------------------- |
+| `variant`         | string  | `primary` | Button variant                               |
+| `size`            | string  | `md`      | Button size                                  |
+| `disabled`        | boolean | `false`   | Disable the button                           |
+| `type`            | string  | `button`  | Button type (button, submit, reset)          |
+| `loading`         | boolean | `false`   | Show loading spinner                         |
+| `aria-label`      | string  | —         | Accessible name for an icon-only button      |
+| `aria-labelledby` | string  | —         | IDs of label elements in the host's DOM tree |
 
 ## Slots
 
@@ -115,6 +117,28 @@ import '@duskmoon-dev/el-button/register';
 ```html
 <el-dm-button loading>Submitting...</el-dm-button>
 ```
+
+### Accessible Icon Buttons
+
+Set `aria-label` on an icon-only button. The label is synchronized with the native button,
+including changes made after rendering.
+
+```html
+<el-dm-button aria-label="Remove email">
+  <svg aria-hidden="true" viewBox="0 0 24 24">
+    <path d="M5 5L19 19M19 5L5 19" />
+  </svg>
+</el-dm-button>
+
+<span id="remove-email-label">Remove email</span>
+<el-dm-button aria-labelledby="remove-email-label">×</el-dm-button>
+```
+
+`aria-labelledby` resolves IDs in the host's document or containing shadow root and takes
+precedence over `aria-label` when a target exists. Browsers supporting ARIA element references
+use the referenced elements directly; older browsers use their text content or `aria-label`.
+Label text changes and replacement label elements are synchronized. Without either attribute,
+the slotted content provides the accessible name.
 
 ### Form Submit
 

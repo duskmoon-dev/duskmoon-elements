@@ -193,6 +193,26 @@ button.addEventListener('click', (event) => {
 ## Accessibility
 
 - The button uses native `<button>` element semantics
+- Host `aria-label` and `aria-labelledby` name the native button and stay synchronized
 - Keyboard navigation is fully supported
 - Focus states are clearly visible
 - Disabled state is properly announced to screen readers
+
+Use `aria-label` for an icon-only button, or reference label elements with `aria-labelledby`:
+
+```html
+<el-dm-button aria-label="Remove email">
+  <svg aria-hidden="true" viewBox="0 0 24 24">
+    <path d="M5 5L19 19M19 5L5 19" />
+  </svg>
+</el-dm-button>
+
+<span id="remove-email-label">Remove email</span>
+<el-dm-button aria-labelledby="remove-email-label">×</el-dm-button>
+```
+
+Label IDs resolve in the host's document or containing shadow root. When a label target exists,
+`aria-labelledby` takes precedence over `aria-label`. Label text and target replacements stay
+synchronized. Modern browsers use ARIA element references across the shadow boundary; older
+browsers use the targets' text content or `aria-label`. Without either attribute, the slotted
+content supplies the accessible name.

@@ -11,6 +11,8 @@
  * @attr {boolean} disabled - Whether the button is disabled
  * @attr {string} type - Button type: button, submit, reset
  * @attr {boolean} loading - Whether the button is in loading state
+ * @attr {string} aria-label - Accessible name for the native button
+ * @attr {string} aria-labelledby - IDs of elements naming the button in the host's DOM tree
  *
  * @slot - Default slot for button content
  * @slot prefix - Content before the main text
@@ -95,6 +97,10 @@ const styles = css`
 `;
 
 export class ElDmButton extends BaseElement {
+  static get observedAttributes(): string[] {
+    return [...super.observedAttributes, 'aria-label', 'aria-labelledby'];
+  }
+
   static properties = {
     variant: { type: String, reflect: true },
     size: { type: String, reflect: true },
@@ -117,6 +123,8 @@ export class ElDmButton extends BaseElement {
 
   /** Whether the button is in loading state */
   declare loading: boolean;
+
+  private _labelObserver?: MutationObserver;
 
   constructor() {
     super();
@@ -183,6 +191,64 @@ export class ElDmButton extends BaseElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener('click', this._handleClick.bind(this));
+    this._observeLabels();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._labelObserver?.disconnect();
+  }
+
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (oldValue === newValue || !this.isConnected) return;
+    if (name === 'aria-label' || name === 'aria-labelledby') {
+      this._syncLabel();
+      if (name === 'aria-labelledby') this._observeLabels();
+    }
+  }
+
+  protected update(): void {
+    super.update();
+    this._syncLabel();
+  }
+
+  private _observeLabels(): void {
+    this._labelObserver?.disconnect();
+    if (!this.getAttribute('aria-labelledby')?.trim()) return;
+    this._labelObserver ??= new MutationObserver(() => this._syncLabel());
+    this._labelObserver.observe(this.getRootNode(), {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['id', 'aria-label'],
+    });
+  }
+
+  private _syncLabel(): void {
+    const button = this.shadowRoot.querySelector('button');
+    if (!button) return;
+
+    const root = this.getRootNode() as Document | ShadowRoot;
+    const ids = this.getAttribute('aria-labelledby')?.trim().split(/\s+/) ?? [];
+    const labels = ids
+      .map((id) => root.getElementById?.(id))
+      .filter((label): label is HTMLElement => !!label);
+    let name = this.getAttribute('aria-label');
+
+    // ID references cannot cross into a shadow root; element references can.
+    if ('ariaLabelledByElements' in button) {
+      button.ariaLabelledByElements = labels;
+    } else if (labels.length) {
+      name = labels.map((label) => label.getAttribute('aria-label') ?? label.textContent).join(' ');
+    }
+
+    if (name === null) {
+      button.removeAttribute('aria-label');
+    } else {
+      button.setAttribute('aria-label', name);
+    }
   }
 
   /**
