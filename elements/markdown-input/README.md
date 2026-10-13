@@ -19,6 +19,24 @@ A form-associated custom element providing a full-featured markdown editor.
 bun add @duskmoon-dev/el-markdown-input
 ```
 
+## Preview dependencies
+
+The published package includes the remark/rehype math adapters and a separate,
+lazy-loaded Mermaid bundle with patched KaTeX. Consumers do not need dependency
+overrides or a separate Mermaid installation. Bundling these adapters avoids their
+upstream KaTeX 0.16 dependency ranges.
+
+In browsers, the first Mermaid diagram loads this package's version-pinned
+`dist/esm/mermaid.js` asset from jsDelivr. This requires network access and permission
+for `https://cdn.jsdelivr.net` in your Content Security Policy. To self-host, copy
+that asset from the installed package to your HTTPS server and set `mermaid-src`
+to its URL. The asset is self-contained, including its patched KaTeX runtime.
+Native Node/Bun consumers load the package-local bundle instead. Neither path
+loads Mermaid until a preview contains a Mermaid diagram.
+
+The default math stylesheet also uses jsDelivr and matches KaTeX 0.18.2;
+`katex-css-url` can provide a custom HTTPS stylesheet.
+
 ## Basic Usage
 
 ```html

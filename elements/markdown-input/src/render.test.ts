@@ -50,6 +50,23 @@ describe('renderMarkdown', () => {
     expect(html).toContain('katex');
   });
 
+  test('does not trust inherited renderer options when the object prototype is polluted', async () => {
+    // Initialize the lazy pipeline before simulating pollution in a consuming app.
+    await renderMarkdown('$x$');
+    const original = Object.getOwnPropertyDescriptor(Object.prototype, 'trust');
+    Object.defineProperty(Object.prototype, 'trust', { value: true, configurable: true });
+    try {
+      const html = await renderMarkdown(
+        '$\\includegraphics{https://example.com/untrusted-math-image.png}$',
+      );
+      expect(html).toContain('katex');
+      expect(html).not.toContain('<img');
+    } finally {
+      if (original) Object.defineProperty(Object.prototype, 'trust', original);
+      else Reflect.deleteProperty(Object.prototype, 'trust');
+    }
+  });
+
   test('renders fenced code blocks', async () => {
     const md = '```javascript\nconst x = 1;\n```';
     const html = await renderMarkdown(md);

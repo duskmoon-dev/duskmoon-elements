@@ -8,6 +8,7 @@
  */
 
 import { sanitizeSchema } from './sanitize-schema.js';
+import { loadMermaid } from './mermaid-loader.js';
 
 // ── Lazy-loaded processor cache ─────────────────────────────────────────
 
@@ -149,7 +150,6 @@ export async function renderMarkdown(source: string): Promise<string> {
 // ── Mermaid post-render ─────────────────────────────────────────────────
 
 let mermaidIdCounter = 0;
-const bundledMermaidSpecifier = 'mermaid';
 
 /**
  * Detect the current theme by checking `data-theme` on `<html>`.
@@ -173,7 +173,7 @@ export async function renderMermaidBlocks(
   const blocks = container.querySelectorAll('pre > code.language-mermaid');
   if (blocks.length === 0) return;
 
-  // Dynamic import — either from provided URL or the npm package.
+  // Dynamic import — either from provided URL or the private Mermaid bundle.
   // Only https: URLs are accepted to prevent arbitrary code execution via
   // a consumer-supplied mermaid-src attribute pointing to a malicious module.
   if (mermaidSrc !== undefined && !/^https:\/\//i.test(mermaidSrc)) {
@@ -188,15 +188,15 @@ export async function renderMermaidBlocks(
   // without throwing — the caller's prose render survives.
   let mermaidModule: { default?: unknown } | undefined;
   try {
-    mermaidModule = mermaidSrc
-      ? await import(/* @vite-ignore */ mermaidSrc)
-      : await import(/* @vite-ignore */ bundledMermaidSpecifier);
+    mermaidModule = mermaidSrc ? await import(/* @vite-ignore */ mermaidSrc) : await loadMermaid();
   } catch (err) {
     console.error('[el-dm-markdown-input] Failed to load mermaid: %o', err);
     blocks.forEach((block) => block.parentElement?.classList.add('mermaid-error'));
     return;
   }
-  const mermaid = (mermaidModule!.default ?? mermaidModule) as {
+  // A dynamic import of the CommonJS adapter wraps its default export again.
+  const moduleDefault = (mermaidModule!.default ?? mermaidModule) as { default?: unknown };
+  const mermaid = (moduleDefault.default ?? moduleDefault) as {
     initialize(opts: Record<string, unknown>): void;
     render(id: string, src: string): Promise<{ svg: string }>;
   };

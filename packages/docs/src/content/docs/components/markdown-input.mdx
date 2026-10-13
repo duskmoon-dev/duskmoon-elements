@@ -834,12 +834,17 @@ Enable auto-updating preview while typing:
 
 ### Self-hosting KaTeX and Mermaid
 
-By default, KaTeX CSS loads from jsDelivr CDN. Override for self-hosted setups:
+By default, KaTeX CSS and the browser's Mermaid bundle load from jsDelivr. Mermaid
+loads only when a preview contains a diagram, using this package's fixed version.
+The bundle includes patched KaTeX and does not require a separate Mermaid install.
+
+To self-host, copy `katex/dist/` (including its fonts) and this package's
+`dist/esm/mermaid.js` to your HTTPS server, then provide their URLs:
 
 ```html
 <el-dm-markdown-input
-  katex-css-url="/assets/katex.min.css"
-  mermaid-src="/assets/mermaid.esm.min.mjs"
+  katex-css-url="https://example.com/assets/katex/katex.min.css"
+  mermaid-src="https://example.com/assets/mermaid.js"
 ></el-dm-markdown-input>
 ```
 
