@@ -39,7 +39,7 @@
     "release:dry-run": "bun publish --dry-run"
   },
   "dependencies": {
-    "@duskmoon-dev/core": "1.20.5",
+    "@duskmoon-dev/core": "1.20.6",
     "@duskmoon-dev/el-base": "1.9.3",
     "dompurify": "^3.4.16",
     "highlight.js": "11.12.0",
