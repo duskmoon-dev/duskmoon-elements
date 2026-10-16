@@ -185,6 +185,10 @@ export class ElDmMarkdownInput extends BaseElement {
   // Lifecycle
   // ════════════════════════════════════════════════════════════════════
 
+  focus(options?: FocusOptions): void {
+    this.#textarea?.focus(options);
+  }
+
   connectedCallback(): void {
     super.connectedCallback(); // triggers initial update() → render()
   }
@@ -321,7 +325,7 @@ export class ElDmMarkdownInput extends BaseElement {
     const noPreview = !!(this as unknown as { noPreview: boolean }).noPreview;
 
     return `
-      <div class="editor">
+      <div class="editor" part="editor">
         <div class="toolbar" role="tablist" aria-label="Editor mode" ${noPreview ? 'hidden' : ''}>
           <button
             class="tab-btn"
@@ -343,9 +347,9 @@ export class ElDmMarkdownInput extends BaseElement {
           >Preview</button>
         </div>
 
-        <div class="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
-          <div class="render-layer" aria-hidden="true"></div>
-          <textarea
+        <div class="write-area" part="write-area" id="write-panel" role="tabpanel" aria-labelledby="tab-write">
+          <div class="render-layer" part="render-layer" aria-hidden="true"></div>
+          <textarea part="textarea"
             ${editorId ? `id="${escapeHtmlStr(editorId)}"` : ''}
             ${name ? `name="${escapeHtmlStr(name)}"` : ''}
             aria-label="Markdown editor"
@@ -371,7 +375,7 @@ export class ElDmMarkdownInput extends BaseElement {
           hidden
         ></div>
 
-        <div class="status-bar">
+        <div class="status-bar" part="status-bar">
           <slot name="bottom">
             <div class="status-bar-start">
               <slot name="bottom-start">
@@ -380,7 +384,7 @@ export class ElDmMarkdownInput extends BaseElement {
                 </button>
               </slot>
             </div>
-            <div class="status-bar-end">
+            <div class="status-bar-end" part="status-end">
               <slot name="bottom-end">
                 <span class="status-bar-count" aria-live="polite"></span>
               </slot>
@@ -794,6 +798,8 @@ export class ElDmMarkdownInput extends BaseElement {
 
   #syncFormValue(): void {
     const text = this.#textarea?.value ?? '';
+    // Presentation updates must resolve the current draft, not an older property value.
+    this.value = text;
     if (this.#attachedFiles.length === 0) {
       this.#internals?.setFormValue(text);
       return;

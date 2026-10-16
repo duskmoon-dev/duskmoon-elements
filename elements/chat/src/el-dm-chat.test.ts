@@ -629,7 +629,10 @@ describe('chat elements', () => {
       el.addEventListener('send', (sendEvent) => resolve(sendEvent as CustomEvent));
     });
 
-    el.shadowRoot?.dispatchEvent(
+    const textarea = el.shadowRoot
+      ?.querySelector('el-dm-markdown-input')
+      ?.shadowRoot?.querySelector('textarea');
+    textarea?.dispatchEvent(
       new window.KeyboardEvent('keydown', {
         key: 'Enter',
         ctrlKey: true,
@@ -652,7 +655,10 @@ describe('chat elements', () => {
       el.addEventListener('send', (sendEvent) => resolve(sendEvent as CustomEvent));
     });
 
-    el.shadowRoot?.dispatchEvent(
+    const textarea = el.shadowRoot
+      ?.querySelector('el-dm-markdown-input')
+      ?.shadowRoot?.querySelector('textarea');
+    textarea?.dispatchEvent(
       new window.KeyboardEvent('keydown', {
         key: 'Enter',
         metaKey: true,

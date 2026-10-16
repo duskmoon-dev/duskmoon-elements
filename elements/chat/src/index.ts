@@ -12,6 +12,8 @@ import {
   ElDmChatScroll,
   ElDmChatTool,
   ElDmChatTyping,
+  ElDmChatWork,
+  ElDmChatQueue,
 } from './el-dm-chat.js';
 
 export {
@@ -22,9 +24,14 @@ export {
   ElDmChatScroll,
   ElDmChatTool,
   ElDmChatTyping,
+  ElDmChatWork,
+  ElDmChatQueue,
 };
 export type {
   ChatAlign,
+  ChatComposerColor,
+  ChatQueueItem,
+  ChatQueueActionEventDetail,
   ChatBubbleColor,
   ChatBubbleSize,
   ChatBubbleVariant,
@@ -39,6 +46,10 @@ export type {
  * Register all chat-related custom elements.
  */
 export function register(): void {
+  if (!customElements.get('el-dm-chat-work'))
+    customElements.define('el-dm-chat-work', ElDmChatWork);
+  if (!customElements.get('el-dm-chat-queue'))
+    customElements.define('el-dm-chat-queue', ElDmChatQueue);
   if (!customElements.get('el-dm-chat')) {
     customElements.define('el-dm-chat', ElDmChat);
   }

@@ -56,6 +56,12 @@ const pageData = {
     description:
       'Button component with multiple variants, sizes, loading states, and icon support through slots.',
   },
+  '/chat.html': {
+    title: 'Chat',
+    name: 'Chat',
+    tag: 'el-dm-chat',
+    description: 'DuskMoonUI agent answers, work records, waiting queues, and composers.',
+  },
   '/card.html': {
     title: 'Card',
     name: 'Card',
@@ -261,6 +267,7 @@ export default defineConfig({
         validator: resolve(import.meta.dirname, 'validator.html'),
         button: resolve(import.meta.dirname, 'button.html'),
         card: resolve(import.meta.dirname, 'card.html'),
+        chat: resolve(import.meta.dirname, 'chat.html'),
         cascader: resolve(import.meta.dirname, 'cascader.html'),
         chip: resolve(import.meta.dirname, 'chip.html'),
         datetime: resolve(import.meta.dirname, 'datetime.html'),

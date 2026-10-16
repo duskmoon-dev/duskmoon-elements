@@ -6,6 +6,8 @@
 
 import { BaseElement, css } from '@duskmoon-dev/el-base';
 import { css as chatCSS } from '@duskmoon-dev/core/components/chat';
+import { css as buttonCSS } from '@duskmoon-dev/core/components/button';
+import { css as avatarCSS } from '@duskmoon-dev/core/components/avatar';
 import { register as registerMarkdown } from '@duskmoon-dev/el-markdown';
 import { register as registerMarkdownInput } from '@duskmoon-dev/el-markdown-input';
 import { register as registerTooltip } from '@duskmoon-dev/el-tooltip';
@@ -49,6 +51,18 @@ export interface ChatNavigateEventDetail {
 export interface ChatQuickActionEventDetail {
   action: string;
   label: string;
+}
+export type ChatComposerColor = ChatBubbleColor | 'ghost';
+export interface ChatQueueItem {
+  id: string;
+  content: string;
+  active?: boolean;
+  attachment?: string;
+  attachmentAlt?: string;
+}
+export interface ChatQueueActionEventDetail {
+  item: ChatQueueItem;
+  index: number;
 }
 export interface ChatSendEventDetail {
   value: string;
@@ -99,6 +113,13 @@ const TOOL_STATUS_CLASSES: Record<string, string> = {
 };
 
 const coreStyles = chatCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+const buttonStyles = buttonCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+const avatarStyles = avatarCSS.replace(/@layer\s+components\s*\{/, '').replace(/\}\s*$/, '');
+const queueSlotStyles = Array.from(
+  coreStyles.matchAll(/\.chat-input-area > \.chat-queue[^{}]*\{[^{}]*\}/g),
+  ([rule]) =>
+    rule.replace(/\.chat-input-area > \.chat-queue/g, ":host([slot='queue']) .chat-queue"),
+).join('\n');
 const timelineHostStyles = Array.from({ length: 24 }, (_, index) => {
   const timeline = index + 1;
   return `
@@ -110,9 +131,21 @@ const timelineHostStyles = Array.from({ length: 24 }, (_, index) => {
   `;
 }).join('\n');
 
+// A part cannot select its children; trim Markdown's outer block margins inside its shadow root.
+const markdownEdgeStyles = css`
+  .markdown-body > :first-child {
+    margin-block-start: 0;
+  }
+
+  .markdown-body > :last-child {
+    margin-block-end: 0;
+  }
+`;
+
 const styles = css`
   :host {
     display: block;
+    min-inline-size: 0;
     font-family: inherit;
   }
 
@@ -121,6 +154,21 @@ const styles = css`
   }
 
   ${coreStyles}
+  ${buttonStyles}
+  ${avatarStyles}
+  ${queueSlotStyles}
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   :host([variant='filled'][color='primary']) {
     color: var(--color-primary-content);
@@ -161,86 +209,23 @@ const styles = css`
 
   .chat-avatar.has-content {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 999px;
-    background-color: var(--color-surface-container-high);
-    color: var(--color-on-surface);
-    font-size: 0.75rem;
-    font-weight: 700;
-    overflow: hidden;
-    text-transform: uppercase;
   }
 
   .chat-header.has-content,
-  .chat-footer.has-content,
-  .chat-actions.has-content {
+  .chat-footer.has-content {
     display: block;
   }
 
-  .chat-header,
-  .chat-footer {
+  .chat-actions.has-content {
     display: flex;
-    align-items: center;
-    gap: 0.375rem;
-  }
-
-  .chat-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .chat-status::before {
-    content: '';
-    width: 0.375rem;
-    height: 0.375rem;
-    border-radius: 999px;
-    background-color: currentColor;
-    opacity: 0.75;
-  }
-
-  .chat-actions {
-    margin-top: 0.25rem;
   }
 
   .chat-actions-inner {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
+    display: contents;
   }
 
   .chat-action-tooltip {
     display: inline-flex;
-  }
-
-  .chat-action {
-    appearance: none;
-    border: 1px solid var(--color-outline-variant);
-    border-radius: 999px;
-    background-color: var(--color-surface-container-low);
-    color: var(--color-on-surface);
-    cursor: pointer;
-    display: inline-grid;
-    place-items: center;
-    font: inherit;
-    font-size: 0.875rem;
-    line-height: 1;
-    width: 1.875rem;
-    height: 1.875rem;
-    padding: 0;
-  }
-
-  .chat-action:hover {
-    background-color: var(--color-surface-container);
-    border-color: var(--color-outline);
-  }
-
-  .chat-action:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 25%, transparent);
   }
 
   .chat-tool-call.has-content,
@@ -259,43 +244,38 @@ const styles = css`
     max-width: none;
   }
 
-  .chat-bubble-content.chat-bubble-streaming:has(.chat-markdown:not([hidden]))::after {
+  .chat-bubble-content.chat-bubble-streaming:has(.chat-markdown:not([hidden]))::after,
+  .chat-content.chat-streaming:has(.chat-markdown:not([hidden]))::after {
     content: none;
   }
 
-  .chat-reasoning {
-    padding-inline: 1rem;
-  }
-
-  .chat-reasoning > summary {
-    margin-inline: -1rem;
-    padding-inline: 1rem;
-  }
-
-  .chat-reasoning-body {
-    color: var(--color-on-surface-variant);
-    font-style: italic;
-  }
-
-  .chat-reasoning-tools {
-    display: grid;
-    gap: 0.5rem;
-    font-style: normal;
-  }
-
-  .chat-reasoning-body ::slotted(el-dm-chat-tool),
-  .chat-reasoning-tools ::slotted(el-dm-chat-tool) {
+  slot[name='work']::slotted(el-dm-chat-work),
+  .chat-work-body slot::slotted(el-dm-chat-reasoning),
+  .chat-work-body slot::slotted(el-dm-chat-tool) {
     width: 100%;
-    font-style: normal;
-    color: var(--color-on-surface);
+    max-width: none;
   }
 
-  .chat-reasoning-body ::slotted(el-dm-chat-tool) {
-    margin-top: 0.5rem;
+  .chat > slot::slotted(*) {
+    grid-column: 2;
+    justify-self: start;
+    max-width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .chat-end > slot::slotted(*) {
+    grid-column: 1;
+    justify-self: end;
+  }
+
+  .chat-agent:not(:has(> .chat-avatar)) > slot::slotted(*) {
+    grid-column: 1;
   }
 
   .chat-markdown {
     display: block;
+    font: inherit;
+    white-space: normal;
   }
 
   .chat-markdown[hidden],
@@ -305,70 +285,57 @@ const styles = css`
 
   .chat-markdown::part(content) {
     color: inherit;
-  }
-
-  .chat-markdown::part(content) > :first-child {
-    margin-top: 0;
-  }
-
-  .chat-markdown::part(content) > :last-child {
-    margin-bottom: 0;
+    font: inherit;
   }
 
   .chat-typing {
     color: inherit;
   }
 
-  .chat-input {
-    display: block;
+  .chat-input-editor {
+    --md-editor-min-height: var(--dm-chat-editor-min-height, 3rem);
+    --md-editor-max-height: var(--dm-chat-editor-max-height, 24rem);
+    --md-border: transparent;
+    --md-border-focus: transparent;
+    --md-bg: transparent;
+    --md-bg-toolbar: transparent;
+    --md-radius: 0;
+    --md-text: var(--color-on-surface);
+  }
+
+  .chat-input-editor::part(editor) {
+    border: 0;
+    outline: none;
+    background: transparent;
+    min-height: var(--dm-chat-editor-min-height, 3rem);
+  }
+
+  .chat-input-editor::part(write-area) {
+    min-height: var(--dm-chat-editor-min-height, 3rem);
+  }
+
+  .chat-input-editor::part(textarea),
+  .chat-input-editor::part(render-layer) {
+    padding: 0;
+    font: inherit;
+    line-height: inherit;
+  }
+
+  .chat-input-editor::part(status-bar) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+
+  .chat-input-editor::part(status-end) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-inline-start: auto;
   }
 
   .chat-input-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  .chat-input-editor {
-    display: block;
-    width: 100%;
-    min-height: var(--dm-chat-editor-min-height, 12rem);
-    --md-editor-min-height: var(--dm-chat-editor-min-height, 12rem);
-    --md-editor-max-height: var(--dm-chat-editor-max-height, 24rem);
-    --md-radius: 6px;
-  }
-
-  .chat-send {
-    appearance: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 1px solid var(--color-outline-variant);
-    border-radius: 3px;
-    background-color: var(--color-surface-container-low);
-    color: var(--color-on-surface);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    line-height: 1;
-    min-height: 2rem;
-    padding: 0.5rem 0.875rem;
-  }
-
-  .chat-send:hover {
-    background-color: var(--color-surface-container);
-    border-color: var(--color-outline);
-  }
-
-  .chat-send:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 25%, transparent);
-  }
-
-  .chat-send:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+    min-inline-size: 0;
   }
 `;
 
@@ -376,6 +343,7 @@ const scrollStyles = css`
   :host {
     display: block;
     min-height: 0;
+    min-inline-size: 0;
     font-family: inherit;
   }
 
@@ -399,8 +367,10 @@ const scrollStyles = css`
   }
 `;
 
-function getChatClasses(align: ChatAlign | undefined): string {
-  return ['chat', ALIGN_CLASSES[align || 'start'] || 'chat-start'].join(' ');
+function getChatClasses(align: ChatAlign | undefined, agent = false): string {
+  return ['chat', ALIGN_CLASSES[align || 'start'] || 'chat-start', agent ? 'chat-agent' : '']
+    .filter(Boolean)
+    .join(' ');
 }
 
 function getBubbleClasses(
@@ -497,29 +467,30 @@ function getActionIcon(label: string): string {
 }
 
 function renderMarkdownContent(content: string | undefined): string {
-  return `
-    <el-dm-markdown
+  return `<el-dm-markdown
       class="chat-markdown"
       part="content"
       content="${escapeHtml(content || '')}"
-    ></el-dm-markdown>
-    <div class="chat-slot-content" part="slot-content">
-      <slot></slot>
-    </div>
-  `;
+    ></el-dm-markdown><div class="chat-slot-content" part="slot-content"><slot></slot></div>`;
 }
 
-function renderBubbleContent(content: string | undefined, streaming: boolean): string {
+function renderBubbleContent(
+  content: string | undefined,
+  streaming: boolean,
+  id = '',
+  agent = false,
+): string {
   return `
+    <slot name="work"></slot>
     <slot name="reasoning"></slot>
     <slot name="tool"></slot>
     <slot name="tools"></slot>
     <div
-      class="chat-bubble-content ${streaming ? 'chat-bubble-streaming' : ''}"
-      part="bubble-content"
-    >
-      ${renderMarkdownContent(content)}
-    </div>
+      id="${id}"
+      tabindex="-1"
+      class="${agent ? 'chat-content' : 'chat-bubble-content'} ${streaming ? (agent ? 'chat-streaming' : 'chat-bubble-streaming') : ''}"
+      part="${agent ? 'content' : 'bubble-content'}"
+    >${renderMarkdownContent(content)}</div>
   `;
 }
 
@@ -547,6 +518,12 @@ function syncMarkdownContent(
   const slotContent = shadowRoot.querySelector<HTMLElement>('.chat-slot-content');
 
   if (!markdown || !slot || !slotContent) return;
+  if (markdown.shadowRoot && !markdown.shadowRoot.adoptedStyleSheets.includes(markdownEdgeStyles)) {
+    markdown.shadowRoot.adoptedStyleSheets = [
+      ...markdown.shadowRoot.adoptedStyleSheets,
+      markdownEdgeStyles,
+    ];
+  }
 
   if (content) {
     updateMarkdownElement(markdown, content, streaming);
@@ -575,8 +552,75 @@ function syncMarkdownContent(
   slotContent.hidden = false;
 }
 
+let chatContentSequence = 0;
+
+class ChatCollapse {
+  readonly id = `el-dm-chat-content-${++chatContentSequence}`;
+  private resize?: ResizeObserver;
+  private mutation?: MutationObserver;
+
+  constructor(private host: BaseElement & { collapsible: boolean; expanded: boolean }) {}
+
+  disconnect(): void {
+    this.resize?.disconnect();
+    this.mutation?.disconnect();
+  }
+
+  connect(restoreToggleFocus = false): void {
+    this.disconnect();
+    const content = this.host.shadowRoot.querySelector<HTMLElement>('.chat-bubble-content');
+    const toggle = this.host.shadowRoot.querySelector<HTMLButtonElement>('.chat-bubble-toggle');
+    if (!content || !toggle) return;
+    toggle.setAttribute('aria-expanded', String(Boolean(this.host.expanded)));
+    toggle.textContent = this.host.expanded ? 'Show less' : 'Show more';
+    this.measure();
+    if (restoreToggleFocus) (toggle.hidden ? content : toggle).focus();
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resize = new ResizeObserver(this.measure);
+      this.resize.observe(content);
+    }
+    this.mutation = new MutationObserver(this.measure);
+    this.mutation.observe(content, { childList: true, characterData: true, subtree: true });
+    const markdownRoot = content.querySelector('el-dm-markdown')?.shadowRoot;
+    if (markdownRoot)
+      this.mutation.observe(markdownRoot, { childList: true, characterData: true, subtree: true });
+    this.mutation.observe(this.host, { childList: true, characterData: true, subtree: true });
+  }
+
+  measure = (): void => {
+    const content = this.host.shadowRoot.querySelector<HTMLElement>('.chat-bubble-content');
+    const toggle = this.host.shadowRoot.querySelector<HTMLButtonElement>('.chat-bubble-toggle');
+    if (!content || !toggle) return;
+    const lineHeight = Number.parseFloat(getComputedStyle(content).lineHeight);
+    const limit = Number.isFinite(lineHeight) ? lineHeight * 6 : content.clientHeight;
+    const overflowing = content.scrollHeight > limit + 1;
+    if (!overflowing) {
+      if (this.host.shadowRoot.activeElement === toggle) content.focus();
+      this.host.expanded = false;
+    }
+    toggle.hidden = !overflowing;
+  };
+
+  click(event: Event): boolean {
+    const toggle = (event.target as Element | null)?.closest('.chat-bubble-toggle');
+    if (!toggle) return false;
+    this.host.expanded = !this.host.expanded;
+    this.connect();
+    return true;
+  }
+
+  render(): string {
+    return this.host.collapsible
+      ? `<button class="btn btn-ghost btn-xs chat-bubble-toggle" part="toggle" type="button" aria-controls="${this.id}" aria-expanded="false" hidden>Show more</button>`
+      : '';
+  }
+}
+
 export class ElDmChat extends BaseElement {
   static properties = {
+    agent: { type: Boolean, reflect: true },
+    collapsible: { type: Boolean, reflect: true },
+    expanded: { type: Boolean, reflect: true },
     align: { type: String, reflect: true, default: 'start' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
@@ -590,6 +634,13 @@ export class ElDmChat extends BaseElement {
     content: { type: String, reflect: true },
     timeline: { type: Number, reflect: true },
   };
+
+  declare agent: boolean;
+  declare collapsible: boolean;
+  declare expanded: boolean;
+  private readonly _collapse = new ChatCollapse(this);
+  private _lastTemplate = '';
+  private _avatarObserver?: MutationObserver;
 
   declare align: ChatAlign;
   declare color: ChatBubbleColor;
@@ -617,21 +668,32 @@ export class ElDmChat extends BaseElement {
     this.shadowRoot.addEventListener('click', this._handleClick);
     syncSlotContent(this.shadowRoot);
     syncActionsContent(this.shadowRoot);
+    this._avatarObserver = new MutationObserver(() => this.update());
+    this._avatarObserver.observe(this, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['slot'],
+    });
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
+    this._collapse.disconnect();
+    this._avatarObserver?.disconnect();
     this.shadowRoot.removeEventListener('slotchange', this._handleSlotChange);
     this.shadowRoot.removeEventListener('click', this._handleClick);
   }
 
   private _handleSlotChange = (): void => {
+    this._collapse.measure();
     syncSlotContent(this.shadowRoot);
     syncActionsContent(this.shadowRoot);
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   };
 
   private _handleClick = (event: Event): void => {
+    if (this._collapse.click(event)) return;
     const button = (event.target as Element | null)?.closest<HTMLButtonElement>('.chat-action');
     if (!button) return;
 
@@ -673,7 +735,7 @@ export class ElDmChat extends BaseElement {
         const escapedLabel = escapeHtml(label);
         return `
           <el-dm-tooltip class="chat-action-tooltip" content="${escapedLabel}" position="top">
-            <button class="chat-action" part="action" type="button" aria-label="${escapedLabel}" data-action="${escapeHtml(getActionId(label))}" data-label="${escapedLabel}">${getActionIcon(label)}</button>
+            <button class="btn btn-ghost btn-sm btn-square chat-action" part="action" type="button" aria-label="${escapedLabel}" data-action="${escapeHtml(getActionId(label))}" data-label="${escapedLabel}">${getActionIcon(label)}</button>
           </el-dm-tooltip>
         `;
       })
@@ -690,10 +752,16 @@ export class ElDmChat extends BaseElement {
   }
 
   protected update(): void {
-    super.update();
+    const restoreToggleFocus = this.shadowRoot.activeElement?.matches('.chat-bubble-toggle');
+    const template = this.render();
+    if (template !== this._lastTemplate) {
+      super.update();
+      this._lastTemplate = template;
+    }
     syncSlotContent(this.shadowRoot);
     syncActionsContent(this.shadowRoot);
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
+    this._collapse.connect(restoreToggleFocus);
   }
 
   render(): string {
@@ -701,15 +769,26 @@ export class ElDmChat extends BaseElement {
     const timeline = isChatTimeline(this.timeline) ? ` data-chat-tl="${this.timeline}"` : '';
 
     return `
-      <div class="${getChatClasses(this.align)}" part="chat"${timeline}>
-        <div class="chat-avatar ${this.avatar ? 'has-content' : ''}" part="avatar">
-          ${avatar}
+      <div class="${getChatClasses(this.align, this.agent)}" part="chat"${timeline}>
+        ${
+          !this.agent || this.avatar || this.querySelector('[slot="avatar"]')
+            ? `<div class="chat-avatar ${this.avatar ? 'has-content' : ''}" part="avatar">
+          ${avatar ? `<span class="avatar avatar-sm"><span class="avatar-placeholder">${avatar}</span></span>` : ''}
           <slot name="avatar"></slot>
-        </div>
+        </div>`
+            : ''
+        }
         ${this._renderHeader()}
-        <div class="${getBubbleClasses(this.color, this.size, this.variant)}" part="bubble">
-          ${renderBubbleContent(this.content, this.streaming)}
-        </div>
+        ${
+          this.agent
+            ? renderBubbleContent(this.content, this.streaming, this._collapse.id, true)
+            : `
+          <div class="${getBubbleClasses(this.color, this.size, this.variant)} ${this.collapsible ? 'chat-bubble-collapsible' : ''}" part="bubble">
+            ${renderBubbleContent(this.content, this.streaming, this._collapse.id)}
+            ${this._collapse.render()}
+          </div>
+        `
+        }
         ${this._renderFooter()}
         ${this._renderActions()}
       </div>
@@ -719,6 +798,8 @@ export class ElDmChat extends BaseElement {
 
 export class ElDmChatBubble extends BaseElement {
   static properties = {
+    collapsible: { type: Boolean, reflect: true },
+    expanded: { type: Boolean, reflect: true },
     align: { type: String, reflect: true, default: 'start' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
@@ -726,6 +807,11 @@ export class ElDmChatBubble extends BaseElement {
     streaming: { type: Boolean, reflect: true },
     content: { type: String, reflect: true },
   };
+
+  declare collapsible: boolean;
+  declare expanded: boolean;
+  private readonly _collapse = new ChatCollapse(this);
+  private _lastTemplate = '';
 
   declare align: ChatAlign;
   declare color: ChatBubbleColor;
@@ -743,28 +829,43 @@ export class ElDmChatBubble extends BaseElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.shadowRoot.addEventListener('slotchange', this._handleSlotChange);
+    this.shadowRoot.addEventListener('click', this._handleClick);
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
+    this._collapse.disconnect();
     this.shadowRoot.removeEventListener('slotchange', this._handleSlotChange);
+    this.shadowRoot.removeEventListener('click', this._handleClick);
   }
 
+  private _handleClick = (event: Event): void => {
+    this._collapse.click(event);
+  };
+
   private _handleSlotChange = (): void => {
+    this._collapse.measure();
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
   };
 
   protected update(): void {
-    super.update();
+    const restoreToggleFocus = this.shadowRoot.activeElement?.matches('.chat-bubble-toggle');
+    const template = this.render();
+    if (template !== this._lastTemplate) {
+      super.update();
+      this._lastTemplate = template;
+    }
     syncMarkdownContent(this.shadowRoot, this.content, this.streaming);
+    this._collapse.connect(restoreToggleFocus);
   }
 
   render(): string {
     return `
       <div class="${getChatClasses(this.align)}" part="chat">
-        <div class="${getBubbleClasses(this.color, this.size, this.variant)}" part="bubble">
-          ${renderBubbleContent(this.content, this.streaming)}
+        <div class="${getBubbleClasses(this.color, this.size, this.variant)} ${this.collapsible ? 'chat-bubble-collapsible' : ''}" part="bubble">
+          ${renderBubbleContent(this.content, this.streaming, this._collapse.id)}
+          ${this._collapse.render()}
         </div>
       </div>
     `;
@@ -1102,14 +1203,134 @@ export class ElDmChatTyping extends BaseElement {
   }
 }
 
+export class ElDmChatWork extends BaseElement {
+  static properties = {
+    summary: { type: String, reflect: true, default: 'Work' },
+    open: { type: Boolean, reflect: true },
+  };
+
+  declare summary: string;
+  declare open: boolean;
+
+  constructor() {
+    super();
+    this.attachStyles(styles);
+  }
+
+  protected update(): void {
+    if (!this.shadowRoot.querySelector('details')) {
+      super.update();
+      this.shadowRoot.querySelector('details')!.addEventListener('toggle', () => {
+        this.open = this.shadowRoot.querySelector('details')!.open;
+      });
+    }
+    this.shadowRoot.querySelector('details')!.open = Boolean(this.open);
+    this.shadowRoot.querySelector('slot[name="summary"]')!.textContent = this.summary || 'Work';
+  }
+
+  render(): string {
+    return `<details class="chat-work" part="work">
+      <summary class="chat-work-summary" part="summary"><slot name="summary"></slot></summary>
+      <div class="chat-work-body" part="body"><slot></slot></div>
+    </details>`;
+  }
+}
+
+function safeAttachment(value: string): string {
+  try {
+    const url = new URL(value, document.baseURI);
+    return ['http:', 'https:', 'blob:'].includes(url.protocol) || /^data:image\//i.test(value)
+      ? value
+      : '';
+  } catch {
+    return '';
+  }
+}
+
+export class ElDmChatQueue extends BaseElement {
+  static properties = {
+    items: { type: Array, default: [] },
+    label: { type: String, reflect: true, default: 'Queued messages' },
+  };
+
+  declare items: ChatQueueItem[];
+  declare label: string;
+
+  constructor() {
+    super();
+    this.attachStyles(styles);
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.shadowRoot.addEventListener('click', this._handleClick);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.shadowRoot.removeEventListener('click', this._handleClick);
+  }
+
+  private _handleClick = (event: Event): void => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>(
+      'button[data-action]',
+    );
+    if (!button) return;
+    const index = Number(button.dataset.index);
+    const item = this.items?.[index];
+    if (item) this.emit<ChatQueueActionEventDetail>(button.dataset.action!, { item, index });
+  };
+
+  protected update(): void {
+    const active = this.shadowRoot.activeElement as HTMLButtonElement | null;
+    const action = active?.dataset.action;
+    const oldIndex = Number(active?.dataset.index);
+    const id = active?.closest('li')?.getAttribute('data-id');
+    super.update();
+    if (action && this.items?.length) {
+      const retained = this.items.findIndex((item) => item.id === id);
+      const index = retained >= 0 ? retained : Math.min(oldIndex, this.items.length - 1);
+      this.shadowRoot
+        .querySelector<HTMLButtonElement>(`button[data-action="${action}"][data-index="${index}"]`)
+        ?.focus();
+    }
+  }
+
+  render(): string {
+    const items = Array.isArray(this.items) ? this.items : [];
+    return `<section class="chat-queue" part="queue" aria-label="${escapeHtml(this.label || 'Queued messages')}" ${items.length ? '' : 'hidden'}>
+      <div class="chat-queue-header sr-only"><h3 class="chat-queue-title">${escapeHtml(this.label || 'Queued messages')}</h3><span class="chat-queue-count">${items.length} Queued</span></div>
+      <ol class="chat-queue-list" part="list" role="list" tabindex="0" aria-label="${escapeHtml(this.label || 'Queued messages')}">
+        ${items
+          .map((item, index) => {
+            const attachment = item.attachment ? safeAttachment(item.attachment) : '';
+            return `<li class="chat-queue-item ${item.active ? 'chat-queue-item-active' : ''}" part="item" data-id="${escapeHtml(item.id)}">
+            <svg class="chat-queue-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m8 6 4 4-4 4M12 10H5m10-4h4m-4 6h4m-4 6h4"/></svg>
+            <span class="chat-queue-number sr-only">${index + 1}.</span>
+            ${attachment ? `<img class="chat-queue-attachment" src="${escapeHtml(attachment)}" alt="${escapeHtml(item.attachmentAlt || '')}">` : ''}
+            <div class="chat-queue-content" title="${escapeHtml(item.content)}">${escapeHtml(item.content)}</div>
+            <div class="chat-actions chat-queue-actions has-content">
+              <button class="btn btn-ghost btn-sm chat-queue-steer" type="button" data-action="steer" data-index="${index}" aria-label="Steer waiting message ${index + 1}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 4 5 5-5 5M20 9h-9a6 6 0 0 0-6 6v4"/></svg>Steer</button>
+              <button class="btn btn-ghost btn-sm btn-square chat-queue-remove" type="button" data-action="remove" data-index="${index}" aria-label="Remove waiting message ${index + 1}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg></button>
+            </div>
+          </li>`;
+          })
+          .join('')}
+      </ol>
+    </section>`;
+  }
+}
+
 export class ElDmChatInput extends BaseElement {
   static properties = {
+    color: { type: String, reflect: true },
+    busy: { type: Boolean, reflect: true },
     name: { type: String, reflect: true, default: '' },
     value: { type: String },
     placeholder: {
       type: String,
       reflect: true,
-      default: 'Send a message... (Ctrl/Cmd+Enter to send)',
+      default: 'Message the agent…',
     },
     disabled: { type: Boolean, reflect: true },
     readonly: { type: Boolean, reflect: true },
@@ -1120,6 +1341,10 @@ export class ElDmChatInput extends BaseElement {
   static override get observedAttributes(): string[] {
     return [...super.observedAttributes, 'id', 'auto-grow'];
   }
+
+  declare color: ChatComposerColor;
+  declare busy: boolean;
+  private _lastValue: string | undefined;
 
   declare name: string;
   declare value: string;
@@ -1138,13 +1363,13 @@ export class ElDmChatInput extends BaseElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.shadowRoot.addEventListener('click', this._handleClick);
-    this.shadowRoot.addEventListener('keydown', this._handleKeyDown);
+    this.shadowRoot.addEventListener('keydown', this._handleKeyDown, true);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.shadowRoot.removeEventListener('click', this._handleClick);
-    this.shadowRoot.removeEventListener('keydown', this._handleKeyDown);
+    this.shadowRoot.removeEventListener('keydown', this._handleKeyDown, true);
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
@@ -1160,12 +1385,17 @@ export class ElDmChatInput extends BaseElement {
     }
   }
 
+  focus(options?: FocusOptions): void {
+    this._getInput()?.focus(options);
+  }
+
   getValue(): string {
     return this._getInput()?.getValue() ?? this.value ?? '';
   }
 
   setValue(value: string): void {
     this.value = value;
+    this._lastValue = value;
     this._getInput()?.setValue(value);
   }
 
@@ -1196,30 +1426,40 @@ export class ElDmChatInput extends BaseElement {
 
   private _handleClick = (event: Event): void => {
     const button = (event.target as Element | null)?.closest<HTMLButtonElement>('.chat-send');
-    if (!button || button.disabled) return;
-
-    this._send();
+    const steer = (event.target as Element | null)?.closest<HTMLButtonElement>('.chat-steer');
+    if (steer && !steer.disabled) this._send('steer');
+    else if (button && !button.disabled) this._send();
   };
 
   private _handleKeyDown = (event: Event): void => {
     const keyboardEvent = event as KeyboardEvent;
     if (
+      keyboardEvent.defaultPrevented ||
+      keyboardEvent.isComposing ||
+      keyboardEvent.keyCode === 229 ||
       keyboardEvent.key !== 'Enter' ||
-      (!keyboardEvent.ctrlKey && !keyboardEvent.metaKey) ||
-      keyboardEvent.shiftKey
-    ) {
+      keyboardEvent.shiftKey ||
+      this.disabled ||
+      this.readonly
+    )
       return;
-    }
-    if (this.disabled || this.readonly) return;
-
+    // Let an active markdown suggestion consume Enter before admitting the draft.
+    const textarea = keyboardEvent
+      .composedPath()
+      .find((node) => node instanceof HTMLElement && node.tagName === 'TEXTAREA') as
+      HTMLTextAreaElement | undefined;
+    if (!textarea || textarea.getAttribute('aria-expanded') === 'true') return;
     keyboardEvent.preventDefault();
-    this._send();
+    keyboardEvent.stopPropagation();
+    this._send(this.busy && (keyboardEvent.ctrlKey || keyboardEvent.metaKey) ? 'steer' : 'send');
   };
 
-  private _send(): void {
+  private _send(action: 'send' | 'steer' = 'send'): void {
+    if (this.disabled || this.readonly || (action === 'steer' && !this.busy)) return;
     const value = this.getValue();
     const files = this.getFiles();
-    this.emit<ChatSendEventDetail>('send', { value, files });
+    if (!value.trim() && files.length === 0) return;
+    if (!this.emit<ChatSendEventDetail>(action, { value, files })) return;
 
     if (this.clearOnSend) {
       this.setValue('');
@@ -1227,37 +1467,53 @@ export class ElDmChatInput extends BaseElement {
     }
   }
 
-  render(): string {
-    const editorId = this.id ? `${this.id}-editor` : '';
+  protected update(): void {
+    if (!this._getInput()) super.update();
+    const input = this._getInput();
+    if (!input) return;
+    this._syncEditorId();
+    for (const [name, value] of [
+      ['name', this.name || ''],
+      ['placeholder', this.placeholder || 'Message the agent…'],
+    ]) {
+      if (input.getAttribute(name!) !== value) input.setAttribute(name!, value!);
+    }
+    input.toggleAttribute('disabled', Boolean(this.disabled));
+    input.toggleAttribute('readonly', Boolean(this.readonly));
+    input.toggleAttribute('auto-grow', this.hasAttribute('auto-grow'));
+    input.setAttribute('resize', this.hasAttribute('auto-grow') ? 'none' : 'vertical');
+    if (this.value !== this._lastValue) {
+      input.setValue(this.value || '');
+      this._lastValue = this.value;
+    }
+    const composer = this.shadowRoot.querySelector<HTMLElement>('.chat-composer')!;
+    composer.className = `chat-composer ${this.color && [...Object.keys(BUBBLE_COLOR_CLASSES), 'ghost'].includes(this.color) ? `chat-composer-${this.color}` : ''}`;
+    const send = this.shadowRoot.querySelector<HTMLButtonElement>('.chat-send')!;
+    send.disabled = Boolean(this.disabled || this.readonly);
+    send.querySelector('span')!.textContent = this.busy ? 'Queue' : this.sendLabel || 'Send';
+    this.shadowRoot.querySelector<HTMLButtonElement>('.chat-steer')!.disabled = Boolean(
+      !this.busy || this.disabled || this.readonly,
+    );
+  }
 
-    return `
-      <div class="chat-input" part="input">
-        <el-dm-markdown-input
-          class="chat-input-editor"
-          part="editor"
-          ${editorId ? `id="${escapeHtml(editorId)}"` : ''}
+  render(): string {
+    return `<div class="chat-input-area chat-input" part="input">
+      <slot name="queue"></slot>
+      <div class="chat-composer" part="composer">
+        <el-dm-markdown-input class="chat-composer-input chat-input-editor" part="editor"
+          ${this.id ? `id="${escapeHtml(this.id)}-editor"` : ''}
           name="${escapeHtml(this.name || '')}"
           value="${escapeHtml(this.value || '')}"
-          placeholder="${escapeHtml(this.placeholder || 'Send a message... (Ctrl/Cmd+Enter to send)')}"
+          placeholder="${escapeHtml(this.placeholder || 'Message the agent…')}"
           resize="${this.hasAttribute('auto-grow') ? 'none' : 'vertical'}"
-          no-preview
           ${this.hasAttribute('auto-grow') ? 'auto-grow' : ''}
-          ${this.disabled ? 'disabled' : ''}
-          ${this.readonly ? 'readonly' : ''}
-        >
-          <div class="chat-input-actions" part="actions" slot="bottom-end">
-            <button
-              class="chat-send"
-              part="send"
-              type="button"
-              ${this.disabled || this.readonly ? 'disabled' : ''}
-            >
-              <span aria-hidden="true">&#9658;</span>
-              ${escapeHtml(this.sendLabel || 'Send')}
-            </button>
+          ${this.disabled ? 'disabled' : ''} ${this.readonly ? 'readonly' : ''} no-preview>
+          <div class="chat-composer-actions chat-input-actions" part="actions" slot="bottom-end">
+            <button class="btn btn-ghost chat-send" part="send" type="button" aria-keyshortcuts="Enter"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span>Send</span> <kbd class="chat-composer-hint">Enter</kbd></button>
+            <button class="btn btn-ghost chat-steer" part="steer" type="button" aria-keyshortcuts="Control+Enter Meta+Enter" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 4 5 5-5 5M20 9h-9a6 6 0 0 0-6 6v4"/></svg>Steer <kbd class="chat-composer-hint">Ctrl/⌘+Enter</kbd></button>
           </div>
         </el-dm-markdown-input>
       </div>
-    `;
+    </div>`;
   }
 }

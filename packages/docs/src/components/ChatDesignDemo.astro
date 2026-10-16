@@ -1,0 +1,119 @@
+---
+const longMessage = [
+  'Review the current chat design.',
+  'Keep agent answers outside message bubbles.',
+  'Group tool activity in a work disclosure.',
+  'Keep the waiting queue above the composer.',
+  'Steer messages into the current conversation.',
+  'Preserve multiline drafts and attachments.',
+  'Keep keyboard controls accessible.',
+  'Check the layout on narrow screens.',
+].join('\n');
+---
+
+<div class="chat-design-demo" style="display: grid; gap: 0.75rem; width: min(100%, 42rem);">
+  <el-dm-chat-scroll label="Agent design example" style="height: 26rem;">
+    <el-dm-chat align="end" color="primary" collapsible content={longMessage}></el-dm-chat>
+    <el-dm-chat agent timeline="1" author="Assistant" content="The answer stays visible while you inspect the **work record**. Steer a waiting message to add it to this conversation.">
+      <el-dm-chat-work slot="work" summary="Worked · 2 checks">
+        <el-dm-chat-reasoning summary="Checked the design">
+          Reviewed the message layout, queue tray, and composer controls.
+        </el-dm-chat-reasoning>
+        <el-dm-chat-tool name="design-check" status="success">
+          <span slot="result">Agent content and activity use DuskMoonUI styles.</span>
+        </el-dm-chat-tool>
+      </el-dm-chat-work>
+    </el-dm-chat>
+  </el-dm-chat-scroll>
+  <el-dm-chat-input busy color="ghost" auto-grow clear-on-send placeholder="Message the agent…">
+    <el-dm-chat-queue slot="queue" label="Waiting messages"></el-dm-chat-queue>
+  </el-dm-chat-input>
+  <div>
+    <el-dm-button data-complete variant="text">Complete reply</el-dm-button>
+    <p data-status role="status" aria-live="polite" aria-atomic="true"></p>
+  </div>
+</div>
+
+<script>
+  import { register } from '@duskmoon-dev/el-chat';
+  import type {
+    ElDmChat,
+    ElDmChatInput,
+    ElDmChatQueue,
+    ChatQueueItem,
+    ChatSendEventDetail,
+  } from '@duskmoon-dev/el-chat';
+
+  register();
+
+  function initializeChatDesign(): void {
+    document.querySelectorAll<HTMLElement>('.chat-design-demo').forEach((demo) => {
+      if (demo.dataset.initialized) return;
+      demo.dataset.initialized = 'true';
+      const transcript = demo.querySelector('el-dm-chat-scroll')!;
+      const composer = demo.querySelector<ElDmChatInput>('el-dm-chat-input')!;
+      const queue = demo.querySelector<ElDmChatQueue>('el-dm-chat-queue')!;
+      const status = demo.querySelector<HTMLElement>('[data-status]')!;
+      const complete = demo.querySelector<HTMLButtonElement>('[data-complete]')!;
+      let nextId = 3;
+      let items: ChatQueueItem[] = [
+        { id: 'waiting-1', content: 'Also check keyboard focus.' },
+        { id: 'waiting-2', content: 'Include the mobile layout.' },
+      ];
+      const refresh = () => {
+        queue.items = items.map((item, index) => ({ ...item, active: index === 0 }));
+        status.textContent = `${items.length} message${items.length === 1 ? '' : 's'} waiting. ${composer.busy ? 'Reply in progress.' : 'Ready for a message.'}`;
+        complete.disabled = !composer.busy;
+      };
+      const appendUser = (value: string) => {
+        const message = document.createElement('el-dm-chat') as ElDmChat;
+        message.align = 'end';
+        message.color = 'primary';
+        message.collapsible = true;
+        message.textContent = value;
+        transcript.append(message);
+      };
+      const startReply = () => {
+        const reply = document.createElement('el-dm-chat') as ElDmChat;
+        reply.agent = true;
+        reply.author = 'Assistant';
+        reply.content = 'Working on the next message…';
+        transcript.append(reply);
+        composer.busy = true;
+      };
+      composer.addEventListener('send', (event) => {
+        const { value, files } = (event as CustomEvent<ChatSendEventDetail>).detail;
+        const content = value || files.map((file) => file.name).join(', ');
+        if (composer.busy) items = [...items, { id: `waiting-${nextId++}`, content }];
+        else { appendUser(content); startReply(); }
+        refresh();
+      });
+      composer.addEventListener('steer', (event) => {
+        if (event.target !== composer) return;
+        const { value, files } = (event as CustomEvent<ChatSendEventDetail>).detail;
+        appendUser(value || files.map((file) => file.name).join(', '));
+        refresh();
+      });
+      for (const action of ['steer', 'remove']) {
+        queue.addEventListener(action, (event) => {
+          const { item } = (event as CustomEvent<{ item: ChatQueueItem }>).detail;
+          if (action === 'steer') appendUser(item.content);
+          items = items.filter((queued) => queued.id !== item.id);
+          refresh();
+          if (!items.length) composer.focus();
+        });
+      }
+      complete.addEventListener('click', () => {
+        const next = items[0];
+        items = items.slice(1);
+        if (next) { appendUser(next.content); startReply(); }
+        else composer.busy = false;
+        refresh();
+      });
+      refresh();
+    });
+  }
+
+  initializeChatDesign();
+  document.addEventListener('astro:page-load', initializeChatDesign);
+</script>
