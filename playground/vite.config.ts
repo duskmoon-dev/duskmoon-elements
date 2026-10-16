@@ -268,6 +268,7 @@ export default defineConfig({
         button: resolve(import.meta.dirname, 'button.html'),
         card: resolve(import.meta.dirname, 'card.html'),
         chat: resolve(import.meta.dirname, 'chat.html'),
+        'code-engine-sizing': resolve(import.meta.dirname, 'code-engine-sizing.html'),
         cascader: resolve(import.meta.dirname, 'cascader.html'),
         chip: resolve(import.meta.dirname, 'chip.html'),
         datetime: resolve(import.meta.dirname, 'datetime.html'),

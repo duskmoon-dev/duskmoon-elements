@@ -193,7 +193,8 @@ export type CodeEngineTheme = 'duskmoon' | 'sunshine' | 'moonlight' | 'one-dark'
 
 const styles = css`
   :host {
-    display: block;
+    display: flex;
+    flex-direction: column;
     min-height: 200px;
     font-family: var(
       --dm-font-mono,
@@ -212,11 +213,20 @@ const styles = css`
   }
 
   .cm-host {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   .cm-host .cm-editor {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .cm-host .cm-scroller {
+    flex: 1;
+    min-height: 0;
   }
 
   .cm-host .cm-editor.cm-focused {
@@ -227,6 +237,7 @@ const styles = css`
 
   .topbar {
     display: none;
+    flex-shrink: 0;
   }
 
   :host([show-topbar]) .topbar {
@@ -311,6 +322,7 @@ const styles = css`
 
   .bottombar {
     display: none;
+    flex-shrink: 0;
   }
 
   :host([show-bottombar]) .bottombar {
@@ -587,10 +599,14 @@ export class ElDmCodeEngine extends BaseElement {
     const host = this.shadowRoot?.querySelector('.cm-host');
     if (!host || this.#editor) return;
 
+    const langExt = await this.#loadLanguage(this.language);
+    // A reactive update or disconnect can replace the mount while the language loads.
+    if (this.#editor || !this.isConnected || host !== this.shadowRoot?.querySelector('.cm-host')) {
+      return;
+    }
+
     const initialDoc = this.#pendingValue ?? this.getAttribute('value') ?? '';
     this.#pendingValue = null;
-
-    const langExt = await this.#loadLanguage(this.language);
 
     this.#editor = new EditorView({
       state: EditorState.create({

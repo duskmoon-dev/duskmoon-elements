@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Engine native sizing regression</title>
+    <style>
+      body {
+        margin: 24px;
+        font-family: system-ui, sans-serif;
+      }
+      #fixture {
+        width: min(640px, 100%);
+      }
+      #results {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body data-test-status="running">
+    <h1>Code Engine native sizing regression</h1>
+    <pre id="results" aria-live="polite">Running…</pre>
+    <div id="fixture"></div>
+    <script type="module" src="./code-engine-sizing.ts"></script>
+  </body>
+</html>
