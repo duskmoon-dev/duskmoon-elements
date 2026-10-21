@@ -266,6 +266,7 @@ export default defineConfig({
         'toggle-switch': resolve(import.meta.dirname, 'toggle-switch.html'),
         validator: resolve(import.meta.dirname, 'validator.html'),
         button: resolve(import.meta.dirname, 'button.html'),
+        'button-reconnect': resolve(import.meta.dirname, 'button-reconnect.html'),
         card: resolve(import.meta.dirname, 'card.html'),
         chat: resolve(import.meta.dirname, 'chat.html'),
         'code-engine-sizing': resolve(import.meta.dirname, 'code-engine-sizing.html'),

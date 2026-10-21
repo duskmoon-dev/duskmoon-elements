@@ -239,6 +239,77 @@ describe('ElDmButton', () => {
     expect(form.querySelector('button')).toBeNull();
   });
 
+  test('submits once per click after repeated reconnects', () => {
+    const form = document.createElement('form');
+    let submits = 0;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      submits++;
+    });
+    container.appendChild(form);
+
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    el.type = 'submit';
+
+    for (let connection = 0; connection < 4; connection++) {
+      form.appendChild(el);
+      el.click();
+      expect(submits).toBe(connection + 1);
+      expect(form.querySelector('button')).toBeNull();
+      el.remove();
+    }
+  });
+
+  test('resets once per click after repeated reconnects', () => {
+    const form = document.createElement('form');
+    form.innerHTML = '<input value="initial">';
+    let resets = 0;
+    form.addEventListener('reset', () => resets++);
+    container.appendChild(form);
+
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    el.type = 'reset';
+    const input = form.querySelector('input')!;
+
+    for (let connection = 0; connection < 4; connection++) {
+      form.appendChild(el);
+      input.value = 'edited';
+      el.click();
+      expect(resets).toBe(connection + 1);
+      expect(input.value).toBe('initial');
+      el.remove();
+    }
+  });
+
+  test('keeps disabled and loading submissions blocked after reconnecting', () => {
+    const form = document.createElement('form');
+    let submits = 0;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      submits++;
+    });
+    container.appendChild(form);
+
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    el.type = 'submit';
+    form.appendChild(el);
+    el.click();
+    expect(submits).toBe(1);
+    el.remove();
+    form.appendChild(el);
+
+    el.disabled = true;
+    el.click();
+    expect(submits).toBe(1);
+    el.disabled = false;
+    el.loading = true;
+    el.click();
+    expect(submits).toBe(1);
+    el.loading = false;
+    el.click();
+    expect(submits).toBe(2);
+  });
+
   test('supports prefix and suffix slots', () => {
     const el = document.createElement('el-dm-button') as ElDmButton;
     container.appendChild(el);

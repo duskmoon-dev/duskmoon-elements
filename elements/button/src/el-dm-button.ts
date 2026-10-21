@@ -125,6 +125,7 @@ export class ElDmButton extends BaseElement {
   declare loading: boolean;
 
   private _labelObserver?: MutationObserver;
+  private readonly _boundHandleClick = this._handleClick.bind(this);
 
   constructor() {
     super();
@@ -190,12 +191,13 @@ export class ElDmButton extends BaseElement {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener('click', this._handleClick.bind(this));
+    this.addEventListener('click', this._boundHandleClick);
     this._observeLabels();
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
+    this.removeEventListener('click', this._boundHandleClick);
     this._labelObserver?.disconnect();
   }
 
