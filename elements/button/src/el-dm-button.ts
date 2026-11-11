@@ -8,6 +8,7 @@
  *
  * @attr {string} variant - Button variant: primary, secondary, tertiary, ghost, outline, success, warning, error, info
  * @attr {string} size - Button size: xs, sm, md, lg
+ * @attr {string} shape - Button shape: circle, square
  * @attr {boolean} disabled - Whether the button is disabled
  * @attr {string} type - Button type: button, submit, reset
  * @attr {boolean} loading - Whether the button is in loading state
@@ -61,6 +62,7 @@ export type ButtonVariant =
   | 'warning'
   | 'error'
   | 'info';
+export type ButtonShape = 'circle' | 'square';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 // Strip @layer wrapper for Shadow DOM compatibility and add host styles
@@ -104,6 +106,7 @@ export class ElDmButton extends BaseElement {
   static properties = {
     variant: { type: String, reflect: true },
     size: { type: String, reflect: true },
+    shape: { type: String, reflect: true },
     disabled: { type: Boolean, reflect: true },
     type: { type: String, reflect: true, default: 'button' },
     loading: { type: Boolean, reflect: true },
@@ -114,6 +117,9 @@ export class ElDmButton extends BaseElement {
 
   /** Button size */
   declare size: ButtonSize;
+
+  /** Optional button shape */
+  declare shape: ButtonShape;
 
   /** Whether the button is disabled */
   declare disabled: boolean;
@@ -266,6 +272,10 @@ export class ElDmButton extends BaseElement {
     // Add size class if specified
     if (this.size && SIZE_CLASSES[this.size]) {
       classes.push(SIZE_CLASSES[this.size]);
+    }
+
+    if (this.shape === 'circle' || this.shape === 'square') {
+      classes.push(`btn-${this.shape}`);
     }
 
     // Add loading class

@@ -28,6 +28,50 @@ describe('ElDmButton', () => {
     expect(button).toBeDefined();
   });
 
+  test.each(['circle', 'square'])('renders an initial %s shape with variant and size', (shape) => {
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    el.setAttribute('shape', shape);
+    el.setAttribute('variant', 'outline');
+    el.setAttribute('size', 'xs');
+    container.appendChild(el);
+
+    const button = el.shadowRoot.querySelector('button')!;
+    expect(button.classList.contains(`btn-${shape}`)).toBe(true);
+    expect(button.classList.contains('btn-outline')).toBe(true);
+    expect(button.classList.contains('btn-xs')).toBe(true);
+  });
+
+  test('updates and reflects shape, ignoring unsupported values and removal', async () => {
+    const el = document.createElement('el-dm-button') as ElDmButton;
+    container.appendChild(el);
+    const classes = () => el.shadowRoot.querySelector('button')!.classList;
+    expect(classes().contains('btn-circle')).toBe(false);
+    expect(classes().contains('btn-square')).toBe(false);
+
+    el.shape = 'circle';
+    await Promise.resolve();
+    expect(el.getAttribute('shape')).toBe('circle');
+    expect(classes().contains('btn-circle')).toBe(true);
+
+    el.setAttribute('shape', 'square');
+    await Promise.resolve();
+    expect(el.shape).toBe('square');
+    expect(classes().contains('btn-circle')).toBe(false);
+    expect(classes().contains('btn-square')).toBe(true);
+
+    el.setAttribute('shape', 'pill');
+    await Promise.resolve();
+    expect(classes().contains('btn-pill')).toBe(false);
+    expect(classes().contains('btn-square')).toBe(false);
+
+    el.shape = 'circle';
+    await Promise.resolve();
+    el.removeAttribute('shape');
+    await Promise.resolve();
+    expect(classes().contains('btn-circle')).toBe(false);
+    expect(classes().contains('btn-square')).toBe(false);
+  });
+
   test('renders slot content', () => {
     const el = document.createElement('el-dm-button') as ElDmButton;
     el.textContent = 'Click me';

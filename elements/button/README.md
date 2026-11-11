@@ -62,12 +62,30 @@ import '@duskmoon-dev/el-button/register';
 | `lg` | Large            |
 | `xl` | Extra large      |
 
+## Shapes
+
+Use `shape="circle"` or `shape="square"` for icon buttons. Omit `shape` for the default rectangular button.
+
+```html
+<el-dm-button variant="outline" size="xs" shape="circle" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
+<el-dm-button shape="square" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
+```
+
 ## Attributes
 
 | Attribute         | Type    | Default   | Description                                  |
 | ----------------- | ------- | --------- | -------------------------------------------- |
 | `variant`         | string  | `primary` | Button variant                               |
 | `size`            | string  | `md`      | Button size                                  |
+| `shape`           | string  | —         | Optional shape: circle or square             |
 | `disabled`        | boolean | `false`   | Disable the button                           |
 | `type`            | string  | `button`  | Button type (button, submit, reset)          |
 | `loading`         | boolean | `false`   | Show loading spinner                         |

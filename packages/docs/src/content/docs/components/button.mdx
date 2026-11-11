@@ -55,6 +55,7 @@ ID. Buttons can be removed and reinserted without duplicating submissions or res
 |----------|------|---------|-------------|
 | `variant` | `'primary' \| 'secondary' \| 'tertiary' \| 'outline' \| 'ghost' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Visual style of the button |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the button |
+| `shape` | `'circle' \| 'square'` | — | Optional shape; omitted keeps the default rectangle |
 | `disabled` | `boolean` | `false` | Disables the button |
 | `loading` | `boolean` | `false` | Shows loading state |
 | `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Button type attribute |
@@ -141,6 +142,37 @@ Semantic color variants communicate status or intent.
 <el-dm-button size="sm">Small</el-dm-button>
 <el-dm-button size="md">Medium</el-dm-button>
 <el-dm-button size="lg">Large</el-dm-button>
+```
+
+## Shapes
+
+Use `shape="circle"` or `shape="square"` for icon buttons, together with an accessible label.
+Omit `shape` for the default rectangular button.
+
+<ComponentDemo>
+  <el-dm-button variant="outline" size="xs" shape="circle" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
+  <el-dm-button variant="outline" size="xs" shape="square" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
+</ComponentDemo>
+
+```html
+<el-dm-button variant="outline" size="xs" shape="circle" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
+<el-dm-button variant="outline" size="xs" shape="square" aria-label="Add">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" />
+  </svg>
+</el-dm-button>
 ```
 
 ## States

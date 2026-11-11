@@ -7,6 +7,7 @@
 import { ElDmButton } from './el-dm-button.js';
 
 export { ElDmButton };
+export type { ButtonShape } from './el-dm-button.js';
 
 /**
  * Register the el-dm-button custom element
