@@ -63,6 +63,133 @@ describe('ElDmInput', () => {
     expect(slot).toBeDefined();
   });
 
+  test('keeps the control and focus through input, change, and blur', async () => {
+    const el = createInput({ value: 'Shared workspace' });
+    container.appendChild(el);
+    const input = el.shadowRoot.querySelector('input')!;
+    const events: string[] = [];
+    for (const name of ['dm-focus', 'dm-input', 'dm-change', 'dm-blur']) {
+      el.addEventListener(name, () => events.push(name));
+    }
+    input.focus();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(el.shadowRoot.activeElement).toBe(input);
+    expect(el.shadowRoot.querySelector('.focused')).not.toBeNull();
+    input.value = 'Design "team" & <workspace>';
+    input.setSelectionRange(2, 8, 'backward');
+    input.dispatchEvent(new Event('input'));
+    await Promise.resolve();
+    expect(el.value).toBe(input.value);
+    expect(el.getAttribute('value')).toBe(input.value);
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(el.shadowRoot.activeElement).toBe(input);
+    expect([input.selectionStart, input.selectionEnd, input.selectionDirection]).toEqual([
+      2,
+      8,
+      'backward',
+    ]);
+    input.dispatchEvent(new Event('change'));
+    input.blur();
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(el.shadowRoot.querySelector('.focused')).toBeNull();
+    expect(events).toEqual(['dm-focus', 'dm-input', 'dm-change', 'dm-blur']);
+  });
+
+  test('preserves selection while updating attributes, labels, helper text, and validation', async () => {
+    const el = createInput({ value: 'Design team' });
+    container.appendChild(el);
+    const input = el.shadowRoot.querySelector('input')!;
+    input.focus();
+    input.setSelectionRange(2, 6, 'backward');
+    el.label = 'Workspace <name>';
+    el.helperText = 'Help & guidance';
+    el.placeholder = 'Enter "name"';
+    el.name = 'workspace';
+    el.required = true;
+    el.size = 'lg';
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(el.shadowRoot.activeElement).toBe(input);
+    expect(input.selectionStart).toBe(2);
+    expect(input.selectionEnd).toBe(6);
+    expect(input.selectionDirection).toBe('backward');
+    expect(input.placeholder).toBe('Enter "name"');
+    expect(input.name).toBe('workspace');
+    expect(input.required).toBe(true);
+    expect(input.classList.contains('input-lg')).toBe(true);
+    const label = el.shadowRoot.querySelector('label')!;
+    expect(label.textContent?.trim()).toBe('Workspace <name>');
+    expect(label.htmlFor).toBe(input.id);
+    expect(input.getAttribute('aria-describedby')).toBe('helper');
+    el.setValidators([() => 'Invalid <name>']);
+    input.blur();
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe('error');
+    expect(el.shadowRoot.querySelector('#error')?.textContent?.trim()).toBe('Invalid <name>');
+    el.label = '';
+    el.validationState = 'valid';
+    el.helperText = '';
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('label')).toBeNull();
+    expect(el.shadowRoot.querySelector('#error')).toBeNull();
+    expect(el.shadowRoot.querySelector('#helper')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBe('');
+  });
+
+  test('updates programmatic values without losing the control or selection', async () => {
+    const el = createInput({ value: 'abcdef' });
+    container.appendChild(el);
+    const input = el.shadowRoot.querySelector('input')!;
+    input.focus();
+    input.setSelectionRange(1, 4, 'backward');
+    el.value = 'uvwxyz';
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(input.value).toBe('uvwxyz');
+    expect(el.shadowRoot.activeElement).toBe(input);
+    expect([input.selectionStart, input.selectionEnd, input.selectionDirection]).toEqual([
+      1,
+      4,
+      'backward',
+    ]);
+  });
+
+  test.each(['text', 'password', 'email', 'number', 'tel', 'url', 'search'] as const)(
+    'updates %s inputs without unsupported selection operations',
+    async (type) => {
+      const el = createInput({ type, value: '42' });
+      container.appendChild(el);
+      const input = el.shadowRoot.querySelector('input')!;
+      el.value = '24';
+      await Promise.resolve();
+      expect(el.shadowRoot.querySelector('input')).toBe(input);
+      expect(input.value).toBe('24');
+    },
+  );
+
+  test('does not duplicate listeners after updates or reconnects', async () => {
+    const el = createInput();
+    container.appendChild(el);
+    const input = el.shadowRoot.querySelector('input')!;
+    let calls = 0;
+    el.addEventListener('dm-input', () => calls++);
+    for (let i = 0; i < 3; i++) {
+      el.placeholder = String(i);
+      await Promise.resolve();
+      el.remove();
+      container.appendChild(el);
+    }
+    input.value = 'Hello';
+    input.dispatchEvent(new Event('input'));
+    await Promise.resolve();
+    expect(el.shadowRoot.querySelector('input')).toBe(input);
+    expect(el.value).toBe('Hello');
+    expect(calls).toBe(1);
+  });
+
   // --- Properties ---
   test('defaults type to text', () => {
     const el = createInput();

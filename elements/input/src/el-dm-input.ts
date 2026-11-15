@@ -279,6 +279,8 @@ export class ElDmInput extends BaseElement {
   /** Whether the input is focused */
   private _focused = false;
 
+  private readonly _inputId = `input-${Math.random().toString(36).slice(2, 9)}`;
+
   /** Registered validators */
   private _validators: Validator[] = [];
 
@@ -315,11 +317,12 @@ export class ElDmInput extends BaseElement {
   constructor() {
     super();
     this.attachStyles(styles);
+    this.shadowRoot.addEventListener('slotchange', this._handleSlotChange.bind(this));
   }
 
-  connectedCallback(): void {
-    super.connectedCallback();
-    this.shadowRoot.addEventListener('slotchange', this._handleSlotChange.bind(this));
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._focused = false;
   }
 
   /**
@@ -419,20 +422,41 @@ export class ElDmInput extends BaseElement {
   }
 
   protected update(): void {
-    super.update();
-
-    // Re-attach event listeners after render
-    const input = this.shadowRoot.querySelector('input');
-    if (input) {
+    let input = this.shadowRoot.querySelector('input');
+    if (!input) {
+      super.update();
+      input = this.shadowRoot.querySelector('input')!;
+      input.id = this._inputId;
       input.addEventListener('input', this._handleInput.bind(this));
       input.addEventListener('change', this._handleChange.bind(this));
       input.addEventListener('focus', this._handleFocus.bind(this));
       input.addEventListener('blur', this._handleBlur.bind(this));
     }
-  }
 
-  render(): string {
-    const wrapperClasses = [
+    // Keep the live control mounted: replacing it drops focus and native editing state.
+    input.type = this.type || 'text';
+    input.name = this.name || '';
+    input.placeholder = this.placeholder || '';
+    input.disabled = this.disabled;
+    input.readOnly = this.readonly;
+    input.required = this.required;
+    input.className = this._getInputClasses();
+    const value = this.value || '';
+    if (input.value !== value) {
+      const { selectionStart, selectionEnd, selectionDirection } = input;
+      input.value = value;
+      if (selectionStart !== null && selectionEnd !== null) {
+        input.setSelectionRange(selectionStart, selectionEnd, selectionDirection || undefined);
+      }
+    }
+    input.setAttribute('value', value);
+    input.setAttribute('aria-invalid', String(this.validationState === 'invalid'));
+    const showError = this.validationState === 'invalid' && !!this.errorMessage;
+    const showHelper = !!this.helperText && this.validationState !== 'invalid';
+    input.setAttribute('aria-describedby', showError ? 'error' : showHelper ? 'helper' : '');
+
+    const wrapper = this.shadowRoot.querySelector('.input-wrapper')!;
+    wrapper.className = [
       'input-wrapper',
       this._focused ? 'focused' : '',
       this.disabled ? 'disabled' : '',
@@ -441,68 +465,54 @@ export class ElDmInput extends BaseElement {
       .filter(Boolean)
       .join(' ');
 
-    const labelClasses = ['label', this.required ? 'required' : ''].filter(Boolean).join(' ');
-    const inputClasses = this._getInputClasses();
-    const inputId = `input-${Math.random().toString(36).slice(2, 9)}`;
+    const container = this.shadowRoot.querySelector('.container')!;
+    let label = container.querySelector('label');
+    if (this.label) {
+      if (!label) {
+        label = document.createElement('label');
+        label.setAttribute('part', 'label');
+        label.htmlFor = this._inputId;
+        container.prepend(label);
+      }
+      label.className = this.required ? 'label required' : 'label';
+      label.textContent = this.label;
+    } else {
+      label?.remove();
+    }
+    for (const [id, text] of [
+      ['error', showError ? this.errorMessage : ''],
+      ['helper', showHelper ? this.helperText : ''],
+    ]) {
+      let message = container.querySelector<HTMLElement>(`#${id}`);
+      if (text) {
+        if (!message) {
+          message = document.createElement('span');
+          message.id = id;
+          message.className = id;
+          message.setAttribute('part', id);
+          if (id === 'error') message.setAttribute('role', 'alert');
+          container.append(message);
+        }
+        if (message.textContent !== text) message.textContent = text;
+      } else {
+        message?.remove();
+      }
+    }
+  }
 
+  render(): string {
     return `
       <div class="container" part="container">
-        ${
-          this.label
-            ? `
-          <label class="${labelClasses}" for="${inputId}" part="label">
-            ${this.label}
-          </label>
-        `
-            : ''
-        }
-
-        <div class="${wrapperClasses}" part="input-wrapper">
+        <div class="input-wrapper" part="input-wrapper">
           <span class="prefix" part="prefix">
             <slot name="prefix"></slot>
           </span>
-
-          <input
-            class="${inputClasses}"
-            id="${inputId}"
-            type="${this.type || 'text'}"
-            name="${this.name || ''}"
-            value="${this.value || ''}"
-            placeholder="${this.placeholder || ''}"
-            ${this.disabled ? 'disabled' : ''}
-            ${this.readonly ? 'readonly' : ''}
-            ${this.required ? 'required' : ''}
-            aria-invalid="${this.validationState === 'invalid' ? 'true' : 'false'}"
-            aria-describedby="${this.errorMessage ? 'error' : this.helperText ? 'helper' : ''}"
-            part="input"
-          />
-
+          <input part="input" />
           <span class="pending-indicator"></span>
-
           <span class="suffix" part="suffix">
             <slot name="suffix"></slot>
           </span>
         </div>
-
-        ${
-          this.validationState === 'invalid' && this.errorMessage
-            ? `
-          <span id="error" class="error" part="error" role="alert">
-            ${this.errorMessage}
-          </span>
-        `
-            : ''
-        }
-
-        ${
-          this.helperText && this.validationState !== 'invalid'
-            ? `
-          <span id="helper" class="helper" part="helper">
-            ${this.helperText}
-          </span>
-        `
-            : ''
-        }
       </div>
     `;
   }

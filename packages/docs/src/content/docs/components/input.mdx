@@ -29,6 +29,10 @@ import '@duskmoon-dev/el-input/register';
 <el-dm-input label="Email" placeholder="Enter your email"></el-dm-input>
 ```
 
+The native input stays mounted while values, labels, helper text, or validation change,
+so typing and pasting retain focus and selection. Listen for `dm-input` while editing
+and `dm-change` when the edit is committed. Registered validators run on blur.
+
 ## Live Demo
 
 <ComponentDemo title="Input Examples">
